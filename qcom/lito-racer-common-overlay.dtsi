@@ -17,3 +17,13 @@
 #include "lito-racer-sensor-overlay.dtsi"
 #include "lito-racer-thermal.dtsi"
 #include "lito-moto-common-overlay.dtsi"
+
+&soc {
+	qcom,tz_gpio {
+		compatible = "qcom,tz_gpio";
+		tlmm-tz = <59>,
+			<60>,
+			<61>,
+			<62>;
+	};
+};
