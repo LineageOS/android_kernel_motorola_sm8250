@@ -133,5 +133,8 @@ all.config
 # Kdevelop4
 *.kdev4
 
+# Clang's compilation database file
+/compile_commands.json
+
 # fetched Android config fragments
 kernel/configs/android-*.cfg
