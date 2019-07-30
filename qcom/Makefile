@@ -1,3 +1,17 @@
+# Only include Motorola DTBs
+ifeq ($(CONFIG_MMI_DEVICE_DTBS),y)
+ifneq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
+$(error Moto DT w/o overlay is undefined!!!)
+endif
+
+# Motorola Device Trees
+dtbo-$(CONFIG_ARCH_KONA) += \
+		kona-savannah-evt1-overlay.dtbo \
+		kona-burton-evt1-overlay.dtbo
+
+kona-savannah-evt1-overlay.dtbo-base := kona-moto-base.dtb
+kona-burton-evt1-overlay.dtbo-base := kona-moto-base.dtb
+else
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
         dtbo-$(CONFIG_ARCH_KONA) += \
                 kona-cdp-overlay.dtbo \
@@ -196,6 +210,7 @@ dtb-$(CONFIG_ARCH_BENGAL) += bengal-rumi.dtb \
 		bengalp-iot-idp-usbc.dtb \
 		bengalp-iot-idp-2gb.dtb
 endif
+endif  # CONFIG_MMI_DEVICE_DTBS
 
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
         dtbo-$(CONFIG_ARCH_SCUBA) += \
