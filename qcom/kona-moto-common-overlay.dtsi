@@ -412,3 +412,159 @@
 		};
 	};
 };
+
+&tlmm{
+	fps_rst_active: fps_rst_active {
+		mux {
+			pins = "gpio119";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio119";
+			drive-strength = <2>; /* 2 MA */
+			output-low;
+		};
+	};
+
+	fps_rst_suspend: fps_rst_suspend {
+		mux {
+			pins = "gpio119";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio119";
+			drive-strength = <2>; /* 2 MA */
+		};
+	};
+
+	fps_int_active: fps_int_active {
+		mux {
+			pins = "gpio23";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio23";
+			drive-strength = <2>; /* 2 MA */
+			bias-disable;
+			input-enable;
+		};
+	};
+
+	fps_int_suspend: fps_int_suspend {
+		mux {
+			pins = "gpio23";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio23";
+			drive-strength = <2>; /* 2 MA */
+			bias-disable;
+			input-enable;
+		};
+	};
+
+	touch_int_mux {
+		touch_int_active: active {
+			mux {
+				pins = "gpio39";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio39";
+				drive-strength = <2>;
+				bias-pull-up;
+			};
+		};
+
+		touch_int_suspend: default {
+			mux {
+				pins = "gpio39";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio39";
+				drive-strength = <2>;
+				bias-disable;
+			};
+		};
+	};
+
+	touch_reset_mux {
+		touch_reset_active: active {
+			mux {
+				pins = "gpio38";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio38";
+				drive-strength = <2>;
+				bias-disable;
+			};
+		};
+
+		touch_reset_suspend: default {
+			mux {
+				pins = "gpio38";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio38";
+				drive-strength = <2>;
+				bias-pull-down;
+				output-low;
+			};
+		};
+	};
+};
+
+&soc {
+	goodix_fingerprint{
+		status = "disabled";
+		compatible = "goodix,fingerprint";
+		fp-gpio-reset = <&tlmm 119 0x00>;
+		fp-gpio-irq = <&tlmm 23 0x00>;
+		fp-gpio-ven = <&tlmm 120 0x00>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <23 0>;
+		interrupt-controller;
+		pinctrl-names = "default", "suspend";
+		pinctrl-0 = <&fps_rst_active &fps_int_active>;
+		pinctrl-1 = <&fps_rst_suspend &fps_int_suspend>;
+	};
+};
+
+&qupv3_se13_i2c {
+	status = "okay";
+
+	goodix_ts_i2c@5d {
+		status = "ok";
+		compatible = "goodix,goodix_mmi";
+		reg = <0x5d>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <39 0>;
+		pinctrl-names = "pmx_ts_active","pmx_ts_suspend";
+		pinctrl-0 = <&touch_int_active &touch_reset_active>;
+		pinctrl-1 = <&touch_int_suspend &touch_reset_suspend>;
+		/*goodix,reg-en-gpio = <&tlmm 120 0x0>;*/
+		vtouch-supply = <&pm8150_l13>;
+		/*iovtouch-supply = <&pm8150_s4>;*/
+		goodix,reset-gpio = <&tlmm 38 0x0>;
+		goodix,irq-gpio = <&tlmm 39 0x2002>;
+		goodix,irq-flags = <0x2002>; /* 1:trigger rising, 2:trigger falling;*/
+		goodix,control-dsi = <0>;
+		goodix,panel-max-id = <10>;
+		goodix,panel-max-x = <1080>;
+		goodix,panel-max-y = <2340>;
+		goodix,panel-max-w = <256>;
+		goodix,panel-max-p = <4096>;
+		goodix,power-on-delay-us = <300000>; /*300ms*/
+		goodix,power-off-delay-us = <5000>;
+		/*goodix,swap-axis;*/
+		goodix,x2x;
+		goodix,y2y;
+		goodix,pen-enable;
+		goodix,usb_charger;
+		goodix,key-of-pen = <331 332>;/*BTN_STYLUS, BTN_STYLUS2*/
+		goodix,debug-reg-ver = <1>;
+	};
+};
