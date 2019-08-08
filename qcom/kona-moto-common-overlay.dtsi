@@ -130,7 +130,7 @@
 		pinctrl-0 = <&bt_en_sleep>;
 		qca,bt-reset-gpio = <&tlmm 21 0>; /* BT_EN */
 		qca,bt-vdd-aon-supply = <&pm8150_s6>;
-		qca,bt-vdd-dig-supply = <&pm8009_s2>;
+		qca,bt-vdd-dig-supply = <&pm8150_s6>;
 		qca,bt-vdd-rfa1-supply = <&pm8150_s5>;
 		qca,bt-vdd-rfa2-supply = <&pm8150a_s8>;
 
@@ -144,6 +144,12 @@
 		qcom,batt-id-range-pct = <15>;
 		#include "fg-gen4-batterydata-alium-3600mah.dtsi"
 		#include "fg-gen4-batterydata-ascent-3450mah.dtsi"
+	};
+};
+
+&soc {
+	qcom,cnss-qca6390@b0000000 {
+		vdd-wlan-dig-supply = <&pm8150_s6>;
 	};
 };
 
