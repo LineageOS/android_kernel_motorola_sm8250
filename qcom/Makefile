@@ -7,9 +7,11 @@ endif
 # Motorola Device Trees
 dtbo-$(CONFIG_ARCH_KONA) += \
 		kona-savannah-evt1-overlay.dtbo \
+		kona-savannah-evt2-overlay.dtbo \
 		kona-burton-evt1-overlay.dtbo
 
 kona-savannah-evt1-overlay.dtbo-base := kona-moto-base.dtb
+kona-savannah-evt2-overlay.dtbo-base := kona-moto-base.dtb
 kona-burton-evt1-overlay.dtbo-base := kona-moto-base.dtb
 else
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
