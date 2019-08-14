@@ -4,6 +4,7 @@
 #include "kona-mot-burton-display.dtsi"
 #include "kona-pmic-overlay.dtsi"
 #include "kona-thermal-overlay.dtsi"
+#include "kona-moto-audio-overlay.dtsi"
 
 &qupv3_se12_2uart {
 	status = "ok";
