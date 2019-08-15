@@ -5762,6 +5762,178 @@ static void *def_wcd_mbhc_cal(void)
 	return wcd_mbhc_cal;
 }
 
+#ifdef CONFIG_SND_SOC_CS35l41
+#define AMP_SPK_NAME "spi0.1"
+#define AMP_RCV_NAME "spi0.2"
+#define AMP_DAI_NAME "cs35l41-pcm"
+
+static struct snd_soc_pcm_stream cirrus_amp_params[] = {
+	{
+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+		.rate_min = 48000,
+		.rate_max = 48000,
+		.channels_min = 2,
+		.channels_max = 2,  /* 2 channels for 1.536MHz SCLK */
+	},
+	{
+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+		.rate_min = 96000,
+		.rate_max = 96000,
+		.channels_min = 2,
+		.channels_max = 2, /* 2 channels for 3.072MHz SCLK */
+	},
+};
+
+static struct snd_soc_codec_conf cirrus_amp_conf[] = {
+
+	{
+		.dev_name		= AMP_SPK_NAME,
+		.name_prefix		= "SPK",
+	},
+	{
+		.dev_name		= AMP_RCV_NAME,
+		.name_prefix		= "RCV",
+	}
+};
+
+#endif
+
+#ifdef CONFIG_SND_SOC_CS47l35
+
+#define MADERA_CODEC_NAME "cs47l35-codec"
+#define AMP_CODEC_NAME "cs35l41-codec"
+#define MADERA_CODEC_DAI_NAME "cs47l35-aif1"
+#define MADERA_CPU_DAI_NAME "cs47l35-aif2"
+
+
+#define MADERA_CLK_SYSCLK_1		1
+#define MADERA_CLK_SRC_FLL1		0x4
+#define MADERA_FLL_SRC_MCLK1            0
+#define MADERA_FLL_SRC_MCLK2            1
+#define MADERA_FLL1_REFCLK             1
+#define MADERA_CLK_DSPCLK               8
+#define MADERA_CLK_OPCLK               3
+#define QCOM_MCLK_RATE                 19200000
+
+#define FLL_RATE_MADERA		294912000
+#define MADERA_SYSCLK_RATE	(FLL_RATE_MADERA / 3)
+#define MADERA_DSPCLK_RATE	(FLL_RATE_MADERA / 2)
+
+static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
+{
+	int ret;
+	struct clk *ref_clk;
+	struct snd_soc_component *component =
+		snd_soc_rtdcom_lookup(rtd, MADERA_CODEC_NAME);
+	if (!component) {
+		pr_err("* %s: No match for %s component\n",
+			__func__, MADERA_CODEC_NAME);
+		return ret;
+	}
+
+	ref_clk = clk_get(component->dev, "ref_clk");
+	if (IS_ERR_OR_NULL(ref_clk))
+		dev_err(component->dev, "Failed to get ref_clk %ld\n",
+				     PTR_ERR(ref_clk));
+
+	ret = clk_set_rate(ref_clk, QCOM_MCLK_RATE);
+	if (ret)
+		dev_err(component->dev, "Failed to set ref_clk %d\n",
+				     ret);
+	clk_prepare_enable(ref_clk);
+
+	dev_info(component->dev, "ENABLE ref clk\n");
+
+	ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
+			-1, 0, 0);
+	if (ret != 0) {
+		dev_err(component->dev, "Failed to set FLL1REFCLK %d\n", ret);
+		return ret;
+	}
+
+	ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
+			MADERA_FLL_SRC_MCLK1,
+			QCOM_MCLK_RATE, MADERA_SYSCLK_RATE);
+	if (ret != 0) {
+		dev_err(component->dev,  "Failed to set FLL1REFCLK %d\n", ret);
+		return ret;
+	}
+
+	ret = snd_soc_component_set_sysclk(component, MADERA_CLK_SYSCLK_1,
+			MADERA_CLK_SRC_FLL1, MADERA_SYSCLK_RATE,
+			SND_SOC_CLOCK_IN);
+	if (ret != 0) {
+		dev_err(component->dev,  "Failed to set SYSCLK %d\n", ret);
+		return ret;
+	}
+
+	ret = snd_soc_component_set_sysclk(component, MADERA_CLK_DSPCLK,
+			MADERA_CLK_SRC_FLL1, MADERA_DSPCLK_RATE,
+			SND_SOC_CLOCK_IN);
+	if (ret != 0) {
+		dev_err(component->dev,  "Failed to set DSPCLK %d\n", ret);
+		return ret;
+	}
+
+	ret = snd_soc_component_set_sysclk(component, MADERA_CLK_OPCLK,
+			0, Q6AFE_LPASS_OSR_CLK_12_P288_MHZ,
+			SND_SOC_CLOCK_OUT);
+	if (ret != 0) {
+		dev_err(component->dev, "Failed to set OPCLK %d\n", ret);
+		return ret;
+	}
+
+	return 0;
+}
+
+static int cirrus_amp_init(struct snd_soc_pcm_runtime *rtd)
+{
+	int ret;
+	int codec_clock = Q6AFE_LPASS_OSR_CLK_1_P536_MHZ;
+	struct snd_soc_component *component =
+			snd_soc_rtdcom_lookup(rtd, AMP_CODEC_NAME);
+	struct snd_soc_dai *codec_dai = rtd->cpu_dai;
+	struct snd_soc_dai *amp_dai = rtd->codec_dai;
+	struct snd_soc_dapm_context *dapm;
+	if (!component) {
+		pr_err("* %s: No match for %s component\n", __func__,
+			AMP_CODEC_NAME);
+		return -1;
+	}
+	dapm = snd_soc_component_get_dapm(component);
+
+	ret = snd_soc_dai_set_sysclk(codec_dai, MADERA_CLK_SYSCLK_1,
+					codec_clock, 0);
+	if (ret != 0) {
+		dev_err(component->dev, "Failed to set SYSCLK %d\n", ret);
+		return ret;
+	}
+	ret = snd_soc_dai_set_sysclk(amp_dai, 0, codec_clock, 0);
+	if (ret != 0) {
+		dev_err(component->dev, "Failed to set SCLK %d\n", ret);
+		return ret;
+	}
+
+	ret = snd_soc_component_set_sysclk(component, 0, 0, codec_clock, 0);
+	if (ret != 0) {
+		dev_err(component->dev, "Failed to set SCLK %d\n", ret);
+		return ret;
+	}
+	snd_soc_dapm_ignore_suspend(dapm, "RCV AMP Playback");
+	snd_soc_dapm_ignore_suspend(dapm, "SPK AMP Playback");
+	snd_soc_dapm_sync(dapm);
+	return 0;
+}
+
+static struct snd_soc_card snd_soc_card_kona_madera = {
+	.name		= "kona-madera-snd-card",
+#ifdef CONFIG_SND_SOC_CS35l41
+	.codec_conf	= cirrus_amp_conf,
+	.num_configs	= ARRAY_SIZE(cirrus_amp_conf),
+#endif
+};
+#endif
+
 /* Digital audio interface glue - connects codec <---> CPU */
 static struct snd_soc_dai_link msm_common_dai_links[] = {
 	/* FrontEnd DAI Links */
@@ -6856,6 +7028,7 @@ static struct snd_soc_dai_link ext_disp_be_dai_link[] = {
 };
 
 static struct snd_soc_dai_link msm_mi2s_be_dai_links[] = {
+
 	{
 		.name = LPASS_BE_PRI_MI2S_RX,
 		.stream_name = "Primary MI2S Playback",
@@ -6948,8 +7121,14 @@ static struct snd_soc_dai_link msm_mi2s_be_dai_links[] = {
 		.stream_name = "Quaternary MI2S Playback",
 		.cpu_dai_name = "msm-dai-q6-mi2s.3",
 		.platform_name = "msm-pcm-routing",
+#ifdef CONFIG_SND_SOC_CS47l35
+		.codec_name = MADERA_CODEC_NAME,
+		.codec_dai_name = MADERA_CODEC_DAI_NAME,
+		.init = &cirrus_codec_init,
+#else
 		.codec_name = "msm-stub-codec.1",
 		.codec_dai_name = "msm-stub-rx",
+#endif
 		.no_pcm = 1,
 		.dpcm_playback = 1,
 		.id = MSM_BACKEND_DAI_QUATERNARY_MI2S_RX,
@@ -6963,8 +7142,14 @@ static struct snd_soc_dai_link msm_mi2s_be_dai_links[] = {
 		.stream_name = "Quaternary MI2S Capture",
 		.cpu_dai_name = "msm-dai-q6-mi2s.3",
 		.platform_name = "msm-pcm-routing",
+#ifdef CONFIG_SND_SOC_CS47l35
+		.codec_name = MADERA_CODEC_NAME,
+		.codec_dai_name = MADERA_CODEC_DAI_NAME,
+		.init = &cirrus_codec_init,
+#else
 		.codec_name = "msm-stub-codec.1",
 		.codec_dai_name = "msm-stub-tx",
+#endif
 		.no_pcm = 1,
 		.dpcm_capture = 1,
 		.id = MSM_BACKEND_DAI_QUATERNARY_MI2S_TX,
@@ -7030,6 +7215,40 @@ static struct snd_soc_dai_link msm_mi2s_be_dai_links[] = {
 		.ops = &msm_mi2s_be_ops,
 		.ignore_suspend = 1,
 	},
+#ifdef CONFIG_SND_SOC_CS35l41
+	{ /* codec to amp link */
+		.name = "CODEC-AMP-SPK",
+		.stream_name = "CODEC-AMP-SPK Playback",
+		.cpu_name = MADERA_CODEC_NAME,
+		.cpu_dai_name = MADERA_CPU_DAI_NAME,
+		.codec_name = AMP_SPK_NAME,
+		.codec_dai_name = AMP_DAI_NAME,
+		.init = cirrus_amp_init,
+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+			SND_SOC_DAIFMT_CBS_CFS,
+		.no_pcm = 1,
+		.ignore_pmdown_time = 1,
+		.ignore_suspend = 1,
+		.params = &cirrus_amp_params[0],
+		.num_params = ARRAY_SIZE(cirrus_amp_params),
+	},
+	{ /* codec to amp link */
+		.name = "CODEC-AMP-RCV",
+		.stream_name = "CODEC-AMP-RCV Playback",
+		.cpu_name = MADERA_CODEC_NAME,
+		.cpu_dai_name = MADERA_CPU_DAI_NAME,
+		.codec_name = AMP_RCV_NAME,
+		.codec_dai_name = AMP_DAI_NAME,
+		.init = cirrus_amp_init,
+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+			SND_SOC_DAIFMT_CBS_CFS,
+		.no_pcm = 1,
+		.ignore_pmdown_time = 1,
+		.ignore_suspend = 1,
+		.params = &cirrus_amp_params[0],
+		.num_params = ARRAY_SIZE(cirrus_amp_params),
+	},
+#endif
 };
 
 static struct snd_soc_dai_link msm_auxpcm_be_dai_links[] = {
@@ -7419,6 +7638,17 @@ static struct snd_soc_dai_link msm_afe_rxtx_lb_be_dai_link[] = {
 	},
 };
 
+static struct snd_soc_dai_link msm_madera_dai_links[
+			ARRAY_SIZE(msm_common_dai_links) +
+			ARRAY_SIZE(msm_common_misc_fe_dai_links) +
+			ARRAY_SIZE(msm_common_be_dai_links) +
+			ARRAY_SIZE(msm_mi2s_be_dai_links) +
+			ARRAY_SIZE(msm_auxpcm_be_dai_links) +
+			ARRAY_SIZE(ext_disp_be_dai_link) +
+			ARRAY_SIZE(msm_wcn_be_dai_links) +
+			ARRAY_SIZE(msm_afe_rxtx_lb_be_dai_link) +
+			ARRAY_SIZE(msm_wcn_btfm_be_dai_links)];
+
 static struct snd_soc_dai_link msm_kona_dai_links[
 			ARRAY_SIZE(msm_common_dai_links) +
 			ARRAY_SIZE(msm_bolero_fe_dai_links) +
@@ -7622,6 +7852,8 @@ static const struct of_device_id kona_asoc_machine_of_match[]  = {
 	  .data = "codec"},
 	{ .compatible = "qcom,kona-asoc-snd-stub",
 	  .data = "stub_codec"},
+	{ .compatible = "qcom,kona-asoc-snd-madera",
+	  .data = "madera_codec"},
 	{},
 };
 
@@ -7646,7 +7878,103 @@ static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev)
 		return NULL;
 	}
 
-	if (!strcmp(match->data, "codec")) {
+	if (!strcmp(match->data, "madera_codec")) {
+		card = &snd_soc_card_kona_madera;
+
+		memcpy(msm_madera_dai_links + total_links,
+		       msm_common_dai_links,
+		       sizeof(msm_common_dai_links));
+		total_links += ARRAY_SIZE(msm_common_dai_links);
+
+		memcpy(msm_madera_dai_links + total_links,
+		       msm_common_misc_fe_dai_links,
+		       sizeof(msm_common_misc_fe_dai_links));
+		total_links += ARRAY_SIZE(msm_common_misc_fe_dai_links);
+
+		memcpy(msm_madera_dai_links + total_links,
+		       msm_common_be_dai_links,
+		       sizeof(msm_common_be_dai_links));
+		total_links += ARRAY_SIZE(msm_common_be_dai_links);
+
+		rc = of_property_read_u32(dev->of_node, "qcom,mi2s-audio-intf",
+					  &mi2s_audio_intf);
+		if (rc) {
+			dev_dbg(dev, "%s: No DT match MI2S audio interface\n",
+				__func__);
+		} else {
+			if (mi2s_audio_intf) {
+				memcpy(msm_madera_dai_links + total_links,
+					msm_mi2s_be_dai_links,
+					sizeof(msm_mi2s_be_dai_links));
+				total_links +=
+					ARRAY_SIZE(msm_mi2s_be_dai_links);
+			}
+		}
+
+		rc = of_property_read_u32(dev->of_node,
+					  "qcom,auxpcm-audio-intf",
+					  &auxpcm_audio_intf);
+		if (rc) {
+			dev_dbg(dev, "%s: No DT match Aux PCM interface\n",
+				__func__);
+		} else {
+			if (auxpcm_audio_intf) {
+				memcpy(msm_madera_dai_links + total_links,
+					msm_auxpcm_be_dai_links,
+					sizeof(msm_auxpcm_be_dai_links));
+				total_links +=
+					ARRAY_SIZE(msm_auxpcm_be_dai_links);
+			}
+		}
+
+		rc = of_property_read_u32(dev->of_node,
+					   "qcom,ext-disp-audio-rx", &val);
+		if (!rc && val) {
+			dev_dbg(dev, "%s(): ext disp audio support present\n",
+				__func__);
+			memcpy(msm_madera_dai_links + total_links,
+			       ext_disp_be_dai_link,
+			       sizeof(ext_disp_be_dai_link));
+			total_links += ARRAY_SIZE(ext_disp_be_dai_link);
+		}
+
+		rc = of_property_read_u32(dev->of_node, "qcom,wcn-bt", &val);
+		if (!rc && val) {
+			dev_dbg(dev, "%s(): WCN BT support present\n",
+				__func__);
+			memcpy(msm_madera_dai_links + total_links,
+			       msm_wcn_be_dai_links,
+			       sizeof(msm_wcn_be_dai_links));
+			total_links += ARRAY_SIZE(msm_wcn_be_dai_links);
+		}
+
+		rc = of_property_read_u32(dev->of_node, "qcom,afe-rxtx-lb",
+				&val);
+		if (!rc && val) {
+			memcpy(msm_madera_dai_links + total_links,
+				msm_afe_rxtx_lb_be_dai_link,
+				sizeof(msm_afe_rxtx_lb_be_dai_link));
+			total_links +=
+				ARRAY_SIZE(msm_afe_rxtx_lb_be_dai_link);
+		}
+
+		rc = of_property_read_u32(dev->of_node, "qcom,wcn-btfm",
+					  &wcn_btfm_intf);
+		if (rc) {
+			dev_dbg(dev, "%s: No DT match wcn btfm interface\n",
+				__func__);
+		} else {
+			if (wcn_btfm_intf) {
+				memcpy(msm_madera_dai_links + total_links,
+					msm_wcn_btfm_be_dai_links,
+					sizeof(msm_wcn_btfm_be_dai_links));
+				total_links +=
+					ARRAY_SIZE(msm_wcn_btfm_be_dai_links);
+			}
+		}
+		dailink = msm_madera_dai_links;
+
+	} else if (!strcmp(match->data, "codec")) {
 		card = &snd_soc_card_kona_msm;
 
 		memcpy(msm_kona_dai_links + total_links,
@@ -8530,9 +8858,12 @@ static int msm_asoc_machine_probe(struct platform_device *pdev)
 		goto err;
 	}
 
-	ret = msm_init_aux_dev(pdev, card);
-	if (ret)
-		goto err;
+	if (!of_property_read_bool(pdev->dev.of_node,
+				  "qcom,skip-aux-dev")) {
+		ret = msm_init_aux_dev(pdev, card);
+		if (ret)
+			goto err;
+	}
 
 	ret = devm_snd_soc_register_card(&pdev->dev, card);
 	if (ret == -EPROBE_DEFER) {
