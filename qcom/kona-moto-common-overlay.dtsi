@@ -216,6 +216,7 @@
 	qcom,wd-bark-time-secs = <16>;
 	qcom,suspend-input-on-debug-batt;
 	qcom,fcc-stepping-enable;
+	qcom,usbpd-phandle = <&pm8150b_pdphy>;
 };
 
 &spmi_bus {
