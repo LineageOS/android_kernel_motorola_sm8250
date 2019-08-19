@@ -589,3 +589,33 @@
 		memory-region = <&wdog_cpuctx_mem>;
 	};
 };
+
+&tlmm{
+	haptic_irq {
+		haptic_irq_default: haptic-irq-default {
+			mux {
+				pins = "gpio136";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio136";
+				drive-strength = <2>;   /* 2 mA */
+				bias-pull-up;
+			};
+		};
+	};
+};
+
+&qupv3_se15_i2c {
+	status = "okay";
+
+	aw8695_haptic@5a {
+		status = "ok";
+		compatible = "awinic,aw8695_haptic";
+		reg = <0x5a>;
+		reset-gpio = <&tlmm 135 0>;
+		irq-gpio = <&tlmm 136 0>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&haptic_irq_default>;
+	};
+};
