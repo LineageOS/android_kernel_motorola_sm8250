@@ -20,6 +20,19 @@
 	qcom,msm-mi2s-tx-lines = <2>;
 };
 
+&pm8150_gpios {
+	cdc_sleep_clk {
+		cdc_sleep_clk_default: cdc_sleep_clk_default {
+			pins = "gpio3";
+			function = "func1";
+			input-disable;
+			bias-disable;
+			power-source = <0>;
+			output-low;
+		};
+	};
+};
+
 &q6core {
 
 	kona_snd: sound {
@@ -343,7 +356,8 @@
 		#interrupt-cells = <2>;
 		reset-gpios = <&tlmm 32 0>;
 		pinctrl-names = "default";
-		pinctrl-0 = <&marley_irq_default &marley_reset_default>;
+		pinctrl-0 = <&marley_irq_default &marley_reset_default
+				&cdc_sleep_clk_default>;
 
 		AVDD-supply = <&pm8150_s4>;
 		DBVDD1-supply = <&pm8150_s4>;
