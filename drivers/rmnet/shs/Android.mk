@@ -1,4 +1,4 @@
-ifneq ($(TARGET_PRODUCT),qssi)
+ifeq ($(filter $(TARGET_PRODUCT), qssi msi),)
 RMNET_SHS_DLKM_PLATFORMS_LIST := msmnile
 RMNET_SHS_DLKM_PLATFORMS_LIST += kona
 RMNET_SHS_DLKM_PLATFORMS_LIST += lito
