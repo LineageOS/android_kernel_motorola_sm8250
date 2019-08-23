@@ -14,6 +14,7 @@
 /plugin/;
 
 #include "lito-moto-common-overlay.dtsi"
+#include "lito-moto-smith-display.dtsi"
 
 / {
 	model = "Charleston";
