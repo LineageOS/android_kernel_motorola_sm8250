@@ -143,11 +143,10 @@
 				"msm-dai-q6-dev.24577";
 
 		qcom,audio-routing =
-			"IN2AL", "MICBIAS2A",
-			"IN1AL", "MICBIAS2B",
-			"IN2R",  "MICBIAS2C",
-			"IN1AR", "MICBIAS2D",
-			"IN1BR",  "MICBIAS1A",
+			"IN1AL", "MICBIAS2A",
+			"IN2L",  "MICBIAS2A",
+			"IN2L",  "GPSW",
+			"IN2R",  "MICBIAS2B",
 			"IN1BR", "MICBIAS1B";
 
 		asoc-codec = <&stub_codec>, <&ext_disp_audio_codec>, <&cs47l35>,
