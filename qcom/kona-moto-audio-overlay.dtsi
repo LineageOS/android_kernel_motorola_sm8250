@@ -392,6 +392,11 @@
 					function = "aif2";
 					bias-bus-hold;
 				};
+
+				gpio5 { /* AMP wakeup GPIO */
+					groups = "gpio5";
+					function = "io";
+				};
 			};
 		};
 
@@ -487,7 +492,7 @@
 					1257 114 /* VOLUME_DOWN  */
 					>;
 				cirrus,micd-configs = <
-						0 0 2 0 0
+						0 1 2 0 0
 						>;
 				cirrus,micd-clamp-mode = <0x4>;
 				cirrus,gpsw = <1 0>;
