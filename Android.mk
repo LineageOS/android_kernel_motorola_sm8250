@@ -1,6 +1,10 @@
 # Android makefile for audio kernel modules
 MY_LOCAL_PATH := $(call my-dir)
 
+ifeq ($(AUDIO_FEATURE_ENABLED_CIRRUS_PLAYBACK),true)
+	KERNEL_CFLAGS += CONFIG_CIRRUS_PLAYBACK=y
+endif
+
 UAPI_OUT := $(PRODUCT_OUT)/obj/vendor/qcom/opensource/audio-kernel/include
 
 ifeq ($(call is-board-platform-in-list,msmnile $(MSMSTEPPE) $(TRINKET) kona lito bengal sdmshrike sdm660),true)
