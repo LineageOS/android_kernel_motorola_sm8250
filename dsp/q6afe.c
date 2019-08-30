@@ -23,6 +23,10 @@
 #include "adsp_err.h"
 #include "q6afecal-hwdep.h"
 
+#ifdef CONFIG_CIRRUS_PLAYBACK
+#include <sound/msm-cirrus-playback.h>
+#endif
+
 #define WAKELOCK_TIMEOUT	5000
 #define AFE_CLK_TOKEN	1024
 
@@ -294,6 +298,18 @@ static atomic_t afe_ports_mad_type[SLIMBUS_PORT_LAST - SLIMBUS_0_RX];
 static unsigned long afe_configured_cmd;
 
 static struct afe_ctl this_afe;
+
+#ifdef CONFIG_CIRRUS_PLAYBACK
+int32_t (*crus_afe_callback)(void *payload, int size);
+
+extern int crus_afe_set_callback(
+	int32_t (*crus_afe_callback_func)(void *payload, int size))
+{
+	crus_afe_callback = crus_afe_callback_func;
+	return 0;
+}
+EXPORT_SYMBOL(crus_afe_set_callback);
+#endif
 
 #define TIMEOUT_MS 1000
 #define Q6AFE_MAX_VOLUME 0x3FFF
@@ -944,6 +960,11 @@ static int32_t afe_callback(struct apr_client_data *data, void *priv)
 		} else if (param_id == AFE_PARAM_ID_DEV_TIMING_STATS) {
 			av_dev_drift_afe_cb_handler(data->opcode, data->payload,
 						    data->payload_size);
+#ifdef CONFIG_CIRRUS_PLAYBACK
+		} else if (payload[1] == CIRRUS_SE) {
+			crus_afe_callback(data->payload, data->payload_size);
+			atomic_set(&this_afe.state, 0);
+#endif
 		} else {
 			if (sp_make_afe_callback(data->opcode, data->payload,
 						 data->payload_size))
@@ -8977,6 +8998,26 @@ int afe_enable_lpass_core_shared_clock(u16 port_id, u32 enable)
 }
 EXPORT_SYMBOL(afe_enable_lpass_core_shared_clock);
 
+#ifdef CONFIG_CIRRUS_PLAYBACK
+extern int afe_set_crus_params(u16 port_id, struct param_hdr_v3 param_hdr,
+				u8 *param_data)
+{
+	int ret = 0;
+	int index = q6audio_get_port_index(port_id);
+
+	if (index < 0 || index >= AFE_MAX_PORTS) {
+		pr_err("%s: index[%d] invalid!\n", __func__, index);
+		return -EINVAL;
+	}
+
+	ret = q6afe_pack_and_set_param_in_band(port_id, index, param_hdr,
+						(u8 *) param_data);
+
+	return ret;
+}
+EXPORT_SYMBOL(afe_set_crus_params);
+#endif
+
 /**
  * q6afe_check_osr_clk_freq -
  *   Gets supported OSR CLK frequencies
@@ -9593,6 +9634,19 @@ get_params_fail:
 fail_cmd:
 	return ret;
 }
+
+#ifdef CONFIG_CIRRUS_PLAYBACK
+extern int afe_get_crus_params(u16 port_id, struct mem_mapping_hdr *mem_hdr,
+				struct param_hdr_v3 *param_hdr)
+{
+	int ret = 0;
+
+	ret = q6afe_get_params(port_id, mem_hdr, param_hdr);
+
+	return ret;
+}
+EXPORT_SYMBOL(afe_get_crus_params);
+#endif
 
 /**
  * afe_spk_prot_feed_back_cfg -
