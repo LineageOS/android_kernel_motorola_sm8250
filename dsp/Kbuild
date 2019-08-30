@@ -13,6 +13,10 @@ ifeq ($(KERNEL_BUILD), 1)
 	AUDIO_ROOT := $(AUDIO_BLD_DIR)/techpack/audio
 endif
 
+ifdef CONFIG_CIRRUS_PLAYBACK
+	EXTRA_CFLAGS += -I$(TOP)/vendor/cirrus/audio/dlkm/include
+endif
+
 ifeq ($(KERNEL_BUILD), 0)
 	ifeq ($(CONFIG_ARCH_SM6150), y)
 		ifdef CONFIG_SND_SOC_SA6155
@@ -108,6 +112,11 @@ UAPI_INC :=	-I$(AUDIO_ROOT)/include/$(UAPI_DIR)
 ############ COMMON ############
 COMMON_DIR :=	include
 COMMON_INC :=	-I$(AUDIO_ROOT)/$(COMMON_DIR)
+MOTO_KERN_INC := -I$(ANDROID_BUILD_TOP)/vendor/cirrus/audio/dlkm/include
+
+ifneq ($(filter m y,$(CONFIG_CIRRUS_PLAYBACK)),)
+	EXTRA_CFLAGS += -DCONFIG_CIRRUS_PLAYBACK
+endif
 
 ############ QDSP6V2 ############
 
