@@ -139,6 +139,10 @@
 	mot_smd_639_1080p_cmd_v1: qcom,mdss_dsi_mot_smd_639_1080p_cmd_v1 {
 		#include "dsi-panel-mot-smd-639-1080p-cmd-common.dtsi"
 	};
+
+	mot_boe_667_1080p_cmd_v0: qcom,mdss_dsi_mot_boe_667_1080p_cmd_v0 {
+		#include "dsi-panel-mot-boe-667-1080p-dsc-cmd-common.dtsi"
+	};
 };
 
 /*
@@ -200,7 +204,6 @@
 							08 05 02 04 00 1a 18];
 			qcom,display-topology = <1 0 1>;
 			qcom,default-topology-index = <0>;
-			qcom,mdss-dsi-panel-clockrate = <1102000000>;
 
 			qcom,mdss-dsi-hbm-dim-off-command = [
 				39 00 00 00 00 00 03 F0 5A 5A
@@ -211,6 +214,32 @@
 		};
 	};
 };
+
+&mot_boe_667_1080p_cmd_v0 {
+	qcom,platform-te-gpio = <&tlmm 66 0>;
+	qcom,platform-reset-gpio = <&tlmm 75 0>;
+
+	/* disable ESD for bringup
+	qcom,esd-check-enabled;
+	qcom,mdss-dsi-panel-status-check-mode = "reg_read";
+	qcom,mdss-dsi-panel-status-command = [06 01 00 01 00 00 01 0a];
+	qcom,mdss-dsi-panel-status-command-state = "dsi_lp_mode";
+	qcom,mdss-dsi-panel-status-value = <0x9c>;
+	qcom,mdss-dsi-panel-status-read-length = <1>;
+	qcom,mdss-dsi-hbm-dim-off;
+	*/
+
+	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
+	qcom,mdss-dsi-display-timings {
+		timing@0 {
+			/* Phy 4; w=360 h=2340; 60hz; 3x dsc */
+			qcom,mdss-dsi-panel-phy-timings = [00 0D 03 03 1D 1C 04
+							03 01 02 04 00 0D 13];
+			qcom,display-topology = <2 2 1>;
+			qcom,default-topology-index = <0>;
+		};
+	};
+	};
 
 &mot_dummy_vid_qhd {
 	qcom,platform-reset-gpio = <&tlmm 75 0>;
