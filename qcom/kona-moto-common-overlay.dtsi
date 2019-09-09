@@ -614,6 +614,44 @@
 			};
 		};
 	};
+
+	p938x_outputs: p938x-outputs {
+		mux {
+			pins = "gpio107", "gpio82", "gpio131";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio107", "gpio82", "gpio131";
+			drive-strength = <2>;
+			bias-pull-up;
+			output-low;
+		};
+	};
+
+	p938x_inputs: p938x-inputs {
+		mux {
+			pins = "gpio108", "gpio83";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio108", "gpio83";
+			drive-strength = <2>;
+			bias-pull-up;
+			input-enable;
+		};
+	};
+};
+
+/* Need gpio 82 & 83 for WCHG */
+&pcie1 {
+	status = "disabled";
+};
+
+/* Need gpio 107 & 108 for WCHG */
+&cam_cci1 {
+	status = "disabled";
 };
 
 &qupv3_se15_i2c {
@@ -710,4 +748,27 @@
 		};
 	};
 
+	p938x_wls_i2c@3b {
+		compatible = "idt,p938x-charger";
+		reg = <0x3b>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <108 0x1>;
+		gpios = <&tlmm 108 GPIO_ACTIVE_LOW>, /* WCHG_INT_N */
+				<&tlmm 107 GPIO_ACTIVE_LOW>, /* WCHG_EN_N */
+				<&tlmm 83 GPIO_ACTIVE_HIGH>,  /* WCHG_DET */
+				<&tlmm 82 GPIO_ACTIVE_HIGH>,  /* WCHG_SLEEP */
+				<&tlmm 131 GPIO_ACTIVE_HIGH>; /* WCHG_BOOST_EN */
+		gpio-names = "idt_p938x_irq",
+					 "idt_p938x_enable",
+					 "idt_p938x_det",
+					 "idt_p938x_sleep",
+					 "idt_p938x_boost";
+		pinctrl-names = "default";
+		pinctrl-0 = <&p938x_outputs &p938x_inputs>;
+		vdd-i2c-supply = <&dummy_vreg>;
+		fw-name = "p9382_mtp.bin";
+		idt,chg-efficiency = <70>;
+		idt,chg-limit-soc = <95>;
+		idt,chg-idle-cl = <50>;
+	};
 };
