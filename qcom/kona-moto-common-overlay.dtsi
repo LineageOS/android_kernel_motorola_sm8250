@@ -107,6 +107,17 @@
 		#include "fg-gen4-batterydata-alium-3600mah.dtsi"
 		#include "fg-gen4-batterydata-ascent-3450mah.dtsi"
 	};
+	extcon_usb1: extcon_usb1 {
+		compatible = "linux,extcon-usb-gpio";
+		vbus-gpio = <&pm8150_gpios 10 GPIO_ACTIVE_HIGH>;
+		id-gpio = <&tlmm 91 GPIO_ACTIVE_HIGH>;
+		vbus-out-gpio = <&pm8150_gpios 9 GPIO_ACTIVE_HIGH>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&usb2_vbus_det_default
+			     &usb2_id_det_default
+			     &usb2_vbus_boost_default>;
+	};
 };
 
 &soc {
@@ -771,4 +782,8 @@
 		idt,chg-limit-soc = <95>;
 		idt,chg-idle-cl = <50>;
 	};
+};
+
+&usb1 {
+	extcon = <&extcon_usb1>;
 };
