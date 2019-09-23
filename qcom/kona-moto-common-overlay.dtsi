@@ -222,6 +222,11 @@
 			   "vph_voltage",
 			   "chg_temp";
 	qcom,battery-data = <&mot_batterydata>;
+	qcom,fcc-max-ua = <2000000>;
+	qcom,fv-max-uv = <4400000>;
+	qcom,usb-icl-ua = <3000000>;
+	qcom,float-option = <1>;
+	qcom,auto-recharge-vbat-mv = <4390000>;
 	qcom,step-charging-enable;
 	qcom,sw-jeita-enable;
 	qcom,wd-bark-time-secs = <16>;
