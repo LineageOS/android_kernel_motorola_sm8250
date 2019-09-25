@@ -130,6 +130,7 @@
 		clock-names = "cam_clk";
 		clock-cntl-level = "turbo";
 		clock-rates = <24000000>;
+		slg,pmic-workaround;
 	};
 
 	qcom,cam-sensor@2 {
@@ -169,6 +170,7 @@
 		clock-names = "cam_clk";
 		clock-cntl-level = "turbo";
 		clock-rates = <24000000>;
+		slg,pmic-workaround;
 	};
 
 	qcom,cam-sensor@4 {
@@ -208,5 +210,6 @@
 		clock-names = "cam_clk";
 		clock-cntl-level = "turbo";
 		clock-rates = <24000000>;
+		slg,pmic-workaround;
 	};
 };
