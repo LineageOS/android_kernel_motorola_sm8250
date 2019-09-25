@@ -1482,6 +1482,7 @@ int cam_sensor_util_init_gpio_pin_tbl(
 	struct device_node *of_node = NULL;
 	struct cam_soc_gpio_data *gconf = NULL;
 	struct msm_camera_gpio_num_info *gpio_num_info = NULL;
+	struct gpio_desc *pmicreset_gpio = NULL;
 
 	if (!soc_info->dev) {
 		CAM_ERR(CAM_SENSOR, "device node NULL");
@@ -1639,6 +1640,19 @@ int cam_sensor_util_init_gpio_pin_tbl(
 
 		CAM_DBG(CAM_SENSOR, "gpio-af-pwdm %d",
 			gpio_num_info->gpio_num[SENSOR_VAF_PWDM]);
+	}
+
+	pmicreset_gpio  = devm_gpiod_get_optional(soc_info->dev, "pmicreset",
+	                                                        GPIOD_OUT_LOW);
+
+	if (IS_ERR(pmicreset_gpio)) {
+		CAM_ERR(CAM_SENSOR, "PMIC GPIO Not Found\n");
+		pmicreset_gpio = NULL;
+	}
+
+	if (pmicreset_gpio) {
+		gpiod_set_value_cansleep(pmicreset_gpio, 1);
+		CAM_ERR(CAM_SENSOR, "Turn on PMIC GPIO \n");
 	}
 
 	rc = of_property_read_u32(of_node, "gpio-custom1", &val);
