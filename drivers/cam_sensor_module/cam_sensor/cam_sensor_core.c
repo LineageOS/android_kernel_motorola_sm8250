@@ -740,11 +740,97 @@ void cam_sensor_shutdown(struct cam_sensor_ctrl_t *s_ctrl)
 	s_ctrl->sensor_state = CAM_SENSOR_INIT;
 }
 
+int cam_pmic_workaround() {
+	struct cam_sensor_cci_client cci_client;
+	struct cam_cci_ctrl cci_ctrl;
+	struct cam_sensor_i2c_reg_array writeData;
+	int rc = 0;
+	uint8_t readback = 0;
+
+	CAM_ERR(CAM_SENSOR, "%s", __func__);
+
+	cci_client.cci_subdev = cam_cci_get_subdev(0);
+	cci_client.cci_i2c_master = 0;
+	cci_client.sid = 0x75;
+	cci_client.i2c_freq_mode = I2C_STANDARD_MODE;
+	cci_client.freq = 0;
+	cci_client.cid = 0;
+	cci_client.timeout = 0;
+	cci_client.retries = 0;
+	cci_client.id_map = 0;
+	cci_client.cci_device = 0;
+
+	/*Init CCI*/
+	cci_ctrl.cci_info = &cci_client;
+	cci_ctrl.cmd = MSM_CCI_INIT;
+
+	rc = v4l2_subdev_call(cci_client.cci_subdev,
+		core, ioctl, VIDIOC_MSM_CCI_CFG, &cci_ctrl);
+
+	if(rc < 0){
+		CAM_ERR(CAM_SENSOR, "attempt to init cci for pmic failed %d", rc);
+		return -1;
+	}
+
+	/*Write to turn on sensor specific pmics*/
+	writeData.reg_addr = 0x110D;
+	writeData.reg_data = 0x3F;
+	writeData.delay = 10;
+
+	cci_ctrl.cmd = MSM_CCI_I2C_WRITE;
+	cci_ctrl.cfg.cci_i2c_write_cfg.reg_setting = &writeData;
+	cci_ctrl.cfg.cci_i2c_write_cfg.addr_type = CAMERA_SENSOR_I2C_TYPE_WORD;
+	cci_ctrl.cfg.cci_i2c_write_cfg.data_type = CAMERA_SENSOR_I2C_TYPE_BYTE;
+	cci_ctrl.cfg.cci_i2c_write_cfg.size = 1;
+	cci_ctrl.cfg.cci_i2c_write_cfg.delay = 0;
+
+	rc = v4l2_subdev_call(cci_client.cci_subdev,
+	core, ioctl, VIDIOC_MSM_CCI_CFG, &cci_ctrl);
+
+	if(rc < 0){
+		CAM_ERR(CAM_SENSOR, "attempt to program cci for pmic failed %d", rc);
+		return -1;
+	}
+
+	cci_ctrl.cmd = MSM_CCI_I2C_READ;
+	cci_ctrl.cfg.cci_i2c_read_cfg.addr = 0x110D;
+	cci_ctrl.cfg.cci_i2c_read_cfg.addr_type = CAMERA_SENSOR_I2C_TYPE_WORD;
+	cci_ctrl.cfg.cci_i2c_read_cfg.data = &readback;
+	cci_ctrl.cfg.cci_i2c_read_cfg.num_byte = 1;
+	cci_ctrl.cfg.cci_i2c_read_cfg.data_type = 0;
+
+	rc = v4l2_subdev_call(cci_client.cci_subdev,
+		core, ioctl, VIDIOC_MSM_CCI_CFG, &cci_ctrl);
+	if(rc < 0){
+		CAM_ERR(CAM_SENSOR, "attempt to read pmic failed %d", rc);
+		return -1;
+	}
+
+	if(readback != 0x3F) {
+		CAM_ERR(CAM_SENSOR, "readback is %d and not 0x3F", readback);
+	}
+
+	cci_ctrl.cmd = MSM_CCI_RELEASE;
+	rc = v4l2_subdev_call(cci_client.cci_subdev,
+		core, ioctl, VIDIOC_MSM_CCI_CFG, &cci_ctrl);
+	if(rc < 0){
+		CAM_ERR(CAM_SENSOR, "attempt to release after pmic failed %d", rc);
+		return -1;
+	}
+
+	CAM_ERR(CAM_SENSOR, "pmic success");
+	msleep(20);
+	return 0;
+}
+
 int cam_sensor_match_id(struct cam_sensor_ctrl_t *s_ctrl)
 {
 	int rc = 0;
 	uint32_t chipid = 0;
 	struct cam_camera_slave_info *slave_info;
+
+	if (s_ctrl->slg_pmic_workaround)
+		cam_pmic_workaround();
 
 	slave_info = &(s_ctrl->sensordata->slave_info);
 
@@ -800,7 +886,6 @@ int32_t cam_sensor_driver_cmd(struct cam_sensor_ctrl_t *s_ctrl,
 				"Already Sensor Probed in the slot");
 			break;
 		}
-
 		if (cmd->handle_type ==
 			CAM_HANDLE_MEM_HANDLE) {
 			rc = cam_handle_mem_ptr(cmd->handle, s_ctrl);
