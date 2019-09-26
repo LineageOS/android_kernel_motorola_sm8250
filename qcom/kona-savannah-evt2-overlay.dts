@@ -25,3 +25,10 @@
 /*
  * Savannah HW rev EVT2 specific changes go here
  */
+
+&qupv3_se13_i2c {
+	goodix_ts_i2c@5d {
+		goodix,x2x;
+		goodix,cfg_bin_name = "goodix_cfg_group_smd.bin";
+	};
+};
