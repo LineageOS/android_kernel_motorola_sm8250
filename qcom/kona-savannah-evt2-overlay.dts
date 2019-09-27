@@ -32,3 +32,22 @@
 		goodix,cfg_bin_name = "goodix_cfg_group_smd.bin";
 	};
 };
+
+&rear_pmic {
+	status = "disabled";
+};
+
+&main_sensor {
+	pmicreset-gpios = <&pm8150l_gpios 5 0>;
+	slg,pmic-workaround;
+};
+
+&wide_sensor {
+	pmicreset-gpios = <&pm8150l_gpios 5 0>;
+	slg,pmic-workaround;
+};
+
+&tele_sensor {
+	pmicreset-gpios = <&pm8150l_gpios 5 0>;
+	slg,pmic-workaround;
+};
