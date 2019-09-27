@@ -54,3 +54,12 @@
 	pmicreset-gpios = <&pm8150l_gpios 5 0>;
 	slg,pmic-workaround;
 };
+
+&cs35l41_rcv {
+	reset-gpios = <&tlmm 139 0>;
+	interrupt-parent = <&tlmm>;
+	interrupts = <138 IRQ_TYPE_LEVEL_LOW>;
+	interrupt-names = "prince_irq";
+	/delete-property/  pinctrl-0;
+	/delete-property/  pinctrl-names;
+};
