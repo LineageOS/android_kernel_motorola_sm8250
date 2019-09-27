@@ -1,13 +1,5 @@
 #include <dt-bindings/clock/qcom,camcc-kona.h>
 
-/*&cam_cci0 {
-    rear_cameras_pmic: dlg,slg51000@75 {
-        compatible = "dlg,slg51000";
-        reg = <0x75>;
-        dlg,cs-gpios = <&pm8150l_gpios 5 0>;
-    };
-};*/
-
 &tlmm {
 	cam_sensor_mclk2_active: cam_sensor_mclk2_active {
 		/* MCLK2 */
@@ -93,11 +85,11 @@
 };
 
 &cam_cci0 {
-	qcom,cam-sensor@0 {
+	main_sensor: qcom,cam-sensor@0 {
 		cell-index = <0>;
 		compatible = "qcom,cam-sensor";
 		reg = <0x00>;
-		csiphy-sd-index = <2>;
+		csiphy-sd-index = <0>;
 		sensor-position-roll = <90>;
 		sensor-position-pitch = <0>;
 		sensor-position-yaw = <180>;
@@ -115,14 +107,12 @@
 		pinctrl-1 = <&cam_sensor_mclk2_suspend
 				&cam_sensor_suspend_rst2>;
 		gpios = <&tlmm 96 0>,
-			<&tlmm 78 0>,
-			<&pm8150l_gpios 5 0>;
+			<&tlmm 78 0>;
 		gpio-reset = <1>;
 		gpio-req-tbl-num = <0 1>;
 		gpio-req-tbl-flags = <1 0>;
 		gpio-req-tbl-label = "CAMIF_MCLK2",
 				"CAM_RESET2";
-		pmicreset-gpios = <&pm8150l_gpios 5 0>;
 		sensor-mode = <0>;
 		cci-master = <0>;
 		status = "ok";
@@ -130,14 +120,13 @@
 		clock-names = "cam_clk";
 		clock-cntl-level = "turbo";
 		clock-rates = <24000000>;
-		slg,pmic-workaround;
 	};
 
-	qcom,cam-sensor@2 {
+	wide_sensor: qcom,cam-sensor@2 {
 		cell-index = <2>;
 		compatible = "qcom,cam-sensor";
 		reg = <0x02>;
-		csiphy-sd-index = <0>;
+		csiphy-sd-index = <2>;
 		sensor-position-roll = <90>;
 		sensor-position-pitch = <0>;
 		sensor-position-yaw = <180>;
@@ -155,14 +144,12 @@
 		pinctrl-1 = <&cam_sensor_mclk0_suspend
 				&cam_sensor_suspend_rear>;
 		gpios = <&tlmm 94 0>,
-			<&tlmm 93 0>,
-			<&pm8150l_gpios 5 0>;
+			<&tlmm 93 0>;
 		gpio-reset = <1>;
 		gpio-req-tbl-num = <0 1>;
 		gpio-req-tbl-flags = <1 0>;
 		gpio-req-tbl-label = "CAMIF_MCLK0",
 				"CAM_RESET0";
-		pmicreset-gpios = <&pm8150l_gpios 5 0>;
 		sensor-mode = <0>;
 		cci-master = <1>;
 		status = "ok";
@@ -170,14 +157,13 @@
 		clock-names = "cam_clk";
 		clock-cntl-level = "turbo";
 		clock-rates = <24000000>;
-		slg,pmic-workaround;
 	};
 
-	qcom,cam-sensor@4 {
+	tele_sensor: qcom,cam-sensor@4 {
 		cell-index = <4>;
 		reg = <0x04>;
 		compatible = "qcom,cam-sensor";
-		csiphy-sd-index = <3>;
+		csiphy-sd-index = <1>;
 		sensor-position-roll = <0>;
 		sensor-position-pitch = <0>;
 		sensor-position-yaw = <270>;
@@ -195,14 +181,12 @@
 		pinctrl-1 = <&cam_sensor_mclk3_suspend
 				     &cam_sensor_suspend_3>;
 		gpios = <&tlmm 97 0>,
-			<&tlmm 109 0>,
-		    <&pm8150l_gpios 5 0>;
+			<&tlmm 109 0>;
 		gpio-reset = <1>;
 		gpio-req-tbl-num = <0 1 >;
 		gpio-req-tbl-flags = <1 0 >;
 		gpio-req-tbl-label =    "CAMIF_MCLK3",
 					"CAM_RESET3";
-		pmicreset-gpios = <&pm8150l_gpios 5 0>;
 		sensor-mode = <0>;
 		cci-master = <1>;
 		status = "ok";
@@ -210,6 +194,5 @@
 		clock-names = "cam_clk";
 		clock-cntl-level = "turbo";
 		clock-rates = <24000000>;
-		slg,pmic-workaround;
 	};
 };
