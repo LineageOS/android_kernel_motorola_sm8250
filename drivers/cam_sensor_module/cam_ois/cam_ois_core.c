@@ -14,6 +14,7 @@
 #include "cam_res_mgr_api.h"
 #include "cam_common_util.h"
 #include "cam_packet_util.h"
+#include "cam_ois_bm24218.h"
 
 int32_t cam_ois_construct_default_power_setting(
 	struct cam_sensor_power_ctrl_t *power_info)
@@ -576,40 +577,45 @@ static int cam_ois_pkt_parse(struct cam_ois_ctrl_t *o_ctrl, void *arg)
 			}
 			o_ctrl->cam_ois_state = CAM_OIS_CONFIG;
 		}
+		//TODO: Better way of doing this
+		if (strcmp(o_ctrl->ois_name, "mot_bm24218_tele") == 0) {
+		//bm24218 does not follow standard qcom boot sequence
+			CAM_ERR(CAM_OIS, "bm24218 attempt");
+			cam_ois_bm24218_boot_sequence(o_ctrl);
+		} else {
+			if (o_ctrl->ois_fw_flag) {
+				rc = cam_ois_fw_download(o_ctrl);
+				if (rc) {
+					CAM_ERR(CAM_OIS, "Failed OIS FW Download");
+					goto pwr_dwn;
+				}
+			}
 
-		if (o_ctrl->ois_fw_flag) {
-			rc = cam_ois_fw_download(o_ctrl);
-			if (rc) {
-				CAM_ERR(CAM_OIS, "Failed OIS FW Download");
+			rc = cam_ois_apply_settings(o_ctrl, &o_ctrl->i2c_init_data);
+			if ((rc == -EAGAIN) &&
+				(o_ctrl->io_master_info.master_type == CCI_MASTER)) {
+				CAM_WARN(CAM_OIS,
+					"CCI HW is restting: Reapplying INIT settings");
+				usleep_range(1000, 1010);
+				rc = cam_ois_apply_settings(o_ctrl,
+					&o_ctrl->i2c_init_data);
+			}
+			if (rc < 0) {
+				CAM_ERR(CAM_OIS,
+					"Cannot apply Init settings: rc = %d",
+					rc);
 				goto pwr_dwn;
 			}
-		}
 
-		rc = cam_ois_apply_settings(o_ctrl, &o_ctrl->i2c_init_data);
-		if ((rc == -EAGAIN) &&
-			(o_ctrl->io_master_info.master_type == CCI_MASTER)) {
-			CAM_WARN(CAM_OIS,
-				"CCI HW is restting: Reapplying INIT settings");
-			usleep_range(1000, 1010);
-			rc = cam_ois_apply_settings(o_ctrl,
-				&o_ctrl->i2c_init_data);
-		}
-		if (rc < 0) {
-			CAM_ERR(CAM_OIS,
-				"Cannot apply Init settings: rc = %d",
-				rc);
-			goto pwr_dwn;
-		}
-
-		if (o_ctrl->is_ois_calib) {
-			rc = cam_ois_apply_settings(o_ctrl,
-				&o_ctrl->i2c_calib_data);
-			if (rc) {
-				CAM_ERR(CAM_OIS, "Cannot apply calib data");
-				goto pwr_dwn;
+			if (o_ctrl->is_ois_calib) {
+				rc = cam_ois_apply_settings(o_ctrl,
+					&o_ctrl->i2c_calib_data);
+				if (rc) {
+					CAM_ERR(CAM_OIS, "Cannot apply calib data");
+					goto pwr_dwn;
+				}
 			}
 		}
-
 		rc = delete_request(&o_ctrl->i2c_init_data);
 		if (rc < 0) {
 			CAM_WARN(CAM_OIS,
