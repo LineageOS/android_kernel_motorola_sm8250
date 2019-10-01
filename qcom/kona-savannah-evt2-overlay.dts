@@ -43,8 +43,14 @@
 	slg,pmic-workaround;
 };
 
+&front_sensor {
+	csiphy-sd-index = <1>;
+	cci-master = <0>;
+};
+
 &wide_sensor {
 	csiphy-sd-index = <0>;
+	cci-master = <1>;
 	pmicreset-gpios = <&pm8150l_gpios 5 0>;
 	slg,pmic-workaround;
 };
