@@ -68,4 +68,5 @@
 	interrupt-names = "prince_irq";
 	/delete-property/  pinctrl-0;
 	/delete-property/  pinctrl-names;
+	status = "disabled";
 };
