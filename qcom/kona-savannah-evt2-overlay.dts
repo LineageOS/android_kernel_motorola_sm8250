@@ -106,3 +106,9 @@
 	/delete-property/  pinctrl-names;
 	status = "disabled";
 };
+
+&qupv3_se15_i2c {
+	sx933x@28 {
+		status = "disabled";
+	};
+};
