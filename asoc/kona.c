@@ -5764,7 +5764,6 @@ static void *def_wcd_mbhc_cal(void)
 
 #ifdef CONFIG_SND_SOC_CS35l41
 #define AMP_SPK_NAME "spi0.1"
-#define AMP_RCV_NAME "spi0.2"
 #define AMP_DAI_NAME "cs35l41-pcm"
 
 static struct snd_soc_pcm_stream cirrus_amp_params[] = {
@@ -5789,10 +5788,6 @@ static struct snd_soc_codec_conf cirrus_amp_conf[] = {
 	{
 		.dev_name		= AMP_SPK_NAME,
 		.name_prefix		= "SPK",
-	},
-	{
-		.dev_name		= AMP_RCV_NAME,
-		.name_prefix		= "RCV",
 	}
 };
 
@@ -5919,7 +5914,6 @@ static int cirrus_amp_init(struct snd_soc_pcm_runtime *rtd)
 		dev_err(component->dev, "Failed to set SCLK %d\n", ret);
 		return ret;
 	}
-	snd_soc_dapm_ignore_suspend(dapm, "RCV AMP Playback");
 	snd_soc_dapm_ignore_suspend(dapm, "SPK AMP Playback");
 	snd_soc_dapm_sync(dapm);
 	return 0;
@@ -7224,22 +7218,6 @@ static struct snd_soc_dai_link msm_mi2s_be_dai_links[] = {
 		.cpu_name = MADERA_CODEC_NAME,
 		.cpu_dai_name = MADERA_CPU_DAI_NAME,
 		.codec_name = AMP_SPK_NAME,
-		.codec_dai_name = AMP_DAI_NAME,
-		.init = cirrus_amp_init,
-		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-			SND_SOC_DAIFMT_CBS_CFS,
-		.no_pcm = 1,
-		.ignore_pmdown_time = 1,
-		.ignore_suspend = 1,
-		.params = &cirrus_amp_params[0],
-		.num_params = ARRAY_SIZE(cirrus_amp_params),
-	},
-	{ /* codec to amp link */
-		.name = "CODEC-AMP-RCV",
-		.stream_name = "CODEC-AMP-RCV Playback",
-		.cpu_name = MADERA_CODEC_NAME,
-		.cpu_dai_name = MADERA_CPU_DAI_NAME,
-		.codec_name = AMP_RCV_NAME,
 		.codec_dai_name = AMP_DAI_NAME,
 		.init = cirrus_amp_init,
 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
