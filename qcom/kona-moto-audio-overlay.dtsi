@@ -150,13 +150,13 @@
 			"IN1BR", "MICBIAS1B";
 
 		asoc-codec = <&stub_codec>, <&ext_disp_audio_codec>, <&cs47l35>,
-				<&cs35l41_spk>, <&cs35l41_rcv>;
+				<&cs35l41_spk>;
 		asoc-codec-names = "msm-stub-codec.1",
 				"msm-ext-disp-audio-codec-rx",
 				"cs47l35-codec", "cs35l41-spk", "cs35l41-rcv";
-		cirrus,prince-max-devs = <2>;
-		cirrus,prince-devs = <&cs35l41_spk>, <&cs35l41_rcv>;
-		cirrus,prince-dev-prefix = "SPK", "RCV";
+		cirrus,prince-max-devs = <1>;
+		cirrus,prince-devs = <&cs35l41_spk>;
+		cirrus,prince-dev-prefix = "SPK";
 	};
 
 };
@@ -589,7 +589,7 @@
 
 	cs35l41_rcv: cs35l41@2 {
 		compatible = "cirrus,cs35l41";
-		status = "okay";
+		status = "disabled";
 		spi-max-frequency = <26000000>;
 		reg = <0x2>;
 		reset-gpios = <&lpi_tlmm 10 0>;
