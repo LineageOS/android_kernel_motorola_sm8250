@@ -85,6 +85,20 @@
 		};
 	};
 
+	cam_flash_en_default: cam_flash_en_default {
+		/* RESET */
+		mux {
+			pins = "gpio98";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio98";
+			drive-strength = <2>; /* 2 MA */
+			output-low;
+		};
+	};
+
 };
 
 &soc {
@@ -112,6 +126,19 @@
 		enable-active-high;
 		gpio = <&pm8150l_gpios 4 0>;
 	};
+
+	camera_flash_en_gpio: gpio-regulator@4 {
+		compatible = "regulator-fixed";
+		reg = <0x04 0x00>;
+		regulator-name = "camera_flash_en_gpio";
+		regulator-min-microvolt = <1808000>;
+		regulator-max-microvolt = <1808000>;
+		regulator-enable-ramp-delay = <233>;
+		enable-active-high;
+		gpio = <&tlmm 98 0>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&cam_flash_en_default>;
+	};
 };
 
 &cam_cci0 {
@@ -129,6 +156,20 @@
 		status = "ok";
 	};
 
+	led_flash_rear: qcom,led-flash@0 {
+		cell-index = <0>;
+		reg = <0x0>;
+		compatible = "qcom,camera-flash";
+		cci-master = <0>;
+		cam_v_custom1-supply = <&camera_flash_en_gpio>;
+		regulator-names = "cam_v_custom1";
+		rgltr-cntrl-support;
+		rgltr-min-voltage = <1808000>;
+		rgltr-max-voltage = <1808000>;
+		rgltr-load-current = <0>;
+		status = "ok";
+	};
+
 	main_sensor: qcom,cam-sensor@0 {
 		cell-index = <0>;
 		compatible = "qcom,cam-sensor";
@@ -137,6 +178,7 @@
 		sensor-position-roll = <90>;
 		sensor-position-pitch = <0>;
 		sensor-position-yaw = <180>;
+		led-flash-src = <&led_flash_rear>;
 		cam_vio-supply = <&pm8150a_l5>;
 		cam_clk-supply = <&titan_top_gdsc>;
 		regulator-names = "cam_vio", "cam_clk";
@@ -214,6 +256,7 @@
 		sensor-position-roll = <90>;
 		sensor-position-pitch = <0>;
 		sensor-position-yaw = <180>;
+		led-flash-src = <&led_flash_rear>;
 		cam_vio-supply = <&pm8150a_l5>;
 		cam_clk-supply = <&titan_top_gdsc>;
 		regulator-names = "cam_vio", "cam_clk";
@@ -251,6 +294,7 @@
 		sensor-position-roll = <0>;
 		sensor-position-pitch = <0>;
 		sensor-position-yaw = <270>;
+		led-flash-src = <&led_flash_rear>;
 		ois-src = <&ois_tele>;
 		cam_vio-supply = <&pm8150a_l5>;
 		cam_clk-supply = <&titan_top_gdsc>;
