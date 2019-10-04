@@ -27,3 +27,7 @@
 	utags: utags { };
 	hw: hw { };
 };
+
+&firmware {
+        /delete-node/ android;
+};
