@@ -1,4 +1,6 @@
-ifeq ($(filter $(TARGET_PRODUCT), qssi msi),)
+ifeq ($(filter $(TARGET_PRODUCT), qssi),)
+#Not build for MSI
+ifeq ($(findstring msi, $(TARGET_PRODUCT)),)
 RMNET_SHS_DLKM_PLATFORMS_LIST := msmnile
 RMNET_SHS_DLKM_PLATFORMS_LIST += kona
 RMNET_SHS_DLKM_PLATFORMS_LIST += lito
@@ -25,4 +27,5 @@ $(warning $(DLKM_DIR))
 include $(DLKM_DIR)/AndroidKernelModule.mk
 
 endif #End of Check for target
+endif #End of Check for msi target
 endif #End of Check for qssi target
