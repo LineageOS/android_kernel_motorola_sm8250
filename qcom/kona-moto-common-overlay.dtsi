@@ -216,6 +216,7 @@
 	qcom,suspend-input-on-debug-batt;
 	qcom,fcc-stepping-enable;
 	qcom,usbpd-phandle = <&pm8150b_pdphy>;
+	qcom,wls-current-max-ua = <1300000>;
 };
 
 &spmi_bus {
@@ -236,7 +237,7 @@
 						<60 4200 1000 0>;
 			qcom,iterm-ma = <97>;
 			qcom,vfloat-comp-uv = <20000>;
-			qcom,dc-icl-ma = <500>;
+			qcom,dc-icl-ma = <1300>;
 		};
 	};
 
@@ -840,10 +841,6 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&p938x_outputs &p938x_inputs>;
 		vdd-i2c-supply = <&dummy_vreg>;
-		fw-name = "p9382_mtp.bin";
-		idt,chg-efficiency = <70>;
-		idt,chg-limit-soc = <95>;
-		idt,chg-idle-cl = <50>;
 	};
 
 	sx933x@28 {
