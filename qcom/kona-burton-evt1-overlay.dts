@@ -25,6 +25,19 @@
 /*
  * Burton HW rev EVT1 specific changes go here
  */
+&spmi_bus {
+	qcom,pm8150b@2 {
+		pm8150b_mmi {
+			/delete-property/qcom,mmi-temp-zones;
+			qcom,mmi-temp-zones =	<0 4200 400 0>,
+			                        <10 4200 1000 400>,
+			                        <15 0 1000 1000>,
+			                        <100 4200 2000 1400>,
+			                        <200 4200 1000 0>;
+		};
+	};
+};
+
 &pm8150_vadc {
 	img108mp@4c {
 		reg = <ADC_XO_THERM_PU2>;
