@@ -37,11 +37,11 @@ kona-burton_npi-dvt2b-overlay.dtbo-base := kona-moto-base-v2.1.dtb
 kona-burton_npi-pvt-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
 
 dtbo-$(CONFIG_ARCH_LITO) += \
-		lito-charleston-evt1-overlay.dtbo \
+		lito-smith-evt1-overlay.dtbo \
 		lito-smith-dvt1a-overlay.dtbo \
 		lito-smith-dvt2a-overlay.dtbo
 
-lito-charleston-evt1-overlay.dtbo-base := lito-moto-base.dtb
+lito-smith-evt1-overlay.dtbo-base := lito-moto-base.dtb
 lito-smith-dvt1a-overlay.dtbo-base := lito-moto-base.dtb
 lito-smith-dvt2a-overlay.dtbo-base := lito-moto-base.dtb
 else
