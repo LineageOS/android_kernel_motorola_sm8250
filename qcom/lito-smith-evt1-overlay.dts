@@ -17,8 +17,8 @@
 #include "lito-moto-smith-display.dtsi"
 
 / {
-	model = "Charleston";
-	compatible = "qcom,lito-charleston", "qcom,lito-moto", "qcom,lito";
+	model = "Smith";
+	compatible = "qcom,lito-smith", "qcom,lito-moto", "qcom,lito";
 	qcom,msm-id = <400 0x10000>;
 	qcom,board-id = <0 0xA100>;
 };
