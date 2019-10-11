@@ -1,5 +1,6 @@
 #include <dt-bindings/interrupt-controller/arm-gic.h>
 #include <dt-bindings/gpio/gpio.h>
+#include "carrier-channel-ids.dtsi"
 #include "lito-pmic-overlay.dtsi"
 #include "lito-thermal-overlay.dtsi"
 
