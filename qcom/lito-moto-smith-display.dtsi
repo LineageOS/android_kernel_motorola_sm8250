@@ -31,6 +31,11 @@
 		#include "dsi-panel-mot-csot-620-876x2142-cmd-common.dtsi"
 	};
 
+	mot_csot_620_876x2142_cmd_v1: qcom,mdss_dsi_mot_csot_620_876x2142_cmd_v1 {
+		#include "dsi-panel-mot-csot-620-876x2142-cmd-common.dtsi"
+
+	};
+
 	/* Primary Display:  BOE */
 	mot_boe_620_876x2142_cmd_v0: qcom,mdss_dsi_mot_boe_620_876x2142_cmd_v0 {
 		#include "dsi-panel-mot-boe-620-876x2142-cmd-common.dtsi"
@@ -54,22 +59,22 @@
         vio_en_m {
                 vio_en_m_default: vio_en_m_default {
                         pins = "gpio6";
-                        function = "func1";
+                        function = "normal";
                         qcom,drive-strength = <2>;
                         power-source = <0>;
                         bias-disable;
-                        output-low;
+                        output-high;
                 };
         };
 
 	vci_en_m {
 		vci_en_m_default: vci_en_m_default {
 			pins = "gpio2";
-			function = "func1";
+			function = "normal";
 			qcom,drive-strength = <2>;
 			power-source = <0>;
 			bias-disable;
-			output-low;
+			output-high;
 		};
 	};
 
@@ -136,6 +141,8 @@
 		regulator-name = "vci_disp_m_supply";
 		vin-supply = <&L16A>;
 		enable-active-high;
+		regulator-boot-on;
+
 		gpio = <&pm8150l_gpios 02 GPIO_ACTIVE_HIGH>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&vci_en_m_default>;
@@ -146,6 +153,8 @@
 		regulator-name = "vio_disp_m_supply";
 		vin-supply = <&L1C>;
 		enable-active-high;
+		regulator-boot-on;
+
 		gpio = <&pm8150l_gpios 6 GPIO_ACTIVE_HIGH>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&vio_en_m_default>;
@@ -161,6 +170,7 @@
 		pinctrl-0 = <&vci_en_s_default>;
 	};
 
+
 	vio_disp_s_vreg: vio_disp_s_vreg {
 		compatible = "regulator-fixed";
 		regulator-name = "vio_disp_s_supply";
@@ -170,7 +180,6 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&vio_en_s_default>;
 	};
-
 
 	ext_disp: qcom,msm-ext-disp {
 		compatible = "qcom,msm-ext-disp";
@@ -212,13 +221,12 @@
 
 		qcom,platform-te-gpio = <&tlmm 10 0>;
 		qcom,panel-te-source = <0>;
-
 		vci_disp-supply = <&vci_disp_m_vreg>;
 		vio_disp-supply = <&vio_disp_m_vreg>;
 
 		qcom,mdp = <&mdss_mdp>;
 		/* Ths should be removed to let the kernel cmd line (LK) to control */
-		qcom,dsi-default-panel = <&mot_boe_620_876x2142_cmd_v0>;
+		qcom,dsi-default-panel = <&mot_csot_620_876x2142_cmd_v1>;
 	};
 
 	sde_dsi1: qcom,dsi-display-secondary {
@@ -241,10 +249,8 @@
 
 		qcom,platform-te-gpio = <&tlmm 11 0>;
 		qcom,panel-te-source = <1>;
-
 		vio_disp-supply = <&vio_disp_s_vreg>;
 		vci_disp-supply = <&vci_disp_s_vreg>;
-
 		qcom,mdp = <&mdss_mdp>;
 		/* Ths should be removed to let the kernel cmd line (LK) to control */
                 qcom,dsi-default-panel = <&mot_boe_269_800x600_cmd_v2>;
@@ -257,6 +263,22 @@
 	};
 };
 
+&L16A {
+	regulator-min-microvolt = <3200000>;
+	regulator-max-microvolt = <3200000>;
+	qcom,init-voltage = <3200000>;
+	regulator-always-on;
+	regulator-boot-on;
+};
+
+
+&L1C {
+	regulator-min-microvolt = <1800000>;
+	regulator-max-microvolt = <1800000>;
+	qcom,init-voltage = <1800000>;
+};
+
+
 &sde_dp {
 	status = "disabled";
 	qcom,dp-usbpd-detection = <&pm7250b_pdphy>;
@@ -268,10 +290,6 @@
 	pinctrl-names = "mdss_dp_active", "mdss_dp_sleep";
 	pinctrl-0 = <&sde_dp_usbplug_cc_active>;
 	pinctrl-1 = <&sde_dp_usbplug_cc_suspend>;
-};
-
-&sde_dsi1 {
-	status = "disabled";
 };
 
 &pm8150a_amoled {
@@ -386,7 +404,7 @@
 &mot_csot_620_876x2142_cmd_v0 {
 	qcom,platform-te-gpio = <&tlmm 10 0>;
 	qcom,platform-reset-gpio = <&pm8150l_gpios 3 0>;
-
+	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
 
 	qcom,mdss-dsi-display-timings {
 		timing@0{
@@ -394,6 +412,73 @@
 							08 05 02 04 00 1A 18];
 			qcom,display-topology = <1 0 1>;
 			qcom,default-topology-index = <0>;
+		};
+	};
+};
+
+&mot_csot_620_876x2142_cmd_v1 {
+        qcom,platform-te-gpio = <&tlmm 10 0>;
+        qcom,platform-reset-gpio = <&pm8150l_gpios 3 0>;
+
+	qcom,bklt-dcs-2bytes-enabled;
+	qcom,mdss-dsi-bl-min-level = <3>;
+	qcom,mdss-dsi-bl-max-level = <2047>;
+
+	qcom,mdss-dsi-hbm-on-command = [39 01 00 00 00 00 03 51 0F FF];
+	qcom,mdss-dsi-hbm-off-command = [39 01 00 00 00 00 03 51 07 FF];
+
+	qcom,mdss-dsi-panel-hbm-is-51cmd;
+
+	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
+	qcom,mdss-dsi-display-timings {
+	        timing@0{
+			qcom,mdss-dsi-panel-phy-timings = [00 1f 08 08 24 22 08
+							08 05 02 04 00 1A 18];
+			qcom,display-topology = <1 0 1>;
+			qcom,default-topology-index = <0>;
+
+			qcom,mdss-dsi-on-command = [
+				15 00 00 00 00 00 02 FE 40 /*switch CMD2*/
+				15 00 00 00 00 00 02 9A 00 /* corner R function off, 0x00 for off, 0x01 for on*/
+				15 00 00 00 00 00 02 6F 02 /*swire update by vsync*/
+				15 00 00 00 00 00 02 FE 00
+				15 00 00 00 00 00 02 5E 01 /* swire control Enable */
+				15 00 00 00 00 00 02 FE E0 /* */
+				15 00 00 00 00 00 02 C3 00 /* Enable Avg Y */
+				15 00 00 00 00 00 02 8B 12 /* ops dimming off*/
+				15 00 00 00 00 00 02 8E 21 /* Step width*/
+				15 00 00 00 00 00 02 90 14 /* First pulse width*/
+				15 00 00 00 00 00 02 FE 70 /* */
+				15 00 00 00 00 00 02 11 C0 /* Ops_ref_bc */
+				15 00 00 00 00 00 02 17 00 /* opsen_3mode */
+				/* Lookup table setting swire pulse */
+				15 00 00 00 00 00 02 FE E0 /* */
+				15 00 00 00 00 00 02 91 19 /* lut1 = -3v */
+				15 00 00 00 00 00 02 92 19 /* lut2 = -3v */
+				15 00 00 00 00 00 02 93 19 /* lut3 = -3v */
+				15 00 00 00 00 00 02 94 19 /* lut4 = -3v */
+				15 00 00 00 00 00 02 95 0F /* lut5 = -3v */
+				15 00 00 00 00 00 02 96 0F /* lut6 = -3v */
+				15 00 00 00 00 00 02 97 0F /* lut7 = -3v */
+				15 00 00 00 00 00 02 98 0F /* lut8 = -3v */
+				15 00 00 00 00 00 02 99 0F /* lut9 = -3v */
+				/* Lookup table setting 51 ratio */
+				15 00 00 00 00 00 02 9A 7F /* lut1 = 000~7FF */
+				15 00 00 00 00 00 02 9B 7F /* lut2 = 000~7FF */
+				15 00 00 00 00 00 02 9C 7F /* lut3 = 000~7FF */
+				15 00 00 00 00 00 02 9D 7F /* lut4 = 800~7FF */
+				15 00 00 00 00 00 02 9E FF /* lut5 = 800~7FF */
+				15 00 00 00 00 00 02 9F FF /* lut6 = 800~7FF */
+				15 00 00 00 00 00 02 A0 FF /* lut7 = 800~7FF */
+				15 00 00 00 00 00 02 A2 FF /* lut8 = 800~7FF */
+				15 00 00 00 00 00 02 FE 00
+				15 00 00 00 00 00 02 C2 08
+				05 01 00 00 78 00 01 11
+				15 00 00 00 00 00 02 35 00
+				15 00 00 00 00 00 02 53 20 /* HBM off ,dimming=1frame*/
+				39 00 00 00 00 00 03 51 07 FF /* HACK.. set to some value*/
+				15 00 00 00 00 00 02 55 00      /* ACL OFF */
+				05 01 00 00 00 00 01 29];       /* display on */
 		};
 	};
 };
