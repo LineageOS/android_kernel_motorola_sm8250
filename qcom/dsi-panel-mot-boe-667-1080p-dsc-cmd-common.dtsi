@@ -95,6 +95,7 @@ qcom,mdss-dsi-display-timings {
 			39 00 00 00 00 00 05 FF AA 55 A5 00
 			/* Framne rate = 60hz */
 			39 00 00 00 00 00 06 F0 55 AA 52 08 00
+			15 00 00 00 00 00 02 B2 01 /* backlight fix */
 			15 00 00 00 00 00 02 6F 0E
 			15 00 00 00 00 00 02 BA 18
 			15 00 00 00 00 00 02 6F 03
@@ -104,8 +105,7 @@ qcom,mdss-dsi-display-timings {
 			05 00 00 00 00 00 01 35	 /* Set tear on */
 			15 00 00 00 00 00 02 53 20 /* HBM off ,dimming=1frame*/
 			/* Spec calls for 51 06 40 0F FF*/
-			/* This might need to change to 51 00 00 0F FF, later*/
-			39 00 00 00 00 00 05 51 06 40 0F FF
+			39 00 00 00 00 00 05 51 00 00 0F FF
 			39 00 00 00 00 00 05 2A 00 00 04 37 /* Column Addr set */
 			39 00 00 00 00 00 05 2B 00 00 09 23 /* Row Addr set */
 			/* PPS stable1 8bit3x slice 20 */
