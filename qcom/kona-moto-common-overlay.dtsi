@@ -80,6 +80,18 @@
 			linux,can-disable;
 		};
 	};
+
+	qcom,tz_gpio {
+		compatible = "qcom,tz_gpio";
+		tlmm-tz = <28>,
+			<29>,
+			<30>,
+			<31>,
+			<40>,
+			<41>,
+			<42>,
+			<43>;
+	};
 };
 
 &vendor {
