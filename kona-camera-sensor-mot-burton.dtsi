@@ -166,9 +166,56 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&cam_flash_en_default>;
 	};
+
+	dummy_cam_vreg: dummy_cam_vreg {
+		compatible = "regulator-fixed";
+		status = "ok";
+		regulator-name = "dummy_cam_vreg";
+		regulator-min-microvolt = <2800000>;
+		regulator-max-microvolt = <2800000>;
+	};
 };
 
 &cam_cci0 {
+	actuator_rear: qcom,actuator@0 {
+		cell-index = <0>;
+		reg = <0x0>;
+		compatible = "qcom,actuator";
+		cci-master = <0>;
+		cam_vaf-supply = <&dummy_cam_vreg>;
+		regulator-names = "cam_vaf";
+		rgltr-cntrl-support;
+		rgltr-min-voltage = <2800000>;
+		rgltr-max-voltage = <2800000>;
+		rgltr-load-current = <0>;
+	};
+
+	actuator_wide: qcom,actuator@1 {
+		cell-index = <1>;
+		reg = <0x1>;
+		compatible = "qcom,actuator";
+		cci-master = <0>;
+		cam_vaf-supply = <&dummy_cam_vreg>;
+		regulator-names = "cam_vaf";
+		rgltr-cntrl-support;
+		rgltr-min-voltage = <2800000>;
+		rgltr-max-voltage = <2800000>;
+		rgltr-load-current = <0>;
+	};
+
+	actuator_tele: qcom,actuator@2 {
+		cell-index = <2>;
+		reg = <0x2>;
+		compatible = "qcom,actuator";
+		cci-master = <1>;
+		cam_vaf-supply = <&dummy_cam_vreg>;
+		regulator-names = "cam_vaf";
+		rgltr-cntrl-support;
+		rgltr-min-voltage = <2800000>;
+		rgltr-max-voltage = <2800000>;
+		rgltr-load-current = <0>;
+	};
+
 	ois_tele: qcom,ois@0 {
 		cell-index = <0>;
 		reg = <0x1>;
@@ -206,6 +253,7 @@
 		sensor-position-pitch = <0>;
 		sensor-position-yaw = <180>;
 		led-flash-src = <&led_flash_rear>;
+		actuator-src = <&actuator_rear>;
 		cam_vio-supply = <&pm8150a_l5>;
 		cam_clk-supply = <&titan_top_gdsc>;
 		regulator-names = "cam_vio", "cam_clk";
@@ -284,6 +332,7 @@
 		sensor-position-pitch = <0>;
 		sensor-position-yaw = <180>;
 		led-flash-src = <&led_flash_rear>;
+		actuator-src = <&actuator_wide>;
 		cam_vio-supply = <&pm8150a_l5>;
 		cam_clk-supply = <&titan_top_gdsc>;
 		regulator-names = "cam_vio", "cam_clk";
@@ -322,6 +371,7 @@
 		sensor-position-pitch = <0>;
 		sensor-position-yaw = <270>;
 		led-flash-src = <&led_flash_rear>;
+		actuator-src = <&actuator_tele>;
 		ois-src = <&ois_tele>;
 		cam_vio-supply = <&pm8150a_l5>;
 		cam_clk-supply = <&titan_top_gdsc>;
