@@ -112,3 +112,9 @@
 		status = "disabled";
 	};
 };
+
+&qupv3_se13_i2c {
+	goodix_ts_i2c@5d {
+		status = "/chosen","mmi,panel_name","contains","smd";
+	};
+};
