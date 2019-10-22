@@ -550,7 +550,7 @@
 	status = "okay";
 
 	goodix_ts_i2c@5d {
-		status = "/chosen","mmi,panel_name","contains","smd","boe";
+		status = "/chosen","mmi,touch","true";
 		compatible = "goodix,gt9896";
 		reg = <0x5d>;
 		interrupt-parent = <&tlmm>;
