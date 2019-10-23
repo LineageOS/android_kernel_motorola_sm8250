@@ -15,6 +15,7 @@
 
 #include "lito-moto-common-overlay.dtsi"
 #include "lito-moto-smith-display.dtsi"
+#include "lito-moto-audio-overlay.dtsi"
 
 / {
 	model = "Smith";
