@@ -229,6 +229,19 @@
 		rgltr-load-current = <0>;
 	};
 
+	eeprom_tele: qcom,eeprom@2 {
+		cell-index = <2>;
+		reg = <0x2>;
+		compatible = "qcom,eeprom";
+		cci-master = <1>;
+		cam_vio-supply = <&dummy_cam_vreg>;
+		regulator-names = "cam_vio";
+		rgltr-cntrl-support;
+		rgltr-min-voltage = <2800000>;
+		rgltr-max-voltage = <2800000>;
+		rgltr-load-current = <0>;
+	};
+
 	ois_tele: qcom,ois@0 {
 		cell-index = <0>;
 		reg = <0x1>;
@@ -386,6 +399,7 @@
 		sensor-position-yaw = <270>;
 		led-flash-src = <&led_flash_rear>;
 		actuator-src = <&actuator_tele>;
+		eeprom-src = <&eeprom_tele>;
 		ois-src = <&ois_tele>;
 		cam_vio-supply = <&pm8150a_l5>;
 		cam_clk-supply = <&titan_top_gdsc>;
