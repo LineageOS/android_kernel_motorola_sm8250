@@ -244,6 +244,32 @@
 		};
 
 	 };
+
+	usb_sw_sel_default: usb_sw_sel_default {
+		mux {
+			pins = "gpio56";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio56";
+			bias-pull-down;
+			drive-strength = <2>;
+			output-low;
+		};
+	};
+
+	usb_aud_det_default: usb_aud_det_default {
+		mux {
+			pins = "gpio86";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio86";
+			bias-pull-up;
+			drive-strength = <2>;
+			output-high;
+		};
+	};
 };
 
 
@@ -265,7 +291,9 @@
 		reset-gpios = <&tlmm 35 0>;
 		pinctrl-names = "probe", "active";
 		pinctrl-0 = <&marley_irq_default>, <&marley_reset_default>,
-				<&cdc_sleep_clk_default>;
+				<&cdc_sleep_clk_default>,
+				<&usb_sw_sel_default>,
+				<&usb_aud_det_default>;
 		pinctrl-1 = <&cs47l35_defaults>;
 		AVDD-supply = <&pm8150_s4>;
 		DBVDD1-supply = <&pm8150_s4>;
@@ -402,6 +430,10 @@
 						>;
 				cirrus,micd-clamp-mode = <0x4>;
 				cirrus,gpsw = <1 0>;
+
+				cirrus,usbc-headset;
+				cirrus,usbsel-gpios = <&tlmm 56 0>;
+				cirrus,hsdet-gpios = <&tlmm 86 GPIO_ACTIVE_LOW>;
 			};
 		};
 	};
