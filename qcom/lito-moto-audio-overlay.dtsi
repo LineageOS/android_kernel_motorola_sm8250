@@ -143,10 +143,14 @@
 				"msm-dai-q6-dev.24577";
 
 		qcom,audio-routing =
-			"IN1AL", "MICBIAS2A",
+			"IN1AL", "MICBIAS2B",
+			"IN1AL", "GPSW",
+			"IN1BL", "MICBIAS2B",
+			"IN1BL", "GPSW",
 			"IN2L",  "MICBIAS2A",
-			"IN2L",  "GPSW",
-			"IN2R",  "MICBIAS2B",
+			"IN2R",  "MICBIAS2A",
+			"IN1AR", "MICBIAS2A",
+			"IN1BR", "MICBIAS1A",
 			"IN1BR", "MICBIAS1B";
 
 		asoc-codec = <&stub_codec>, <&ext_disp_audio_codec>, <&cs47l35>,
@@ -308,8 +312,8 @@
 		#gpio-cells = <2>;
 
 		cirrus,inmode = <
-				0 0 0 1
 				0 0 0 0
+				2 2 0 0
 				>;
 
 		madera_pinctrl: madera-pinctrl {
@@ -325,6 +329,21 @@
 					groups = "aif2";
 					function = "aif2";
 					bias-bus-hold;
+				};
+
+				gpio2 { /* SSC CDC Wake */
+					groups = "gpio2";
+					function = "io";
+				};
+
+				gpio3 { /* Micd Pol */
+					groups = "gpio3";
+					function = "io";
+				};
+
+				gpio4 { /* Micd Pol Alt */
+					groups = "gpio4";
+					function = "io";
 				};
 
 				gpio5 { /* AMP wakeup GPIO */
@@ -426,10 +445,14 @@
 					1257 114 /* VOLUME_DOWN  */
 					>;
 				cirrus,micd-configs = <
-						0 1 2 0 0
+						0 1 1 0 1
+						1 0 2 1 0
 						>;
 				cirrus,micd-clamp-mode = <0x4>;
 				cirrus,gpsw = <1 0>;
+
+				cirrus,micd-pol-gpios = <&cs47l35 2 0>;
+				cirrus,micd-pol-alt-gpios = <&cs47l35 3 0>;
 
 				cirrus,usbc-headset;
 				cirrus,usbsel-gpios = <&tlmm 56 0>;
