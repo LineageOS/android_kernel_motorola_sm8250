@@ -84,23 +84,25 @@ struct cam_ois_intf_params {
 
 /**
  * struct cam_ois_ctrl_t - OIS ctrl private data
- * @device_name     :   ois device_name
- * @pdev            :   platform device
- * @ois_mutex       :   ois mutex
- * @soc_info        :   ois soc related info
- * @io_master_info  :   Information about the communication master
- * @cci_i2c_master  :   I2C structure
- * @v4l2_dev_str    :   V4L2 device structure
- * @bridge_intf     :   bridge interface params
- * @i2c_init_data   :   ois i2c init settings
- * @i2c_mode_data   :   ois i2c mode settings
- * @i2c_calib_data  :   ois i2c calib settings
- * @ois_device_type :   ois device type
- * @cam_ois_state   :   ois_device_state
- * @ois_fw_flag     :   flag for firmware download
- * @is_ois_calib    :   flag for Calibration data
- * @opcode          :   ois opcode
- * @device_name     :   Device name
+ * @device_name         :   ois device_name
+ * @pdev                :   platform device
+ * @ois_mutex           :   ois mutex
+ * @soc_info            :   ois soc related info
+ * @io_master_info      :   Information about the communication master
+ * @cci_i2c_master      :   I2C structure
+ * @v4l2_dev_str        :   V4L2 device structure
+ * @bridge_intf         :   bridge interface params
+ * @i2c_init_data       :   ois i2c init settings
+ * @i2c_preprog_data    :   ois i2c preprog settings
+ * @i2c_mode_data       :   ois i2c mode settings
+ * @i2c_calib_data      :   ois i2c calib settings
+ * @ois_device_type     :   ois device type
+ * @cam_ois_state       :   ois_device_state
+ * @ois_fw_flag         :   flag for firmware download
+ * @ois_preprog_flag    :   flag for preprog reg settings
+ * @is_ois_calib        :   flag for Calibration data
+ * @opcode              :   ois opcode
+ * @device_name         :   Device name
  *
  */
 struct cam_ois_ctrl_t {
@@ -114,12 +116,14 @@ struct cam_ois_ctrl_t {
 	struct cam_subdev v4l2_dev_str;
 	struct cam_ois_intf_params bridge_intf;
 	struct i2c_settings_array i2c_init_data;
+	struct i2c_settings_array i2c_preprog_data;
 	struct i2c_settings_array i2c_calib_data;
 	struct i2c_settings_array i2c_mode_data;
 	enum msm_camera_device_type_t ois_device_type;
 	enum cam_ois_state cam_ois_state;
 	char ois_name[32];
 	uint8_t ois_fw_flag;
+	uint8_t ois_preprog_flag;
 	uint8_t is_ois_calib;
 	struct cam_ois_opcode opcode;
 	uint32_t open_cnt;
