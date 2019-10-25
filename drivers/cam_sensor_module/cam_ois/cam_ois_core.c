@@ -237,6 +237,13 @@ static int cam_ois_apply_settings(struct cam_ois_ctrl_t *o_ctrl,
 				i2c_list->i2c_settings.addr_type,
 				i2c_list->i2c_settings.data_type,
 				i2c_list->i2c_settings.reg_setting[i].delay);
+				if (rc == 1) {
+					CAM_ERR(CAM_OIS,
+						"i2c poll fails addr:data %x:%x",
+						i2c_list->i2c_settings.reg_setting[i].reg_addr,
+						i2c_list->i2c_settings.reg_setting[i].reg_data);
+					return rc;
+				}
 				if (rc < 0) {
 					CAM_ERR(CAM_OIS,
 						"i2c poll apply setting Fail");
@@ -267,6 +274,7 @@ static int cam_ois_slaveInfo_pkt_parser(struct cam_ois_ctrl_t *o_ctrl,
 		o_ctrl->io_master_info.cci_client->sid =
 			ois_info->slave_addr >> 1;
 		o_ctrl->ois_fw_flag = ois_info->ois_fw_flag;
+		o_ctrl->ois_preprog_flag = ois_info->ois_preprog_flag;
 		o_ctrl->is_ois_calib = ois_info->is_ois_calib;
 		memcpy(o_ctrl->ois_name, ois_info->ois_name, OIS_NAME_LEN);
 		o_ctrl->ois_name[OIS_NAME_LEN - 1] = '\0';
@@ -288,7 +296,7 @@ static int cam_ois_slaveInfo_pkt_parser(struct cam_ois_ctrl_t *o_ctrl,
 	return rc;
 }
 
-static int cam_ois_fw_download(struct cam_ois_ctrl_t *o_ctrl)
+static int cam_ois_fw_prog_download(struct cam_ois_ctrl_t *o_ctrl)
 {
 	uint16_t                           total_bytes = 0;
 	uint8_t                           *ptr = NULL;
@@ -296,9 +304,7 @@ static int cam_ois_fw_download(struct cam_ois_ctrl_t *o_ctrl)
 	uint32_t                           fw_size;
 	const struct firmware             *fw = NULL;
 	const char                        *fw_name_prog = NULL;
-	const char                        *fw_name_coeff = NULL;
 	char                               name_prog[32] = {0};
-	char                               name_coeff[32] = {0};
 	struct device                     *dev = &(o_ctrl->pdev->dev);
 	struct cam_sensor_i2c_reg_setting  i2c_reg_setting;
 	struct page                       *page = NULL;
@@ -308,13 +314,10 @@ static int cam_ois_fw_download(struct cam_ois_ctrl_t *o_ctrl)
 		return -EINVAL;
 	}
 
-	snprintf(name_coeff, 32, "%s.coeff", o_ctrl->ois_name);
-
 	snprintf(name_prog, 32, "%s.prog", o_ctrl->ois_name);
 
 	/* cast pointer as const pointer*/
 	fw_name_prog = name_prog;
-	fw_name_coeff = name_coeff;
 
 	/* Load FW */
 	rc = request_firmware(&fw, fw_name_prog, dev);
@@ -352,15 +355,36 @@ static int cam_ois_fw_download(struct cam_ois_ctrl_t *o_ctrl)
 
 	rc = camera_io_dev_write_continuous(&(o_ctrl->io_master_info),
 		&i2c_reg_setting, 1);
-	if (rc < 0) {
+	if (rc < 0)
 		CAM_ERR(CAM_OIS, "OIS FW download failed %d", rc);
-		goto release_firmware;
-	}
+
 	cma_release(dev_get_cma_area((o_ctrl->soc_info.dev)),
 		page, fw_size);
-	page = NULL;
-	fw_size = 0;
 	release_firmware(fw);
+
+	return rc;
+}
+
+static int cam_ois_fw_coeff_download(struct cam_ois_ctrl_t *o_ctrl)
+{
+	uint16_t                           total_bytes = 0;
+	uint8_t                           *ptr = NULL;
+	int32_t                            rc = 0, cnt;
+	uint32_t                           fw_size;
+	const struct firmware             *fw = NULL;
+	const char                        *fw_name_coeff = NULL;
+	char                               name_coeff[32] = {0};
+	struct device                     *dev = &(o_ctrl->pdev->dev);
+	struct cam_sensor_i2c_reg_setting  i2c_reg_setting;
+	struct page                       *page = NULL;
+
+	if (!o_ctrl) {
+		CAM_ERR(CAM_OIS, "Invalid Args");
+		return -EINVAL;
+	}
+
+	snprintf(name_coeff, 32, "%s.coeff", o_ctrl->ois_name);
+	fw_name_coeff = name_coeff;
 
 	rc = request_firmware(&fw, fw_name_coeff, dev);
 	if (rc) {
@@ -400,14 +424,12 @@ static int cam_ois_fw_download(struct cam_ois_ctrl_t *o_ctrl)
 	if (rc < 0)
 		CAM_ERR(CAM_OIS, "OIS FW download failed %d", rc);
 
-release_firmware:
 	cma_release(dev_get_cma_area((o_ctrl->soc_info.dev)),
 		page, fw_size);
 	release_firmware(fw);
 
 	return rc;
 }
-
 /**
  * cam_ois_pkt_parse - Parse csl packet
  * @o_ctrl:     ctrl structure
@@ -547,6 +569,20 @@ static int cam_ois_pkt_parse(struct cam_ois_ctrl_t *o_ctrl, void *arg)
 					"init parsing failed: %d", rc);
 					return rc;
 				}
+			} else if (((o_ctrl->ois_preprog_flag) != 0) &&
+				o_ctrl->i2c_preprog_data.is_settings_valid == 0) {
+				CAM_DBG(CAM_OIS, "Received PreProg Settings");
+				i2c_reg_settings = &(o_ctrl->i2c_preprog_data);
+				i2c_reg_settings->request_id = 0;
+				rc = cam_sensor_i2c_command_parser(
+					&o_ctrl->io_master_info,
+					i2c_reg_settings,
+					&cmd_desc[i], 1);
+				if (rc < 0) {
+					CAM_ERR(CAM_OIS,
+					"preprog parsing failed: %d", rc);
+					return rc;
+				}
 			} else if ((o_ctrl->is_ois_calib != 0) &&
 				(o_ctrl->i2c_calib_data.is_settings_valid ==
 				0)) {
@@ -583,10 +619,27 @@ static int cam_ois_pkt_parse(struct cam_ois_ctrl_t *o_ctrl, void *arg)
 			CAM_ERR(CAM_OIS, "bm24218 attempt");
 			cam_ois_bm24218_boot_sequence(o_ctrl);
 		} else {
-			if (o_ctrl->ois_fw_flag) {
-				rc = cam_ois_fw_download(o_ctrl);
+			if (o_ctrl->ois_preprog_flag) {
+				rc = cam_ois_apply_settings(o_ctrl,
+					&o_ctrl->i2c_preprog_data);
 				if (rc) {
-					CAM_ERR(CAM_OIS, "Failed OIS FW Download");
+					CAM_ERR(CAM_OIS, "Cannot apply preprog settings");
+					goto pwr_dwn;
+				}
+			}
+
+			if (o_ctrl->ois_fw_flag) {
+				rc = cam_ois_fw_prog_download(o_ctrl);
+				if (rc) {
+					CAM_ERR(CAM_OIS, "Failed OIS PROG FW Download");
+					goto pwr_dwn;
+				}
+			}
+
+			if (o_ctrl->ois_fw_flag) {
+				rc = cam_ois_fw_coeff_download(o_ctrl);
+				if (rc) {
+					CAM_ERR(CAM_OIS, "Failed OIS COEFF FW Download");
 					goto pwr_dwn;
 				}
 			}
@@ -620,6 +673,12 @@ static int cam_ois_pkt_parse(struct cam_ois_ctrl_t *o_ctrl, void *arg)
 		if (rc < 0) {
 			CAM_WARN(CAM_OIS,
 				"Fail deleting Init data: rc: %d", rc);
+			rc = 0;
+		}
+		rc = delete_request(&o_ctrl->i2c_preprog_data);
+		if (rc < 0) {
+			CAM_WARN(CAM_OIS,
+				"Fail deleting PreProg data: rc: %d", rc);
 			rc = 0;
 		}
 		rc = delete_request(&o_ctrl->i2c_calib_data);
