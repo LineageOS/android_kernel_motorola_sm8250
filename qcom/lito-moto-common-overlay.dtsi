@@ -77,6 +77,32 @@
 			bias-pull-down;
 		};
 	};
+
+	flip_batt_en: flip_batt_en {
+		mux {
+			pins = "gpio27";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio27";
+			drive-strength = <2>;
+			bias-pull-up;
+			output-high;
+		};
+	};
+
+	flip_batt_plus_en: flip_batt_plus_en {
+		mux {
+			pins = "gpio28";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio28";
+			drive-strength = <2>;
+			bias-pull-up;
+			output-high;
+		};
+	};
 };
 
 &usb2_phy0 {
@@ -244,7 +270,7 @@
 		dlg,cs-gpios = <&tlmm 44 0>;
 
 		pinctrl-names = "default";
-		pinctrl-0 = <&cam_pmic_irq_default &cam_pmic_en_default>;
+		pinctrl-0 = <&cam_pmic_irq_default &cam_pmic_en_default &flip_batt_en &flip_batt_plus_en>;
 
 		regulators {
 			ldo1 {
