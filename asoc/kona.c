@@ -6577,6 +6577,61 @@ static struct snd_soc_dai_link msm_common_misc_fe_dai_links[] = {
 #endif
 };
 
+static struct snd_soc_dai_link msm_madera_fe_dai_links[] = {
+#ifdef CONFIG_SND_SOC_CS47l35
+	{
+		.name = "CPU-DSP Voice Control",
+		.stream_name = "CPU-DSP Voice Control",
+		.cpu_dai_name = "cs47l35-cpu-voicectrl",
+		.platform_name = "cs47l35-codec",
+		.codec_dai_name = "cs47l35-dsp-voicectrl",
+		.codec_name = "cs47l35-codec",
+		.ignore_suspend = 1,
+		.dynamic = 0,
+	},
+	{
+		.name = "CPU-DSP Trace",
+		.stream_name = "CPU-DSP Voice Trace",
+		.cpu_dai_name = "cs47l35-cpu-trace",
+		.platform_name = "cs47l35-codec",
+		.codec_dai_name = "cs47l35-dsp-trace",
+		.codec_name = "cs47l35-codec",
+		.ignore_suspend = 1,
+		.dynamic = 0,
+	},
+	{
+		.name = "CPU-DSP2 Text",
+		.stream_name = "CPU-DSP2 Text",
+		.cpu_dai_name = "cs47l35-dsp2-cpu-txt",
+		.platform_name = "cs47l35-codec",
+		.codec_dai_name = "cs47l35-dsp2-txt",
+		.codec_name = "cs47l35-codec",
+		.ignore_suspend = 1,
+		.dynamic = 0,
+	},
+	{
+		.name = "CPU-DSP3 Text",
+		.stream_name = "CPU-DSP3 Text",
+		.cpu_dai_name = "cs47l35-dsp3-cpu-txt",
+		.platform_name = "cs47l35-codec",
+		.codec_dai_name = "cs47l35-dsp3-txt",
+		.codec_name = "cs47l35-codec",
+		.ignore_suspend = 1,
+		.dynamic = 0,
+	},
+	{
+		.name = "CPU-DSP1 Text",
+		.stream_name = "CPU-DSP1 Text",
+		.cpu_dai_name = "cs47l35-dsp1-cpu-txt",
+		.platform_name = "cs47l35-codec",
+		.codec_dai_name = "cs47l35-dsp1-txt",
+		.codec_name = "cs47l35-codec",
+		.ignore_suspend = 1,
+		.dynamic = 0,
+	},
+#endif
+};
+
 static struct snd_soc_dai_link msm_common_be_dai_links[] = {
 	/* Backend AFE DAI Links */
 	{
@@ -7621,6 +7676,7 @@ static struct snd_soc_dai_link msm_afe_rxtx_lb_be_dai_link[] = {
 static struct snd_soc_dai_link msm_madera_dai_links[
 			ARRAY_SIZE(msm_common_dai_links) +
 			ARRAY_SIZE(msm_common_misc_fe_dai_links) +
+			ARRAY_SIZE(msm_madera_fe_dai_links) +
 			ARRAY_SIZE(msm_common_be_dai_links) +
 			ARRAY_SIZE(msm_mi2s_be_dai_links) +
 			ARRAY_SIZE(msm_auxpcm_be_dai_links) +
@@ -7870,6 +7926,11 @@ static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev)
 		       msm_common_misc_fe_dai_links,
 		       sizeof(msm_common_misc_fe_dai_links));
 		total_links += ARRAY_SIZE(msm_common_misc_fe_dai_links);
+
+		memcpy(msm_madera_dai_links + total_links,
+		       msm_madera_fe_dai_links,
+		       sizeof(msm_madera_fe_dai_links));
+		total_links += ARRAY_SIZE(msm_madera_fe_dai_links);
 
 		memcpy(msm_madera_dai_links + total_links,
 		       msm_common_be_dai_links,
