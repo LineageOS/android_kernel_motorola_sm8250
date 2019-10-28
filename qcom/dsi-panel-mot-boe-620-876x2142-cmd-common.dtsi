@@ -73,6 +73,8 @@ qcom,mdss-dsi-hbm-off-command = [39 01 00 00 00 00 03 51 0B 95];
 qcom,mdss-dsi-acl-on-command = [15 01 00 00 00 00 02 55 03];
 qcom,mdss-dsi-acl-off-command = [15 01 00 00 00 00 02 55 00];
 
+qcom,mdss-dsi-panel-hbm-is-51cmd;
+
 qcom,mdss-dsi-display-timings {
 	timing@0{
 		qcom,mdss-dsi-panel-width = <1080>;
