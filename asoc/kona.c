@@ -5803,6 +5803,7 @@ static struct snd_soc_codec_conf cirrus_amp_conf[] = {
 
 #define MADERA_CLK_SYSCLK_1		1
 #define MADERA_CLK_SRC_FLL1		0x4
+#define MADERA_CLK_SRC_AIF1BCLK         0x8
 #define MADERA_FLL_SRC_MCLK1            0
 #define MADERA_FLL_SRC_MCLK2            1
 #define MADERA_FLL1_REFCLK             1
@@ -5814,18 +5815,66 @@ static struct snd_soc_codec_conf cirrus_amp_conf[] = {
 #define MADERA_SYSCLK_RATE	(FLL_RATE_MADERA / 3)
 #define MADERA_DSPCLK_RATE	(FLL_RATE_MADERA / 2)
 
+static int msm_mclk_event(struct snd_soc_dapm_widget *w,
+		struct snd_kcontrol *kcontrol, int event)
+{
+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+	int ret;
+
+	pr_debug("%s: event = %d\n", __func__, event);
+
+	switch (event) {
+	case SND_SOC_DAPM_PRE_PMU:
+		ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
+			MADERA_CLK_SRC_AIF1BCLK,
+			mi2s_clk[QUAT_MI2S].clk_freq_in_hz, MADERA_SYSCLK_RATE);
+		if (ret != 0) {
+			dev_err(component->dev, "Failed to set MADERA_FLL1_REFCLK %d\n", ret);
+			return ret;
+		}
+		break;
+	case SND_SOC_DAPM_POST_PMD:
+		ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
+			MADERA_FLL_SRC_MCLK1,
+			QCOM_MCLK_RATE, MADERA_SYSCLK_RATE);
+		if (ret != 0) {
+			dev_err(component->dev, "Failed to set MADERA_FLL1_REFCLK %d\n", ret);
+			return ret;
+		}
+		break;
+	}
+	return 0;
+}
+
+static struct snd_soc_dapm_route cs47l35_audio_paths[] = {
+#ifndef CONFIG_SND_SOC_CS35L41
+	{"AIF1 Playback", NULL, "SPK AMP Capture"},
+	{"SPK AMP Playback", NULL, "OPCLK"},
+	{"SPK AMP Capture", NULL, "OPCLK"},
+#endif
+};
+
+static const struct snd_soc_dapm_widget msm_madera_dapm_widgets[] = {
+	SND_SOC_DAPM_SUPPLY_S("MCLK", -1,  SND_SOC_NOPM, 0, 0,
+		msm_mclk_event, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+};
+
+
 static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
 {
 	int ret;
 	struct clk *ref_clk;
 	struct snd_soc_component *component =
 		snd_soc_rtdcom_lookup(rtd, MADERA_CODEC_NAME);
+	struct snd_soc_dapm_context *dapm;
+
 	if (!component) {
 		pr_err("* %s: No match for %s component\n",
 			__func__, MADERA_CODEC_NAME);
 		return ret;
 	}
 
+	dapm = snd_soc_component_get_dapm(component);
 	ref_clk = clk_get(component->dev, "ref_clk");
 	if (IS_ERR_OR_NULL(ref_clk))
 		dev_err(component->dev, "Failed to get ref_clk %ld\n",
@@ -5877,6 +5926,69 @@ static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
 		dev_err(component->dev, "Failed to set OPCLK %d\n", ret);
 		return ret;
 	}
+
+	ret = snd_soc_add_component_controls(component, msm_common_snd_controls,
+				ARRAY_SIZE(msm_common_snd_controls));
+	if (ret < 0) {
+		pr_err("%s: add common snd controls failed: %d\n",
+			__func__, ret);
+		return ret;
+	}
+
+
+	ret = snd_soc_dapm_new_controls(dapm, msm_madera_dapm_widgets,
+			ARRAY_SIZE(msm_madera_dapm_widgets));
+	if (ret != 0) {
+		dev_err(component->dev, "Failed to add dapm widgets %d\n", ret);
+		return ret;
+	}
+
+	ret = snd_soc_dapm_add_routes(dapm, cs47l35_audio_paths,
+			ARRAY_SIZE(cs47l35_audio_paths));
+	if (ret != 0) {
+		dev_err(component->dev, "Failed to add audio routes %d\n", ret);
+		return ret;
+	}
+
+	snd_soc_dapm_ignore_suspend(dapm, "MICSUPP");
+	snd_soc_dapm_ignore_suspend(dapm, "MICBIAS1");
+	snd_soc_dapm_ignore_suspend(dapm, "MICBIAS2");
+	snd_soc_dapm_ignore_suspend(dapm, "MICBIAS1A");
+	snd_soc_dapm_ignore_suspend(dapm, "MICBIAS1B");
+	snd_soc_dapm_ignore_suspend(dapm, "MICBIAS2A");
+	snd_soc_dapm_ignore_suspend(dapm, "MICBIAS2B");
+	snd_soc_dapm_ignore_suspend(dapm, "IN1AL");
+	snd_soc_dapm_ignore_suspend(dapm, "IN1AR");
+	snd_soc_dapm_ignore_suspend(dapm, "IN1BL");
+	snd_soc_dapm_ignore_suspend(dapm, "IN1BR");
+	snd_soc_dapm_ignore_suspend(dapm, "IN2L");
+	snd_soc_dapm_ignore_suspend(dapm, "IN2R");
+	snd_soc_dapm_ignore_suspend(dapm, "AIF1TX1");
+	snd_soc_dapm_ignore_suspend(dapm, "AIF1TX2");
+	snd_soc_dapm_ignore_suspend(dapm, "AIF1RX1");
+	snd_soc_dapm_ignore_suspend(dapm, "AIF1RX2");
+	snd_soc_dapm_ignore_suspend(dapm, "AIF2TX1");
+	snd_soc_dapm_ignore_suspend(dapm, "AIF2TX2");
+	snd_soc_dapm_ignore_suspend(dapm, "AIF2RX1");
+	snd_soc_dapm_ignore_suspend(dapm, "AIF2RX2");
+	snd_soc_dapm_ignore_suspend(dapm, "HPOUTL");
+	snd_soc_dapm_ignore_suspend(dapm, "HPOUTR");
+	snd_soc_dapm_ignore_suspend(dapm, "SPKOUTN");
+	snd_soc_dapm_ignore_suspend(dapm, "SPKOUTP");
+	snd_soc_dapm_ignore_suspend(dapm, "SPKDATL");
+	snd_soc_dapm_ignore_suspend(dapm, "SPKDATR");
+	snd_soc_dapm_ignore_suspend(dapm, "DSP2 Virtual Output");
+	snd_soc_dapm_ignore_suspend(dapm, "DSP3 Virtual Output");
+	snd_soc_dapm_ignore_suspend(dapm, "DSP Virtual Input");
+	snd_soc_dapm_ignore_suspend(dapm, "DSP2 Trigger Out");
+	snd_soc_dapm_ignore_suspend(dapm, "DSP3 Trigger Out");
+	snd_soc_dapm_ignore_suspend(dapm, "AIF1 Capture");
+
+	snd_soc_dapm_sync(dapm);
+	snd_soc_dapm_force_enable_pin(dapm, "SYSCLK");
+	snd_soc_dapm_sync(dapm);
+
+
 
 	return 0;
 }
@@ -7196,7 +7308,6 @@ static struct snd_soc_dai_link msm_mi2s_be_dai_links[] = {
 #ifdef CONFIG_SND_SOC_CS47l35
 		.codec_name = MADERA_CODEC_NAME,
 		.codec_dai_name = MADERA_CODEC_DAI_NAME,
-		.init = &cirrus_codec_init,
 #else
 		.codec_name = "msm-stub-codec.1",
 		.codec_dai_name = "msm-stub-tx",
