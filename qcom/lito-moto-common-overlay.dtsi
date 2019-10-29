@@ -336,3 +336,13 @@
 &pm8008_9 {
 	status = "disabled";
 };
+
+&spmi_bus {
+	qcom,pm7250b@2 {
+		qpnp-power-on-mmi@800 {
+			compatible = "qcom,qpnp-power-on-mmi";
+			interrupts = <0x0 0x8 0x3 IRQ_TYPE_NONE>;
+			interrupt-names = "kpdpwr-bark";
+		};
+	};
+};
