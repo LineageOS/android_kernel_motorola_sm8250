@@ -277,6 +277,7 @@ static int cam_ois_slaveInfo_pkt_parser(struct cam_ois_ctrl_t *o_ctrl,
 		o_ctrl->ois_preprog_flag = ois_info->ois_preprog_flag;
 		o_ctrl->ois_precoeff_flag = ois_info->ois_precoeff_flag;
 		o_ctrl->is_ois_calib = ois_info->is_ois_calib;
+		o_ctrl->ois_postcalib_flag = ois_info->ois_postcalib_flag;
 		memcpy(o_ctrl->ois_name, ois_info->ois_name, OIS_NAME_LEN);
 		o_ctrl->ois_name[OIS_NAME_LEN - 1] = '\0';
 		o_ctrl->io_master_info.cci_client->retries = 3;
@@ -578,7 +579,7 @@ static int cam_ois_pkt_parse(struct cam_ois_ctrl_t *o_ctrl, void *arg)
 				rc = cam_sensor_i2c_command_parser(
 					&o_ctrl->io_master_info,
 					i2c_reg_settings,
-					&cmd_desc[i], 1);
+					&cmd_desc[i], 1, NULL);
 				if (rc < 0) {
 					CAM_ERR(CAM_OIS,
 					"preprog parsing failed: %d", rc);
@@ -592,7 +593,7 @@ static int cam_ois_pkt_parse(struct cam_ois_ctrl_t *o_ctrl, void *arg)
 				rc = cam_sensor_i2c_command_parser(
 					&o_ctrl->io_master_info,
 					i2c_reg_settings,
-					&cmd_desc[i], 1);
+					&cmd_desc[i], 1, NULL);
 				if (rc < 0) {
 					CAM_ERR(CAM_OIS,
 					"precoeff parsing failed: %d", rc);
@@ -613,6 +614,20 @@ static int cam_ois_pkt_parse(struct cam_ois_ctrl_t *o_ctrl, void *arg)
 				if (rc < 0) {
 					CAM_ERR(CAM_OIS,
 						"Calib parsing failed: %d", rc);
+					return rc;
+				}
+			} else if (((o_ctrl->ois_postcalib_flag) != 0) &&
+				o_ctrl->i2c_postcalib_data.is_settings_valid == 0) {
+				CAM_DBG(CAM_OIS, "Received PostCalib Settings");
+				i2c_reg_settings = &(o_ctrl->i2c_postcalib_data);
+				i2c_reg_settings->request_id = 0;
+				rc = cam_sensor_i2c_command_parser(
+					&o_ctrl->io_master_info,
+					i2c_reg_settings,
+					&cmd_desc[i], 1, NULL);
+				if (rc < 0) {
+					CAM_ERR(CAM_OIS,
+					"postcalib parsing failed: %d", rc);
 					return rc;
 				}
 			}
@@ -692,6 +707,15 @@ static int cam_ois_pkt_parse(struct cam_ois_ctrl_t *o_ctrl, void *arg)
 					goto pwr_dwn;
 				}
 			}
+
+			if (o_ctrl->ois_postcalib_flag) {
+				rc = cam_ois_apply_settings(o_ctrl,
+					&o_ctrl->i2c_postcalib_data);
+				if (rc) {
+					CAM_ERR(CAM_OIS, "Cannot apply post calib data");
+					goto pwr_dwn;
+				}
+			}
 		}
 		rc = delete_request(&o_ctrl->i2c_init_data);
 		if (rc < 0) {
@@ -715,6 +739,12 @@ static int cam_ois_pkt_parse(struct cam_ois_ctrl_t *o_ctrl, void *arg)
 		if (rc < 0) {
 			CAM_WARN(CAM_OIS,
 				"Fail deleting Calibration data: rc: %d", rc);
+			rc = 0;
+		}
+		rc = delete_request(&o_ctrl->i2c_postcalib_data);
+		if (rc < 0) {
+			CAM_WARN(CAM_OIS,
+				"Fail deleting PostCalib data: rc: %d", rc);
 			rc = 0;
 		}
 		break;

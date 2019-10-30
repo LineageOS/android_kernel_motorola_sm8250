@@ -95,6 +95,7 @@ struct cam_ois_intf_params {
  * @i2c_init_data       :   ois i2c init settings
  * @i2c_preprog_data    :   ois i2c preprog settings
  * @i2c_precoeff_data   :   ois i2c precoeff settings
+ * @i2c_postcalib_data  :   ois i2c postcalib settings
  * @i2c_mode_data       :   ois i2c mode settings
  * @i2c_calib_data      :   ois i2c calib settings
  * @ois_device_type     :   ois device type
@@ -103,6 +104,7 @@ struct cam_ois_intf_params {
  * @ois_preprog_flag    :   flag for preprog reg settings
  * @ois_precoeff_flag   :   flag for precoeff reg settings
  * @is_ois_calib        :   flag for Calibration data
+ * @ois_postcalib_flag  :   flag for postcalib reg settings
  * @opcode              :   ois opcode
  * @device_name         :   Device name
  *
@@ -121,6 +123,7 @@ struct cam_ois_ctrl_t {
 	struct i2c_settings_array i2c_preprog_data;
 	struct i2c_settings_array i2c_precoeff_data;
 	struct i2c_settings_array i2c_calib_data;
+	struct i2c_settings_array i2c_postcalib_data;
 	struct i2c_settings_array i2c_mode_data;
 	enum msm_camera_device_type_t ois_device_type;
 	enum cam_ois_state cam_ois_state;
@@ -129,6 +132,7 @@ struct cam_ois_ctrl_t {
 	uint8_t ois_preprog_flag;
 	uint8_t ois_precoeff_flag;
 	uint8_t is_ois_calib;
+	uint8_t ois_postcalib_flag;
 	struct cam_ois_opcode opcode;
 	uint32_t open_cnt;
 };
