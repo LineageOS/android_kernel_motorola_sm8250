@@ -92,8 +92,13 @@ qcom,mdss-dsi-display-timings {
 			15 00 00 00 00 00 02 6F 0D
 			15 00 00 00 00 00 02 F3 CB
 			39 00 00 00 00 00 05 FF AA 55 A5 00
+			39 00 00 00 00 00 06 F0 55 AA 52 08 01 /* Page 1*/
+			/*TSP_VTE, TSP_HTE*/
+			39 00 00 00 00 00 04 D1 07 02 10
+			39 00 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0 */
+			/*GPO0=TE, GPO1=ALL MIPI error, GPO2=TSP_HTE, GPO3=TSP_CTE*/
+			39 00 00 00 00 00 05 BE 0E 09 94 93
 			/* Framne rate = 60hz */
-			39 00 00 00 00 00 06 F0 55 AA 52 08 00
 			15 00 00 00 00 00 02 B2 01 /* backlight fix */
 			15 00 00 00 00 00 02 6F 0E
 			15 00 00 00 00 00 02 BA 18
