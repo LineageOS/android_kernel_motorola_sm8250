@@ -106,6 +106,7 @@ struct cam_ois_intf_params {
  * @is_ois_calib        :   flag for Calibration data
  * @ois_postcalib_flag  :   flag for postcalib reg settings
  * @opcode              :   ois opcode
+ * @ois_fw_txn_data_sz  :   num data bytes per i2c txn when sending fw
  * @device_name         :   Device name
  *
  */
@@ -133,6 +134,7 @@ struct cam_ois_ctrl_t {
 	uint8_t ois_precoeff_flag;
 	uint8_t is_ois_calib;
 	uint8_t ois_postcalib_flag;
+	uint8_t ois_fw_txn_data_sz;
 	struct cam_ois_opcode opcode;
 	uint32_t open_cnt;
 };
