@@ -129,6 +129,7 @@ struct cam_ois_opcode {
  * @ois_fw_flag           :    indicates if fw is present or not
  * @ois_preprog_flag      :    indicates if preprog is present or not
  * @ois_precoeff_flag     :    indicates if precoeff is present or not
+ * @ois_postcalib_flag    :    indicates if postcalib is present or not
  * @is_ois_calib          :    indicates the calibration data is available
  * @ois_name              :    OIS name
  * @opcode                :    opcode
@@ -141,6 +142,7 @@ struct cam_cmd_ois_info {
 	uint8_t               ois_preprog_flag;
 	uint8_t               ois_precoeff_flag;
 	uint8_t               is_ois_calib;
+	uint8_t               ois_postcalib_flag;
 	char                  ois_name[MAX_OIS_NAME_SIZE];
 	struct cam_ois_opcode opcode;
 } __attribute__((packed));
