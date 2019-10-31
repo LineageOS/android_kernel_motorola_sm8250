@@ -76,7 +76,7 @@
 
 		vddio-supply = <&pm8150_l14>;
 		vci-supply = <&disp_vci>;
-		qcom,dsi-default-panel = <&mot_boe_667_1080p_cmd_v0>;
+		qcom,dsi-default-panel = <&mot_boe_gdx_667_1080p_cmd_v0>;
 
 		qcom,mdp = <&mdss_mdp>;
 	};
@@ -105,7 +105,6 @@
 
 		vddio-supply = <&pm8150_l14>;
 		vdd-supply = <&pm8150a_l11>;
-/*		avdd-supply = <&display_panel_avdd>; */
 
 		qcom,mdp = <&mdss_mdp>;
 	};
@@ -141,13 +140,22 @@
 		#include "dsi-panel-mot-smd-639-1080p-cmd-common.dtsi"
 	};
 
-	mot_boe_667_1080p_cmd_v0: qcom,mdss_dsi_mot_boe_667_1080p_cmd_v0 {
+	mot_boe_gdx_667_1080p_cmd_v0: qcom,mdss_dsi_mot_boe_gdx_667_1080p_cmd_v0 {
 		#include "dsi-panel-mot-boe-667-1080p-dsc-cmd-common.dtsi"
 	};
 
-	mot_csot_667_1080p_cmd_v0: qcom,mdss_dsi_mot_csot_667_1080p_cmd_v0 {
+	mot_boe_lsi_667_1080p_cmd_v0: qcom,mdss_dsi_mot_boe_lsi_667_1080p_cmd_v0 {
+		#include "dsi-panel-mot-boe-667-1080p-dsc-cmd-common.dtsi"
+	};
+
+	mot_csot_gdx_667_1080p_cmd_v0: qcom,mdss_dsi_mot_csot_gdx_667_1080p_cmd_v0 {
 		#include "dsi-panel-mot-csot-667-1080p-dsc-cmd-common.dtsi"
 	};
+
+	mot_csot_lsi_667_1080p_cmd_v0: qcom,mdss_dsi_mot_csot_lsi_667_1080p_cmd_v0 {
+		#include "dsi-panel-mot-csot-667-1080p-dsc-cmd-common.dtsi"
+	};
+
 };
 
 &sde_dsi1 {
@@ -192,14 +200,6 @@
         qcom,platform-te-gpio = <&tlmm 66 0>;
         qcom,platform-reset-gpio = <&tlmm 75 0>;
 
-	qcom,esd-check-enabled;
-	qcom,mdss-dsi-panel-status-check-mode = "reg_read";
-	qcom,mdss-dsi-panel-status-command = [06 01 00 01 00 00 01 0a];
-	qcom,mdss-dsi-panel-status-command-state = "dsi_lp_mode";
-	qcom,mdss-dsi-panel-status-value = <0x9c>;
-	qcom,mdss-dsi-panel-status-read-length = <1>;
-	qcom,mdss-dsi-hbm-dim-off;
-
 	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
 	qcom,mdss-dsi-display-timings {
 		timing@0 {
@@ -218,19 +218,9 @@
 	};
 };
 
-&mot_boe_667_1080p_cmd_v0 {
+&mot_boe_gdx_667_1080p_cmd_v0 {
 	qcom,platform-te-gpio = <&tlmm 66 0>;
 	qcom,platform-reset-gpio = <&tlmm 75 0>;
-
-	/* disable ESD for bringup
-	qcom,esd-check-enabled;
-	qcom,mdss-dsi-panel-status-check-mode = "reg_read";
-	qcom,mdss-dsi-panel-status-command = [06 01 00 01 00 00 01 0a];
-	qcom,mdss-dsi-panel-status-command-state = "dsi_lp_mode";
-	qcom,mdss-dsi-panel-status-value = <0x9c>;
-	qcom,mdss-dsi-panel-status-read-length = <1>;
-	qcom,mdss-dsi-hbm-dim-off;
-	*/
 
 	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
 	qcom,mdss-dsi-display-timings {
@@ -244,23 +234,103 @@
 	};
 };
 
-&mot_csot_667_1080p_cmd_v0 {
+&mot_boe_lsi_667_1080p_cmd_v0 {
 	qcom,platform-te-gpio = <&tlmm 66 0>;
 	qcom,platform-reset-gpio = <&tlmm 75 0>;
-
-	/* disable ESD for bringup
-	qcom,esd-check-enabled;
-	qcom,mdss-dsi-panel-status-check-mode = "reg_read";
-	qcom,mdss-dsi-panel-status-command = [06 01 00 01 00 00 01 0a];
-	qcom,mdss-dsi-panel-status-command-state = "dsi_lp_mode";
-	qcom,mdss-dsi-panel-status-value = <0x9c>;
-	qcom,mdss-dsi-panel-status-read-length = <1>;
-	qcom,mdss-dsi-hbm-dim-off;
-	*/
 
 	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
 	qcom,mdss-dsi-display-timings {
 		timing@0 {
+			qcom,mdss-dsi-on-command = [
+				39 00 00 00 00 00 05 FF AA 55 A5 81
+				15 00 00 00 00 00 02 6F 0D
+				15 00 00 00 00 00 02 F3 CB
+				39 00 00 00 00 00 05 FF AA 55 A5 00
+				39 00 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0 */
+				/* Framne rate = 60hz */
+				15 00 00 00 00 00 02 B2 01 /* backlight fix */
+				15 00 00 00 00 00 02 6F 0E
+				15 00 00 00 00 00 02 BA 18
+				15 00 00 00 00 00 02 6F 03
+				39 00 00 00 00 00 04 C0 80 00 00
+				15 00 00 00 00 00 02 26 01
+				/* Done with frame rate setting */
+				05 00 00 00 00 00 01 35  /* Set tear on */
+				15 00 00 00 00 00 02 53 20 /* HBM off ,dimming=1frame*/
+				/* Spec calls for 51 06 40 0F FF*/
+				39 00 00 00 00 00 05 51 00 00 0F FF
+				39 00 00 00 00 00 05 2A 00 00 04 37 /* Column Addr set */
+				39 00 00 00 00 00 05 2B 00 00 09 23 /* Row Addr set */
+				/* PPS stable1 10bit3.75x slice 20 */
+				39 00 00 00 00 00 13 93 AB 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
+				15 00 00 00 00 00 02 90 01  /* Compression method selection*/
+				15 00 00 00 00 00 02 03 11 /* Compression mode */
+				05 01 00 00 00 00 01 2C /* Memory write */
+				05 01 00 00 78 00 01 11
+				15 00 00 00 00 00 02 55 00      /* ACL OFF */
+				05 01 00 00 00 00 01 29];       /* display on */
+
+			/* Phy 4; w=2880 h=2340; 10bits 60hz; 3.75x dsc */
+			qcom,mdss-dsi-panel-phy-timings = [00 0D 03 03 1D 1D 04
+					03 01 02 04 00 0D 13];
+			qcom,display-topology = <2 2 1>;
+			qcom,default-topology-index = <0>;
+		};
+	};
+};
+
+&mot_csot_gdx_667_1080p_cmd_v0 {
+	qcom,platform-te-gpio = <&tlmm 66 0>;
+	qcom,platform-reset-gpio = <&tlmm 75 0>;
+
+	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
+	qcom,mdss-dsi-display-timings {
+		timing@0 {
+			/* Phy 4; w=2880 h=2340; 10bits 60hz; 3.75x dsc */
+			qcom,mdss-dsi-panel-phy-timings = [00 0D 03 03 1D 1D 04
+							03 01 02 04 00 0D 13];
+			qcom,display-topology = <2 2 1>;
+			qcom,default-topology-index = <0>;
+		};
+	};
+};
+
+&mot_csot_lsi_667_1080p_cmd_v0 {
+	qcom,platform-te-gpio = <&tlmm 66 0>;
+	qcom,platform-reset-gpio = <&tlmm 75 0>;
+
+	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
+	qcom,mdss-dsi-display-timings {
+		timing@0 {
+			qcom,mdss-dsi-on-command = [
+				39 00 00 00 00 00 05 FF AA 55 A5 81
+				15 00 00 00 00 00 02 6F 0D
+				15 00 00 00 00 00 02 F3 CB
+				39 00 00 00 00 00 05 FF AA 55 A5 00
+				39 00 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0 */
+				/* Framne rate = 60hz */
+				15 00 00 00 00 00 02 B2 01 /* backlight fix */
+				15 00 00 00 00 00 02 6F 0E
+				15 00 00 00 00 00 02 BA 18
+				15 00 00 00 00 00 02 6F 03
+				39 00 00 00 00 00 04 C0 80 00 00
+				15 00 00 00 00 00 02 26 01
+				/* Done with frame rate setting */
+				05 00 00 00 00 00 01 35  /* Set tear on */
+				15 00 00 00 00 00 02 53 20 /* HBM off ,dimming=1frame*/
+				/* Spec calls for 51 06 40 0F FF*/
+				39 00 00 00 00 00 05 51 00 00 0F FF
+				39 00 00 00 00 00 05 2A 00 00 04 37 /* Column Addr set */
+				39 00 00 00 00 00 05 2B 00 00 09 23 /* Row Addr set */
+				/* PPS stable1 10bit3.75x slice 20 */
+				39 00 00 00 00 00 13 93 AB 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
+				15 00 00 00 00 00 02 90 01  /* Compression method selection*/
+				15 00 00 00 00 00 02 03 11 /* Compression mode */
+				05 01 00 00 00 00 01 2C /* Memory write */
+				05 01 00 00 78 00 01 11
+				15 00 00 00 00 00 02 55 00 /* ACL OFF */
+				05 01 00 00 00 00 01 29];  /* display on */
+
 			/* Phy 4; w=2880 h=2340; 10bits 60hz; 3.75x dsc */
 			qcom,mdss-dsi-panel-phy-timings = [00 0D 03 03 1D 1D 04
 							03 01 02 04 00 0D 13];
