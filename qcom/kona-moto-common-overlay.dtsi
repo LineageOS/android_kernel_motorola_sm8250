@@ -732,12 +732,27 @@
 &qupv3_se15_i2c {
 	status = "okay";
 
-	aw8695_haptic@5a {
-		status = "ok";
-		compatible = "awinic,aw8695_haptic";
-		reg = <0x5a>;
+	aw8697_haptic@5a {
+		status = "okay";
+		compatible = "awinic,aw8697_haptic";
+		reg = <0x5A>;
 		reset-gpio = <&tlmm 135 0>;
 		irq-gpio = <&tlmm 136 0>;
+		vib_mode = <1>;   /*mode:   RAM mode->0; CONT mode -> 1*/
+		vib_f0_pre = <1700>;
+		vib_f0_cali_percen = <7>;
+		vib_cont_drv_lev = <105>;
+		vib_cont_drv_lvl_ov = <125>;
+		vib_cont_td = <0x009a>;
+		vib_cont_zc_thr = <0x0ff1>;
+		vib_cont_num_brk = <3>;
+		vib_f0_coeff = <260>; /*Don't modify it    2.604167*/
+		vib_f0_trace_parameter = <0x05 0x03 0x02 0x0f>;
+		vib_bemf_config = <0x10 0x08 0x03 0xf8>;
+		vib_sw_brake = <0x2c>;
+		vib_tset = <0x12>;
+		vib_r_spare = <0x68>;
+                vib_bstdbg = <0x30 0xeb 0xd4 0 0 0>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&haptic_irq_default>;
 	};
