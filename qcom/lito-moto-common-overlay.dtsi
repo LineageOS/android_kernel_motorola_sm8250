@@ -46,12 +46,6 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&usb_eldo13>;
 	};
-
-	mot_batterydata: qcom,battery-data {
-		qcom,batt-id-range-pct = <15>;
-		#include "qg-batterydata-alium-3600mah.dtsi"
-		#include "qg-batterydata-atl466271_3300mAh.dtsi"
-	};
 };
 
 &tlmm{
@@ -213,10 +207,8 @@
 			   "sbux_res",
 			   "vph_voltage";
 	qcom,battery-data = <&mot_batterydata>;
-	qcom,sec-charger-config = <1>;
 	qcom,auto-recharge-soc = <98>;
 	qcom,step-charging-enable;
-	qcom,sw-jeita-enable;
 	qcom,charger-temp-max = <800>;
 	qcom,smb-temp-max = <800>;
 	qcom,suspend-input-on-debug-batt;
