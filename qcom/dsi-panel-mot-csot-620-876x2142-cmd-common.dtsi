@@ -15,7 +15,6 @@ qcom,mdss-dsi-panel-name = "mipi_mot_cmd_csot_876x2142_620";
 
 qcom,dsi-ctrl-num = <0>;
 qcom,dsi-phy-num = <0>;
-qcom,dsi-select-clocks = "src_byte_clk0", "src_pixel_clk0";
 
 qcom,mdss-dsi-panel-supplier = "csot";
 qcom,mdss-dsi-panel-type = "dsi_cmd_mode";
