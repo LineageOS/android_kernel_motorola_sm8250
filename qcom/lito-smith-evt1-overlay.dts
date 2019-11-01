@@ -40,3 +40,85 @@
 &pm7250b_charger {
 	vconn-parent-supply = <&vreg_5p0>;
 };
+
+&tlmm{
+	bq27426_irq_main: bq27426-irq-battery-main {
+		mux {
+			pins = "gpio55";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio55";
+			drive-strength = <2>; /* 2 MA */
+			bias-disable;
+			input-enable;
+		};
+	};
+
+};
+
+&qupv3_se9_i2c {
+	bq27426_main: bq27426-battery-main@55 {
+		compatible = "ti,bq27426";
+		reg = <0x55>;
+		status = "okay";
+		pinctrl-names = "default";
+		pinctrl-0 = <&bq27426_irq_main>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <119 0>;
+		interrupt-names = "bq27426_irq";
+		mmi,fg-batt-main;
+		design-capacity = <1400>;
+		df-serialnum = "dummy1";
+		/*battery_profile_0 {
+			chem_id = <2542>;
+			serialnum = "SB18C54570";
+		};
+		battery_profile_1 {
+			chem_id = <5>;
+			serialnum = "SB18C54580";
+		};*/
+	};
+};
+
+&tlmm{
+	bq27426_irq_flip: bq27426-irq-battery-flip {
+		mux {
+			pins = "gpio90";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio90";
+			drive-strength = <2>; /* 2 MA */
+			bias-disable;
+			input-enable;
+		};
+	};
+
+};
+
+&qupv3_se0_i2c {
+	bq27426_flip: bq27426-battery-flip@55 {
+		compatible = "ti,bq27426";
+		reg = <0x55>;
+		status = "okay";
+		pinctrl-names = "default";
+		pinctrl-0 = <&bq27426_irq_flip>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <119 0>;
+		interrupt-names = "bq27426_irq";
+		mmi,fg-batt-flip;
+		design-capacity = <1400>;
+		df-serialnum = "dummy2";
+		/*battery_profile_0 {
+			chem_id = <2542>;
+			serialnum = "SB18C54570";
+		};
+		battery_profile_1 {
+			chem_id = <5>;
+			serialnum = "SB18C54580";
+		};*/
+	};
+};
