@@ -13,9 +13,8 @@
 compatible = "qcom,mdss-dsi-panel";
 qcom,mdss-dsi-panel-name = "mipi_mot_cmd_boe_800x600_269";
 
-qcom,dsi-ctrl-num = <1>;
-qcom,dsi-phy-num = <1>;
-qcom,dsi-select-clocks = "src_byte_clk0", "src_pixel_clk0";
+qcom,dsi-sec-ctrl-num = <1>;
+qcom,dsi-sec-phy-num = <1>;
 
 qcom,mdss-dsi-panel-supplier = "boe";
 qcom,mdss-dsi-panel-type = "dsi_cmd_mode";
@@ -46,7 +45,7 @@ qcom,mdss-dsi-te-using-te-pin;
 
 qcom,mdss-dsi-bl-min-level = <3>;
 qcom,mdss-dsi-bl-max-level = <255>;
-qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
+qcom,mdss-dsi-sec-bl-pmic-control-type = "bl_ctrl_dcs";
 
 /* Enable ESD checking */
 qcom,esd-check-enabled;
@@ -105,7 +104,7 @@ qcom,mdss-dsi-display-timings {
 	};
 };
 
-qcom,panel-supply-entries {
+qcom,panel-sec-supply-entries {
 	#address-cells = <1>;
 	#size-cells = <0>;
 
