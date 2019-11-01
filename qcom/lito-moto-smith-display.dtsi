@@ -118,7 +118,7 @@
 				pins = "gpio92";
 				drive-strength = <2>;   /* 2 mA */
 				bias-no-pull;
-				output-enable;
+				output-high;
 			};
 		};
 	};
@@ -134,7 +134,7 @@
 				pins = "gpio23";
 				drive-strength = <2>;   /* 2 mA */
 				bias-no-pull;
-				output-enable;
+				output-high;
 			};
 		};
 	};
@@ -170,6 +170,8 @@
 		regulator-name = "vci_disp_s_supply";
 		vin-supply = <&L16A>;
 		enable-active-high;
+		regulator-boot-on;
+
 		gpio = <&tlmm 23 GPIO_ACTIVE_HIGH>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&vci_en_s_default>;
@@ -181,6 +183,8 @@
 		regulator-name = "vio_disp_s_supply";
 		vin-supply = <&L1C>;
 		enable-active-high;
+		regulator-boot-on;
+
 		gpio = <&tlmm 92 GPIO_ACTIVE_HIGH>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&vio_en_s_default>;
@@ -230,9 +234,9 @@
 		vio_disp-supply = <&vio_disp_m_vreg>;
 
 		qcom,mdp = <&mdss_mdp>;
-		/* Ths should be removed to let the kernel cmd line (LK) to control */
-		qcom,dsi-default-panel = <&mot_csot_620_876x2142_cmd_v1>;
+		qcom,dsi-default-panel = <&mot_boe_620_876x2142_cmd_v0>;
 	};
+
 
 	sde_dsi1: qcom,dsi-display-secondary {
 		compatible = "qcom,dsi-display";
@@ -256,9 +260,9 @@
 		qcom,panel-te-source = <1>;
 		vio_disp-supply = <&vio_disp_s_vreg>;
 		vci_disp-supply = <&vci_disp_s_vreg>;
+
 		qcom,mdp = <&mdss_mdp>;
-		/* Ths should be removed to let the kernel cmd line (LK) to control */
-                qcom,dsi-default-panel = <&mot_boe_269_800x600_cmd_v2>;
+                qcom,dsi-default-panel = <&mot_boe_269_800x600_cmd_v1>;
 	};
 
 	sde_wb: qcom,wb-display@0 {
@@ -297,18 +301,13 @@
 	pinctrl-1 = <&sde_dp_usbplug_cc_suspend>;
 };
 
-&sde_dsi1 {
-	status = "disabled";
-};
-
 &pm8150a_amoled {
 	status = "ok";
 };
 
 &mdss_mdp {
-	connectors = <&sde_wb &sde_dsi &sde_rscc>;
+	connectors = <&sde_wb &sde_dsi &sde_dsi1 &sde_rscc>;
 };
-
 
 &mot_auo_620_876x2142_cmd_v0 {
 	qcom,platform-te-gpio = <&tlmm 10 0>;
@@ -534,13 +533,13 @@
 
 &mot_boe_269_800x600_cmd_v0 {
 	qcom,platform-te-gpio = <&tlmm 11 0>;
-	qcom,platform-reset-gpio = <&pm8150l_gpios 4 0>;
+	qcom,platform-sec-reset-gpio = <&pm8150l_gpios 4 0>;
 
-	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
+	qcom,dsi-select-sec-clocks = "mux_byte_clk1", "mux_pixel_clk1";
 	qcom,mdss-dsi-display-timings {
 		timing@0{
-			qcom,mdss-dsi-panel-phy-timings = [00 0A 02 03 1C 1C 02
-							02 01 02 04 00 0B 12];
+			qcom,mdss-dsi-panel-phy-timings = [00 10 03 03 1E 1E 04
+							04 02 02 04 00 0F 13];
 			qcom,display-topology = <1 0 1>;
 			qcom,default-topology-index = <0>;
 			qcom,mdss-dsi-on-command = [
@@ -564,13 +563,13 @@
 
 &mot_boe_269_800x600_cmd_v1 {
 	qcom,platform-te-gpio = <&tlmm 11 0>;
-	qcom,platform-reset-gpio = <&pm8150l_gpios 4 0>;
+	qcom,platform-sec-reset-gpio = <&pm8150l_gpios 4 0>;
 
-	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
+	qcom,dsi-select-sec-clocks = "mux_byte_clk1", "mux_pixel_clk1";
 	qcom,mdss-dsi-display-timings {
 		timing@0{
-			qcom,mdss-dsi-panel-phy-timings = [00 0A 02 03 1C 1C 02
-							02 01 02 04 00 0B 12];
+			qcom,mdss-dsi-panel-phy-timings = [00 10 03 03 1E 1E 04
+							04 02 02 04 00 0F 13];
 
 			qcom,display-topology = <1 0 1>;
 			qcom,default-topology-index = <0>;
@@ -599,13 +598,13 @@
 
 &mot_boe_269_800x600_cmd_v2 {
 	qcom,platform-te-gpio = <&tlmm 11 0>;
-	qcom,platform-reset-gpio = <&pm8150l_gpios 4 0>;
+	qcom,platform-sec-reset-gpio = <&pm8150l_gpios 4 0>;
 
-	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
+	qcom,dsi-select-sec-clocks = "mux_byte_clk1", "mux_pixel_clk1";
 	qcom,mdss-dsi-display-timings {
 		timing@0{
-			qcom,mdss-dsi-panel-phy-timings = [00 0A 02 03 1C 1C 02
-							02 01 02 04 00 0B 12];
+			qcom,mdss-dsi-panel-phy-timings = [00 10 03 03 1E 1E 04
+							04 02 02 04 00 0F 13];
 
 			qcom,display-topology = <1 0 1>;
 			qcom,default-topology-index = <0>;
