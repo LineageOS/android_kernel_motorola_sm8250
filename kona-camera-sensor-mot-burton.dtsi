@@ -199,6 +199,20 @@
 			rgltr-load-current = <0>;
 		};
 
+		ois_main: qcom,ois@0 {
+			cell-index = <0>;
+			reg = <0x0>;
+			compatible = "qcom,ois";
+			cci-master = <0>;
+			cam_vio-supply = <&pm8150a_l5>;
+			regulator-names = "cam_vio";
+			rgltr-cntrl-support;
+			rgltr-min-voltage = <1800000>;
+			rgltr-max-voltage = <1800000>;
+			rgltr-load-current = <14000>;
+			status = "ok";
+		};
+
 		main_sensor: qcom,cam-sensor@0 {
 			cell-index = <0>;
 			compatible = "qcom,cam-sensor";
@@ -209,6 +223,7 @@
 			sensor-position-yaw = <180>;
 			led-flash-src = <&led_flash_rear>;
 			actuator-src = <&actuator_rear>;
+			ois-src = <&ois_main>;
 			cam_vio-supply = <&pm8150a_l5>;
 			cam_clk-supply = <&titan_top_gdsc>;
 			regulator-names = "cam_vio", "cam_clk";
@@ -292,8 +307,8 @@
 		rgltr-load-current = <0>;
 	};
 
-	ois_tele: qcom,ois@0 {
-		cell-index = <0>;
+	ois_tele: qcom,ois@1 {
+		cell-index = <1>;
 		reg = <0x1>;
 		compatible = "qcom,ois";
 		cci-master = <1>;
@@ -337,7 +352,7 @@
 		rgltr-cntrl-support;
 		rgltr-min-voltage = <1800000 2800000 1050000 0>;
 		rgltr-max-voltage = <1800000 2800000 1050000 0>;
-		rgltr-load-current = <19800 390000 53000 0>;
+		rgltr-load-current = <19800 53000 390000 0>;
 		gpio-no-mux = <0>;
 		pinctrl-names = "cam_default", "cam_suspend";
 		pinctrl-0 = <&cam_sensor_mclk3_active
