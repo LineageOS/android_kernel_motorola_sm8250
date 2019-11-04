@@ -995,6 +995,11 @@
 	extcon = <&pm8150b_pdphy>, <&pm8150b_pdphy>, <&eud>;
 };
 
+&usb2_phy0 {
+	qcom,param-override-seq = <0xE1 0x6C
+				   0xC3 0x70>;
+};
+
 &usb_qmp_dp_phy {
 	extcon = <&pm8150b_pdphy>;
 };
