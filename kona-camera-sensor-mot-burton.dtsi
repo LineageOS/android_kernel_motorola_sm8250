@@ -389,9 +389,9 @@
 		clock-rates = <24000000>;
 	};
 
-	tele_sensor: qcom,cam-sensor@4 {
-		cell-index = <4>;
-		reg = <0x04>;
+	tele_sensor: qcom,cam-sensor@3 {
+		cell-index = <3>;
+		reg = <0x03>;
 		compatible = "qcom,cam-sensor";
 		csiphy-sd-index = <1>;
 		sensor-position-roll = <0>;
