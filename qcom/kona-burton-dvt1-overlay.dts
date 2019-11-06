@@ -25,3 +25,9 @@
 /*
  * Burton HW rev DVT1 specific changes go here
  */
+
+&qupv3_se13_i2c {
+	goodix_ts_i2c@5d {
+		status = "/chosen","mmi,touch","true";
+	};
+};
