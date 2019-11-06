@@ -28,8 +28,13 @@
 
 &qupv3_se13_i2c {
 	goodix_ts_i2c@5d {
+		status = "/chosen","mmi,panel_name","contains","smd";
 		goodix,x2x;
 		goodix,cfg_bin_name = "goodix_cfg_group_smd.bin";
+	};
+
+	sec_mmi@48 {
+		status = "disabled";
 	};
 };
 
@@ -110,12 +115,6 @@
 &qupv3_se15_i2c {
 	sx933x@28 {
 		status = "disabled";
-	};
-};
-
-&qupv3_se13_i2c {
-	goodix_ts_i2c@5d {
-		status = "/chosen","mmi,panel_name","contains","smd";
 	};
 };
 
@@ -213,3 +212,4 @@
 		};
 	};
 };
+
