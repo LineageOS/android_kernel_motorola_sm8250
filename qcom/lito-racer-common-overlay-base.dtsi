@@ -26,8 +26,9 @@
 	};
 
 	mot_batterydata: qcom,battery-data {
+		df-serialnum = "SB18C66911";
 		qcom,batt-id-range-pct = <15>;
-		#include "qg-batterydata-atl466271_3300mAh.dtsi"
+		#include "qg-batterydata-lr50-atl-4500mah.dtsi"
 	};
 };
 
@@ -219,10 +220,10 @@
 	qcom,auto-recharge-soc = <99>;
 	qcom,charger-temp-max = <800>;
 	qcom,smb-temp-max = <800>;
-        qcom,fcc-max-ua = <3000000>;
-        qcom,fv-max-uv = <4400000>;
+        qcom,fcc-max-ua = <3600000>;
+        qcom,fv-max-uv = <4450000>;
         qcom,usb-icl-ua = <3000000>;
-        qcom,thermal-mitigation = <3000000 2500000
+        qcom,thermal-mitigation = <3600000 2500000
                         2000000 1500000
                         1200000 900000
                         600000 300000>;
@@ -241,12 +242,12 @@
 			qcom,enable-charging-limit;
 			qcom,upper-limit-capacity = <75>;
 			qcom,lower-limit-capacity = <60>;
-			qcom,mmi-temp-zones = <0 4200 776 0>,
-						<10 4200 1940 776>,
-						<15 0 1940 1940>,
-						<45 4200 3000 2000>,
-						<60 4200 1940 0>;
-			qcom,iterm-ma = <194>;
+			qcom,mmi-temp-zones = <0 4200 880 0>,
+						<10 4200 2185 880>,
+						<15 0 2185 2185>,
+						<45 4200 3600 2185>,
+						<60 4200 2185 0>;
+			qcom,iterm-ma = <110>;
 			qcom,vfloat-comp-uv = <20000>;
 			qcom,force-hvdcp-5v;
 		};
