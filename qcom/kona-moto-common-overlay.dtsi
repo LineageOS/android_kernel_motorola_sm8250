@@ -120,17 +120,6 @@
 		#include "fg-gen4-batterydata-alium-3600mah.dtsi"
 		#include "fg-gen4-batterydata-ascent-3450mah.dtsi"
 	};
-	extcon_usb1: extcon_usb1 {
-		compatible = "linux,extcon-usb-gpio";
-		vbus-gpio = <&pm8150_gpios 10 GPIO_ACTIVE_HIGH>;
-		id-gpio = <&tlmm 91 GPIO_ACTIVE_HIGH>;
-		vbus-out-gpio = <&pm8150_gpios 9 GPIO_ACTIVE_HIGH>;
-
-		pinctrl-names = "default";
-		pinctrl-0 = <&usb2_vbus_det_default
-			     &usb2_id_det_default
-			     &usb2_vbus_boost_default>;
-	};
 };
 
 &soc {
@@ -978,8 +967,41 @@
 			0x8128 0x00000000
 			0x4004 0x7F >;
 	};
+	redriver: redriver@1a {
+		compatible = "onnn,redriver";
+		reg = <0x1a>;
+		extcon = <&pm8150b_pdphy>, <&pm8150b_pdphy>;
+		eq = /bits/ 8 <
+				/* Parameters for USB */
+				0x4 0x4 0x4 0x4
+				/* Parameters for DP */
+				0x6 0x4 0x4 0x6>;
+		flat-gain = /bits/ 8 <
+				/* Parameters for USB */
+				0x3 0x1 0x1 0x3
+				/* Parameters for DP */
+				0x2 0x1 0x1 0x2>;
+		output-comp = /bits/ 8 <
+				/* Parameters for USB */
+				0x3 0x3 0x3 0x3
+				/* Parameters for DP */
+				0x3 0x3 0x3 0x3>;
+		loss-match = /bits/ 8 <
+				/* Parameters for USB */
+				0x1 0x3 0x3 0x1
+				/* Parameters for DP */
+				0x3 0x3 0x3 0x3>;
+	};
 };
 
-&usb1 {
-	extcon = <&extcon_usb1>;
+&usb0 {
+	extcon = <&pm8150b_pdphy>, <&pm8150b_pdphy>, <&eud>;
+};
+
+&usb_qmp_dp_phy {
+	extcon = <&pm8150b_pdphy>;
+};
+
+&sde_dp {
+	extcon = <&pm8150b_pdphy>;
 };
