@@ -116,9 +116,8 @@
 	};
 
 	mot_batterydata: qcom,battery-data {
-		qcom,batt-id-range-pct = <15>;
-		#include "fg-gen4-batterydata-alium-3600mah.dtsi"
-		#include "fg-gen4-batterydata-ascent-3450mah.dtsi"
+		qcom,batt-id-range-pct = <100>;
+		#include "fg-gen4-batterydata-test_profile_5000mah.dtsi"
 	};
 };
 
@@ -194,8 +193,9 @@
 			   "vph_voltage",
 			   "chg_temp";
 	qcom,battery-data = <&mot_batterydata>;
-	qcom,fcc-max-ua = <2000000>;
-	qcom,fv-max-uv = <4400000>;
+	qcom,fcc-max-ua = <3600000>;
+	qcom,fv-max-uv = <4450000>;
+	qcom,usb-icl-ua = <3000000>;
 	qcom,wd-bark-time-secs = <16>;
 	qcom,suspend-input-on-debug-batt;
 	qcom,usbpd-phandle = <&pm8150b_pdphy>;
@@ -213,11 +213,12 @@
 			qcom,enable-factory-poweroff;
 			qcom,upper-limit-capacity = <75>;
 			qcom,lower-limit-capacity = <60>;
-			qcom,mmi-temp-zones = <0 4200 400 0>,
-						<10 4200 1000 400>,
-						<15 0 1000 1000>,
-						<45 4200 2000 1400>,
-						<60 4200 1000 0>;
+			qcom,mmi-temp-zones =
+						<0 4200 1000 0>,
+						<10 4200 2500 800>,
+						<15 0 2500 2500>,
+						<45 4450 3600 0>,
+						<60 4200 2500 0>;
 			qcom,iterm-ma = <97>;
 			qcom,vfloat-comp-uv = <20000>;
 			qcom,dc-icl-ma = <1300>;
