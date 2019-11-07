@@ -794,9 +794,11 @@ static int dp_aux_configure_aux_switch(struct dp_aux *dp_aux,
 	DP_DEBUG("enable=%d, orientation=%d, event=%d\n",
 			enable, orientation, event);
 
+	/*We don't use the fsa4480 on the 8250 base line
 	rc = fsa4480_switch_event(aux->aux_switch_node, event);
 	if (rc)
 		DP_ERR("failed to configure fsa4480 i2c device (%d)\n", rc);
+	*/
 end:
 	return rc;
 }
