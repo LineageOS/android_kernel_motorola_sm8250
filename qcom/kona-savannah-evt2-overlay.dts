@@ -97,7 +97,7 @@
 	slg,pmic-workaround;
 };
 
-&cs35l41_rcv {
+&cs35l41_spk {
 	reset-gpios = <&tlmm 139 0>;
 	interrupt-parent = <&tlmm>;
 	interrupts = <138 IRQ_TYPE_LEVEL_LOW>;

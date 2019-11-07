@@ -163,13 +163,13 @@
 			"IN1BR", "MICBIAS1B";
 
 		asoc-codec = <&stub_codec>, <&ext_disp_audio_codec>, <&cs47l35>,
-				<&cs35l41_spk>;
+				<&cs35l41_rcv>;
 		asoc-codec-names = "msm-stub-codec.1",
 				"msm-ext-disp-audio-codec-rx",
 				"cs47l35-codec", "cs35l41-spk", "cs35l41-rcv";
 		cirrus,prince-max-devs = <1>;
-		cirrus,prince-devs = <&cs35l41_spk>;
-		cirrus,prince-dev-prefix = "SPK";
+		cirrus,prince-devs = <&cs35l41_rcv>;
+		cirrus,prince-dev-prefix = "RCV";
 	};
 
 };
@@ -350,7 +350,7 @@
 };
 
 &lpi_tlmm {
-	prince_rcv_reset_default: prince_rcv_reset_default {
+	prince_spk_reset_default: prince_spk_reset_default {
 		mux {
 			pins = "gpio10";
 			function = "gpio";
@@ -363,7 +363,7 @@
 		};
 	};
 
-	prince_rcv_irq_default: prince_rcv_irq_default {
+	prince_spk_irq_default: prince_spk_irq_default {
 		mux {
 			pins = "gpio11";
 			function = "gpio";
@@ -540,7 +540,7 @@
 		};
 	};
 
-	cs35l41_spk: cs35l41@1 {
+	cs35l41_rcv: cs35l41@1 {
 		compatible = "cirrus,cs35l41";
 		spi-max-frequency = <26000000>;
 		reg = <0x1>;
@@ -600,7 +600,7 @@
 		};
 	};
 
-	cs35l41_rcv: cs35l41@2 {
+	cs35l41_spk: cs35l41@2 {
 		compatible = "cirrus,cs35l41";
 		status = "disabled";
 		spi-max-frequency = <26000000>;
@@ -610,13 +610,13 @@
 		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-controller;
 		#interrupt-cells = <2>;
-		interrupt-names = "prince_rcv_irq";
+		interrupt-names = "prince_spk_irq";
 
 		VA-supply = <&pm8150_s4>;
 		VP-supply = <&pm8150_s4>;
 
 		pinctrl-names = "default";
-		pinctrl-0 = <&prince_rcv_irq_default>, <&prince_rcv_reset_default>;
+		pinctrl-0 = <&prince_spk_irq_default>, <&prince_spk_reset_default>;
 
 		cirrus,left-channel-amp;
 		cirrus,boost-ind-nanohenry = <1000>; /* 1uH */
