@@ -38,19 +38,66 @@
 	status = "disabled";
 };
 
-&main_sensor {
-	csiphy-sd-index = <2>;
-	pinctrl-0 = <&cam_sensor_mclk2_active
-			&cam_sensor_active_rst2>;
-	pinctrl-1 = <&cam_sensor_mclk2_suspend
-			&cam_sensor_suspend_rst2>;
-	gpios = <&tlmm 96 0>,
-		<&tlmm 78 0>;
-	gpio-req-tbl-label =    "CAMIF_MCLK2",
-				"CAM_RESET2";
-	clocks = <&clock_camcc CAM_CC_MCLK2_CLK>;
-	pmicreset-gpios = <&pm8150l_gpios 5 0>;
-	slg,pmic-workaround;
+&cam_cci1 {
+	status = "disabled";
+	/delete-node/ qcom,actuator@0;
+	/delete-node/ qcom,cam-sensor@0;
+};
+
+&cam_cci0 {
+	actuator_rear_old: qcom,actuator@0 {
+		cell-index = <0>;
+		reg = <0x0>;
+		compatible = "qcom,actuator";
+		cci-master = <0>;
+		cam_vaf-supply = <&dummy_cam_vreg>;
+		regulator-names = "cam_vaf";
+		rgltr-cntrl-support;
+		rgltr-min-voltage = <2800000>;
+		rgltr-max-voltage = <2800000>;
+		rgltr-load-current = <0>;
+	};
+
+	main_sensor_old: qcom,cam-sensor@0 {
+		cell-index = <0>;
+		compatible = "qcom,cam-sensor";
+		reg = <0x00>;
+		csiphy-sd-index = <2>;
+		sensor-position-roll = <90>;
+		sensor-position-pitch = <0>;
+		sensor-position-yaw = <180>;
+		led-flash-src = <&led_flash_rear>;
+		actuator-src = <&actuator_rear>;
+		cam_vio-supply = <&pm8150a_l5>;
+		cam_clk-supply = <&titan_top_gdsc>;
+		regulator-names = "cam_vio", "cam_clk";
+		rgltr-cntrl-support;
+		rgltr-min-voltage = <1800000 0>;
+		rgltr-max-voltage = <1800000 0>;
+		rgltr-load-current = <105000 0>;
+		gpio-no-mux = <0>;
+		pinctrl-names = "cam_default", "cam_suspend";
+		pinctrl-0 = <&cam_sensor_mclk2_active
+				&cam_sensor_active_rst2>;
+		pinctrl-1 = <&cam_sensor_mclk2_suspend
+				&cam_sensor_suspend_rst2>;
+		gpios = <&tlmm 96 0>,
+			<&tlmm 78 0>;
+		gpio-req-tbl-label =    "CAMIF_MCLK2",
+					"CAM_RESET2";
+		clocks = <&clock_camcc CAM_CC_MCLK2_CLK>;
+		gpio-reset = <1>;
+		gpio-req-tbl-num = <0 1>;
+		gpio-req-tbl-flags = <1 0>;
+		sensor-mode = <0>;
+		cci-master = <0>;
+		status = "ok";
+		clock-names = "cam_clk";
+		clock-cntl-level = "turbo";
+		clock-rates = <24000000>;
+		pmicreset-gpios = <&pm8150l_gpios 5 0>;
+		slg,pmic-workaround;
+	};
 };
 
 &front_sensor {
