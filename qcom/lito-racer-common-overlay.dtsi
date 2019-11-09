@@ -1,5 +1,6 @@
 #include <dt-bindings/interrupt-controller/arm-gic.h>
 #include "lito-racer-common-overlay-base.dtsi"
+#include "camera/lito-camera-sensor-mot-racer-overlay.dtsi"
 
 &utags {
 	compatible = "mmi,utags";
