@@ -2,7 +2,6 @@
 #include <dt-bindings/gpio/gpio.h>
 #include "lito-audio-overlay.dtsi"
 #include "lito-thermal-overlay.dtsi"
-#include "camera/lito-camera-sensor-qrd.dtsi"
 #include "lito-sde-display.dtsi"
 #include "dsi-panel-mot-dummy-qhd-video.dtsi"
 
@@ -567,3 +566,74 @@
 		status = "disabled";
 	};
 };
+
+&qupv3_se9_i2c {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	status = "ok";
+
+	cam_pmic: slg51000@75 {
+		compatible = "dlg,slg51000";
+		reg = <0x75>;
+		dlg,cs-gpios = <&tlmm 44 0>;
+		enable-gpios = <&tlmm 45 0>;
+		vin3-supply = <&pm8150a_bob>;
+		vin4-supply = <&pm8150a_bob>;
+		vin5-supply = <&pm8150a_s8>;
+		vin6-supply = <&pm8150a_s8>;
+		vin7-supply = <&pm8150a_bob>;
+
+		regulators {
+			cam_main_front_avdd_ldo: ldo1 {
+			        regulator-name = "ldo1";
+			        regulator-min-microvolt = <2400000>;
+			        regulator-max-microvolt = <3300000>;
+			};
+
+			cam_wide_tele_avdd_ldo: ldo2 {
+			        regulator-name = "ldo2";
+			        regulator-min-microvolt = <2400000>;
+			        regulator-max-microvolt = <3300000>;
+			};
+
+			cam_afvdd_ldo: ldo3 {
+			        regulator-name = "ldo3";
+			        regulator-min-microvolt = <1200000>;
+			        regulator-max-microvolt = <3750000>;
+			};
+
+			tof_avdd_ldo: ldo4 {
+			        regulator-name = "ldo4";
+			        regulator-min-microvolt = <1200000>;
+			        regulator-max-microvolt = <3750000>;
+			};
+
+			cam_main_front_dvdd_ldo: ldo5 {
+			        regulator-name = "ldo5";
+			        regulator-min-microvolt = <500000>;
+			        regulator-max-microvolt = <1200000>;
+			};
+
+			cam_wide_tele_dvdd_ldo: ldo6 {
+			        regulator-name = "ldo6";
+			        regulator-min-microvolt = <500000>;
+			        regulator-max-microvolt = <1200000>;
+			};
+
+			cam_iovdd_ldo: ldo7 {
+			        regulator-name = "ldo7";
+			        regulator-min-microvolt = <1200000>;
+			        regulator-max-microvolt = <3750000>;
+			};
+		};
+	};
+};
+
+&pm8008_8 {
+	status = "disabled";
+};
+
+&pm8008_9 {
+	status = "disabled";
+};
+
