@@ -629,9 +629,10 @@
 		goodix,power-off-delay-us = <5000>;
 		/*goodix,swap-axis;*/
 		/*goodix,x2x;*/
-		goodix,y2y;
+		/*goodix,y2y;*/
 		goodix,usb_charger;
-		goodix,cfg_bin_name = "goodix_cfg_group_boe.bin";
+		goodix,cfg_bin_name = "goodix_cfg_group.bin";
+		goodix,fw_name = "goodix-gtx8-01-14-burton.bin";
 	};
 
 	sec_mmi@48 {
