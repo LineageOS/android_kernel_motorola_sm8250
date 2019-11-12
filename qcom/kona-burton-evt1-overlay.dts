@@ -265,3 +265,18 @@
 		clock-rates = <24000000>;
 	};
 };
+
+&cs35l41_spk {
+	status = "disabled";
+};
+
+&sound_madera {
+	asoc-codec = <&stub_codec>, <&ext_disp_audio_codec>, <&cs47l35>,
+			<&cs35l41_rcv>;
+	asoc-codec-names = "msm-stub-codec.1",
+			"msm-ext-disp-audio-codec-rx",
+			"cs47l35-codec", "cs35l41-rcv";
+	cirrus,prince-max-devs = <1>;
+	cirrus,prince-devs = <&cs35l41_rcv>;
+	cirrus,prince-dev-prefix = "RCV";
+};
