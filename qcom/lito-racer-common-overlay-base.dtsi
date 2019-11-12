@@ -586,13 +586,13 @@
 		regulators {
 			cam_main_front_avdd_ldo: ldo1 {
 			        regulator-name = "ldo1";
-			        regulator-min-microvolt = <2400000>;
+			        regulator-min-microvolt = <2250000>;
 			        regulator-max-microvolt = <3300000>;
 			};
 
 			cam_wide_tele_avdd_ldo: ldo2 {
 			        regulator-name = "ldo2";
-			        regulator-min-microvolt = <2400000>;
+			        regulator-min-microvolt = <2250000>;
 			        regulator-max-microvolt = <3300000>;
 			};
 
