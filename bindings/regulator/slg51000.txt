@@ -1,5 +1,3 @@
-path: Documentation/devicetree/bindings/regulator/slg51000.txt
-
 * Dialog Semiconductor SLG51000 Voltage Regulator
 
 Required properties:
@@ -47,13 +45,13 @@ Example:
 		regulators {
 			ldo1 {
 			        regulator-name = "ldo1";
-			        regulator-min-microvolt = <2400000>;
+			        regulator-min-microvolt = <2250000>;
 			        regulator-max-microvolt = <3300000>;
 			};
 
 			ldo2 {
 			        regulator-name = "ldo2";
-			        regulator-min-microvolt = <2400000>;
+			        regulator-min-microvolt = <2250000>;
 			        regulator-max-microvolt = <3300000>;
 			};
 
