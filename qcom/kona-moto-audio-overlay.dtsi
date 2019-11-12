@@ -583,17 +583,18 @@
 				firmware {
 					protection {
 						cirrus,full-name;
-						cirrus,wmfw-file = "cs35l41-dsp1-spk-prot.wmfw";
-						cirrus,bin-file = "cs35l41-dsp1-spk-prot.bin";
+						cirrus,wmfw-file = "cs35l41-dsp1-prot.wmfw";
+						cirrus,bin-file = "cs35l41-dsp1-rcv-prot.bin";
 					};
 					calibration {
 						cirrus,full-name;
-						cirrus,wmfw-file = "cs35l41-dsp1-spk-prot.wmfw";
-						cirrus,bin-file = "cs35l41-dsp1-spk-cali.bin";
+						cirrus,wmfw-file = "cs35l41-dsp1-prot.wmfw";
+						cirrus,bin-file = "cs35l41-dsp1-rcv-cali.bin";
 					};
 					diagnostic {
 						cirrus,full-name;
-						cirrus,wmfw-file = "cs35l41-dsp1-spk-diag.wmfw";
+						cirrus,wmfw-file = "cs35l41-dsp1-diag.wmfw";
+						cirrus,bin-file = "None";
 					};
 				};
 			};
@@ -644,17 +645,18 @@
 				firmware {
 					protection {
 						cirrus,full-name;
-						cirrus,wmfw-file = "cs35l41-dsp1-spk-prot.wmfw";
+						cirrus,wmfw-file = "cs35l41-dsp1-prot.wmfw";
 						cirrus,bin-file = "cs35l41-dsp1-spk-prot.bin";
 					};
 					calibration {
 						cirrus,full-name;
-						cirrus,wmfw-file = "cs35l41-dsp1-spk-prot.wmfw";
+						cirrus,wmfw-file = "cs35l41-dsp1-prot.wmfw";
 						cirrus,bin-file = "cs35l41-dsp1-spk-cali.bin";
 					};
 					diagnostic {
 						cirrus,full-name;
-						cirrus,wmfw-file = "cs35l41-dsp1-spk-diag.wmfw";
+						cirrus,wmfw-file = "cs35l41-dsp1-diag.wmfw";
+						cirrus,bin-file = "None";
 					};
 				};
 			};
