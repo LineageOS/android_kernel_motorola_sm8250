@@ -56,7 +56,7 @@
 		status = "disabled";
 	};
 
-	sound-madera {
+	sound_madera: sound-madera {
 		compatible = "qcom,kona-asoc-snd-madera";
 		qcom,model = "kona-madera-snd-card";
 		qcom,mi2s-audio-intf = <1>;
@@ -163,13 +163,13 @@
 			"IN1BR", "MICBIAS1B";
 
 		asoc-codec = <&stub_codec>, <&ext_disp_audio_codec>, <&cs47l35>,
-				<&cs35l41_rcv>;
+				<&cs35l41_rcv>, <&cs35l41_spk>;
 		asoc-codec-names = "msm-stub-codec.1",
 				"msm-ext-disp-audio-codec-rx",
-				"cs47l35-codec", "cs35l41-spk", "cs35l41-rcv";
-		cirrus,prince-max-devs = <1>;
-		cirrus,prince-devs = <&cs35l41_rcv>;
-		cirrus,prince-dev-prefix = "RCV";
+				"cs47l35-codec", "cs35l41-rcv", "cs35l41-spk";
+		cirrus,prince-max-devs = <2>;
+		cirrus,prince-devs = <&cs35l41_rcv &cs35l41_spk>;
+		cirrus,prince-dev-prefix = "RCV", "SPK";
 	};
 
 };
@@ -599,18 +599,18 @@
 			};
 		};
 	};
+};
 
-	cs35l41_spk: cs35l41@2 {
+&qupv3_se15_i2c {
+	cs35l41_spk: cs35l41@40 {
 		compatible = "cirrus,cs35l41";
-		status = "disabled";
-		spi-max-frequency = <26000000>;
-		reg = <0x2>;
+		reg = <0x40>;
 		reset-gpios = <&lpi_tlmm 10 0>;
-		interrupt-parent = <&lpi_tlmm>;
-		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <138 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-controller;
 		#interrupt-cells = <2>;
-		interrupt-names = "prince_spk_irq";
+		interrupt-names = "prince_irq";
 
 		VA-supply = <&pm8150_s4>;
 		VP-supply = <&pm8150_s4>;
