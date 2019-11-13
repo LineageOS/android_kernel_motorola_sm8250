@@ -5763,7 +5763,8 @@ static void *def_wcd_mbhc_cal(void)
 }
 
 #ifdef CONFIG_SND_SOC_CS35l41
-#define AMP_RCV_NAME "spi0.1"
+#define AMP_RCV_NAME "cs35l41-rcv"
+#define AMP_SPK_NAME "cs35l41-spk"
 #define AMP_DAI_NAME "cs35l41-pcm"
 
 static struct snd_soc_pcm_stream cirrus_amp_params[] = {
@@ -5783,14 +5784,7 @@ static struct snd_soc_pcm_stream cirrus_amp_params[] = {
 	},
 };
 
-static struct snd_soc_codec_conf cirrus_amp_conf[] = {
-
-	{
-		.dev_name		= AMP_RCV_NAME,
-		.name_prefix		= "RCV",
-	}
-};
-
+static struct snd_soc_codec_conf *msm_prince_codec_conf;
 #endif
 
 #ifdef CONFIG_SND_SOC_CS47l35
@@ -5846,19 +5840,10 @@ static int msm_mclk_event(struct snd_soc_dapm_widget *w,
 	return 0;
 }
 
-static struct snd_soc_dapm_route cs47l35_audio_paths[] = {
-#ifndef CONFIG_SND_SOC_CS35L41
-	{"AIF1 Playback", NULL, "RCV AMP Capture"},
-	{"RCV AMP Playback", NULL, "OPCLK"},
-	{"RCV AMP Capture", NULL, "OPCLK"},
-#endif
-};
-
 static const struct snd_soc_dapm_widget msm_madera_dapm_widgets[] = {
 	SND_SOC_DAPM_SUPPLY_S("MCLK", -1,  SND_SOC_NOPM, 0, 0,
 		msm_mclk_event, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
 };
-
 
 static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
 {
@@ -5943,13 +5928,6 @@ static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
 		return ret;
 	}
 
-	ret = snd_soc_dapm_add_routes(dapm, cs47l35_audio_paths,
-			ARRAY_SIZE(cs47l35_audio_paths));
-	if (ret != 0) {
-		dev_err(component->dev, "Failed to add audio routes %d\n", ret);
-		return ret;
-	}
-
 	snd_soc_dapm_ignore_suspend(dapm, "MICSUPP");
 	snd_soc_dapm_ignore_suspend(dapm, "MICBIAS1");
 	snd_soc_dapm_ignore_suspend(dapm, "MICBIAS2");
@@ -5993,21 +5971,46 @@ static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
 	return 0;
 }
 
+#ifdef CONFIG_SND_SOC_CS35l41
+static struct snd_soc_dapm_route cs35l41_rcv_audio_paths[] = {
+	{"AIF1 Playback", NULL, "RCV AMP Capture"},
+	{"RCV AMP Playback", NULL, "OPCLK"},
+	{"RCV AMP Capture", NULL, "OPCLK"},
+};
+
+static struct snd_soc_dapm_route cs35l41_spk_audio_paths[] = {
+	{"AIF1 Playback", NULL, "SPK AMP Capture"},
+	{"SPK AMP Playback", NULL, "OPCLK"},
+	{"SPK AMP Capture", NULL, "OPCLK"},
+};
+
 static int cirrus_amp_init(struct snd_soc_pcm_runtime *rtd)
 {
 	int ret;
 	int codec_clock = Q6AFE_LPASS_OSR_CLK_1_P536_MHZ;
 	struct snd_soc_component *component =
 			snd_soc_rtdcom_lookup(rtd, AMP_CODEC_NAME);
+	struct snd_soc_component *codec_component =
+		snd_soc_rtdcom_lookup(rtd, MADERA_CODEC_NAME);
 	struct snd_soc_dai *codec_dai = rtd->cpu_dai;
 	struct snd_soc_dai *amp_dai = rtd->codec_dai;
+	const char *name_prefix;
 	struct snd_soc_dapm_context *dapm;
+	struct snd_soc_dapm_context *codec_dapm;
 	if (!component) {
 		pr_err("* %s: No match for %s component\n", __func__,
 			AMP_CODEC_NAME);
 		return -1;
 	}
+	name_prefix = component->name_prefix;
 	dapm = snd_soc_component_get_dapm(component);
+
+	if (!codec_component) {
+		pr_err("* %s: No match for %s component\n", __func__,
+			MADERA_CODEC_NAME);
+		return -1;
+	}
+	codec_dapm = snd_soc_component_get_dapm(codec_component);
 
 	ret = snd_soc_dai_set_sysclk(codec_dai, MADERA_CLK_SYSCLK_1,
 					codec_clock, 0);
@@ -6026,17 +6029,32 @@ static int cirrus_amp_init(struct snd_soc_pcm_runtime *rtd)
 		dev_err(component->dev, "Failed to set SCLK %d\n", ret);
 		return ret;
 	}
-	snd_soc_dapm_ignore_suspend(dapm, "RCV AMP Playback");
+
+	if (!strcmp("RCV", name_prefix)) {
+		ret = snd_soc_dapm_add_routes(codec_dapm, cs35l41_rcv_audio_paths,
+				ARRAY_SIZE(cs35l41_rcv_audio_paths));
+		if (ret != 0) {
+			dev_err(codec_component->dev, "Failed to add audio routes %d\n", ret);
+			return ret;
+		}
+		snd_soc_dapm_ignore_suspend(dapm, "RCV AMP Playback");
+	} else if (!strcmp("SPK", name_prefix)) {
+		ret = snd_soc_dapm_add_routes(codec_dapm, cs35l41_spk_audio_paths,
+				ARRAY_SIZE(cs35l41_spk_audio_paths));
+		if (ret != 0) {
+			dev_err(codec_component->dev, "Failed to add audio routes %d\n", ret);
+			return ret;
+		}
+		snd_soc_dapm_ignore_suspend(dapm, "SPK AMP Playback");
+	}
+
 	snd_soc_dapm_sync(dapm);
 	return 0;
 }
+#endif
 
 static struct snd_soc_card snd_soc_card_kona_madera = {
 	.name		= "kona-madera-snd-card",
-#ifdef CONFIG_SND_SOC_CS35l41
-	.codec_conf	= cirrus_amp_conf,
-	.num_configs	= ARRAY_SIZE(cirrus_amp_conf),
-#endif
 };
 #endif
 
@@ -7377,7 +7395,10 @@ static struct snd_soc_dai_link msm_mi2s_be_dai_links[] = {
 		.ops = &msm_mi2s_be_ops,
 		.ignore_suspend = 1,
 	},
+};
+
 #ifdef CONFIG_SND_SOC_CS35l41
+static struct snd_soc_dai_link msm_rcv_amp_be_dai_links[] = {
 	{ /* codec to amp link */
 		.name = "CODEC-AMP-RCV",
 		.stream_name = "CODEC-AMP-RCV Playback",
@@ -7394,8 +7415,27 @@ static struct snd_soc_dai_link msm_mi2s_be_dai_links[] = {
 		.params = &cirrus_amp_params[0],
 		.num_params = ARRAY_SIZE(cirrus_amp_params),
 	},
-#endif
 };
+
+static struct snd_soc_dai_link msm_spk_amp_be_dai_links[] = {
+	{ /* codec to amp link */
+		.name = "CODEC-AMP-SPK",
+		.stream_name = "CODEC-AMP-SPK Playback",
+		.cpu_name = MADERA_CODEC_NAME,
+		.cpu_dai_name = MADERA_CPU_DAI_NAME,
+		.codec_name = AMP_SPK_NAME,
+		.codec_dai_name = AMP_DAI_NAME,
+		.init = cirrus_amp_init,
+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+			SND_SOC_DAIFMT_CBS_CFS,
+		.no_pcm = 1,
+		.ignore_pmdown_time = 1,
+		.ignore_suspend = 1,
+		.params = &cirrus_amp_params[0],
+		.num_params = ARRAY_SIZE(cirrus_amp_params),
+	},
+};
+#endif
 
 static struct snd_soc_dai_link msm_auxpcm_be_dai_links[] = {
 	/* Primary AUX PCM Backend DAI Links */
@@ -7790,6 +7830,10 @@ static struct snd_soc_dai_link msm_madera_dai_links[
 			ARRAY_SIZE(msm_madera_fe_dai_links) +
 			ARRAY_SIZE(msm_common_be_dai_links) +
 			ARRAY_SIZE(msm_mi2s_be_dai_links) +
+#ifdef CONFIG_SND_SOC_CS35l41
+			ARRAY_SIZE(msm_rcv_amp_be_dai_links) +
+			ARRAY_SIZE(msm_spk_amp_be_dai_links) +
+#endif
 			ARRAY_SIZE(msm_auxpcm_be_dai_links) +
 			ARRAY_SIZE(ext_disp_be_dai_link) +
 			ARRAY_SIZE(msm_wcn_be_dai_links) +
@@ -8017,6 +8061,12 @@ static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev)
 	u32 val = 0;
 	u32 wcn_btfm_intf = 0;
 	const struct of_device_id *match;
+#ifdef CONFIG_SND_SOC_CS35l41
+	int cirrus_prince_devs;
+	struct device_node *prince_codec_of_node;
+	const char *prince_name_prefix[1];
+#endif
+	int i = 0;
 
 	match = of_match_node(kona_asoc_machine_of_match, dev->of_node);
 	if (!match) {
@@ -8027,6 +8077,48 @@ static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev)
 
 	if (!strcmp(match->data, "madera_codec")) {
 		card = &snd_soc_card_kona_madera;
+		card->num_configs = 0;
+
+#ifdef CONFIG_SND_SOC_CS35l41
+		of_property_read_u32(dev->of_node,
+			"cirrus,prince-max-devs", &cirrus_prince_devs);
+
+		if (cirrus_prince_devs > 0) {
+			/* Alloc array of codec conf struct */
+			msm_prince_codec_conf = devm_kcalloc(dev,
+					card->num_configs + cirrus_prince_devs,
+					sizeof(struct snd_soc_codec_conf), GFP_KERNEL);
+			if (!msm_prince_codec_conf) {
+				dev_err(dev, "Unable to allocate mem for prince codec conf\n", __func__);
+				return NULL;
+			}
+
+			for (i = 0; i < cirrus_prince_devs; i++) {
+				prince_codec_of_node = of_parse_phandle(dev->of_node,
+							    "cirrus,prince-devs", i);
+				if (unlikely(!prince_codec_of_node)) {
+					/* we should not be here */
+					dev_err(dev,
+						"%s: prince codec dev node is not present\n", __func__);
+					return NULL;
+				}
+				rc = of_property_read_string_index(dev->of_node,
+								    "cirrus,prince-dev-prefix", i, prince_name_prefix);
+				if (rc) {
+					dev_err(dev,
+						"%s: failed to read prince dev prefix, ret = %d\n", __func__, rc);
+					return NULL;
+				}
+
+				msm_prince_codec_conf[card->num_configs + i].dev_name = NULL;
+				msm_prince_codec_conf[card->num_configs + i].of_node = prince_codec_of_node;
+				msm_prince_codec_conf[card->num_configs + i].name_prefix = prince_name_prefix[0];
+			}
+
+			card->num_configs += cirrus_prince_devs;
+			card->codec_conf = msm_prince_codec_conf;
+		}
+#endif
 
 		memcpy(msm_madera_dai_links + total_links,
 		       msm_common_dai_links,
@@ -8062,6 +8154,24 @@ static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev)
 					ARRAY_SIZE(msm_mi2s_be_dai_links);
 			}
 		}
+
+#ifdef CONFIG_SND_SOC_CS35l41
+		for (i = 0; i < card->num_configs; i++) {
+			if (!strcmp(card->codec_conf[i].name_prefix, "RCV")) {
+				memcpy(msm_madera_dai_links + total_links,
+					msm_rcv_amp_be_dai_links,
+					sizeof(msm_rcv_amp_be_dai_links));
+				total_links +=
+					ARRAY_SIZE(msm_rcv_amp_be_dai_links);
+			} else if (!strcmp(card->codec_conf[i].name_prefix, "SPK")) {
+				memcpy(msm_madera_dai_links + total_links,
+					msm_spk_amp_be_dai_links,
+					sizeof(msm_spk_amp_be_dai_links));
+				total_links +=
+					ARRAY_SIZE(msm_spk_amp_be_dai_links);
+			}
+		}
+#endif
 
 		rc = of_property_read_u32(dev->of_node,
 					  "qcom,auxpcm-audio-intf",
