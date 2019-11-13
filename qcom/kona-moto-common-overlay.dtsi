@@ -1002,3 +1002,7 @@
 &sde_dp {
 	extcon = <&pm8150b_pdphy>;
 };
+
+&usb1 {
+	status = "disabled";
+};
