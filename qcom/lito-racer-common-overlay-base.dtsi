@@ -553,8 +553,11 @@
 	cam_pmic: slg51000@75 {
 		compatible = "dlg,slg51000";
 		reg = <0x75>;
+
+		interrupt-parent = <&tlmm>;
+		interrupts = <45 IRQ_TYPE_LEVEL_HIGH>;
 		dlg,cs-gpios = <&tlmm 44 0>;
-		enable-gpios = <&tlmm 45 0>;
+
 		vin3-supply = <&pm8150a_bob>;
 		vin4-supply = <&pm8150a_bob>;
 		vin5-supply = <&pm8150a_s8>;
