@@ -17,10 +17,13 @@ qcom,mdss-dsi-panel-type = "dsi_cmd_mode";
 qcom,mdss-dsi-virtual-channel-id = <0>;
 qcom,mdss-dsi-stream = <0>;
 qcom,mdss-pan-physical-width-dimension = <68>;
-qcom,mdss-pan-physical-height-dimension = <121>;
+qcom,mdss-pan-physical-height-dimension = <147>;
 qcom,mdss-dsi-bpp = <24>;
 qcom,mdss-dsi-underflow-color = <0xff>;
 qcom,mdss-dsi-border-color = <0>;
+
+qcom,dsi-ctrl-num = <0>;
+qcom,dsi-phy-num = <0>;
 
 qcom,mdss-dsi-traffic-mode = "burst_mode";
 qcom,mdss-dsi-bllp-eof-power-mode;
@@ -32,18 +35,24 @@ qcom,mdss-dsi-lane-3-state;
 
 qcom,mdss-dsi-dma-trigger = "trigger_sw";
 qcom,mdss-dsi-mdp-trigger = "none";
-qcom,mdss-dsi-reset-sequence = <0 2>, <1 10>, <0 3>, <1 10>;
+qcom,mdss-dsi-reset-sequence = <0 11>, <1 1>, <0 1>, <1 11>;
 qcom,mdss-dsi-lp11-init;
 qcom,mdss-dsi-tx-eot-append;
 
 qcom,mdss-dsi-te-pin-select = <1>;
 qcom,mdss-dsi-te-dcs-command = <1>;
-qcom,mdss-dsi-te-check-enable;
+/*
+qcom,mdss-dsi-panel-hdr-enabled;
+qcom,mdss-dsi-panel-hdr-color-primaries = <14500 15500 32000
+			17000 15500 30000 8000 3000>;
+qcom,mdss-dsi-panel-peak-brightness = <4200000>;
+*/
+
 qcom,mdss-dsi-te-using-te-pin;
 
 qcom,bklt-dcs-2bytes-enabled;
 qcom,mdss-dsi-bl-min-level = <3>;
-qcom,mdss-dsi-bl-max-level = <4095>;
+qcom,mdss-dsi-bl-max-level = <1600>;
 qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
 
 /* Enable ESD checking */
