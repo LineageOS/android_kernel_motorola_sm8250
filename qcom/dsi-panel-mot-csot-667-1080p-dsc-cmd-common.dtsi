@@ -79,8 +79,8 @@ qcom,mdss-dsi-panel-hbm-is-51cmd;
 
 qcom,mdss-dsi-display-timings {
 	timing@0{
-		/* 60FPS and switch to 90 FPS later */
-		qcom,mdss-dsi-panel-framerate = <60>;
+		/* 90 FPS */
+		qcom,mdss-dsi-panel-framerate = <90>;
 		qcom,mdss-dsi-panel-width = <1080>;
 		qcom,mdss-dsi-panel-height = <2340>;
 		qcom,mdss-dsi-h-front-porch = <4>;
@@ -95,11 +95,15 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsi-h-right-border = <0>;
 		qcom,mdss-dsi-v-top-border = <0>;
 		qcom,mdss-dsi-v-bottom-border = <0>;
-		qcom,mdss-dsi-panel-jitter = <0x20 0xa>; /* 60fps +/- 2 */
+		qcom,mdss-dsi-panel-jitter = <0x15 0xa>; /* 90fps +/- 2 */
 		qcom,mdss-dsi-on-command = [
 			39 00 00 00 00 00 05 FF AA 55 A5 81
 			15 00 00 00 00 00 02 6F 0D
 			15 00 00 00 00 00 02 F3 CB
+			/* Set OSC 101.6Mhz */
+			15 00 00 00 00 00 02 6F 05
+			39 00 00 00 00 00 03 FD 00 DA
+			/* End Set OSC */
 			39 00 00 00 00 00 05 FF AA 55 A5 00
 			39 00 00 00 00 00 06 F0 55 AA 52 08 01 /* Page 1*/
 			/*TSP_VTE, TSP_HTE*/
@@ -107,12 +111,12 @@ qcom,mdss-dsi-display-timings {
 			39 00 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0*/
 			/*GPO0=TE, GPO1=ALL MIPI error, GPO2=TSP_HTE, GPO3=TSP_CTE*/
 			39 00 00 00 00 00 05 BE 0E 09 94 93
-			/* Framne rate = 60hz */
+			/* Framne rate = 90hz */
 			15 00 00 00 00 00 02 B2 01 /* backlight fix */
 			15 00 00 00 00 00 02 6F 0E
 			15 00 00 00 00 00 02 BA 18
 			15 00 00 00 00 00 02 6F 03
-			39 00 00 00 00 00 04 C0 80 00 00
+			39 00 00 00 00 00 04 C0 00 00 00
 			15 00 00 00 00 00 02 26 01
 			/* Done with frame rate setting */
 			05 00 00 00 00 00 01 35	 /* Set tear on */
