@@ -90,6 +90,10 @@
 
 #define SWR_MAX_SLAVE_DEVICES 6
 
+#ifdef PRODUCT_RACER
+	#define CS35L41_STEREO
+#endif
+
 enum {
 	RX_PATH = 0,
 	TX_PATH,
@@ -5763,8 +5767,13 @@ static void *def_wcd_mbhc_cal(void)
 }
 
 #ifdef CONFIG_SND_SOC_CS35l41
-#define AMP_SPK_NAME "spi0.1"
 #define AMP_DAI_NAME "cs35l41-pcm"
+#define AMP_RCV_NAME "spi0.1"
+#ifdef PRODUCT_RACER
+#define AMP_SPK_NAME "spi0.0"
+#else
+#define AMP_SPK_NAME "spi0.1"
+#endif
 
 static struct snd_soc_pcm_stream cirrus_amp_params[] = {
 	{
@@ -5784,10 +5793,15 @@ static struct snd_soc_pcm_stream cirrus_amp_params[] = {
 };
 
 static struct snd_soc_codec_conf cirrus_amp_conf[] = {
-
+#ifdef CS35L41_STEREO
+	{
+		.dev_name		= AMP_RCV_NAME,
+		.name_prefix	= "RCV",
+	},
+#endif
 	{
 		.dev_name		= AMP_SPK_NAME,
-		.name_prefix		= "SPK",
+		.name_prefix	= "SPK",
 	}
 };
 
@@ -5803,8 +5817,10 @@ static struct snd_soc_codec_conf cirrus_amp_conf[] = {
 
 #define MADERA_CLK_SYSCLK_1		1
 #define MADERA_CLK_SRC_FLL1		0x4
+#define MADERA_CLK_SRC_AIF1BCLK        0x8
 #define MADERA_FLL_SRC_MCLK1            0
 #define MADERA_FLL_SRC_MCLK2            1
+#define MADERA_FLL_SRC_AIF1BCLK         8
 #define MADERA_FLL1_REFCLK             1
 #define MADERA_CLK_DSPCLK               8
 #define MADERA_CLK_OPCLK               3
@@ -5815,6 +5831,47 @@ static struct snd_soc_codec_conf cirrus_amp_conf[] = {
 #define MADERA_SYSCLK_RATE	(FLL_RATE_MADERA / 3)
 #define MADERA_DSPCLK_RATE	(FLL_RATE_MADERA / 2)
 
+static int msm_mclk_event(struct snd_soc_dapm_widget *w,
+		struct snd_kcontrol *kcontrol, int event)
+{
+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+	int ret;
+
+	pr_debug("%s: event = %d\n", __func__, event);
+
+	switch (event) {
+	case SND_SOC_DAPM_PRE_PMU:
+		ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
+			MADERA_CLK_SRC_AIF1BCLK,
+			mi2s_clk[SEN_MI2S].clk_freq_in_hz, MADERA_SYSCLK_RATE);
+		if (ret != 0) {
+			dev_err(component->dev, "Failed to set MADERA_FLL1_REFCLK %d\n", ret);
+			return ret;
+		}
+		break;
+	case SND_SOC_DAPM_POST_PMD:
+		ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
+			MADERA_FLL_SRC_MCLK2,
+			QCOM_SLEEPCLK_RATE, MADERA_SYSCLK_RATE);
+		if (ret != 0) {
+			dev_err(component->dev, "Failed to set MADERA_FLL1_REFCLK %d\n", ret);
+			return ret;
+		}
+		break;
+	}
+	return 0;
+}
+
+static struct snd_soc_dapm_route cs47l35_audio_paths[] = {
+	{"AIF1 Playback", NULL, "MCLK"},
+	{"AIF1 Capture", NULL, "MCLK"},
+};
+
+static const struct snd_soc_dapm_widget msm_madera_dapm_widgets[] = {
+	SND_SOC_DAPM_SUPPLY_S("MCLK", -1,  SND_SOC_NOPM, 0, 0,
+		msm_mclk_event, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+};
+
 static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
 {
 	int ret;
@@ -5822,12 +5879,15 @@ static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
 	bool	use_refclk = false;
 	struct snd_soc_component *component =
 		snd_soc_rtdcom_lookup(rtd, MADERA_CODEC_NAME);
+	struct snd_soc_dapm_context *dapm;
+
 	if (!component) {
 		pr_err("* %s: No match for %s component\n",
 			__func__, MADERA_CODEC_NAME);
 		return ret;
 	}
 
+	dapm = snd_soc_component_get_dapm(component);
 	ref_clk = clk_get(component->dev, "ref_clk");
 	if (IS_ERR_OR_NULL(ref_clk))
 		dev_err(component->dev, "Failed to get ref_clk %ld\n",
@@ -5851,7 +5911,6 @@ static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
 		dev_err(component->dev, "Failed to set FLL1REFCLK %d\n", ret);
 		return ret;
 	}
-
 
 	if (use_refclk)
 		ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
@@ -5890,6 +5949,31 @@ static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
 		return ret;
 	}
 
+	ret = snd_soc_add_component_controls(component, msm_common_snd_controls,
+				ARRAY_SIZE(msm_common_snd_controls));
+	if (ret < 0) {
+		pr_err("%s: add common snd controls failed: %d\n",
+			__func__, ret);
+		return ret;
+	}
+
+	ret = snd_soc_dapm_new_controls(dapm, msm_madera_dapm_widgets,
+			ARRAY_SIZE(msm_madera_dapm_widgets));
+	if (ret != 0) {
+		dev_err(component->dev, "Failed to add dapm widgets %d\n", ret);
+		return ret;
+	}
+
+	ret = snd_soc_dapm_add_routes(dapm, cs47l35_audio_paths,
+			ARRAY_SIZE(cs47l35_audio_paths));
+	if (ret != 0) {
+		dev_err(component->dev, "Failed to add audio routes %d\n", ret);
+		return ret;
+	}
+
+	snd_soc_dapm_force_enable_pin(dapm, "SYSCLK");
+	snd_soc_dapm_sync(dapm);
+
 	return 0;
 }
 
@@ -5902,11 +5986,19 @@ static int cirrus_amp_init(struct snd_soc_pcm_runtime *rtd)
 	struct snd_soc_dai *codec_dai = rtd->cpu_dai;
 	struct snd_soc_dai *amp_dai = rtd->codec_dai;
 	struct snd_soc_dapm_context *dapm;
+	const char *name_prefix;
+
 	if (!component) {
 		pr_err("* %s: No match for %s component\n", __func__,
 			AMP_CODEC_NAME);
 		return -1;
 	}
+	name_prefix = component->name_prefix;
+	if (!name_prefix) {
+		dev_err(component->dev, "name prefix is empty, shoulbe be SPK or RCV\n");
+		return -1;
+	}
+
 	dapm = snd_soc_component_get_dapm(component);
 
 	ret = snd_soc_dai_set_sysclk(codec_dai, MADERA_CLK_SYSCLK_1,
@@ -5926,7 +6018,16 @@ static int cirrus_amp_init(struct snd_soc_pcm_runtime *rtd)
 		dev_err(component->dev, "Failed to set SCLK %d\n", ret);
 		return ret;
 	}
-	snd_soc_dapm_ignore_suspend(dapm, "SPK AMP Playback");
+
+	if (!strcmp("RCV", name_prefix)) {
+		snd_soc_dapm_ignore_suspend(dapm, "RCV SPK");
+		snd_soc_dapm_ignore_suspend(dapm, "RCV AMP Playback");
+		snd_soc_dapm_ignore_suspend(dapm, "RCV AMP Capture");
+	} else if(!strcmp("SPK", name_prefix)) {
+		snd_soc_dapm_ignore_suspend(dapm, "SPK SPK");
+		snd_soc_dapm_ignore_suspend(dapm, "SPK AMP Playback");
+		snd_soc_dapm_ignore_suspend(dapm, "SPK AMP Capture");
+	}
 	snd_soc_dapm_sync(dapm);
 	return 0;
 }
@@ -7266,7 +7367,6 @@ static struct snd_soc_dai_link msm_mi2s_be_dai_links[] = {
 #ifdef CONFIG_SND_SOC_CS47l35
 		.codec_name = MADERA_CODEC_NAME,
 		.codec_dai_name = MADERA_CODEC_DAI_NAME,
-		.init = &cirrus_codec_init,
 #else
 		.codec_name = "msm-stub-codec.1",
 		.codec_dai_name = "msm-stub-tx",
@@ -7279,6 +7379,24 @@ static struct snd_soc_dai_link msm_mi2s_be_dai_links[] = {
 		.ignore_suspend = 1,
 	},
 #ifdef CONFIG_SND_SOC_CS35l41
+#ifdef CS35L41_STEREO
+	{ /* codec to amp link */
+		.name = "CODEC-AMP-RCV",
+		.stream_name = "CODEC-AMP-RCV Playback",
+		.cpu_name = MADERA_CODEC_NAME,
+		.cpu_dai_name = MADERA_CPU_DAI_NAME,
+		.codec_name = AMP_RCV_NAME,
+		.codec_dai_name = AMP_DAI_NAME,
+		.init = cirrus_amp_init,
+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+			SND_SOC_DAIFMT_CBS_CFS,
+		.no_pcm = 1,
+		.ignore_pmdown_time = 1,
+		.ignore_suspend = 1,
+		.params = &cirrus_amp_params[0],
+		.num_params = ARRAY_SIZE(cirrus_amp_params),
+	},
+#endif
 	{ /* codec to amp link */
 		.name = "CODEC-AMP-SPK",
 		.stream_name = "CODEC-AMP-SPK Playback",
