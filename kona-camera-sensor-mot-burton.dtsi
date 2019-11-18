@@ -191,7 +191,7 @@
 			reg = <0x0>;
 			compatible = "qcom,actuator";
 			cci-master = <0>;
-			cam_vaf-supply = <&dummy_cam_vreg>;
+			cam_vaf-supply = <&cam_main_afois_vdd_3p5>;
 			regulator-names = "cam_vaf";
 			rgltr-cntrl-support;
 			rgltr-min-voltage = <2800000>;
@@ -218,11 +218,12 @@
 			compatible = "qcom,ois";
 			cci-master = <0>;
 			cam_vio-supply = <&pm8150a_l5>;
-			regulator-names = "cam_vio";
+			cam_vaf-supply = <&cam_main_afois_vdd_3p5>;
+			regulator-names = "cam_vio", "cam_vaf";
 			rgltr-cntrl-support;
-			rgltr-min-voltage = <1800000>;
-			rgltr-max-voltage = <1800000>;
-			rgltr-load-current = <14000>;
+			rgltr-min-voltage = <1800000 2800000>;
+			rgltr-max-voltage = <1800000 2800000>;
+			rgltr-load-current = <14000 15000>;
 			status = "ok";
 		};
 
@@ -239,12 +240,14 @@
 			eeprom-src = <&eeprom_rear>;
 			ois-src = <&ois_main>;
 			cam_vio-supply = <&pm8150a_l5>;
+			cam_vana-supply = <&cam_main_avdd_2p8>;
+			cam_vdig-supply = <&cam_main_dvdd_1p05>;
 			cam_clk-supply = <&titan_top_gdsc>;
-			regulator-names = "cam_vio", "cam_clk";
+			regulator-names = "cam_vio", "cam_clk", "cam_vana", "cam_vdig";
 			rgltr-cntrl-support;
-			rgltr-min-voltage = <1800000 0>;
-			rgltr-max-voltage = <1800000 0>;
-			rgltr-load-current = <105000 0>;
+			rgltr-min-voltage = <1800000 0 2800000 1050000>;
+			rgltr-max-voltage = <1800000 0 2800000 1050000>;
+			rgltr-load-current = <105000 0 120000  105000>;
 			gpio-no-mux = <0>;
 			pinctrl-names = "cam_default", "cam_suspend";
 			pinctrl-0 = <&cam_sensor_mclk0_active
@@ -274,7 +277,7 @@
 		reg = <0x1>;
 		compatible = "qcom,actuator";
 		cci-master = <0>;
-		cam_vaf-supply = <&dummy_cam_vreg>;
+		cam_vaf-supply = <&cam_wfov_tele_afvdd_2p8>;
 		regulator-names = "cam_vaf";
 		rgltr-cntrl-support;
 		rgltr-min-voltage = <2800000>;
@@ -287,7 +290,7 @@
 		reg = <0x2>;
 		compatible = "qcom,actuator";
 		cci-master = <1>;
-		cam_vaf-supply = <&dummy_cam_vreg>;
+		cam_vaf-supply = <&cam_wfov_tele_afvdd_2p8>;
 		regulator-names = "cam_vaf";
 		rgltr-cntrl-support;
 		rgltr-min-voltage = <2800000>;
@@ -300,11 +303,11 @@
 		reg = <0x1>;
 		compatible = "qcom,eeprom";
 		cci-master = <0>;
-		cam_vio-supply = <&dummy_cam_vreg>;
+		cam_vio-supply = <&pm8150a_l5>;
 		regulator-names = "cam_vio";
 		rgltr-cntrl-support;
-		rgltr-min-voltage = <2800000>;
-		rgltr-max-voltage = <2800000>;
+		rgltr-min-voltage = <1800000>;
+		rgltr-max-voltage = <1800000>;
 		rgltr-load-current = <0>;
 	};
 
@@ -313,11 +316,11 @@
 		reg = <0x2>;
 		compatible = "qcom,eeprom";
 		cci-master = <1>;
-		cam_vio-supply = <&dummy_cam_vreg>;
+		cam_vio-supply = <&pm8150a_l5>;
 		regulator-names = "cam_vio";
 		rgltr-cntrl-support;
-		rgltr-min-voltage = <2800000>;
-		rgltr-max-voltage = <2800000>;
+		rgltr-min-voltage = <1800000>;
+		rgltr-max-voltage = <1800000>;
 		rgltr-load-current = <0>;
 	};
 
@@ -401,12 +404,14 @@
 		actuator-src = <&actuator_wide>;
 		eeprom-src = <&eeprom_wide>;
 		cam_vio-supply = <&pm8150a_l5>;
+		cam_vana-supply = <&cam_wfov_tele_avdd_2p8>;
+		cam_vdig-supply = <&cam_wfov_dvdd_1p2>;
 		cam_clk-supply = <&titan_top_gdsc>;
-		regulator-names = "cam_vio", "cam_clk";
+		regulator-names = "cam_vio", "cam_clk", "cam_vana", "cam_vdig";
 		rgltr-cntrl-support;
-		rgltr-min-voltage = <1800000 0>;
-		rgltr-max-voltage = <1800000 0>;
-		rgltr-load-current = <105000 0>;
+		rgltr-min-voltage = <1800000 0 2800000 1200000>;
+		rgltr-max-voltage = <1800000 0 2800000 1200000>;
+		rgltr-load-current = <105000 0 80000 105000>;
 		gpio-no-mux = <0>;
 		pinctrl-names = "cam_default", "cam_suspend";
 		pinctrl-0 = <&cam_sensor_mclk2_active
@@ -443,11 +448,13 @@
 		ois-src = <&ois_tele>;
 		cam_vio-supply = <&pm8150a_l5>;
 		cam_clk-supply = <&titan_top_gdsc>;
-		regulator-names = "cam_vio", "cam_clk";
+		cam_vana-supply = <&cam_wfov_tele_avdd_2p8>;
+		cam_vdig-supply = <&cam_tele_dvdd_1p2>;
+		regulator-names = "cam_vio", "cam_clk", "cam_vana", "cam_vdig";
 		rgltr-cntrl-support;
-		rgltr-min-voltage = <1800000 0>;
-		rgltr-max-voltage = <1800000 0>;
-		rgltr-load-current = <3000 0>;
+		rgltr-min-voltage = <1800000 0 2800000 1200000>;
+		rgltr-max-voltage = <1800000 0 2800000 1200000>;
+		rgltr-load-current = <3000 0 80000 105000>;
 		gpio-no-mux = <0>;
 		pinctrl-names = "cam_default", "cam_suspend";
 		pinctrl-0 = <&cam_sensor_mclk1_active
