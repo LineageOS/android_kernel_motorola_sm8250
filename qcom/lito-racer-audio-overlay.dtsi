@@ -1,0 +1,585 @@
+&tlmm {
+	marley_reset_default: marley_reset_default {
+		mux {
+			pins = "gpio35";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio35";
+			drive-strength = <2>; /* 2 MA */
+			bias-pull-up;
+			output-high;
+		};
+	};
+
+	marley_irq_default: marley_irq_default {
+		mux {
+			pins = "gpio70";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio70";
+			drive-strength = <2>; /* 2 MA */
+			bias-pull-up;
+		};
+	};
+
+	prince_reset_default: prince_reset_default {
+		mux {
+			pins = "gpio71";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio71";
+			drive-strength = <2>; /* 2 MA */
+			bias-pull-up;
+			output-high;
+		};
+	};
+
+	prince_irq_default: prince_irq_default {
+		mux {
+			pins = "gpio85";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio85";
+			drive-strength = <2>; /* 2 MA */
+			bias-pull-up;
+			input-enable;
+		};
+	};
+
+	prince_rcv_reset_default: prince_rcv_reset_default {
+		mux {
+			pins = "gpio92";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio92";
+			drive-strength = <2>; /* 2 MA */
+			bias-pull-up;
+			output-high;
+		};
+	};
+
+	prince_rcv_irq_default: prince_rcv_irq_default {
+		mux {
+			pins = "gpio86";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio86";
+			drive-strength = <2>; /* 2 MA */
+			bias-pull-up;
+			input-enable;
+		};
+	};
+};
+
+&L3C {
+       qcom,init-voltage = <1200000>;
+};
+
+&soc {
+	dummy_vreg: dummy_vreg {
+		compatible = "regulator-fixed";
+		status = "ok";
+		regulator-name = "dummy_vreg";
+		regulator-always-on;
+	};
+};
+
+&pm8150_gpios {
+	cdc_sleep_clk {
+		cdc_sleep_clk_default: cdc_sleep_clk_default {
+			pins = "gpio3";
+			function = "func1";
+			input-disable;
+			bias-disable;
+			power-source = <0>;
+			output-low;
+		};
+	};
+};
+
+&wsa_swr_gpios {
+	status = "disabled";
+};
+
+&cdc_dmic01_gpios {
+	status = "disabled";
+};
+
+&cdc_dmic23_gpios {
+	status = "disabled";
+};
+
+&cdc_dmic45_gpios {
+	status = "disabled";
+};
+
+&bolero {
+	qcom,num-macros = <3>;
+};
+
+&wsa_macro {
+	status = "disabled";
+};
+
+&wsa_spkr_en1 {
+	status = "disabled";
+};
+
+&wsa_spkr_en2 {
+	status = "disabled";
+};
+
+&dai_mi2s5 {
+	status="ok";
+	qcom,msm-mi2s-tx-lines = <1>; /*SD0 LPI_GPIO_12 gpio 127*/
+	qcom,msm-mi2s-rx-lines = <2>; /*SD1 LPI_GPIO_13 gpio 128*/
+};
+
+/* enable gpio12 used as SPI cs2 for cs35l41 */
+&qupv3_se1_spi_active {
+	mux {
+		pins = "gpio0", "gpio1", "gpio2",
+					"gpio3", "gpio12";
+	};
+	config {
+		pins = "gpio0", "gpio1", "gpio2",
+					"gpio3", "gpio12";
+	};
+};
+
+&qupv3_se1_spi_sleep {
+	mux {
+		pins = "gpio0", "gpio1", "gpio2",
+					"gpio3", "gpio12";
+	};
+
+	config {
+		pins = "gpio0", "gpio1", "gpio2",
+					"gpio3", "gpio12";
+	};
+};
+
+&qupv3_se8_spi {
+	status = "okay";
+
+	cs47l35: cs47l35@0 {
+		compatible = "cirrus,cs47l35";
+		status = "okay";
+		spi-max-frequency = <26000000>;
+		reg = <0x0>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <70 IRQ_TYPE_LEVEL_LOW>;
+		interrupt-controller;
+		#interrupt-cells = <2>;
+		interrupt-names = "marley_irq";
+		reset-gpios = <&tlmm 35 0>;
+		pinctrl-names = "probe", "active";
+		pinctrl-0 = <&marley_irq_default>, <&marley_reset_default>,
+			<&cdc_sleep_clk_default>;
+		pinctrl-1 = <&cs47l35_defaults>;
+		AVDD-supply = <&pm8150_s4>;
+		DBVDD1-supply = <&pm8150_s4>;
+		DBVDD2-supply = <&pm8150_s4>;
+		CPVDD-supply = <&pm8150_s4>;
+		CPVDD1-supply = <&pm8150_s4>;
+		CPVDD2-supply = <&pm8150_s4>;
+		DCVDD-supply = <&L3C>;
+		SPKVDD-supply = <&dummy_vreg>;
+
+		gpio-controller;
+		#gpio-cells = <2>;
+
+		cirrus,inmode = <
+				0 0 0 1
+				0 0 0 0
+				>;
+
+		madera_pinctrl: madera-pinctrl {
+			compatible = "cirrus,madera-pinctrl";
+			cs47l35_defaults: defaults {
+				aif1 {
+					groups = "aif1";
+					function = "aif1";
+					bias-bus-hold;
+				};
+
+				aif2 {
+					groups = "aif2";
+					function = "aif2";
+					bias-bus-hold;
+				};
+
+				gpio5 { /* AMP wakeup GPIO */
+					groups = "gpio5";
+					function = "io";
+				};
+
+				gpio2 { /* SSC CDC Wake */
+					groups = "gpio2";
+					function = "io";
+				};
+			};
+		};
+
+		micvdd {
+			regulator-min-microvolt = <3000000>;
+			regulator-max-microvolt = <3000000>;
+		};
+
+		MICBIAS1 {
+			regulator-min-microvolt = <2800000>;
+			regulator-max-microvolt = <2800000>;
+			cirrus,ext-cap = <1>;
+		};
+
+		MICBIAS1A {
+			regulator-active-discharge = <1>;
+		};
+
+		MICBIAS1B {
+			regulator-active-discharge = <1>;
+		};
+
+		MICBIAS2 {
+			regulator-min-microvolt = <2800000>;
+			regulator-max-microvolt = <2800000>;
+			cirrus,ext-cap = <1>;
+		};
+
+		MICBIAS2A {
+			regulator-active-discharge = <1>;
+		};
+
+		MICBIAS2B {
+			regulator-active-discharge = <1>;
+		};
+
+		adsps {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			adsp@0ffe00 {
+				reg = <0x0ffe00>;
+				firmware {
+					ultrasound {
+						cirrus,wmfw-file = "marley-dsp1-ultrasound.wmfw";
+						cirrus,bin-file = "marley-dsp1-ultrasound.bin";
+						cirrus,full-name;
+						cirrus,compr-caps = <14 8 4 1 16000 96000>;
+					};
+				};
+			};
+			adsp@17fe00 {
+				reg = <0x17fe00>;
+				firmware {
+					frontend {
+						cirrus,wmfw-file = "marley-dsp2-aov-frontend.wmfw";
+						cirrus,bin-file = "marley-dsp2-aov-vrgain.bin";
+						cirrus,full-name;
+						cirrus,compr-caps = <14 1 4 1 16000>;
+					};
+				};
+			};
+			adsp@1ffe00 {
+				reg = <0x1ffe00>;
+				firmware {
+					aov {
+						cirrus,wmfw-file = "marley-dsp3-aov-control.wmfw";
+						cirrus,bin-file = "marley-dsp3-aov-model.bin";
+						cirrus,full-name;
+						cirrus,compr-caps = <14 1 4 1 16000>;
+					};
+				};
+			};
+		};
+
+		cirrus,accdet {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			acc@1 {
+				reg = <1>;
+
+				cirrus,init-mic-delay-ms = <200>;
+				cirrus,micd-manual-debounce = <3>;
+				cirrus,micd-detect-debounce-ms = <600>;
+				cirrus,micd-bias-start-time = <8>;
+				cirrus,micd-rate = <6>;
+				cirrus,micd-dbtime = <0x1>;
+				cirrus,micd-ranges = <
+					100 226 /* HEADSETHOOK	*/
+					150 582 /* VOICE_ASSIST */
+					295 115 /* VOLUME_UP	 */
+					1257 114 /* VOLUME_DOWN  */
+					>;
+				cirrus,micd-configs = <
+						0 1 2 0 0
+						>;
+				cirrus,micd-clamp-mode = <0x4>;
+			};
+		};
+	};
+};
+
+&qupv3_se1_spi {
+	status = "okay";
+
+	cs35l41_spk: cs35l41@0 {
+		compatible = "cirrus,cs35l41";
+		spi-max-frequency = <26000000>;
+		reg = <0x0>;
+		reset-gpios = <&tlmm 71 0>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <85 IRQ_TYPE_LEVEL_LOW>;
+		interrupt-controller;
+		#interrupt-cells = <2>;
+		interrupt-names = "prince_irq";
+
+		VA-supply = <&pm8150_s4>;
+		VP-supply = <&pm8150_s4>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&prince_irq_default>, <&prince_reset_default>;
+
+		cirrus,right-channel-amp;
+		cirrus,boost-ind-nanohenry = <1000>; /* 1uH */
+		cirrus,boost-ctl-millivolt = <11000>;
+		cirrus,boost-peak-milliamp = <4000>;
+		cirrus,boost-cap-microfarad = <21>;
+		cirrus,amp-gain-zc;
+
+		cirrus,gpio-config2 {
+			cirrus,gpio-polarity-invert = <0x01>;
+			cirrus,gpio-output-enable = <0x01>;
+			cirrus,gpio-src-select = <0x04>;
+		};
+
+		cirrus,gpio-config1 {
+			cirrus,gpio-src-select = <0x1>;
+			cirrus,gpio-output-enable;
+		};
+
+		adsps {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			adsp@2b80000 {
+				reg = <0x2b80000>;
+				firmware {
+					protection {
+						cirrus,full-name;
+						cirrus,wmfw-file = "cs35l41-dsp1-spk-prot.wmfw";
+						cirrus,bin-file = "cs35l41-dsp1-spk-prot.bin";
+					};
+					calibration {
+						cirrus,full-name;
+						cirrus,wmfw-file = "cs35l41-dsp1-spk-prot.wmfw";
+						cirrus,bin-file = "cs35l41-dsp1-spk-cali.bin";
+					};
+					diagnostic {
+						cirrus,full-name;
+						cirrus,wmfw-file = "cs35l41-dsp1-spk-diag.wmfw";
+					};
+				};
+			};
+		};
+	};
+
+	cs35l41_rcv: cs35l41@1 {
+		compatible = "cirrus,cs35l41";
+		spi-max-frequency = <26000000>;
+		reg = <0x1>;
+		reset-gpios = <&tlmm 92 0>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <86 IRQ_TYPE_LEVEL_LOW>;
+		interrupt-controller;
+		#interrupt-cells = <2>;
+		interrupt-names = "prince_irq";
+
+		VA-supply = <&pm8150_s4>;
+		VP-supply = <&pm8150_s4>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&prince_rcv_irq_default>, <&prince_rcv_reset_default>;
+
+		cirrus,boost-ind-nanohenry = <1000>; /* 1uH */
+		cirrus,boost-ctl-millivolt = <11000>;
+		cirrus,boost-peak-milliamp = <4000>;
+		cirrus,boost-cap-microfarad = <21>;
+		cirrus,amp-gain-zc;
+
+		cirrus,gpio-config2 {
+			cirrus,gpio-polarity-invert = <0x01>;
+			cirrus,gpio-output-enable = <0x01>;
+			cirrus,gpio-src-select = <0x04>;
+		};
+
+		cirrus,gpio-config1 {
+			cirrus,gpio-src-select = <0x1>;
+			cirrus,gpio-output-enable;
+		};
+
+		adsps {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			adsp@2b80000 {
+				reg = <0x2b80000>;
+				firmware {
+					protection {
+						cirrus,full-name;
+						cirrus,wmfw-file = "cs35l41-dsp1-spk-prot.wmfw";
+						cirrus,bin-file = "cs35l41-dsp1-spk-prot.bin";
+					};
+					calibration {
+						cirrus,full-name;
+						cirrus,wmfw-file = "cs35l41-dsp1-spk-prot.wmfw";
+						cirrus,bin-file = "cs35l41-dsp1-spk-cali.bin";
+					};
+					diagnostic {
+						cirrus,full-name;
+						cirrus,wmfw-file = "cs35l41-dsp1-spk-diag.wmfw";
+					};
+				};
+			};
+		};
+	};
+};
+
+&q6core {
+	lito_snd: sound {
+		status = "disabled";
+	};
+
+	bolero: bolero-cdc {
+		status = "disabled";
+	};
+
+   cdc_sen_mi2s_gpios: cdc_sen_mi2s_gpios {
+           compatible = "qcom,msm-cdc-pinctrl";
+           pinctrl-names = "aud_active", "aud_sleep";
+           pinctrl-0 = <&lpi_i2s2_sck_active &lpi_i2s2_ws_active
+                           &lpi_i2s2_sd0_active &lpi_i2s2_sd1_active>;
+           pinctrl-1 = <&lpi_i2s2_sck_sleep &lpi_i2s2_ws_sleep
+                           &lpi_i2s2_sd0_sleep &lpi_i2s2_sd1_sleep>;
+           qcom,lpi-gpios;
+   };
+
+	sound-madera {
+		compatible = "qcom,kona-asoc-snd-madera";
+		qcom,model = "kona-madera-snd-card";
+		qcom,mi2s-audio-intf = <1>;
+		qcom,msm-mi2s-master = <1>, <1>, <1>, <1>, <1>, <1>;
+		qcom,auxpcm-audio-intf = <1>;
+		qcom,wcn-bt = <1>;
+		qcom,ext-disp-audio-rx = <1>;
+		qcom,afe-rxtx-lb = <0>;
+		qcom,skip-aux-dev;
+		qcom,msm_audio_ssr_devs = <&audio_apr>, <&q6core>;
+		qcom,sen-mi2s-gpios = <&cdc_sen_mi2s_gpios>;
+
+		asoc-platform = <&pcm0>, <&pcm1>, <&pcm2>, <&voip>, <&voice>,
+				<&loopback>, <&compress>, <&hostless>,
+				<&afe>, <&lsm>, <&routing>, <&compr>,
+				<&pcm_noirq>, <&cs47l35>;
+		asoc-platform-names = "msm-pcm-dsp.0", "msm-pcm-dsp.1",
+				"msm-pcm-dsp.2", "msm-voip-dsp",
+				"msm-pcm-voice", "msm-pcm-loopback",
+				"msm-compress-dsp", "msm-pcm-hostless",
+				"msm-pcm-afe", "msm-lsm-client",
+				"msm-pcm-routing", "msm-compr-dsp",
+				"msm-pcm-dsp-noirq", "cs47l35-codec";
+		asoc-cpu = <&dai_dp>, <&dai_dp1>,
+				<&dai_mi2s0>, <&dai_mi2s1>,
+				<&dai_mi2s2>, <&dai_mi2s3>,
+				<&dai_mi2s4>, <&dai_mi2s5>, <&dai_pri_auxpcm>,
+				<&dai_sec_auxpcm>, <&dai_tert_auxpcm>,
+				<&dai_quat_auxpcm>, <&dai_quin_auxpcm>,
+				<&dai_sen_auxpcm>,
+				<&afe_pcm_rx>, <&afe_pcm_tx>, <&afe_proxy_rx>,
+				<&afe_proxy_tx>, <&incall_record_rx>,
+				<&incall_record_tx>, <&incall_music_rx>,
+				<&incall_music_2_rx>,
+				<&usb_audio_rx>, <&usb_audio_tx>,
+				<&sb_7_rx>, <&sb_7_tx>,
+				<&dai_pri_tdm_rx_0>, <&dai_pri_tdm_tx_0>,
+				<&dai_sec_tdm_rx_0>, <&dai_sec_tdm_tx_0>,
+				<&dai_tert_tdm_rx_0>, <&dai_tert_tdm_tx_0>,
+				<&dai_quat_tdm_rx_0>, <&dai_quat_tdm_tx_0>,
+				<&dai_quin_tdm_rx_0>, <&dai_quin_tdm_tx_0>,
+				<&dai_sen_tdm_rx_0>, <&dai_sen_tdm_tx_0>,
+				<&wsa_cdc_dma_0_rx>, <&wsa_cdc_dma_0_tx>,
+				<&wsa_cdc_dma_1_rx>, <&wsa_cdc_dma_1_tx>,
+				<&wsa_cdc_dma_2_tx>,
+				<&va_cdc_dma_0_tx>, <&va_cdc_dma_1_tx>,
+				<&va_cdc_dma_2_tx>,
+				<&rx_cdc_dma_0_rx>, <&tx_cdc_dma_0_tx>,
+				<&rx_cdc_dma_1_rx>, <&tx_cdc_dma_1_tx>,
+				<&rx_cdc_dma_2_rx>, <&tx_cdc_dma_2_tx>,
+				<&rx_cdc_dma_3_rx>, <&tx_cdc_dma_3_tx>,
+				<&rx_cdc_dma_4_rx>, <&tx_cdc_dma_4_tx>,
+				<&rx_cdc_dma_5_rx>, <&tx_cdc_dma_5_tx>,
+				<&rx_cdc_dma_6_rx>, <&rx_cdc_dma_7_rx>,
+				<&afe_loopback_tx>;
+		asoc-cpu-names = "msm-dai-q6-dp.0", "msm-dai-q6-dp.1",
+				"msm-dai-q6-mi2s.0", "msm-dai-q6-mi2s.1",
+				"msm-dai-q6-mi2s.2", "msm-dai-q6-mi2s.3",
+				"msm-dai-q6-mi2s.4", "msm-dai-q6-mi2s.5",
+				"msm-dai-q6-auxpcm.1",
+				"msm-dai-q6-auxpcm.2", "msm-dai-q6-auxpcm.3",
+				"msm-dai-q6-auxpcm.4", "msm-dai-q6-auxpcm.5",
+				"msm-dai-q6-auxpcm.6", "msm-dai-q6-dev.224",
+				"msm-dai-q6-dev.225", "msm-dai-q6-dev.241",
+				"msm-dai-q6-dev.240", "msm-dai-q6-dev.32771",
+				"msm-dai-q6-dev.32772", "msm-dai-q6-dev.32773",
+				"msm-dai-q6-dev.32770",
+				"msm-dai-q6-dev.28672", "msm-dai-q6-dev.28673",
+				"msm-dai-q6-dev.16398", "msm-dai-q6-dev.16399",
+				"msm-dai-q6-tdm.36864", "msm-dai-q6-tdm.36865",
+				"msm-dai-q6-tdm.36880", "msm-dai-q6-tdm.36881",
+				"msm-dai-q6-tdm.36896", "msm-dai-q6-tdm.36897",
+				"msm-dai-q6-tdm.36912", "msm-dai-q6-tdm.36913",
+				"msm-dai-q6-tdm.36928", "msm-dai-q6-tdm.36929",
+				"msm-dai-q6-tdm.36944", "msm-dai-q6-tdm.36945",
+				"msm-dai-cdc-dma-dev.45056",
+				"msm-dai-cdc-dma-dev.45057",
+				"msm-dai-cdc-dma-dev.45058",
+				"msm-dai-cdc-dma-dev.45059",
+				"msm-dai-cdc-dma-dev.45061",
+				"msm-dai-cdc-dma-dev.45089",
+				"msm-dai-cdc-dma-dev.45091",
+				"msm-dai-cdc-dma-dev.45093",
+				"msm-dai-cdc-dma-dev.45104",
+				"msm-dai-cdc-dma-dev.45105",
+				"msm-dai-cdc-dma-dev.45106",
+				"msm-dai-cdc-dma-dev.45107",
+				"msm-dai-cdc-dma-dev.45108",
+				"msm-dai-cdc-dma-dev.45109",
+				"msm-dai-cdc-dma-dev.45110",
+				"msm-dai-cdc-dma-dev.45111",
+				"msm-dai-cdc-dma-dev.45112",
+				"msm-dai-cdc-dma-dev.45113",
+				"msm-dai-cdc-dma-dev.45114",
+				"msm-dai-cdc-dma-dev.45115",
+				"msm-dai-cdc-dma-dev.45116",
+				"msm-dai-cdc-dma-dev.45118",
+				"msm-dai-q6-dev.24577";
+
+		qcom,audio-routing =
+			"IN1AL", "MICBIAS2A",
+			"IN2L",  "MICBIAS2B",
+			"IN1BR", "MICBIAS1B";
+
+		asoc-codec = <&stub_codec>, <&ext_disp_audio_codec>, <&cs47l35>,
+				<&cs35l41_rcv>, <&cs35l41_spk>;
+		asoc-codec-names = "msm-stub-codec.1",
+				"msm-ext-disp-audio-codec-rx",
+				"cs47l35-codec", "cs35l41-rcv", "cs35l41-spk";
+		cirrus,prince-max-devs = <2>;
+		cirrus,prince-devs = <&cs35l41_rcv>, <&cs35l41_spk>;
+		cirrus,prince-dev-prefix = "RCV", "SPK";
+	};
+};
