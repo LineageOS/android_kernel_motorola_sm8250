@@ -31,7 +31,8 @@
 &mot_boe_667_1080p_cmd_v0 {
         qcom,platform-te-gpio = <&tlmm 10 0>;
 	qcom,platform-reset-gpio = <&pm8150l_gpios 3 0>;
-         qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+        qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+        qcom,mdss-dsi-no-panel-on-read-support;
 
         qcom,mdss-dsi-t-clk-post = <0x1a>;
         qcom,mdss-dsi-t-clk-pre = <0x31>;
