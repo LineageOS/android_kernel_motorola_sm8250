@@ -841,53 +841,46 @@
 		pinctrl-0 = <&rear_pmic_irq_default>;
 
 		regulators {
-			ldo1 {
+			cam_main_avdd_2p8: ldo1 {
 				regulator-name = "ldo1";
 				regulator-min-microvolt = <2400000>;
 				regulator-max-microvolt = <3300000>;
-				regulator-boot-on;
 			};
 
-			ldo2 {
+			cam_wfov_tele_avdd_2p8: ldo2 {
 				regulator-name = "ldo2";
 				regulator-min-microvolt = <2400000>;
 				regulator-max-microvolt = <3300000>;
-				regulator-boot-on;
 			};
 
-			ldo3 {
+			cam_main_afois_vdd_3p5: ldo3 {
 				regulator-name = "ldo3";
 				regulator-min-microvolt = <1200000>;
 				regulator-max-microvolt = <3750000>;
-				regulator-boot-on;
 			};
 
-			ldo4 {
+			cam_wfov_tele_afvdd_2p8: ldo4 {
 				regulator-name = "ldo4";
 				regulator-min-microvolt = <1200000>;
 				regulator-max-microvolt = <3750000>;
-				regulator-boot-on;
 			};
 
-			ldo5 {
+			cam_main_dvdd_1p05: ldo5 {
 				regulator-name = "ldo5";
 				regulator-min-microvolt = <500000>;
 				regulator-max-microvolt = <1200000>;
-				regulator-boot-on;
 			};
 
-			ldo6 {
+			cam_wfov_dvdd_1p2: ldo6 {
 				regulator-name = "ldo6";
 				regulator-min-microvolt = <500000>;
 				regulator-max-microvolt = <1200000>;
-				regulator-boot-on;
 			};
 
-			ldo7 {
+			cam_tele_dvdd_1p2: ldo7 {
 				regulator-name = "ldo7";
 				regulator-min-microvolt = <1200000>;
 				regulator-max-microvolt = <3750000>;
-				regulator-boot-on;
 			};
 		};
 	};
