@@ -44,7 +44,7 @@
                                0A 07 02 04 00 1F 1A];
                        qcom,display-topology = <1 1 1>,
                                                <2 2 1>;
-                       qcom,default-topology-index = <1>;
+                       qcom,default-topology-index = <0>;
 
                 };
         };
