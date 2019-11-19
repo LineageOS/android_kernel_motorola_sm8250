@@ -5,6 +5,7 @@
 #include "lito-racer-nfc.dtsi"
 #include "lito-moto-racer-display.dtsi"
 #include "lito-racer-touchscreen.dtsi"
+#include "lito-racer-vibrator.dtsi"
 
 &soc {
 	gpio_keys {
