@@ -98,6 +98,30 @@
 			output-high;
 		};
 	};
+
+	ts_sub_active: ts-sub-active {
+		mux {
+			pins = "gpio3", "gpio21";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio3", "gpio21";
+			drive-strength = <8>;
+			bias-pull-up;
+		};
+	};
+
+	ts_sub_suspend: ts-sub-suspend {
+		mux {
+			pins = "gpio3", "gpio21";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio3", "gpio21";
+			drive-strength = <2>;
+			bias-pull-down;
+		};
+	};
 };
 
 &usb2_phy0 {
@@ -316,6 +340,33 @@
 		pinctrl-names = "on_state", "off_state";
 		pinctrl-0 = <&ts_active>;
 		pinctrl-1 = <&ts_active>;
+	};
+
+	synaptics_dsx_i2c@38 {
+		status = "/chosen","mmi,panel_name_s","contains","boe";
+		compatible = "synaptics,synaptics_mmi";
+		reg = <0x38>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <3 0>;
+		gpios = <&tlmm 3 0>, /* IRQ */
+			<&tlmm 21 0>; /* RESET */
+		touch_vdd-supply = <&pm8150a_l1>;
+		vdd_quirk-supply = <&pm8150_l16>;
+		synaptics,gpio-config;
+		pinctrl-names = "default", "active";
+		pinctrl-0 = <&ts_sub_active>;
+		pinctrl-1 = <&ts_sub_active>;
+		synaptics,splash-screen-mode;
+		synaptics,control-dsi = <1>;
+		synaptics,bound-display = "qcom,mdss_dsi_mot_boe_269_800x600_cmd_v2";
+		synaptics,class-entry-name = "secondary";
+		config_modifier-names = "aod";
+			config_modifier-aod {
+			aod-suspended {
+				/* Power->sleep; */
+				patch-data = "S";
+			};
+		};
 	};
 };
 
