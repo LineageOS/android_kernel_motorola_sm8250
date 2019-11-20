@@ -25,3 +25,8 @@
 /*
  * Burton HW rev DVT1C specific changes go here
  */
+
+/* Laser is broken, turn on always to help mitigate the issue */
+&pm8150a_l7 {
+	regulator-always-on;
+};
