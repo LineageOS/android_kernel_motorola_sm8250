@@ -2,6 +2,7 @@
 #include "lito-racer-common-overlay-base.dtsi"
 #include "camera/lito-camera-sensor-mot-racer-overlay.dtsi"
 #include "lito-racer-audio-overlay.dtsi"
+#include "lito-racer-sensor-overlay.dtsi"
 
 &utags {
 	compatible = "mmi,utags";
