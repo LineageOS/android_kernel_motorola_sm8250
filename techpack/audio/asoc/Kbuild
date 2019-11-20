@@ -158,7 +158,12 @@ endif
 endif
 
 ifdef CONFIG_SND_SOC_LITO
+# Separate machine driver for Smith/Racer
+ifneq (,$(filter smith%, $(TARGET_PRODUCT)))
+	MACHINE_OBJS += lito-smith.o
+else
 	MACHINE_OBJS += lito.o
+endif
 endif
 
 # for BENGAL sound card driver
