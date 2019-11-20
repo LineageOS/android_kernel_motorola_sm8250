@@ -17,13 +17,15 @@ qcom,mdss-dsi-panel-type = "dsi_cmd_mode";
 qcom,mdss-dsi-virtual-channel-id = <0>;
 qcom,mdss-dsi-stream = <0>;
 qcom,mdss-pan-physical-width-dimension = <68>;
-qcom,mdss-pan-physical-height-dimension = <121>;
+qcom,mdss-pan-physical-height-dimension = <147>;
+/* should be 10bits */
 qcom,mdss-dsi-bpp = <24>;
 qcom,mdss-dsi-underflow-color = <0xff>;
 qcom,mdss-dsi-border-color = <0>;
 
 qcom,dsi-ctrl-num = <0>;
 qcom,dsi-phy-num = <0>;
+qcom,dsi-select-clocks = "src_byte_clk0", "src_pixel_clk0";
 
 qcom,mdss-dsi-traffic-mode = "burst_mode";
 qcom,mdss-dsi-bllp-eof-power-mode;
@@ -65,16 +67,18 @@ qcom,mdss-dsi-acl-off-command = [15 01 00 00 00 00 02 55 00];
 
 qcom,mdss-dsi-display-timings {
 	timing@0{
+		/* 60FPS and switch to 90 FPS later */
+		qcom,mdss-dsi-panel-framerate = <60>;
 		qcom,mdss-dsi-panel-width = <1080>;
 		qcom,mdss-dsi-panel-height = <2340>;
-		qcom,mdss-dsi-h-front-porch = <128>;
-		qcom,mdss-dsi-h-back-porch = <128>;
-		qcom,mdss-dsi-h-pulse-width = <16>;
+		qcom,mdss-dsi-h-front-porch = <4>;
+		qcom,mdss-dsi-h-back-porch = <4>;
+		qcom,mdss-dsi-h-pulse-width = <4>;
 		qcom,mdss-dsi-h-sync-skew = <0>;
+		qcom,mdss-dsi-h-sync-pulse = <0>;
 		qcom,mdss-dsi-v-back-porch = <8>;
-		qcom,mdss-dsi-v-front-porch = <16>;
-		qcom,mdss-dsi-v-pulse-width = <2>;
-		qcom,mdss-dsi-panel-framerate = <60>;
+		qcom,mdss-dsi-v-front-porch = <4>;
+		qcom,mdss-dsi-v-pulse-width = <4>;
 		qcom,mdss-dsi-h-left-border = <0>;
 		qcom,mdss-dsi-h-right-border = <0>;
 		qcom,mdss-dsi-v-top-border = <0>;
@@ -82,50 +86,51 @@ qcom,mdss-dsi-display-timings {
                 qcom,mdss-dsi-panel-jitter = <0x20 0xa>;
 
 		qcom,mdss-dsi-on-command = [
+			39 00 00 00 00 00 05 FF AA 55 A5 81
+			15 00 00 00 00 00 02 6F 0D
+			15 00 00 00 00 00 02 F3 CB
+			39 00 00 00 00 00 05 FF AA 55 A5 00
+			/* Framne rate = 60hz */
 			39 00 00 00 00 00 06 F0 55 AA 52 08 00
+			15 00 00 00 00 00 02 B2 01 /* backlight fix */
 			15 00 00 00 00 00 02 6F 0E
 			15 00 00 00 00 00 02 BA 18
 			15 00 00 00 00 00 02 6F 03
 			39 00 00 00 00 00 04 C0 80 00 00
 			15 00 00 00 00 00 02 26 01
-			39 00 00 00 00 00 05 BE 0E 09 94 93
-
-			39 00 00 00 00 00 06 F0 55 AA 52 08 01
-			39 00 00 00 00 00 04 d1 07 02 10
-
-			39 00 00 00 00 00 05 FF AA 55 A5 81
-			15 00 00 00 00 00 02 6F 0D
-			15 00 00 00 00 00 02 F3 CB
-			39 00 00 00 00 00 05 FF AA 55 A5 00
-			15 00 00 00 00 00 02 35 00
-			39 00 00 00 00 00 05 3B 00 08 00 08
-			15 00 00 00 00 00 02 53 20
-			39 00 00 00 00 00 03 51 00 00
-			39 00 00 00 00 00 05 2A 00 00 04 37
-			39 00 00 00 00 00 05 2B 00 00 09 23
+			/* Done with frame rate setting */
+			05 00 00 00 00 00 01 35	 /* Set tear on */
+			15 00 00 00 00 00 02 53 20 /* HBM off ,dimming=1frame*/
+			/* Spec calls for 51 06 40 0F FF*/
+			39 00 00 00 00 00 05 51 00 00 0F FF
+			39 00 00 00 00 00 05 2A 00 00 04 37 /* Column Addr set */
+			39 00 00 00 00 00 05 2B 00 00 09 23 /* Row Addr set */
+			/* PPS stable1 8bit3x slice 20 */
 			39 00 00 00 00 00 13 93 89 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
-
-			15 00 00 00 00 00 02 90 01
-			15 00 00 00 00 00 02 03 11
-			15 01 00 00 01 00 02 2C 00
-			05 01 00 00 96 00 01 11
+			15 00 00 00 00 00 02 90 01  /* Compression method selection*/
+			15 00 00 00 00 00 02 03 11 /* Compression mode */
+			05 01 00 00 00 00 01 2C /* Memory write */
+			05 01 00 00 78 00 01 11
+			15 00 00 00 00 00 02 55 00      /* ACL OFF */
 			05 01 00 00 00 00 01 29];	/* display on */
 		qcom,mdss-dsi-off-command = [
-			05 01 00 00 23 00 01 28		/* display_off */
+			05 01 00 00 00 00 01 28		/* display_off */
 			05 01 00 00 78 00 01 10];	/* enter sleep mode */
 
 		qcom,mdss-dsi-on-command-state = "dsi_lp_mode";
-		qcom,mdss-dsi-off-command-state = "dsi_hs_mode";
+		qcom,mdss-dsi-off-command-state = "dsi_lp_mode";
+		qcom,mdss-dsi-force-tx-mode = "dsi_hs_mode";
 
-				qcom,mdss-dsi-h-sync-pulse = <0>;
-				qcom,compression-mode = "dsc";
-				qcom,mdss-dsc-version = <0x11>;
-				qcom,mdss-dsc-scr-version = <0x0>;
-				qcom,mdss-dsc-slice-height = <20>;
-				qcom,mdss-dsc-slice-width = <540>;
-				qcom,mdss-dsc-slice-per-pkt = <2>;
-				qcom,mdss-dsc-bit-per-component = <8>;
-				qcom,mdss-dsc-bit-per-pixel = <8>;
-				qcom,mdss-dsc-block-prediction-enable;
+		qcom,compression-mode = "dsc";
+		/* Why QCOM doesn't use this, even it used 2 encoder
+		 * as for that dsi_sw43404_amoled_cmd, for ex */
+		/* qcom,mdss-dsc-encoders = <2>; */
+		qcom,mdss-dsc-version = <0x11>;
+		qcom,mdss-dsc-slice-height = <20>;
+		qcom,mdss-dsc-slice-width = <540>;
+		qcom,mdss-dsc-slice-per-pkt = <2>;
+		qcom,mdss-dsc-bit-per-component = <8>;
+		qcom,mdss-dsc-bit-per-pixel = <8>;
+		qcom,mdss-dsc-block-prediction-enable;
 	};
 };
