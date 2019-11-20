@@ -13,7 +13,7 @@
 /dts-v1/;
 /plugin/;
 
-#include "lito-moto-common-overlay.dtsi"
+#include "lito-smith-common-overlay.dtsi"
 #include "lito-moto-smith-display.dtsi"
 #include "lito-moto-audio-overlay.dtsi"
 
@@ -25,7 +25,7 @@
 };
 
 /*
- * Charleston HW rev EVT1 specific changes go here
+ * Smith HW rev EVT1 specific changes go here
  */
 
 &soc {

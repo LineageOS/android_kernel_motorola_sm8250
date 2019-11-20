@@ -13,7 +13,7 @@
 /dts-v1/;
 /plugin/;
 
-#include "lito-moto-common-overlay.dtsi"
+#include "lito-smith-common-overlay.dtsi"
 
 / {
 	model = "Smith";
