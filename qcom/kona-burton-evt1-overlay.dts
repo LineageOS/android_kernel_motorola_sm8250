@@ -206,8 +206,8 @@
 		cam_vio-supply = <&pm8150a_l5>;
 		regulator-names = "cam_vio";
 		rgltr-cntrl-support;
-		rgltr-min-voltage = <2800000>;
-		rgltr-max-voltage = <2800000>;
+		rgltr-min-voltage = <1800000>;
+		rgltr-max-voltage = <1800000>;
 		rgltr-load-current = <0>;
 	};
 

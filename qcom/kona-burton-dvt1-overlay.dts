@@ -54,7 +54,7 @@
 		rgltr-cntrl-support;
 		rgltr-min-voltage = <1800000>;
 		rgltr-max-voltage = <1800000>;
-		rgltr-load-current = <14000>;
+		rgltr-load-current = <0>;
 	};
 
 	ois_main_old: qcom,ois@0 {
