@@ -707,6 +707,13 @@
 		compatible = "mmi,watchdog_cpu_ctx";
 		memory-region = <&wdog_cpuctx_mem>;
 	};
+
+	sys_temp_support {
+		compatible = "mmi,sys-temp";
+		mmi,temperature-names = "front_temp",
+					"back_temp";
+		status = "ok";
+	};
 };
 
 &tlmm{
