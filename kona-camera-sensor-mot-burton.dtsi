@@ -209,7 +209,7 @@
 			rgltr-cntrl-support;
 			rgltr-min-voltage = <1800000>;
 			rgltr-max-voltage = <1800000>;
-			rgltr-load-current = <14000>;
+			rgltr-load-current = <0>;
 		};
 
 		ois_main: qcom,ois@0 {
@@ -304,11 +304,12 @@
 		compatible = "qcom,eeprom";
 		cci-master = <0>;
 		cam_vio-supply = <&pm8150a_l5>;
-		regulator-names = "cam_vio";
+		cam_vaf-supply = <&cam_wfov_tele_afvdd_2p8>;
+		regulator-names = "cam_vio", "cam_vaf";
 		rgltr-cntrl-support;
-		rgltr-min-voltage = <1800000>;
-		rgltr-max-voltage = <1800000>;
-		rgltr-load-current = <0>;
+		rgltr-min-voltage = <1800000 2800000>;
+		rgltr-max-voltage = <1800000 2800000>;
+		rgltr-load-current = <0 0>;
 	};
 
 	eeprom_tele: qcom,eeprom@2 {
@@ -317,11 +318,12 @@
 		compatible = "qcom,eeprom";
 		cci-master = <1>;
 		cam_vio-supply = <&pm8150a_l5>;
-		regulator-names = "cam_vio";
+		cam_vaf-supply = <&cam_wfov_tele_afvdd_2p8>;
+		regulator-names = "cam_vio", "cam_vaf";
 		rgltr-cntrl-support;
-		rgltr-min-voltage = <1800000>;
-		rgltr-max-voltage = <1800000>;
-		rgltr-load-current = <0>;
+		rgltr-min-voltage = <1800000 2800000>;
+		rgltr-max-voltage = <1800000 2800000>;
+		rgltr-load-current = <0 0>;
 	};
 
 	ois_tele: qcom,ois@1 {
