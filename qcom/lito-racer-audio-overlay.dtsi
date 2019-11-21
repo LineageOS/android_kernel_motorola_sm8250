@@ -65,11 +65,11 @@
 
 	prince_rcv_irq_default: prince_rcv_irq_default {
 		mux {
-			pins = "gpio86";
+			pins = "gpio33";
 			function = "gpio";
 		};
 		config {
-			pins = "gpio86";
+			pins = "gpio33";
 			drive-strength = <2>; /* 2 MA */
 			bias-pull-up;
 			input-enable;
@@ -400,7 +400,8 @@
 		reg = <0x1>;
 		reset-gpios = <&tlmm 92 0>;
 		interrupt-parent = <&tlmm>;
-		interrupts = <86 IRQ_TYPE_LEVEL_LOW>;
+		/* MMI_STOPSHIP​ <Audio>: 86 is used by modem. there are irq storm happen */
+		interrupts = <33 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-controller;
 		#interrupt-cells = <2>;
 		interrupt-names = "prince_irq";
