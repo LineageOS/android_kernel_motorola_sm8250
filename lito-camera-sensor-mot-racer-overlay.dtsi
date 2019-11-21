@@ -238,6 +238,27 @@
 		flash-source = <&pm8150l_flash0>;
 		torch-source = <&pm8150l_torch0>;
 		switch-source = <&pm8150l_switch0>;
+		status = "ok";
+	};
+
+	led_flash_wide: qcom,camera-flash@1 {
+		cell-index = <1>;
+		reg = <0x01 0x00>;
+		compatible = "qcom,camera-flash";
+		flash-source = <&pm8150l_flash0>;
+		torch-source = <&pm8150l_torch0>;
+		switch-source = <&pm8150l_switch0>;
+		status = "ok";
+	};
+
+	led_flash_tele: qcom,camera-flash@2 {
+		cell-index = <2>;
+		reg = <0x02 0x00>;
+		compatible = "qcom,camera-flash";
+		flash-source = <&pm8150l_flash0>;
+		torch-source = <&pm8150l_torch0>;
+		switch-source = <&pm8150l_switch0>;
+		status = "ok";
 	};
 
 	qcom,cam-res-mgr {
@@ -380,6 +401,7 @@
 		sensor-position-roll = <90>;
 		sensor-position-pitch = <0>;
 		sensor-position-yaw = <180>;
+		led-flash-src = <&led_flash_wide>;
 		actuator-src = <&actuator_wide>;
 		cam_vio-supply = <&cam_iovdd_ldo>;
 		cam_vana-supply = <&cam_wide_tele_avdd_ldo>;
@@ -421,6 +443,7 @@
 		sensor-position-roll = <90>;
 		sensor-position-pitch = <0>;
 		sensor-position-yaw = <180>;
+		led-flash-src = <&led_flash_tele>;
 		actuator-src = <&actuator_tele>;
 		cam_vio-supply = <&cam_iovdd_ldo>;
 		cam_vana-supply = <&cam_wide_tele_avdd_ldo>;
