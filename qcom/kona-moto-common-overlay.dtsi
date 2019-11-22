@@ -821,7 +821,7 @@
 
 	stmvl53l1@29 {
 		/* Enable once the matching driver is ported completely */
-		status = "disabled";
+		status = "ok";
 		compatible = "st,stmvl53l1";
 		reg = <0x29>;
 		vdd-vl53l1-supply = <&pm8150a_l7>;
