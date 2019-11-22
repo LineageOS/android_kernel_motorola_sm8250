@@ -30,3 +30,9 @@
 &pm8150a_l7 {
 	regulator-always-on;
 };
+
+&qupv3_se15_i2c {
+	stmvl53l1@29 {
+		status = "disabled";
+	};
+};
