@@ -740,7 +740,7 @@
 			config {
 				pins = "gpio129";
 				drive-strength = <2>;   /* 2 mA */
-				bias-pull-down;
+				bias-pull-up;
 			};
 		};
 	};
