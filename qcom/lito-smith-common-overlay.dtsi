@@ -46,6 +46,16 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&usb_eldo13>;
 	};
+
+	fpc: fpc_fpc1020 {
+		compatible = "fpc,fpc1020";
+		status = "ok";
+		irq = <&tlmm 112 0>;
+		rst = <&tlmm 113 0>;
+		pinctrl-names = "default", "suspend";
+		pinctrl-0 = <&int_active &rst_active>;
+		pinctrl-1 = <&int_suspend &rst_suspend>;
+	};
 };
 
 &tlmm{
@@ -96,6 +106,63 @@
 			drive-strength = <2>;
 			bias-pull-up;
 			output-high;
+		};
+	};
+
+	fps {
+		rst_active: rst_active {
+			mux {
+				pins = "gpio113";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio113";
+				drive-strength = <2>;
+				bias-disable;
+				output-low;
+			};
+		};
+
+		rst_suspend: rst_suspend{
+			mux {
+				pins = "gpio113";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio113";
+				drive-strength = <2>;
+				bias-pull-down;
+				output-high;
+			};
+		};
+
+		int_active: int_active {
+			mux {
+				pins = "gpio112";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio112";
+				drive-strength = <2>;
+				bias-pull-down;
+				input-enable;
+			};
+		};
+
+		int_suspend: int_suspend{
+			mux {
+				pins = "gpio112";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio112";
+				drive-strength = <2>;
+				bias-pull-down;
+				input-enable;
+			};
 		};
 	};
 
