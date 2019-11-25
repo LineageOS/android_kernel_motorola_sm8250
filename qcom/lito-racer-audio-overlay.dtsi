@@ -88,6 +88,11 @@
 		regulator-name = "dummy_vreg";
 		regulator-always-on;
 	};
+
+	aov_trigger {
+		compatible = "mmi,aov-trigger";
+		status = "ok";
+	};
 };
 
 &pm8150_gpios {
