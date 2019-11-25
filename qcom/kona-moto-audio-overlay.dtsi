@@ -534,7 +534,7 @@
 
 	cs35l41_rcv: cs35l41@1 {
 		compatible = "cirrus,cs35l41";
-		spi-max-frequency = <26000000>;
+		spi-max-frequency = <19200000>;
 		reg = <0x1>;
 		reset-gpios = <&tlmm 139 0>;
 		interrupt-parent = <&tlmm>;
