@@ -60,12 +60,12 @@
 	cam_flash_en_default: cam_flash_en_default {
 		/* RESET */
 		mux {
-			pins = "gpio62";
+			pins = "gpio63";
 			function = "gpio";
 		};
 
 		config{
-			pins = "gpio62";
+			pins = "gpio63";
 			drive-strength = <2>; /* 2 MA */
 			output-low;
 		};
@@ -80,7 +80,41 @@
 	};
 };
 
+&soc {
+	qcom,cam-res-mgr {
+		compatible = "qcom,cam-res-mgr";
+		status = "ok";
+	};
+
+	camera_flash_en_gpio: gpio-regulator@4{
+		compatible = "regulator-fixed";
+		reg = <0x04 0x00>;
+		regulator-name = "camera_flash_en_gpio";
+		regulator-min-microvolt = <1808000>;
+		regulator-max-microvolt = <1808000>;
+		regulator-enable-ramp-delay = <233>;
+		enable-active-high;
+		gpio = <&tlmm 63 0>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&cam_flash_en_default>;
+	};
+};
+
 &cam_cci0 {
+	led_flash_rear: qcom,led-flash@0{
+		cell-index = <0>;
+		reg = <0x0>;
+		compatible = "qcom,camera-flash";
+		cci-master = <0>;
+		cam_v_custom1-supply = <&camera_flash_en_gpio>;
+		regulator-names = "cam_v_custom1";
+		rgltr-cntrl-support;
+		rgltr-min-voltage = <1808000>;
+		rgltr-max-voltage = <1808000>;
+		rgltr-load-current = <0>;
+		status = "ok";
+	};
+
 	front_sensor: qcom,cam-sensor@1 {
 		cell-index = <1>;
 		compatible = "qcom,cam-sensor";
@@ -128,6 +162,7 @@
 		sensor-position-roll = <0>;
 		sensor-position-pitch = <0>;
 		sensor-position-yaw = <0>;
+		led-flash-src = <&led_flash_rear>;
 		cam_vio-supply = <&cam_f_vio_ldo>;
 		cam_vana-supply = <&cam_r_vdda_ldo>;
 		cam_vdig-supply = <&cam_r_vddd_ldo>;
