@@ -52,7 +52,7 @@
 		interrupts = <24 0x02>;
 		interrupt-names = "sx933x_irq";
 		Semtech,nirq-gpio= <&tlmm 24 0x02>;
-		Semtech,button-flag = <0x07>;
+		Semtech,button-flag = <0x03>;
 		Semtech,reg-num = <83>;
 		Semtech,reg-init =<
 		0x8020 0x1F0000
