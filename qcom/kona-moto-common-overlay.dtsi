@@ -644,6 +644,7 @@
 		sec,irq_gpio = <&tlmm 39 0>;
 		sec,irq_type = <0x2008>; /*IRQF_TRIGGER_LOW | IRQF_ONESHOT*/
 		sec,max_coords = <1080 2340>;
+		sec,refresh-rate-update;
 		sec,usb-charger-detection;
 		sec,regulator_dvdd = "pm8150a_l1";
 		sec,regulator_avdd = "pm8150_l13";
