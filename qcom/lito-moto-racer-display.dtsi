@@ -18,6 +18,10 @@
 	status = "disabled";
 };
 
+&sde_dsi {
+        qcom,platform-mot-ext-feature-enable;
+};
+
 &pm8150a_amoled {
 	status = "ok";
 };
