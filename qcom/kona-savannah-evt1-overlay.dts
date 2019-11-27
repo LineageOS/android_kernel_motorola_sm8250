@@ -30,8 +30,9 @@
 	goodix_ts_i2c@5d {
 		status = "/chosen","mmi,panel_name","contains","smd";
 		goodix,x2x;
-		goodix,cfg_bin_name = "goodix_cfg_group_smd.bin";
-		/delete-property/ goodix,fw_name;
+		goodix,y2y;
+		goodix,cfg_bin_name = "goodix_cfg_group2.bin";
+		goodix,fw_name = "goodix-gtx5-38-04-foles.bin";
 	};
 };
 
