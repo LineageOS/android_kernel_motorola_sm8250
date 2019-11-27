@@ -93,7 +93,7 @@
 	camera-therm-usr {
 		status = "disabled";
 	};
-	cam_therm {
+	sdx_therm {
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-governor = "user_space";
@@ -201,7 +201,7 @@
 	mmw-pa1-usr {
 		status = "disabled";
 	};
-	brd_therm {
+	quiet_therm {
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-governor = "user_space";
