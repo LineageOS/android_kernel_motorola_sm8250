@@ -409,6 +409,21 @@
 		status = "ok";
 	};
 
+	eeprom_wide: qcom,eeprom@2 {
+		cell-index = <2>;
+		reg = <0x2>;
+		compatible = "qcom,eeprom";
+		cam_vaf-supply = <&cam_afvdd_ldo>;
+		cam_vio-supply = <&cam_iovdd_ldo>;
+		regulator-names = "cam_vaf", "cam_vio";
+		rgltr-cntrl-support;
+		rgltr-min-voltage = <2800000 1800000>;
+		rgltr-max-voltage = <2800000 1800000>;
+		rgltr-load-current = <0 0>;
+		cci-master = <0>;
+		status = "ok";
+	};
+
 	eeprom_tele: qcom,eeprom@3 {
 		cell-index = <3>;
 		reg = <0x3>;
@@ -432,6 +447,7 @@
 		sensor-position-roll = <90>;
 		sensor-position-pitch = <0>;
 		sensor-position-yaw = <180>;
+		eeprom-src = <&eeprom_wide>;
 		led-flash-src = <&led_flash_wide>;
 		actuator-src = <&actuator_wide>;
 		cam_vio-supply = <&cam_iovdd_ldo>;
