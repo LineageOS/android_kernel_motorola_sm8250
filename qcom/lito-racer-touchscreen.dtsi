@@ -109,7 +109,7 @@
 	goodix_ts_i2c@5d {
 		compatible = "goodix,gt9896";
 		reg = <0x5d>;
-		status = "/chosen", "mmi,panel_name","dsi_csot_667_1080p_cmd_display";
+		status = "/chosen","mmi,panel_name","contains","boe_gdx","csot_gdx";
 		interrupt-parent = <&tlmm>;
 		interrupts = <9 0>;
 		goodix,reset-gpio = <&tlmm 8 0x0>;
