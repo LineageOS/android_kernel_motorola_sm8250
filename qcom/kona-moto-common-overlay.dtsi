@@ -210,7 +210,6 @@
 			vbus-supply = <&smb5_vbus>;
 			status = "ok";
 			qcom,enable-charging-limit;
-			qcom,enable-factory-poweroff;
 			qcom,upper-limit-capacity = <75>;
 			qcom,lower-limit-capacity = <60>;
 			qcom,mmi-temp-zones =
