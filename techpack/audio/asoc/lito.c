@@ -188,6 +188,7 @@ struct msm_asoc_mach_data {
 	struct snd_info_entry *codec_root;
 	int usbc_en2_gpio; /* used by gpio driver API */
 	int lito_v2_enabled;
+	int cirrus_prince_devs;
 	struct device_node *dmic01_gpio_p; /* used by pinctrl API */
 	struct device_node *dmic23_gpio_p; /* used by pinctrl API */
 	struct device_node *dmic45_gpio_p; /* used by pinctrl API */
@@ -5802,20 +5803,6 @@ static struct snd_soc_pcm_stream cirrus_amp_params[] = {
 		.channels_max = 2, /* 2 channels for 3.072MHz SCLK */
 	},
 };
-
-static struct snd_soc_codec_conf cirrus_amp_conf[] = {
-#ifdef CS35L41_STEREO
-	{
-		.dev_name		= AMP_RCV_NAME,
-		.name_prefix	= "RCV",
-	},
-#endif
-	{
-		.dev_name		= AMP_SPK_NAME,
-		.name_prefix	= "SPK",
-	}
-};
-
 #endif
 
 #ifdef CONFIG_SND_SOC_CS47l35
@@ -5982,6 +5969,37 @@ static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
 		return ret;
 	}
 
+	snd_soc_dapm_ignore_suspend(dapm, "MICSUPP");
+	snd_soc_dapm_ignore_suspend(dapm, "MICBIAS1");
+	snd_soc_dapm_ignore_suspend(dapm, "MICBIAS2");
+	snd_soc_dapm_ignore_suspend(dapm, "MICBIAS1A");
+	snd_soc_dapm_ignore_suspend(dapm, "MICBIAS1B");
+	snd_soc_dapm_ignore_suspend(dapm, "MICBIAS2A");
+	snd_soc_dapm_ignore_suspend(dapm, "MICBIAS2B");
+	snd_soc_dapm_ignore_suspend(dapm, "IN1AL");
+	snd_soc_dapm_ignore_suspend(dapm, "IN1AR");
+	snd_soc_dapm_ignore_suspend(dapm, "IN1BL");
+	snd_soc_dapm_ignore_suspend(dapm, "IN1BR");
+	snd_soc_dapm_ignore_suspend(dapm, "IN2L");
+	snd_soc_dapm_ignore_suspend(dapm, "IN2R");
+	snd_soc_dapm_ignore_suspend(dapm, "AIF1TX1");
+	snd_soc_dapm_ignore_suspend(dapm, "AIF1TX2");
+	snd_soc_dapm_ignore_suspend(dapm, "AIF1RX1");
+	snd_soc_dapm_ignore_suspend(dapm, "AIF1RX2");
+	snd_soc_dapm_ignore_suspend(dapm, "AIF2TX1");
+	snd_soc_dapm_ignore_suspend(dapm, "AIF2TX2");
+	snd_soc_dapm_ignore_suspend(dapm, "AIF2RX1");
+	snd_soc_dapm_ignore_suspend(dapm, "AIF2RX2");
+	snd_soc_dapm_ignore_suspend(dapm, "HPOUTL");
+	snd_soc_dapm_ignore_suspend(dapm, "HPOUTR");
+	snd_soc_dapm_ignore_suspend(dapm, "DSP2 Virtual Output");
+	snd_soc_dapm_ignore_suspend(dapm, "DSP3 Virtual Output");
+	snd_soc_dapm_ignore_suspend(dapm, "DSP Virtual Input");
+	snd_soc_dapm_ignore_suspend(dapm, "DSP2 Trigger Out");
+	snd_soc_dapm_ignore_suspend(dapm, "DSP3 Trigger Out");
+	snd_soc_dapm_ignore_suspend(dapm, "AIF1 Capture");
+
+	snd_soc_dapm_sync(dapm);
 	snd_soc_dapm_force_enable_pin(dapm, "SYSCLK");
 	snd_soc_dapm_sync(dapm);
 
@@ -6045,10 +6063,6 @@ static int cirrus_amp_init(struct snd_soc_pcm_runtime *rtd)
 
 static struct snd_soc_card snd_soc_card_kona_madera = {
 	.name		= "kona-madera-snd-card",
-#ifdef CONFIG_SND_SOC_CS35l41
-	.codec_conf	= cirrus_amp_conf,
-	.num_configs	= ARRAY_SIZE(cirrus_amp_conf),
-#endif
 };
 #endif
 
@@ -8034,7 +8048,8 @@ static const struct of_device_id kona_asoc_machine_of_match[]  = {
 	{},
 };
 
-static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev)
+static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev,
+	struct msm_asoc_mach_data *pdata)
 {
 	struct snd_soc_card *card = NULL;
 	struct snd_soc_dai_link *dailink = NULL;
@@ -8047,6 +8062,7 @@ static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev)
 	u32 val = 0;
 	u32 wcn_btfm_intf = 0;
 	const struct of_device_id *match;
+	int ret = 0;
 
 	match = of_match_node(kona_asoc_machine_of_match, dev->of_node);
 	if (!match) {
@@ -8054,6 +8070,11 @@ static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev)
 			__func__);
 		return NULL;
 	}
+
+	ret = of_property_read_u32(dev->of_node,
+			   "cirrus,prince-max-devs", &pdata->cirrus_prince_devs);
+	dev_info(dev, "%s: cirrus,prince-max-devs %d\n",
+			__func__, pdata->cirrus_prince_devs);
 
 	if (!strcmp(match->data, "madera_codec")) {
 		card = &snd_soc_card_kona_madera;
@@ -8994,6 +9015,9 @@ static int msm_asoc_machine_probe(struct platform_device *pdev)
 	int ret = 0;
 	uint index = 0;
 	struct clk *lpass_audio_hw_vote = NULL;
+	struct device_node *prince_codec_of_node;
+	const char *prince_name_prefix[1];
+	int i;
 
 	if (!pdev->dev.of_node) {
 		dev_err(&pdev->dev, "%s: No platform supplied from device tree\n", __func__);
@@ -9009,7 +9033,7 @@ static int msm_asoc_machine_probe(struct platform_device *pdev)
 				"qcom,lito-is-v2-enabled",
 				&pdata->lito_v2_enabled);
 
-	card = populate_snd_card_dailinks(&pdev->dev);
+	card = populate_snd_card_dailinks(&pdev->dev, pdata);
 	if (!card) {
 		dev_err(&pdev->dev, "%s: Card uninitialized\n", __func__);
 		ret = -EINVAL;
@@ -9045,6 +9069,43 @@ static int msm_asoc_machine_probe(struct platform_device *pdev)
 		ret = msm_init_aux_dev(pdev, card);
 		if (ret)
 			goto err;
+	}
+
+	if (pdata && pdata->cirrus_prince_devs > 0) {
+		/* Alloc array of codec conf struct */
+		msm_codec_conf = devm_kcalloc(&pdev->dev, pdata->cirrus_prince_devs,
+				sizeof(struct snd_soc_codec_conf), GFP_KERNEL);
+		if (!msm_codec_conf) {
+			ret = -ENOMEM;
+			goto err;
+		}
+
+		for (i = 0; i < pdata->cirrus_prince_devs; i++) {
+			prince_codec_of_node = of_parse_phandle(pdev->dev.of_node,
+						    "cirrus,prince-devs", i);
+			if (unlikely(!prince_codec_of_node)) {
+				/* we should not be here */
+				dev_err(&pdev->dev,
+					"%s: prince codec dev node is not present\n", __func__);
+				ret = -EINVAL;
+				goto err;
+			}
+			ret = of_property_read_string_index(pdev->dev.of_node,
+							    "cirrus,prince-dev-prefix", i, prince_name_prefix);
+			if (ret) {
+				dev_err(&pdev->dev,
+					"%s: failed to read prince dev prefix, ret = %d\n", __func__, ret);
+				ret = -EINVAL;
+				goto err;
+			}
+
+			msm_codec_conf[i].dev_name = NULL;
+			msm_codec_conf[i].of_node = prince_codec_of_node;
+			msm_codec_conf[i].name_prefix = prince_name_prefix[0];
+		}
+
+		card->num_configs = pdata->cirrus_prince_devs;
+		card->codec_conf = msm_codec_conf;
 	}
 
 	ret = devm_snd_soc_register_card(&pdev->dev, card);
