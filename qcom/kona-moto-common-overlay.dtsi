@@ -117,7 +117,7 @@
 
 	mot_batterydata: qcom,battery-data {
 		qcom,batt-id-range-pct = <100>;
-		#include "fg-gen4-batterydata-test_profile_5000mah.dtsi"
+		#include "fg-gen4-batterydata-LW50_5000mAh.dtsi"
 	};
 };
 
