@@ -90,7 +90,7 @@
 
 &soc {
 	goodix_fingerprint{
-		status = "okay";
+		status = "/chosen", "mmi,fps", "true";
 		compatible = "goodix,fingerprint";
 		fp-gpio-reset = <&tlmm 119 0x00>;
 		fp-gpio-irq = <&tlmm 23  0x00>;
