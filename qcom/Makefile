@@ -49,8 +49,10 @@ lito-smith-dvt2a-overlay.dtbo-base := lito-moto-base.dtb
 
 dtbo-$(CONFIG_RACER_DTB) += \
 		lito-racer-evt1-overlay.dtbo \
+		lito-racer-evt2-overlay.dtbo
 
 lito-racer-evt1-overlay.dtbo-base := lito-moto-base.dtb
+lito-racer-evt2-overlay.dtbo-base := lito-moto-base.dtb
 
 else
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
