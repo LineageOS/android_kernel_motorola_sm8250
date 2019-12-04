@@ -51,49 +51,6 @@
 			};
 		};
 	};
-
-	touch_vio_en_mux {
-		touch_vio_en_active: active {
-			mux {
-				pins = "gpio56";
-				function = "gpio";
-			};
-			config {
-				pins = "gpio56";
-				drive-strength = <2>;
-				bias-disable;
-				output-high;
-			};
-		};
-
-		touch_vio_en_suspend: default {
-			mux {
-				pins = "gpio56";
-				function = "gpio";
-			};
-			config {
-				pins = "gpio56";
-				drive-strength = <2>;
-				bias-pull-down;
-				output-low;
-			};
-		};
-	};
-};
-
-&soc {
-	tp_panel_dvdd: tp_gpio_regulator@1 {
-		compatible = "regulator-fixed";
-		regulator-name = "tp_panel_dvdd";
-		regulator-min-microvolt = <1800000>;
-		regulator-max-microvolt = <1800000>;
-		//regulator-enable-ramp-delay = <233>;
-		gpio = <&tlmm 56 0>;
-		enable-active-high;
-		regulator-boot-on;
-		pinctrl-names = "default";
-		pinctrl-0 = <&touch_vio_en_active>;
-	};
 };
 
 &pm8150_l13 {
@@ -122,7 +79,7 @@
 		goodix,panel-max-w = <256>;
 		goodix,panel-max-p = <4096>;
 		goodix,avdd-name = "pm8150_l13";
-		goodix,iovdd-name = "tp_panel_dvdd";
+		goodix,iovdd-name = "pm8150_l17";
 		goodix,power-on-delay-us = <300000>; /*300ms*/
 		goodix,power-off-delay-us = <5000>;
 		/*goodix,swap-axis;*/
@@ -145,7 +102,7 @@
 		sec,max_coords = <1080 2340>;
 		sec,usb-charger-detection;
 		sec,regulator_avdd = "pm8150_l13";
-		sec,regulator_dvdd = "tp_panel_dvdd";
+		sec,regulator_dvdd = "pm8150_l17";
 		pinctrl-names = "on_state", "off_state";
 		pinctrl-0 = <&touch_reset_active &touch_int_active>;
 		pinctrl-1 = <&touch_reset_suspend &touch_int_suspend>;
