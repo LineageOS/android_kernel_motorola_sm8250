@@ -90,6 +90,30 @@
 
 #define SWR_MAX_SLAVE_DEVICES 6
 
+#ifdef CONFIG_SND_SOC_CS47l35
+
+#define MADERA_CODEC_NAME "cs47l35-codec"
+#define AMP_CODEC_NAME "cs35l41-codec"
+#define MADERA_CODEC_DAI_NAME "cs47l35-aif1"
+#define MADERA_CPU_DAI_NAME "cs47l35-aif2"
+
+#define MADERA_CLK_SYSCLK_1		1
+#define MADERA_CLK_SRC_FLL1		0x4
+#define MADERA_CLK_SRC_AIF1BCLK         0x8
+#define MADERA_FLL_SRC_MCLK1            0
+#define MADERA_FLL_SRC_MCLK2            1
+#define MADERA_FLL1_REFCLK             1
+#define MADERA_CLK_DSPCLK               8
+#define MADERA_CLK_OPCLK               3
+#define QCOM_MCLK_RATE                 19200000
+
+#define FLL_RATE_MADERA		294912000
+#define MADERA_SYSCLK_RATE	(FLL_RATE_MADERA / 3)
+#define MADERA_DSPCLK_RATE	(FLL_RATE_MADERA / 2)
+#define MADERA_TDM_SLOTS_MAX 4
+#define MADERA_TDM_SLOT_WIDTH_BITS 16
+#endif
+
 enum {
 	RX_PATH = 0,
 	TX_PATH,
@@ -4622,6 +4646,13 @@ static int kona_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 	struct tdm_dev_config *config;
 	struct msm_asoc_mach_data *pdata = NULL;
 	unsigned int path_dir = 0, interface = 0, channel_interface = 0;
+#ifdef CONFIG_SND_SOC_CS47l35_TDM
+	unsigned int slot_offset_16b[8] = {0,2,4,6,8,10,12,14};
+	struct snd_soc_dai **codec_dais = rtd->codec_dais;
+	struct snd_soc_component *component =
+		snd_soc_rtdcom_lookup(rtd, MADERA_CODEC_NAME);
+	int i;
+#endif
 
 	pr_debug("%s: dai id = 0x%x\n", __func__, cpu_dai->id);
 
@@ -4655,16 +4686,25 @@ static int kona_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 		return -EINVAL;
 	}
 
+#ifdef CONFIG_SND_SOC_CS47l35_TDM
+	slot_offset = slot_offset_16b;
+	slot_width = MADERA_TDM_SLOT_WIDTH_BITS;
+	slots = MADERA_TDM_SLOTS_MAX;
+#else
 	slot_offset = config->tdm_slot_offset;
 	if (!slot_offset) {
 		pr_err("%s: slot offset is NULL\n", __func__);
 		return -EINVAL;
 	}
+#endif
 
 	if (path_dir)
 		channels = tdm_tx_cfg[interface][channel_interface].channels;
 	else
 		channels = tdm_rx_cfg[interface][channel_interface].channels;
+
+	rate = params_rate(params);
+	clk_freq = rate * slot_width * slots;
 
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 		/*2 slot config - bits 0 and 1 set for the first two slots */
@@ -4690,6 +4730,45 @@ static int kona_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 				__func__, ret);
 			goto end;
 		}
+#ifdef CONFIG_SND_SOC_CS47l35_TDM
+		for (i = 0; i < rtd->num_codecs; i++) {
+			ret = snd_soc_dai_set_tdm_slot(codec_dais[i], slot_mask, slot_mask,
+					slots, slot_width);
+			if (ret < 0) {
+				pr_err("%s: failed to set tdm rx slot, err:%d\n",
+				__func__, ret);
+				goto end;
+			}
+			ret = snd_soc_dai_set_fmt(codec_dais[i],
+						SND_SOC_DAIFMT_DSP_A |
+						SND_SOC_DAIFMT_CBS_CFS |
+						SND_SOC_DAIFMT_IB_NF);
+			if (ret != 0) {
+				pr_err("%s: Failed to set %s's fmt: ret = %d\n",
+					codec_dais[i]->name, ret);
+				return ret;
+			}
+
+			ret = snd_soc_dai_set_sysclk(codec_dais[i], 1,
+						     clk_freq,
+						     SND_SOC_CLOCK_IN);
+
+			if (ret != 0) {
+				pr_err("%s: Failed to set %s's clock: ret = %d\n",
+					codec_dais[i]->name, ret);
+				return ret;
+			}
+
+		}
+		pr_debug("%s: set madera tdm clk %d\n",	__func__, clk_freq);
+
+		ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
+			MADERA_CLK_SRC_AIF1BCLK,
+			clk_freq, MADERA_SYSCLK_RATE);
+		if (ret < 0)
+			pr_err("%s: set sysclk failed, err:%d\n",
+				__func__, ret);
+#endif
 	} else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
 		/*2 slot config - bits 0 and 1 set for the first two slots */
 		slot_mask = 0x0000FFFF >> (16 - slots);
@@ -4721,8 +4800,6 @@ static int kona_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 		goto end;
 	}
 
-	rate = params_rate(params);
-	clk_freq = rate * slot_width * slots;
 	ret = snd_soc_dai_set_sysclk(cpu_dai, 0, clk_freq, SND_SOC_CLOCK_OUT);
 	if (ret < 0)
 		pr_err("%s: failed to set tdm clk, err:%d\n",
@@ -5788,26 +5865,6 @@ static struct snd_soc_codec_conf *msm_prince_codec_conf;
 #endif
 
 #ifdef CONFIG_SND_SOC_CS47l35
-
-#define MADERA_CODEC_NAME "cs47l35-codec"
-#define AMP_CODEC_NAME "cs35l41-codec"
-#define MADERA_CODEC_DAI_NAME "cs47l35-aif1"
-#define MADERA_CPU_DAI_NAME "cs47l35-aif2"
-
-
-#define MADERA_CLK_SYSCLK_1		1
-#define MADERA_CLK_SRC_FLL1		0x4
-#define MADERA_CLK_SRC_AIF1BCLK         0x8
-#define MADERA_FLL_SRC_MCLK1            0
-#define MADERA_FLL_SRC_MCLK2            1
-#define MADERA_FLL1_REFCLK             1
-#define MADERA_CLK_DSPCLK               8
-#define MADERA_CLK_OPCLK               3
-#define QCOM_MCLK_RATE                 19200000
-
-#define FLL_RATE_MADERA		294912000
-#define MADERA_SYSCLK_RATE	(FLL_RATE_MADERA / 3)
-#define MADERA_DSPCLK_RATE	(FLL_RATE_MADERA / 2)
 
 static int msm_mclk_event(struct snd_soc_dapm_widget *w,
 		struct snd_kcontrol *kcontrol, int event)
@@ -7001,8 +7058,14 @@ static struct snd_soc_dai_link msm_tdm_be_dai_links[] = {
 		.stream_name = "Quaternary TDM0 Playback",
 		.cpu_dai_name = "msm-dai-q6-tdm.36912",
 		.platform_name = "msm-pcm-routing",
+#ifdef CONFIG_SND_SOC_CS47l35_TDM
+		.codec_name = MADERA_CODEC_NAME,
+		.codec_dai_name = MADERA_CODEC_DAI_NAME,
+		.init = &cirrus_codec_init,
+#else
 		.codec_name = "msm-stub-codec.1",
 		.codec_dai_name = "msm-stub-rx",
+#endif
 		.no_pcm = 1,
 		.dpcm_playback = 1,
 		.id = MSM_BACKEND_DAI_QUAT_TDM_RX_0,
@@ -7016,8 +7079,13 @@ static struct snd_soc_dai_link msm_tdm_be_dai_links[] = {
 		.stream_name = "Quaternary TDM0 Capture",
 		.cpu_dai_name = "msm-dai-q6-tdm.36913",
 		.platform_name = "msm-pcm-routing",
+#ifdef CONFIG_SND_SOC_CS47l35_TDM
+		.codec_name = MADERA_CODEC_NAME,
+		.codec_dai_name = MADERA_CODEC_DAI_NAME,
+#else
 		.codec_name = "msm-stub-codec.1",
 		.codec_dai_name = "msm-stub-tx",
+#endif
 		.no_pcm = 1,
 		.dpcm_capture = 1,
 		.id = MSM_BACKEND_DAI_QUAT_TDM_TX_0,
@@ -7302,7 +7370,7 @@ static struct snd_soc_dai_link msm_mi2s_be_dai_links[] = {
 		.stream_name = "Quaternary MI2S Playback",
 		.cpu_dai_name = "msm-dai-q6-mi2s.3",
 		.platform_name = "msm-pcm-routing",
-#ifdef CONFIG_SND_SOC_CS47l35
+#ifdef CONFIG_SND_SOC_CS47l35_I2S
 		.codec_name = MADERA_CODEC_NAME,
 		.codec_dai_name = MADERA_CODEC_DAI_NAME,
 		.init = &cirrus_codec_init,
@@ -7323,7 +7391,7 @@ static struct snd_soc_dai_link msm_mi2s_be_dai_links[] = {
 		.stream_name = "Quaternary MI2S Capture",
 		.cpu_dai_name = "msm-dai-q6-mi2s.3",
 		.platform_name = "msm-pcm-routing",
-#ifdef CONFIG_SND_SOC_CS47l35
+#ifdef CONFIG_SND_SOC_CS47l35_I2S
 		.codec_name = MADERA_CODEC_NAME,
 		.codec_dai_name = MADERA_CODEC_DAI_NAME,
 #else
