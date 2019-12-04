@@ -16,13 +16,23 @@
 };
 
 &dai_mi2s3 {
-	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&quat_mi2s_sck_active &quat_mi2s_ws_active
-			&quat_mi2s_sd0_active &quat_mi2s_sd1_active>;
-	pinctrl-1 = <&quat_mi2s_sck_sleep &quat_mi2s_ws_sleep
-			&quat_mi2s_sd0_sleep &quat_mi2s_sd1_sleep>;
 	qcom,msm-mi2s-rx-lines = <2>;
 	qcom,msm-mi2s-tx-lines = <1>;
+};
+
+&tdm_quat_rx {
+	qcom,msm-cpudai-tdm-sync-mode = <0>;
+	qcom,msm-cpudai-tdm-invert-sync = <0>;
+	dai_quat_tdm_rx_0: qcom,msm-dai-q6-tdm-quat-rx-0 {
+		qcom,msm-cpudai-tdm-header-start-offset = <0>;
+		qcom,msm-cpudai-tdm-header-width = <2>;
+		qcom,msm-cpudai-tdm-header-num-frame-repeat = <8>;
+	};
+};
+
+&tdm_quat_tx {
+	qcom,msm-cpudai-tdm-sync-mode = <0>;
+	qcom,msm-cpudai-tdm-invert-sync = <0>;
 };
 
 &pm8150_gpios {
@@ -48,7 +58,17 @@
 		status = "disabled";
 	};
 
-	sound_madera: sound-madera {
+	cdc_quat_tdm_gpios: msm_cdc_pinctrl_quat {
+		compatible = "qcom,msm-cdc-pinctrl";
+		pinctrl-names = "aud_active", "aud_sleep";
+		pinctrl-0 = <&quat_tdm_sck_active &quat_tdm_ws_active
+				&quat_tdm_sd0_active &quat_tdm_sd1_active>;
+		pinctrl-1 = <&quat_tdm_sck_sleep &quat_tdm_ws_sleep
+				&quat_tdm_sd0_sleep &quat_tdm_sd1_sleep>;
+		qcom,lpi-gpios;
+	};
+
+sound_madera: sound-madera {
 		compatible = "qcom,kona-asoc-snd-madera";
 		qcom,model = "kona-madera-snd-card";
 		qcom,mi2s-audio-intf = <1>;
@@ -162,6 +182,7 @@
 		cirrus,prince-max-devs = <2>;
 		cirrus,prince-devs = <&cs35l41_rcv &cs35l41_spk>;
 		cirrus,prince-dev-prefix = "RCV", "SPK";
+		qcom,quat-mi2s-gpios = <&cdc_quat_tdm_gpios>;
 	};
 
 };
