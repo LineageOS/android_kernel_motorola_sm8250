@@ -157,6 +157,38 @@
 	status = "disabled";
 };
 
+&clock_audio_wsa_1 {
+	status = "disabled";
+};
+
+&clock_audio_wsa_2 {
+	status = "disabled";
+};
+
+&clock_audio_rx_1 {
+	status = "disabled";
+};
+
+&clock_audio_rx_2 {
+	status = "disabled";
+};
+
+&clock_audio_tx_1 {
+	status = "disabled";
+};
+
+&clock_audio_tx_2 {
+	status = "disabled";
+};
+
+&clock_audio_va_1 {
+	status = "disabled";
+};
+
+&clock_audio_va_2 {
+	status = "disabled";
+};
+
 &dai_mi2s5 {
 	status="ok";
 	qcom,msm-mi2s-tx-lines = <1>; /*SD0 LPI_GPIO_12 gpio 127*/
@@ -531,18 +563,6 @@
 				<&dai_quat_tdm_rx_0>, <&dai_quat_tdm_tx_0>,
 				<&dai_quin_tdm_rx_0>, <&dai_quin_tdm_tx_0>,
 				<&dai_sen_tdm_rx_0>, <&dai_sen_tdm_tx_0>,
-				<&wsa_cdc_dma_0_rx>, <&wsa_cdc_dma_0_tx>,
-				<&wsa_cdc_dma_1_rx>, <&wsa_cdc_dma_1_tx>,
-				<&wsa_cdc_dma_2_tx>,
-				<&va_cdc_dma_0_tx>, <&va_cdc_dma_1_tx>,
-				<&va_cdc_dma_2_tx>,
-				<&rx_cdc_dma_0_rx>, <&tx_cdc_dma_0_tx>,
-				<&rx_cdc_dma_1_rx>, <&tx_cdc_dma_1_tx>,
-				<&rx_cdc_dma_2_rx>, <&tx_cdc_dma_2_tx>,
-				<&rx_cdc_dma_3_rx>, <&tx_cdc_dma_3_tx>,
-				<&rx_cdc_dma_4_rx>, <&tx_cdc_dma_4_tx>,
-				<&rx_cdc_dma_5_rx>, <&tx_cdc_dma_5_tx>,
-				<&rx_cdc_dma_6_rx>, <&rx_cdc_dma_7_rx>,
 				<&afe_loopback_tx>;
 		asoc-cpu-names = "msm-dai-q6-dp.0", "msm-dai-q6-dp.1",
 				"msm-dai-q6-mi2s.0", "msm-dai-q6-mi2s.1",
@@ -565,28 +585,6 @@
 				"msm-dai-q6-tdm.36912", "msm-dai-q6-tdm.36913",
 				"msm-dai-q6-tdm.36928", "msm-dai-q6-tdm.36929",
 				"msm-dai-q6-tdm.36944", "msm-dai-q6-tdm.36945",
-				"msm-dai-cdc-dma-dev.45056",
-				"msm-dai-cdc-dma-dev.45057",
-				"msm-dai-cdc-dma-dev.45058",
-				"msm-dai-cdc-dma-dev.45059",
-				"msm-dai-cdc-dma-dev.45061",
-				"msm-dai-cdc-dma-dev.45089",
-				"msm-dai-cdc-dma-dev.45091",
-				"msm-dai-cdc-dma-dev.45093",
-				"msm-dai-cdc-dma-dev.45104",
-				"msm-dai-cdc-dma-dev.45105",
-				"msm-dai-cdc-dma-dev.45106",
-				"msm-dai-cdc-dma-dev.45107",
-				"msm-dai-cdc-dma-dev.45108",
-				"msm-dai-cdc-dma-dev.45109",
-				"msm-dai-cdc-dma-dev.45110",
-				"msm-dai-cdc-dma-dev.45111",
-				"msm-dai-cdc-dma-dev.45112",
-				"msm-dai-cdc-dma-dev.45113",
-				"msm-dai-cdc-dma-dev.45114",
-				"msm-dai-cdc-dma-dev.45115",
-				"msm-dai-cdc-dma-dev.45116",
-				"msm-dai-cdc-dma-dev.45118",
 				"msm-dai-q6-dev.24577";
 
 		qcom,audio-routing =
