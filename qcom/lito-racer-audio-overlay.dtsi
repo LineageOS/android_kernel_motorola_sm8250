@@ -214,6 +214,9 @@
 		DCVDD-supply = <&L3C>;
 		SPKVDD-supply = <&dummy_vreg>;
 
+		clocks = <&rpmhcc RPMH_LN_BB_CLK2>;
+		clock-names = "ref_clk";
+
 		gpio-controller;
 		#gpio-cells = <2>;
 
@@ -494,6 +497,7 @@
 		qcom,ext-disp-audio-rx = <1>;
 		qcom,afe-rxtx-lb = <0>;
 		qcom,skip-aux-dev;
+		cirrus,pmic-audio-clk;
 		qcom,msm_audio_ssr_devs = <&audio_apr>, <&q6core>;
 		qcom,sen-mi2s-gpios = <&cdc_sen_mi2s_gpios>;
 
