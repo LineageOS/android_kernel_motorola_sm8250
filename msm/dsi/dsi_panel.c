@@ -673,11 +673,14 @@ static int dsi_panel_update_backlight(struct dsi_panel *panel,
 	if (panel->bl_config.bl_inverted_dbv)
 		bl_lvl = (((bl_lvl & 0xff) << 8) | (bl_lvl >> 8));
 
-	if (panel->is_hbm_using_51_cmd && panel->is_hbm_on) {
+	if (panel->is_hbm_using_51_cmd) {
 		panel->bl_lvl_during_hbm = bl_lvl;
-		DSI_DEBUG("HBM is on.. ignore setting backlight. bl_vl=%d\n",
+
+		if (panel->is_hbm_on) {
+			DSI_DEBUG("HBM is on.. ignore setting backlight. bl_vl=%d\n",
 						panel->bl_lvl_during_hbm);
-		return 0;
+			return 0;
+		}
 	}
 
 	if (bl->bl_2bytes_enable)
