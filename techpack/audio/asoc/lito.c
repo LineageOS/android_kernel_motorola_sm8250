@@ -189,6 +189,8 @@ struct msm_asoc_mach_data {
 	int usbc_en2_gpio; /* used by gpio driver API */
 	int lito_v2_enabled;
 	int cirrus_prince_devs;
+	bool pmic_audio_clk;
+	struct clk *ref_clk;
 	struct device_node *dmic01_gpio_p; /* used by pinctrl API */
 	struct device_node *dmic23_gpio_p; /* used by pinctrl API */
 	struct device_node *dmic45_gpio_p; /* used by pinctrl API */
@@ -5833,21 +5835,33 @@ static int msm_mclk_event(struct snd_soc_dapm_widget *w,
 		struct snd_kcontrol *kcontrol, int event)
 {
 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-	int ret;
+	struct msm_asoc_mach_data *pdata =
+		snd_soc_card_get_drvdata(component->card);
+	int ret = 0;
 
 	pr_debug("%s: event = %d\n", __func__, event);
 
 	switch (event) {
 	case SND_SOC_DAPM_PRE_PMU:
-		ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
-			MADERA_CLK_SRC_AIF1BCLK,
-			mi2s_clk[SEN_MI2S].clk_freq_in_hz, MADERA_SYSCLK_RATE);
+		if (pdata->pmic_audio_clk && !IS_ERR_OR_NULL(pdata->ref_clk)) {
+			clk_prepare_enable(pdata->ref_clk);
+			ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
+				MADERA_FLL_SRC_MCLK1,
+				QCOM_MCLK_RATE, MADERA_SYSCLK_RATE);
+		} else {
+			ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
+				MADERA_CLK_SRC_AIF1BCLK,
+				mi2s_clk[SEN_MI2S].clk_freq_in_hz, MADERA_SYSCLK_RATE);
+		}
 		if (ret != 0) {
 			dev_err(component->dev, "Failed to set MADERA_FLL1_REFCLK %d\n", ret);
 			return ret;
 		}
 		break;
 	case SND_SOC_DAPM_POST_PMD:
+		if (pdata->pmic_audio_clk && !IS_ERR_OR_NULL(pdata->ref_clk))
+			clk_disable_unprepare(pdata->ref_clk);
+
 		ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
 			MADERA_FLL_SRC_MCLK2,
 			QCOM_SLEEPCLK_RATE, MADERA_SYSCLK_RATE);
@@ -5873,11 +5887,11 @@ static const struct snd_soc_dapm_widget msm_madera_dapm_widgets[] = {
 static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
 {
 	int ret;
-	struct clk *ref_clk;
-	bool	use_refclk = false;
 	struct snd_soc_component *component =
 		snd_soc_rtdcom_lookup(rtd, MADERA_CODEC_NAME);
 	struct snd_soc_dapm_context *dapm;
+	struct msm_asoc_mach_data *pdata =
+				snd_soc_card_get_drvdata(rtd->card);
 
 	if (!component) {
 		pr_err("* %s: No match for %s component\n",
@@ -5886,21 +5900,12 @@ static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
 	}
 
 	dapm = snd_soc_component_get_dapm(component);
-	ref_clk = clk_get(component->dev, "ref_clk");
-	if (IS_ERR_OR_NULL(ref_clk))
-		dev_err(component->dev, "Failed to get ref_clk %ld\n",
-				     PTR_ERR(ref_clk));
-	else
-		use_refclk = true;
 
-	if (use_refclk) {
-		ret = clk_set_rate(ref_clk, QCOM_MCLK_RATE);
-		if (ret)
-			dev_err(component->dev, "Failed to set ref_clk %d\n",
-					     ret);
-		clk_prepare_enable(ref_clk);
-
-		dev_info(component->dev, "ENABLE ref clk\n");
+	if (pdata->pmic_audio_clk) {
+		pdata->ref_clk = devm_clk_get(component->dev, "ref_clk");
+		if (IS_ERR_OR_NULL(pdata->ref_clk))
+			dev_warn(component->dev, "%s: Failed to get ref_clk %ld\n",
+					     __func__, PTR_ERR(pdata->ref_clk));
 	}
 
 	ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
@@ -5910,14 +5915,9 @@ static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
 		return ret;
 	}
 
-	if (use_refclk)
-		ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
-				MADERA_FLL_SRC_MCLK1,
-				QCOM_MCLK_RATE, MADERA_SYSCLK_RATE);
-	else
-		ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
-				MADERA_FLL_SRC_MCLK2,
-				QCOM_SLEEPCLK_RATE, MADERA_SYSCLK_RATE);
+	ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
+			MADERA_FLL_SRC_MCLK2,
+			QCOM_SLEEPCLK_RATE, MADERA_SYSCLK_RATE);
 	if (ret != 0) {
 		dev_err(component->dev,  "Failed to set FLL1REFCLK %d\n", ret);
 		return ret;
@@ -9058,6 +9058,11 @@ static int msm_asoc_machine_probe(struct platform_device *pdev)
 		goto err;
 	}
 
+	/* Do we decide to use mclk1 produced by pmic*/
+	if (of_find_property(pdev->dev.of_node, "cirrus,pmic-audio-clk", NULL)) {
+		dev_info(&pdev->dev, "%s: use pmic clock as Marley source\n", __func__);
+		pdata->pmic_audio_clk = true;
+	}
 	ret = msm_populate_dai_link_component_of_node(card);
 	if (ret) {
 		ret = -EPROBE_DEFER;
