@@ -18,7 +18,7 @@
 / {
 	model = "Burton";
 	compatible = "qcom,kona-burton", "qcom,kona-moto", "qcom,kona";
-	qcom,msm-id = <356 0x20000>;
+	qcom,msm-id = <356 0x20001>;
 	qcom,board-id = <0 0xB1C0>;
 };
 

@@ -11,17 +11,23 @@
  */
 
 /dts-v1/;
-/plugin/;
 
-#include "kona-moto-common-overlay.dtsi"
+#include "kona-v2.1.dtsi"
 
 / {
-	model = "Burton";
-	compatible = "qcom,kona-burton", "qcom,kona-moto", "qcom,kona";
-	qcom,msm-id = <356 0x20001>;
-	qcom,board-id = <0 0xB1E0>;
+	qcom,board-id = <0 0>;
+	channel-id-map = "";
+/*
+ * Some nodes need labels assigned to appear in __symbols__
+ */
+	chosen: chosen { };
+	aliases: aliases { };
+	reserved_memory: reserved-memory { };
+	mot_batterydata: qcom,battery-data { };
+	utags: utags { };
+	hw: hw { };
 };
 
-/*
- * Burton HW rev DVT2A specific changes go here
- */
+&firmware {
+        /delete-node/ android;
+};
