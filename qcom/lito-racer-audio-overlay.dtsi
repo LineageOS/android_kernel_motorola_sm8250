@@ -392,7 +392,7 @@
 		interrupts = <85 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-controller;
 		#interrupt-cells = <2>;
-		interrupt-names = "prince_irq";
+		interrupt-names = "prince_spk_irq";
 
 		VA-supply = <&pm8150_s4>;
 		VP-supply = <&pm8150_s4>;
@@ -445,11 +445,11 @@
 		reg = <0x1>;
 		reset-gpios = <&tlmm 92 0>;
 		interrupt-parent = <&tlmm>;
-		/* MMI_STOPSHIP​ <Audio>: 86 is used by modem. there are irq storm happen */
+		/* GPIO86 is used by modem, irq storm will happen if enable it*/
 		interrupts = <33 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-controller;
 		#interrupt-cells = <2>;
-		interrupt-names = "prince_irq";
+		interrupt-names = "prince_rcv_irq";
 
 		VA-supply = <&pm8150_s4>;
 		VP-supply = <&pm8150_s4>;
