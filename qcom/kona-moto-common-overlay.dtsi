@@ -240,6 +240,7 @@
 	qcom,linearize-soc;
 	qcom,five-pin-battery;
 	qcom,cl-wt-enable;
+	qcom,soc-scale-mode-en;
 	qcom,fg-force-load-profile;
 	/* ESR fast calibration */
 	qcom,fg-esr-timer-chg-fast = <0 7>;
