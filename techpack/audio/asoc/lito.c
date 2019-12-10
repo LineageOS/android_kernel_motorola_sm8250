@@ -90,10 +90,6 @@
 
 #define SWR_MAX_SLAVE_DEVICES 6
 
-#ifdef PRODUCT_RACER
-	#define CS35L41_STEREO
-#endif
-
 enum {
 	RX_PATH = 0,
 	TX_PATH,
@@ -5782,12 +5778,8 @@ static void *def_wcd_mbhc_cal(void)
 
 #ifdef CONFIG_SND_SOC_CS35l41
 #define AMP_DAI_NAME "cs35l41-pcm"
-#define AMP_RCV_NAME "spi0.1"
-#ifdef PRODUCT_RACER
-#define AMP_SPK_NAME "spi0.0"
-#else
-#define AMP_SPK_NAME "spi0.1"
-#endif
+#define RCV_AMP_NAME "cs35l41-rcv"
+#define SPK_AMP_NAME "cs35l41-spk"
 
 static struct snd_soc_pcm_stream cirrus_amp_params[] = {
 	{
@@ -6715,8 +6707,42 @@ static struct snd_soc_dai_link msm_common_misc_fe_dai_links[] = {
 #endif
 };
 
+static struct snd_soc_dai_link msm_madera_stereo_prince_dai_links[] = {
+	{ /* codec to amp link */
+		.name = "CODEC-AMP-RCV",
+		.stream_name = "CODEC-AMP-RCV Playback",
+		.cpu_name = MADERA_CODEC_NAME,
+		.cpu_dai_name = MADERA_CPU_DAI_NAME,
+		.codec_name = RCV_AMP_NAME,
+		.codec_dai_name = AMP_DAI_NAME,
+		.init = cirrus_amp_init,
+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+			SND_SOC_DAIFMT_CBS_CFS,
+		.no_pcm = 1,
+		.ignore_pmdown_time = 1,
+		.ignore_suspend = 1,
+		.params = &cirrus_amp_params[0],
+		.num_params = ARRAY_SIZE(cirrus_amp_params),
+	},
+	{ /* codec to amp link */
+		.name = "CODEC-AMP-SPK",
+		.stream_name = "CODEC-AMP-SPK Playback",
+		.cpu_name = MADERA_CODEC_NAME,
+		.cpu_dai_name = MADERA_CPU_DAI_NAME,
+		.codec_name = SPK_AMP_NAME,
+		.codec_dai_name = AMP_DAI_NAME,
+		.init = cirrus_amp_init,
+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+			SND_SOC_DAIFMT_CBS_CFS,
+		.no_pcm = 1,
+		.ignore_pmdown_time = 1,
+		.ignore_suspend = 1,
+		.params = &cirrus_amp_params[0],
+		.num_params = ARRAY_SIZE(cirrus_amp_params),
+	},
+};
+
 static struct snd_soc_dai_link msm_madera_fe_dai_links[] = {
-#ifdef CONFIG_SND_SOC_CS47l35
 	{
 		.name = "CPU-DSP Voice Control",
 		.stream_name = "CPU-DSP Voice Control",
@@ -6767,7 +6793,6 @@ static struct snd_soc_dai_link msm_madera_fe_dai_links[] = {
 		.ignore_suspend = 1,
 		.dynamic = 0,
 	},
-#endif
 };
 
 static struct snd_soc_dai_link msm_common_be_dai_links[] = {
@@ -7403,42 +7428,6 @@ static struct snd_soc_dai_link msm_mi2s_be_dai_links[] = {
 		.ops = &msm_mi2s_be_ops,
 		.ignore_suspend = 1,
 	},
-#ifdef CONFIG_SND_SOC_CS35l41
-#ifdef CS35L41_STEREO
-	{ /* codec to amp link */
-		.name = "CODEC-AMP-RCV",
-		.stream_name = "CODEC-AMP-RCV Playback",
-		.cpu_name = MADERA_CODEC_NAME,
-		.cpu_dai_name = MADERA_CPU_DAI_NAME,
-		.codec_name = AMP_RCV_NAME,
-		.codec_dai_name = AMP_DAI_NAME,
-		.init = cirrus_amp_init,
-		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-			SND_SOC_DAIFMT_CBS_CFS,
-		.no_pcm = 1,
-		.ignore_pmdown_time = 1,
-		.ignore_suspend = 1,
-		.params = &cirrus_amp_params[0],
-		.num_params = ARRAY_SIZE(cirrus_amp_params),
-	},
-#endif
-	{ /* codec to amp link */
-		.name = "CODEC-AMP-SPK",
-		.stream_name = "CODEC-AMP-SPK Playback",
-		.cpu_name = MADERA_CODEC_NAME,
-		.cpu_dai_name = MADERA_CPU_DAI_NAME,
-		.codec_name = AMP_SPK_NAME,
-		.codec_dai_name = AMP_DAI_NAME,
-		.init = cirrus_amp_init,
-		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-			SND_SOC_DAIFMT_CBS_CFS,
-		.no_pcm = 1,
-		.ignore_pmdown_time = 1,
-		.ignore_suspend = 1,
-		.params = &cirrus_amp_params[0],
-		.num_params = ARRAY_SIZE(cirrus_amp_params),
-	},
-#endif
 };
 
 static struct snd_soc_dai_link msm_auxpcm_be_dai_links[] = {
@@ -7834,6 +7823,7 @@ static struct snd_soc_dai_link msm_madera_dai_links[
 			ARRAY_SIZE(msm_madera_fe_dai_links) +
 			ARRAY_SIZE(msm_common_be_dai_links) +
 			ARRAY_SIZE(msm_mi2s_be_dai_links) +
+			ARRAY_SIZE(msm_madera_stereo_prince_dai_links) +
 			ARRAY_SIZE(msm_auxpcm_be_dai_links) +
 			ARRAY_SIZE(ext_disp_be_dai_link) +
 			ARRAY_SIZE(msm_wcn_be_dai_links) +
@@ -8062,7 +8052,6 @@ static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev,
 	u32 val = 0;
 	u32 wcn_btfm_intf = 0;
 	const struct of_device_id *match;
-	int ret = 0;
 
 	match = of_match_node(kona_asoc_machine_of_match, dev->of_node);
 	if (!match) {
@@ -8070,11 +8059,6 @@ static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev,
 			__func__);
 		return NULL;
 	}
-
-	ret = of_property_read_u32(dev->of_node,
-			   "cirrus,prince-max-devs", &pdata->cirrus_prince_devs);
-	dev_info(dev, "%s: cirrus,prince-max-devs %d\n",
-			__func__, pdata->cirrus_prince_devs);
 
 	if (!strcmp(match->data, "madera_codec")) {
 		card = &snd_soc_card_kona_madera;
@@ -8111,6 +8095,21 @@ static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev,
 					sizeof(msm_mi2s_be_dai_links));
 				total_links +=
 					ARRAY_SIZE(msm_mi2s_be_dai_links);
+			}
+		}
+
+		rc = of_property_read_u32(dev->of_node,
+				   "cirrus,prince-max-devs", &pdata->cirrus_prince_devs);
+		if (rc) {
+			dev_dbg(dev, "%s: No DT match prince max devs interface\n",
+					__func__);
+		} else {
+			if (pdata->cirrus_prince_devs == 2) {
+				memcpy(msm_madera_dai_links + total_links,
+					msm_madera_stereo_prince_dai_links,
+					sizeof(msm_madera_stereo_prince_dai_links));
+				total_links +=
+					ARRAY_SIZE(msm_madera_stereo_prince_dai_links);
 			}
 		}
 
