@@ -5804,6 +5804,7 @@ static struct snd_soc_pcm_stream cirrus_amp_params[] = {
 #define MADERA_CODEC_NAME "cs47l35-codec"
 #define AMP_CODEC_NAME "cs35l41-codec"
 #define MADERA_CODEC_DAI_NAME "cs47l35-aif1"
+#define MADERA_CODEC_AIF3_NAME "cs47l35-aif3"
 #define MADERA_CPU_DAI_NAME "cs47l35-aif2"
 
 
@@ -7277,8 +7278,13 @@ static struct snd_soc_dai_link msm_mi2s_be_dai_links[] = {
 		.stream_name = "Secondary MI2S Playback",
 		.cpu_dai_name = "msm-dai-q6-mi2s.1",
 		.platform_name = "msm-pcm-routing",
+#ifdef CONFIG_SND_SOC_CS47l35
+		.codec_name = MADERA_CODEC_NAME,
+		.codec_dai_name = MADERA_CODEC_AIF3_NAME,
+#else
 		.codec_name = "msm-stub-codec.1",
 		.codec_dai_name = "msm-stub-rx",
+#endif
 		.no_pcm = 1,
 		.dpcm_playback = 1,
 		.id = MSM_BACKEND_DAI_SECONDARY_MI2S_RX,
@@ -7292,8 +7298,13 @@ static struct snd_soc_dai_link msm_mi2s_be_dai_links[] = {
 		.stream_name = "Secondary MI2S Capture",
 		.cpu_dai_name = "msm-dai-q6-mi2s.1",
 		.platform_name = "msm-pcm-routing",
+#ifdef CONFIG_SND_SOC_CS47l35
+		.codec_name = MADERA_CODEC_NAME,
+		.codec_dai_name = MADERA_CODEC_AIF3_NAME,
+#else
 		.codec_name = "msm-stub-codec.1",
 		.codec_dai_name = "msm-stub-tx",
+#endif
 		.no_pcm = 1,
 		.dpcm_capture = 1,
 		.id = MSM_BACKEND_DAI_SECONDARY_MI2S_TX,
