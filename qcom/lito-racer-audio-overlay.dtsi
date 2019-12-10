@@ -406,6 +406,8 @@
 		cirrus,boost-peak-milliamp = <4000>;
 		cirrus,boost-cap-microfarad = <21>;
 		cirrus,amp-gain-zc;
+		cirrus,fast-switch = "spk_fast_switch1.txt", "spk_fast_switch2.txt",
+							"spk_fast_switch3.txt", "spk_fast_switch4.txt";
 
 		cirrus,gpio-config2 {
 			cirrus,gpio-output-enable = <0x01>;
@@ -460,6 +462,8 @@
 		cirrus,boost-peak-milliamp = <4000>;
 		cirrus,boost-cap-microfarad = <21>;
 		cirrus,amp-gain-zc;
+		cirrus,fast-switch = "rcv_fast_switch1.txt", "rcv_fast_switch2.txt",
+							"rcv_fast_switch3.txt", "rcv_fast_switch4.txt";
 
 		cirrus,gpio-config2 {
 			cirrus,gpio-output-enable = <0x01>;
