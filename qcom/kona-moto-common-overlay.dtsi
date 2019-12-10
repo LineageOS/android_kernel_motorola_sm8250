@@ -919,6 +919,7 @@
 		bpp-voltage = <5000>;
 		epp-voltage = <12000>;
 		vdd-i2c-supply = <&dummy_vreg>;
+		#cooling-cells = <2>;
 	};
 
 	sx933x@28 {
