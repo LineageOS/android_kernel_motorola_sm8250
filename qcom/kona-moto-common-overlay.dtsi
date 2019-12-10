@@ -646,6 +646,7 @@
 		sec,refresh-rate-update;
 		sec,usb-charger-detection;
 		sec,force-calibration;
+		sec,enable-gestures;
 		sec,regulator_dvdd = "pm8150a_l1";
 		sec,regulator_avdd = "pm8150_l13";
 		pinctrl-names = "on_state", "off_state";
