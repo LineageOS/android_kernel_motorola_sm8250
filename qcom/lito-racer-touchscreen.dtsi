@@ -107,4 +107,25 @@
 		pinctrl-0 = <&touch_reset_active &touch_int_active>;
 		pinctrl-1 = <&touch_reset_suspend &touch_int_suspend>;
 	};
+
+	synaptics_tcm@4b {
+		status = "/chosen","mmi,panel_name","tianma_syna_667_1080p_dsc_cmd";
+		compatible = "synaptics,tcm-i2c";
+		reg = <0x4b>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <9 0x2008>;
+		synaptics,irq-gpio = <&tlmm 9 0x2008>; /*IRQF_TRIGGER_LOW | IRQF_ONESHOT*/
+		synaptics,irq-on-state = <0>;
+		synaptics,reset-gpio = <&tlmm 8 0x0000>;
+		synaptics,reset-on-state = <0>;
+		synaptics,reset-active-ms = <0>;
+		synaptics,reset-delay-ms = <200>;
+		synaptics,power-delay-ms = <200>;
+		synaptics,ubl-i2c-addr = <0x4b>;
+		synaptics,pwr-reg-name = "pm8150_l13";
+		synaptics,bus-reg-name = "pm8150_l17";
+		pinctrl-names = "pmx_ts_active", "pmx_ts_suspend";
+		pinctrl-0 = <&touch_reset_active &touch_int_active>;
+		pinctrl-1 = <&touch_reset_suspend &touch_int_suspend>;
+	};
 };
