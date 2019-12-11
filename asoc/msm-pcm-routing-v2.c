@@ -5553,6 +5553,10 @@ static int get_ec_ref_port_id(int value, int *index)
 		*index = 40;
 		port_id = AFE_PORT_ID_QUINARY_TDM_TX;
 		break;
+	case 41:
+		*index = 11;
+		port_id = AFE_PORT_ID_QUATERNARY_TDM_TX;
+		break;
 	default:
 		*index = 0; /* NONE */
 		pr_err("%s: Invalid value %d\n", __func__, value);
@@ -5611,6 +5615,7 @@ static const char *const ec_ref_rx[] = { "None", "SLIM_RX", "I2S_RX",
 	"SLIM_7_RX", "RX_CDC_DMA_RX_0", "RX_CDC_DMA_RX_1", "RX_CDC_DMA_RX_2",
 	"RX_CDC_DMA_RX_3", "TX_CDC_DMA_TX_0", "TERT_TDM_RX_2", "SEC_TDM_TX_0",
 	"DISPLAY_PORT1", "SEN_MI2S_RX", "SENARY_MI2S_TX", "QUIN_TDM_TX_0",
+	"QUAT_TDM_TX",
 };
 
 static const struct soc_enum msm_route_ec_ref_rx_enum[] = {
@@ -5818,6 +5823,12 @@ static int msm_routing_ext_ec_put(struct snd_kcontrol *kcontrol,
 	case EXT_EC_REF_SEC_TDM_TX:
 		ext_ec_ref_port_id = AFE_PORT_ID_SECONDARY_TDM_TX;
 		break;
+	case EXT_EC_REF_TERT_TDM_TX:
+		ext_ec_ref_port_id = AFE_PORT_ID_TERTIARY_TDM_TX;
+		break;
+	case EXT_EC_REF_QUAT_TDM_TX:
+		ext_ec_ref_port_id = AFE_PORT_ID_QUATERNARY_TDM_TX;
+		break;
 	case EXT_EC_REF_NONE:
 	default:
 		ext_ec_ref_port_id = AFE_PORT_INVALID;
@@ -5843,7 +5854,8 @@ static const char * const ext_ec_ref_rx[] = {"NONE", "PRI_MI2S_TX",
 					"SEC_MI2S_TX", "TERT_MI2S_TX",
 					"QUAT_MI2S_TX", "QUIN_MI2S_TX",
 					"SLIM_1_TX", "PRI_TDM_TX",
-					"SEC_TDM_TX", "SENARY_MI2S_TX"};
+					"SEC_TDM_TX", "SENARY_MI2S_TX",
+					"TERT_TDM_TX", "QUAT_TDM_TX"};
 
 static const struct soc_enum msm_route_ext_ec_ref_rx_enum[] = {
 	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(ext_ec_ref_rx), ext_ec_ref_rx),
