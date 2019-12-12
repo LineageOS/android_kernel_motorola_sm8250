@@ -913,6 +913,11 @@
 					 "idt_p938x_boost";
 		pinctrl-names = "default";
 		pinctrl-0 = <&p938x_outputs &p938x_inputs>;
+		bpp-current = <950>;
+		epp-current-table =
+			<0 450>, <8000 600>, <10000 800>, <15000 1200>;
+		bpp-voltage = <5000>;
+		epp-voltage = <12000>;
 		vdd-i2c-supply = <&dummy_vreg>;
 	};
 
