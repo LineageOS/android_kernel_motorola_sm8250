@@ -3576,6 +3576,14 @@ static int dsi_panel_parse_esd_config(struct dsi_panel *panel)
 			esd_config->status_mode = ESD_MODE_SW_BTA;
 		} else if (!strcmp(string, "reg_read")) {
 			esd_config->status_mode = ESD_MODE_REG_READ;
+		} else if (!strcmp(string, "te_chk_reg_rd")) {
+			if (panel->panel_mode == DSI_OP_CMD_MODE)
+				esd_config->status_mode = ESD_MODE_TE_CHK_REG_RD;
+			else {
+				DSI_ERR("TE-CHK_REG_RD ESD not valid for video mode\n");
+				rc = -EINVAL;
+				goto error;
+			}
 		} else if (!strcmp(string, "te_signal_check")) {
 			if (panel->panel_mode == DSI_OP_CMD_MODE) {
 				esd_config->status_mode = ESD_MODE_PANEL_TE;
@@ -3607,6 +3615,13 @@ static int dsi_panel_parse_esd_config(struct dsi_panel *panel)
 		esd_mode = "bta_trigger";
 	} else if (panel->esd_config.status_mode ==  ESD_MODE_PANEL_TE) {
 		esd_mode = "te_check";
+	} else if (panel->esd_config.status_mode == ESD_MODE_TE_CHK_REG_RD) {
+		rc = dsi_panel_parse_esd_reg_read_configs(panel);
+		if (rc) {
+			DSI_ERR("failed to parse esd reg read mode params, rc=%d\n", rc);
+			goto error;
+		} else
+			esd_mode = "te_chk_reg_rd";
 	}
 
 	DSI_DEBUG("ESD enabled with mode: %s\n", esd_mode);
@@ -3794,22 +3809,6 @@ static int dsi_panel_get_pwr_mode(struct dsi_panel *panel, u8 *val)
 end:
 	return rc;
 
-}
-
-static int dsi_panel_trigger_panel_dead_event(struct dsi_panel *panel)
-{
-	bool panel_dead;
-	struct drm_event event;
-	struct dsi_display *dsi_display = container_of(panel->host, struct dsi_display, host);
-	struct drm_connector *drm_conn = dsi_display->drm_conn;
-
-	panel_dead = true;
-	event.type = DRM_EVENT_PANEL_DEAD;
-	event.length = sizeof(u32);
-	msm_mode_object_event_notify(&drm_conn->base,
-			drm_conn->dev, &event, (u8 *)&panel_dead);
-
-	return 0;
 }
 
 struct dsi_panel *dsi_panel_get(struct device *parent,
@@ -5105,6 +5104,8 @@ int dsi_panel_enable(struct dsi_panel *panel)
 	int rc = 0;
 	u8 pwr_mode;
 	static int panel_recovery_retry;
+	struct dsi_display *dsi_display = container_of(panel->host,
+										struct dsi_display, host);
 
 	if (!panel) {
 		DSI_ERR("Invalid params\n");
@@ -5140,7 +5141,7 @@ int dsi_panel_enable(struct dsi_panel *panel)
 				BUG();
 			}
 
-			dsi_panel_trigger_panel_dead_event(panel);
+			dsi_display_trigger_panel_dead_event(dsi_display);
 		} else {
 			DSI_INFO("Pwr_mode(0x0A) = 0x%x\n", pwr_mode);
 			panel_recovery_retry = 0;

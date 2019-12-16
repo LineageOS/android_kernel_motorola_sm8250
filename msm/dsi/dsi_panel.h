@@ -157,6 +157,7 @@ struct dsi_panel_reset_config {
 
 enum esd_check_status_mode {
 	ESD_MODE_REG_READ,
+	ESD_MODE_TE_CHK_REG_RD,
 	ESD_MODE_SW_BTA,
 	ESD_MODE_PANEL_TE,
 	ESD_MODE_SW_SIM_SUCCESS,
