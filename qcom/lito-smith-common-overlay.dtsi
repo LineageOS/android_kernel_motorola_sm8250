@@ -634,3 +634,17 @@
 &pm7250b_vib {
 	status = "disabled";
 };
+
+&pm8150l_rgb_led {
+	red {
+		label = "charging";
+	};
+
+	green {
+		status = "disabled";
+	};
+
+	blue {
+		status = "disabled";
+	};
+};
