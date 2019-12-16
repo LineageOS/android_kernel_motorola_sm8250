@@ -585,7 +585,7 @@
 		Semtech,nirq-gpio = <&tlmm 24 0x00>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&capsense_gpio_pins>;
-		cap_vdd-supply = <&pm8150a_l10>;
+		cap_vdd-supply = <&pm8150_l13>;
 		Semtech,reg-num = <40>;
 		Semtech,button-flag = <0x1F>;
 		Semtech,reg-init = <0x8020 0x1F0000
