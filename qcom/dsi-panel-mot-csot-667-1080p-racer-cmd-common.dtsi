@@ -80,7 +80,7 @@ qcom,mdss-dsi-panel-hbm-is-51cmd;
 qcom,mdss-dsi-display-timings {
 	timing@0{
 		/* 90 FPS */
-		qcom,mdss-dsi-panel-framerate = <60>;
+		qcom,mdss-dsi-panel-framerate = <90>;
 		qcom,mdss-dsi-panel-width = <1080>;
 		qcom,mdss-dsi-panel-height = <2340>;
 		qcom,mdss-dsi-h-front-porch = <4>;
@@ -116,7 +116,7 @@ qcom,mdss-dsi-display-timings {
 			15 00 00 00 00 00 02 6F 0E
 			15 00 00 00 00 00 02 BA 18
 			15 00 00 00 00 00 02 6F 03
-			39 00 00 00 00 00 04 C0 80 00 00
+			39 00 00 00 00 00 04 C0 00 00 00
 			15 00 00 00 00 00 02 26 01
 			/* Done with frame rate setting */
 			05 00 00 00 00 00 01 35	 /* Set tear on */
