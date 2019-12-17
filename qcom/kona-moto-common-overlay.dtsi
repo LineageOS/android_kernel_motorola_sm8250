@@ -46,18 +46,6 @@
 	status = "ok";
 };
 
-&extcon_storage_cd {
-	status = "disabled";
-};
-
-&ufsphy_card {
-	status = "disabled";
-};
-
-&ufshc_card {
-	status = "disabled";
-};
-
 &sdhc_2 {
 	status = "disabled";
 };
