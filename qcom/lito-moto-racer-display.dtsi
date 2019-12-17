@@ -55,7 +55,6 @@
 	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
 	qcom,mdss-dsi-no-panel-on-read-support;
 
-
 	qcom,mdss-dsi-panel-hdr-enabled;
 	qcom,mdss-dsi-panel-hdr-color-primaries = <14950 14900 31850
 	        16650 14900 29650 7550 2500>;
@@ -89,7 +88,8 @@
 				39 00 00 00 00 00 05 51 00 00 0F FF
 				39 00 00 00 00 00 05 2A 00 00 04 37 /* Column Addr set */
 				39 00 00 00 00 00 05 2B 00 00 09 23 /* Row Addr set */
-				39 00 00 00 00 00 13 93 89 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
+				/* PPS stable1 10bit3.75x slice 20 */
+				39 00 00 00 00 00 13 93 AB 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
 				15 00 00 00 00 00 02 90 01  /* Compression method selection*/
 				15 00 00 00 00 00 02 03 11 /* Compression mode */
 				05 01 00 00 00 00 01 2C /* Memory write */
@@ -97,7 +97,8 @@
 				15 00 00 00 00 00 02 55 00      /* ACL OFF */
 				05 01 00 00 00 00 01 29];       /* display on */
 
-			qcom,mdss-dsi-panel-phy-timings = [00 0D 03 03 1D 1C 04
+			/* Phy 4; w=2880 h=2340; 10bits 60hz; 3.75x dsc */
+			qcom,mdss-dsi-panel-phy-timings = [00 0D 03 03 1D 1D 04
 					03 01 02 04 00 0D 13];
 			qcom,display-topology = <2 2 1>;
 			qcom,default-topology-index = <0>;
@@ -133,8 +134,6 @@
 	};
 };
 
-
-
 &mot_csot_gdx_667_1080p_cmd_v0 {
 	qcom,platform-te-gpio = <&tlmm 10 0>;
 	qcom,platform-reset-gpio = <&pm8150l_gpios 3 0>;
@@ -149,7 +148,8 @@
 	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
 	qcom,mdss-dsi-display-timings {
 		timing@0 {
-			qcom,mdss-dsi-panel-phy-timings = [00 0D 03 03 1D 1C 04
+			/* Phy 4; w=2880 h=2340; 10bits 60hz; 3.75x dsc */
+			qcom,mdss-dsi-panel-phy-timings = [00 0D 03 03 1D 1D 04
 					03 01 02 04 00 0D 13];
 			qcom,display-topology = <2 2 1>;
 			qcom,default-topology-index = <0>;
@@ -200,7 +200,7 @@
 				39 00 00 00 00 00 05 51 00 00 0F FF
 				39 00 00 00 00 00 05 2A 00 00 04 37 /* Column Addr set */
 				39 00 00 00 00 00 05 2B 00 00 09 23 /* Row Addr set */
-				39 00 00 00 00 00 13 93 89 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
+				39 00 00 00 00 00 13 93 AB 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
 				15 00 00 00 00 00 02 90 01  /* Compression method selection*/
 				15 00 00 00 00 00 02 03 11 /* Compression mode */
 				05 01 00 00 00 00 01 2C /* Memory write */
@@ -208,7 +208,8 @@
 				15 00 00 00 00 00 02 55 00 /* ACL OFF */
 				05 01 00 00 00 00 01 29];  /* display on */
 
-			qcom,mdss-dsi-panel-phy-timings = [00 0D 03 03 1D 1C 04
+			/* Phy 4; w=2880 h=2340; 10bits 60hz; 3.75x dsc */
+			qcom,mdss-dsi-panel-phy-timings = [00 0D 03 03 1D 1D 04
 					03 01 02 04 00 0D 13];
 			qcom,display-topology = <2 2 1>;
 			qcom,default-topology-index = <0>;

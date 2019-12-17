@@ -19,7 +19,7 @@ qcom,mdss-dsi-stream = <0>;
 /* Need to fix with and height */
 qcom,mdss-pan-physical-width-dimension = <68>;
 qcom,mdss-pan-physical-height-dimension = <147>;
-qcom,mdss-dsi-bpp = <24>;
+qcom,mdss-dsi-bpp = <30>;
 qcom,mdss-dsi-underflow-color = <0xff>;
 qcom,mdss-dsi-border-color = <0>;
 
@@ -131,7 +131,8 @@ qcom,mdss-dsi-display-timings {
 			39 00 00 00 00 00 05 51 00 00 0F FF
 			39 00 00 00 00 00 05 2A 00 00 04 37 /* Column Addr set */
 			39 00 00 00 00 00 05 2B 00 00 09 23 /* Row Addr set */
-			39 00 00 00 00 00 13 93 89 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
+			/* PPS stable1 10bit3.75x slice 20 */
+			39 00 00 00 00 00 13 93 AB 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
 			15 00 00 00 00 00 02 90 01  /* Compression method selection*/
 			15 00 00 00 00 00 02 03 11 /* Compression mode */
 			05 01 00 00 00 00 01 2C /* Memory write */
@@ -155,7 +156,7 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsc-slice-height = <20>;
 		qcom,mdss-dsc-slice-width = <540>;
 		qcom,mdss-dsc-slice-per-pkt = <2>;
-		qcom,mdss-dsc-bit-per-component = <8>;
+		qcom,mdss-dsc-bit-per-component = <10>;
 		qcom,mdss-dsc-bit-per-pixel = <8>;
 		qcom,mdss-dsc-block-prediction-enable;
 	};
@@ -209,7 +210,8 @@ qcom,mdss-dsi-display-timings {
 			39 00 00 00 00 00 05 51 00 00 0F FF
 			39 00 00 00 00 00 05 2A 00 00 04 37 /* Column Addr set */
 			39 00 00 00 00 00 05 2B 00 00 09 23 /* Row Addr set */
-			39 00 00 00 00 00 13 93 89 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
+			/* PPS stable1 10bit3.75x slice 20 */
+			39 00 00 00 00 00 13 93 AB 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
 			15 00 00 00 00 00 02 90 01  /* Compression method selection*/
 			15 00 00 00 00 00 02 03 11 /* Compression mode */
 			05 01 00 00 00 00 01 2C /* Memory write */
@@ -233,7 +235,7 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsc-slice-height = <20>;
 		qcom,mdss-dsc-slice-width = <540>;
 		qcom,mdss-dsc-slice-per-pkt = <2>;
-		qcom,mdss-dsc-bit-per-component = <8>;
+		qcom,mdss-dsc-bit-per-component = <10>;
 		qcom,mdss-dsc-bit-per-pixel = <8>;
 		qcom,mdss-dsc-block-prediction-enable;
 	};
