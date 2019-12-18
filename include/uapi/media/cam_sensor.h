@@ -132,6 +132,8 @@ struct cam_ois_opcode {
  * @is_ois_calib          :    indicates the calibration data is available
  * @ois_postcalib_flag    :    indicates if postcalib is present or not
  * @ois_fw_txn_data_sz    :    num data bytes per i2c txn when sending fw
+ * @ois_fw_inc_addr       :    should address increment when sending fw
+ * @ois_fw_addr_type      :    address type of fw i2c txn
  * @ois_name              :    OIS name
  * @opcode                :    opcode
  */
@@ -145,6 +147,8 @@ struct cam_cmd_ois_info {
 	uint8_t               is_ois_calib;
 	uint8_t               ois_postcalib_flag;
 	uint8_t               ois_fw_txn_data_sz;
+	uint8_t               ois_fw_inc_addr;
+	uint8_t               ois_fw_addr_type;
 	char                  ois_name[MAX_OIS_NAME_SIZE];
 	struct cam_ois_opcode opcode;
 } __attribute__((packed));
