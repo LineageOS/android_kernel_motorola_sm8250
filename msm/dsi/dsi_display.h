@@ -262,7 +262,6 @@ struct dsi_display {
 	bool misr_enable;
 	u32 misr_frame_count;
 	u32 esd_trigger;
-	bool disp_esd_chk_underway;
 	/* multiple dsi error handlers */
 	struct workqueue_struct *err_workq;
 	struct work_struct fifo_underflow_work;
@@ -674,12 +673,7 @@ int dsi_display_cmd_transfer(struct drm_connector *connector,
 int dsi_display_motUtil_transfer(void *display, const char *cmd_buf,
 		u32 cmd_buf_len, struct motUtil *motUtil_data);
 
-/**
- * dsi_display_trigger_panel_dead_event() - Trigger ESD recovery
- *
- * @display:            Handle to display.
- */
-int dsi_display_trigger_panel_dead_event(struct dsi_display *display);
+
 /**
  * dsi_display_force_esd_disable() - check if ESD UTAG is forced to disable ESD
  * @display:            Handle to display.
