@@ -483,8 +483,6 @@
 		compatible = "dlg,slg51000";
 		reg = <0x75>;
 
-		interrupt-parent = <&tlmm>;
-		interrupts = <45 IRQ_TYPE_LEVEL_HIGH>;
 		dlg,cs-gpios = <&tlmm 44 0>;
 
 		pinctrl-names = "default";
