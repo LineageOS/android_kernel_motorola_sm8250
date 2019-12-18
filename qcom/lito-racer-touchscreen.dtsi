@@ -89,6 +89,8 @@
 		pinctrl-names = "pmx_ts_active", "pmx_ts_suspend";
 		pinctrl-0 = <&touch_reset_active &touch_int_active>;
 		pinctrl-1 = <&touch_reset_suspend &touch_int_suspend>;
+		/* touchscreen_mmi class entries */
+		mmi,class-entry-name = "GTx8";
 	};
 
 	sec_mmi@48 {
