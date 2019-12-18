@@ -33,8 +33,6 @@
 #define DSI_CLOCK_BITRATE_RADIX 10
 #define MAX_TE_SOURCE_ID  2
 
-#define MAX_ESD_RECOVERY_RETRY 5
-
 static char dsi_display_primary[MAX_CMDLINE_PARAM_LEN];
 static char dsi_display_secondary[MAX_CMDLINE_PARAM_LEN];
 static struct dsi_display_boot_param boot_displays[MAX_DSI_ACTIVE_DISPLAY] = {
@@ -154,9 +152,6 @@ static void dsi_display_set_ctrl_esd_check_flag(struct dsi_display *display,
 			continue;
 		ctrl->ctrl->esd_check_underway = enable;
 	}
-
-	if (enable)
-		display->disp_esd_chk_underway = enable;
 }
 
 static void dsi_display_ctrl_irq_update(struct dsi_display *display, bool en)
@@ -502,8 +497,7 @@ static void dsi_display_register_te_irq(struct dsi_display *display)
 error:
 	/* disable the TE based ESD check */
 	DSI_WARN("Unable to register for TE IRQ\n");
-	if (display->panel->esd_config.status_mode == ESD_MODE_PANEL_TE ||
-			display->panel->esd_config.status_mode == ESD_MODE_TE_CHK_REG_RD)
+	if (display->panel->esd_config.status_mode == ESD_MODE_PANEL_TE)
 		display->panel->esd_config.esd_enabled = false;
 }
 
@@ -903,12 +897,6 @@ int dsi_display_check_status(struct drm_connector *connector, void *display,
 		rc = dsi_display_status_bta_request(dsi_display);
 	} else if (status_mode == ESD_MODE_PANEL_TE) {
 		rc = dsi_display_status_check_te(dsi_display);
-	} else if (status_mode == ESD_MODE_TE_CHK_REG_RD) {
-		rc =  dsi_display_status_check_te(dsi_display);
-		if (rc > 0) {
-			/* after checking for TE, then chk for reg_read status */
-			rc = dsi_display_status_reg_read(dsi_display);
-		}
 	} else {
 		DSI_WARN("Unsupported check status mode: %d\n", status_mode);
 		panel->esd_config.esd_enabled = false;
@@ -1519,8 +1507,7 @@ static bool dsi_display_is_te_based_esd(struct dsi_display *display)
 
 	status_mode = display->panel->esd_config.status_mode;
 
-	if ((status_mode == ESD_MODE_PANEL_TE ||
-			status_mode == ESD_MODE_TE_CHK_REG_RD) &&
+	if (status_mode == ESD_MODE_PANEL_TE &&
 			gpio_is_valid(display->disp_te_gpio))
 		return true;
 	return false;
@@ -1913,8 +1900,6 @@ static ssize_t debugfs_read_esd_check_mode(struct file *file,
 	case ESD_MODE_SW_SIM_SUCCESS:
 		rc = snprintf(buf, len, "esd_sw_sim_success");
 		break;
-	case ESD_MODE_TE_CHK_REG_RD:
-		rc = snprintf(buf, len, "te_chk_reg_rd");
 	default:
 		rc = snprintf(buf, len, "invalid");
 		break;
@@ -8054,67 +8039,6 @@ static void dsi_display_is_probed (struct dsi_display *display,
 			enable_idx, probe_status, display->name);
 }
 
-
-int dsi_display_trigger_panel_dead_event(struct dsi_display *display)
-{
-	bool panel_dead;
-	struct drm_event event;
-	struct drm_connector *drm_conn = display->drm_conn;
-
-	panel_dead = true;
-	event.type = DRM_EVENT_PANEL_DEAD;
-	event.length = sizeof(u32);
-	msm_mode_object_event_notify(&drm_conn->base,
-				drm_conn->dev, &event, (u8 *)&panel_dead);
-
-	DSI_WARN("ESD is not recovered. Start ESD recovery again\n");
-	return 0;
-}
-
-static int dsi_display_chk_esd_recovery(struct dsi_display *display)
-{
-	int ret = 0;
-	u32 status_mode;
-	static int disp_esd_trigger = 0;
-
-	status_mode = display->panel->esd_config.status_mode;
-	if (status_mode == ESD_MODE_TE_CHK_REG_RD) {
-		/*
-		 * ESD detection is to check the TE signal and reag_status
-		* therefore when disp_esd_chk_underway is set, which means the
-		* ESD recovery is running, therefore after the panel is on
-		* then check if the ESD detection can be recovered or not.
-		* if it is not, then trigger the ESD again
-		*/
-		disp_esd_trigger++;
-		if (dsi_display_status_check_te(display) <= 0) {
-			DSI_ERR("ESD: TE Check is still failed. disp_esd_trigger=%d\n",
-						disp_esd_trigger);
-		} else if (dsi_display_status_reg_read(display) <= 0) {
-			DSI_ERR("ESD: REG_READ is still failed. disp_esd_trigger=%d\n",
-						disp_esd_trigger);
-		} else {
-			display->disp_esd_chk_underway = false;
-			DSI_INFO("ESD_MODE_TE_CHK_REG_RD is good\n");
-			disp_esd_trigger = 0;
-			display->disp_esd_chk_underway = false;
-		}
-
-		if (disp_esd_trigger > 0 && disp_esd_trigger < MAX_ESD_RECOVERY_RETRY) {
-			DSI_WARN("ESD: disp_esd_trigger=%d, trigger ESD again\n");
-			dsi_display_trigger_panel_dead_event(display);
-		} else if (disp_esd_trigger >= MAX_ESD_RECOVERY_RETRY) {
-			DSI_ERR("ESD: disp_esd_trigger=%d is Max, calling BUG\n",
-										disp_esd_trigger);
-			BUG();
-		}
-		ret = -EIO;
-	} else
-		ret = 0;
-
-	return ret;
-}
-
 static int dsi_display_enable_status (struct dsi_display *display, bool enable)
 {
 	int ret = 0;
@@ -8271,9 +8195,7 @@ int dsi_display_enable(struct dsi_display *display)
 		goto error_disable_panel;
 	}
 
-	if (display->disp_esd_chk_underway)
-		if (dsi_display_chk_esd_recovery(display))
-			goto error;
+	goto error;
 
 error_disable_panel:
 	(void)dsi_panel_disable(display->panel);
