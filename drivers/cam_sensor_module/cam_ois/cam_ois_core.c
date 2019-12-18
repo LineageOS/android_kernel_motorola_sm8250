@@ -278,6 +278,8 @@ static int cam_ois_slaveInfo_pkt_parser(struct cam_ois_ctrl_t *o_ctrl,
 		o_ctrl->is_ois_calib = ois_info->is_ois_calib;
 		o_ctrl->ois_postcalib_flag = ois_info->ois_postcalib_flag;
 		o_ctrl->ois_fw_txn_data_sz = ois_info->ois_fw_txn_data_sz;
+		o_ctrl->ois_fw_inc_addr = ois_info->ois_fw_inc_addr;
+		o_ctrl->ois_fw_addr_type = ois_info->ois_fw_addr_type;
 		memcpy(o_ctrl->ois_name, ois_info->ois_name, OIS_NAME_LEN);
 		o_ctrl->ois_name[OIS_NAME_LEN - 1] = '\0';
 		o_ctrl->io_master_info.cci_client->retries = 3;
@@ -334,7 +336,7 @@ static int cam_ois_fw_prog_download(struct cam_ois_ctrl_t *o_ctrl)
 	else
 		txn_data_size = o_ctrl->ois_fw_txn_data_sz;
 
-	i2c_reg_setting.addr_type = CAMERA_SENSOR_I2C_TYPE_BYTE;
+	i2c_reg_setting.addr_type = o_ctrl->ois_fw_addr_type;
 	i2c_reg_setting.data_type = CAMERA_SENSOR_I2C_TYPE_BYTE;
 	i2c_reg_setting.delay = 0;
 	txn_regsetting_size = PAGE_ALIGN(sizeof(struct cam_sensor_i2c_reg_array) *
@@ -355,8 +357,12 @@ static int cam_ois_fw_prog_download(struct cam_ois_ctrl_t *o_ctrl)
 			(packet_idx < txn_data_size) && (total_idx + packet_idx < total_bytes);
 			packet_idx++, ptr++)
 		{
+			int regAddrOffset = 0;
+			if(o_ctrl->ois_fw_inc_addr == 1)
+				regAddrOffset = total_idx + packet_idx;
+
 			i2c_reg_setting.reg_setting[packet_idx].reg_addr =
-				o_ctrl->opcode.prog;
+				o_ctrl->opcode.prog + regAddrOffset;
 			i2c_reg_setting.reg_setting[packet_idx].reg_data = *ptr;
 			i2c_reg_setting.reg_setting[packet_idx].delay = 0;
 			i2c_reg_setting.reg_setting[packet_idx].data_mask = 0;
@@ -412,7 +418,7 @@ static int cam_ois_fw_coeff_download(struct cam_ois_ctrl_t *o_ctrl)
 	else
 		txn_data_size = o_ctrl->ois_fw_txn_data_sz;
 
-	i2c_reg_setting.addr_type = CAMERA_SENSOR_I2C_TYPE_BYTE;
+	i2c_reg_setting.addr_type = o_ctrl->ois_fw_addr_type;
 	i2c_reg_setting.data_type = CAMERA_SENSOR_I2C_TYPE_BYTE;
 	i2c_reg_setting.delay = 0;
 	txn_regsetting_size = PAGE_ALIGN(sizeof(struct cam_sensor_i2c_reg_array) *
@@ -433,8 +439,12 @@ static int cam_ois_fw_coeff_download(struct cam_ois_ctrl_t *o_ctrl)
 			(packet_idx < txn_data_size) && (total_idx + packet_idx < total_bytes);
 			packet_idx++, ptr++)
 		{
+			int regAddrOffset = 0;
+			if(o_ctrl->ois_fw_inc_addr == 1)
+				regAddrOffset = total_idx + packet_idx;
+
 			i2c_reg_setting.reg_setting[packet_idx].reg_addr =
-				o_ctrl->opcode.coeff;
+				o_ctrl->opcode.coeff + regAddrOffset;
 			i2c_reg_setting.reg_setting[packet_idx].reg_data = *ptr;
 			i2c_reg_setting.reg_setting[packet_idx].delay = 0;
 			i2c_reg_setting.reg_setting[packet_idx].data_mask = 0;
