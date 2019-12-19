@@ -1,3 +1,5 @@
+#include "moto_therm_sys_temp.dtsi"
+
 &pm7250b_adc_tm {
 	/delete-property/ io-channels;
 	io-channels = <&pm7250b_vadc ADC_AMUX_THM1_PU2>,
