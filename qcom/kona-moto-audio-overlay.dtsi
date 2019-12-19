@@ -585,7 +585,6 @@ sound_madera: sound-madera {
 
 		cirrus,gpio-config1 {
 			cirrus,gpio-src-select = <0x1>;
-			cirrus,gpio-output-enable;
 		};
 
 		adsps {
@@ -647,7 +646,6 @@ sound_madera: sound-madera {
 
 		cirrus,gpio-config1 {
 			cirrus,gpio-src-select = <0x1>;
-			cirrus,gpio-output-enable;
 		};
 
 		adsps {
