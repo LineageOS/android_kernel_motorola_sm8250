@@ -104,7 +104,6 @@
 #define MADERA_FLL_SRC_MCLK2            1
 #define MADERA_FLL1_REFCLK             1
 #define MADERA_CLK_DSPCLK               8
-#define MADERA_CLK_OPCLK               3
 #define QCOM_MCLK_RATE                 19200000
 
 #define FLL_RATE_MADERA		294912000
@@ -5961,14 +5960,6 @@ static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
 		return ret;
 	}
 
-	ret = snd_soc_component_set_sysclk(component, MADERA_CLK_OPCLK,
-			0, Q6AFE_LPASS_OSR_CLK_12_P288_MHZ,
-			SND_SOC_CLOCK_OUT);
-	if (ret != 0) {
-		dev_err(component->dev, "Failed to set OPCLK %d\n", ret);
-		return ret;
-	}
-
 	ret = snd_soc_add_component_controls(component, msm_common_snd_controls,
 				ARRAY_SIZE(msm_common_snd_controls));
 	if (ret < 0) {
@@ -6032,14 +6023,10 @@ static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
 #ifdef CONFIG_SND_SOC_CS35l41
 static struct snd_soc_dapm_route cs35l41_rcv_audio_paths[] = {
 	{"AIF1 Playback", NULL, "RCV AMP Capture"},
-	{"RCV AMP Playback", NULL, "OPCLK"},
-	{"RCV AMP Capture", NULL, "OPCLK"},
 };
 
 static struct snd_soc_dapm_route cs35l41_spk_audio_paths[] = {
 	{"AIF1 Playback", NULL, "SPK AMP Capture"},
-	{"SPK AMP Playback", NULL, "OPCLK"},
-	{"SPK AMP Capture", NULL, "OPCLK"},
 };
 
 static int cirrus_amp_init(struct snd_soc_pcm_runtime *rtd)
