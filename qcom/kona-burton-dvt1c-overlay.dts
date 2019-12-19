@@ -35,4 +35,8 @@
 	stmvl53l1@29 {
 		status = "disabled";
 	};
+
+	sx933x@28 {
+		Semtech,button-flag = <0x07>;
+	};
 };
