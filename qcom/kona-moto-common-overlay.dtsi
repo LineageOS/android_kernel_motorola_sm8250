@@ -920,7 +920,7 @@
 		pinctrl-0 = <&capsense_gpio_pins>;
 		cap_vdd-supply = <&pm8150a_l10>;
 		Semtech,reg-num = <40>;
-		Semtech,button-flag = <0x07>;
+		Semtech,button-flag = <0x1F>;
 		Semtech,reg-init = <0x8020 0x1F0000
 			0x8024 0x000008ae /*again 3.3pf*/
 			0x8028 0x3ffa8000

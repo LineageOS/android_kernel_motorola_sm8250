@@ -283,3 +283,9 @@
 	cirrus,prince-devs = <&cs35l41_rcv>;
 	cirrus,prince-dev-prefix = "RCV";
 };
+
+&qupv3_se15_i2c {
+	sx933x@28 {
+		Semtech,button-flag = <0x07>;
+	};
+};
