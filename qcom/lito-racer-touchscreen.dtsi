@@ -85,7 +85,6 @@
 		/*goodix,swap-axis;*/
 		goodix,usb_charger;
 		goodix,cfg_bin_name = "goodix_cfg_group_boe_racerl.bin";
-		goodix,fw_name = "goodix-gtx8-01-14-racerl.bin";
 		pinctrl-names = "pmx_ts_active", "pmx_ts_suspend";
 		pinctrl-0 = <&touch_reset_active &touch_int_active>;
 		pinctrl-1 = <&touch_reset_suspend &touch_int_suspend>;
