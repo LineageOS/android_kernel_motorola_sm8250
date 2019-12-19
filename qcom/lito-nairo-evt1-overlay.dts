@@ -19,7 +19,7 @@
 	model = "Nairo";
 	compatible = "qcom,lito-nairo", "qcom,lito-moto", "qcom,lito";
 	qcom,msm-id = <400 0x10000>, <440 0x10000>;
-	qcom,board-id = <0x47 0xA100>;
+	qcom,board-id = <0x4C 0xA100>;
 };
 
 /*
