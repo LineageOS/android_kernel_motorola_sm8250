@@ -43,7 +43,7 @@
 		};
 	};
 
-    cam_sensor_mclk1_suspend: cam_sensor_mclk1_suspend {
+	cam_sensor_mclk1_suspend: cam_sensor_mclk1_suspend {
 		/* MCLK1 */
 		mux {
 			pins = "gpio95";
@@ -239,15 +239,16 @@
 			actuator-src = <&actuator_rear>;
 			eeprom-src = <&eeprom_rear>;
 			ois-src = <&ois_main>;
+			cam_v_custom1-supply = <&pm8150a_bob>;
 			cam_vio-supply = <&pm8150a_l5>;
 			cam_vana-supply = <&cam_main_avdd_2p8>;
 			cam_vdig-supply = <&cam_main_dvdd_1p05>;
 			cam_clk-supply = <&titan_top_gdsc>;
-			regulator-names = "cam_vio", "cam_clk", "cam_vana", "cam_vdig";
+			regulator-names = "cam_v_custom1", "cam_vio", "cam_clk", "cam_vana", "cam_vdig";
 			rgltr-cntrl-support;
-			rgltr-min-voltage = <1800000 0 2800000 1050000>;
-			rgltr-max-voltage = <1800000 0 2800000 1050000>;
-			rgltr-load-current = <105000 0 120000  105000>;
+			rgltr-min-voltage = <3700000 1800000 0 2800000 1050000>;
+			rgltr-max-voltage = <3700000 1800000 0 2800000 1050000>;
+			rgltr-load-current = <2000000 105000 0 120000  105000>;
 			gpio-no-mux = <0>;
 			pinctrl-names = "cam_default", "cam_suspend";
 			pinctrl-0 = <&cam_sensor_mclk0_active
