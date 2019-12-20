@@ -39,11 +39,11 @@
 
 	prince_irq_default: prince_irq_default {
 		mux {
-			pins = "gpio85";
+			pins = "gpio72";
 			function = "gpio";
 		};
 		config {
-			pins = "gpio85";
+			pins = "gpio72";
 			drive-strength = <2>; /* 2 MA */
 			bias-pull-up;
 			input-enable;
@@ -389,7 +389,7 @@
 		reg = <0x0>;
 		reset-gpios = <&tlmm 71 0>;
 		interrupt-parent = <&tlmm>;
-		interrupts = <85 IRQ_TYPE_LEVEL_LOW>;
+		interrupts = <72 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-controller;
 		#interrupt-cells = <2>;
 		interrupt-names = "prince_spk_irq";
