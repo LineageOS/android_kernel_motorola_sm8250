@@ -82,3 +82,19 @@
 		synaptics,bus-reg-name = "tp_panel_dvdd";
 	};
 };
+
+/* On EVT1 & EVT2 hardware, the INT was connected to modem specific pin wrongly
+   Config the INT pin as high impedance input to avoid standby power consumption
+   This save about 10mA current.
+*/
+&cs35l41_spk {
+	cirrus,gpio-config2 {
+		cirrus,gpio-src-select = <0x0>;
+	};
+};
+
+&cs35l41_rcv {
+	cirrus,gpio-config2 {
+		cirrus,gpio-src-select = <0x0>;
+	};
+};
