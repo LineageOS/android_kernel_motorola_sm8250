@@ -188,6 +188,7 @@
 	qcom,suspend-input-on-debug-batt;
 	qcom,usbpd-phandle = <&pm8150b_pdphy>;
 	qcom,wls-current-max-ua = <1300000>;
+	qcom,typec-legacy-rp-icl;
 };
 
 &spmi_bus {
