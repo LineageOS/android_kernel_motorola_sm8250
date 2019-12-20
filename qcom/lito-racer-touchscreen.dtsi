@@ -128,6 +128,8 @@
 		synaptics,ubl-i2c-addr = <0x4b>;
 		synaptics,pwr-reg-name = "pm8150_l13";
 		synaptics,bus-reg-name = "pm8150_l17";
+		synaptics,x-flip;
+		synaptics,y-flip;
 		pinctrl-names = "pmx_ts_active", "pmx_ts_suspend";
 		pinctrl-0 = <&touch_reset_active &touch_int_active>;
 		pinctrl-1 = <&touch_reset_suspend &touch_int_suspend>;
