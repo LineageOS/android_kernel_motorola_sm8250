@@ -838,6 +838,7 @@
 
 		pinctrl-names = "default";
 		pinctrl-0 = <&rear_pmic_irq_default>;
+		use-default-voltage;
 
 		regulators {
 			cam_main_avdd_2p8: ldo1 {
