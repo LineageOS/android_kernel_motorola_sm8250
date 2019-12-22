@@ -25,12 +25,33 @@
 /*
  * Charleston HW rev DVT1 specific changes go here
  */
+
+/* gpio70 --> gpio33 */
+&marley_irq_default {
+	mux {
+		pins = "gpio33";
+	};
+	config {
+		pins = "gpio33";
+	};
+};
+
 &prince_irq_default {
 	mux {
 		pins = "gpio56";
 	};
 	config {
 		pins = "gpio56";
+	};
+};
+
+/* gpio71 --> gpio90 */
+&prince_reset_default {
+	mux {
+		pins = "gpio90";
+	};
+	config {
+		pins = "gpio90";
 	};
 };
 
@@ -74,10 +95,15 @@
 
 &cs35l41_spk {
 	interrupts = <56 IRQ_TYPE_LEVEL_LOW>;
+	reset-gpios = <&tlmm 90 0>;
 };
 
 &cs35l41_rcv {
 	interrupts = <57 IRQ_TYPE_LEVEL_LOW>;
+};
+
+&cs47l35 {
+	interrupts = <33 IRQ_TYPE_LEVEL_LOW>;
 };
 
 &cs47l35_defaults {
