@@ -127,8 +127,8 @@
 };
 
 &dai_mi2s1 {
-	qcom,msm-mi2s-rx-lines = <1>;
-	qcom,msm-mi2s-tx-lines = <0>;
+	qcom,msm-mi2s-rx-lines = <2>;
+	qcom,msm-mi2s-tx-lines = <1>;
 };
 
 &q6core {
