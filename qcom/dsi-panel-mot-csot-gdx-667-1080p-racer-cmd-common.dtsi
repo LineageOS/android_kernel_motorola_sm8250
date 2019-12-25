@@ -11,8 +11,8 @@
  */
 
 compatible = "qcom,mdss-dsi-panel";
-qcom,mdss-dsi-panel-name = "mipi_mot_cmd_boe_1080p_667";
-qcom,mdss-dsi-panel-supplier = "boe";
+qcom,mdss-dsi-panel-name = "mipi_mot_cmd_csot_1080p_dsc_667";
+qcom,mdss-dsi-panel-supplier = "csot";
 qcom,mdss-dsi-panel-type = "dsi_cmd_mode";
 qcom,mdss-dsi-virtual-channel-id = <0>;
 qcom,mdss-dsi-stream = <0>;
@@ -53,7 +53,7 @@ qcom,mdss-dsi-panel-status-read-length = <1>;
 
 qcom,bklt-dcs-2bytes-enabled;
 qcom,mdss-dsi-bl-min-level = <3>;
-qcom,mdss-dsi-bl-max-level = <1600>;
+qcom,mdss-dsi-bl-max-level = <2047>;
 qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
 
 qcom,mdss-dsi-hbm-on-command = [
@@ -70,91 +70,9 @@ qcom,mdss-dsi-acl-off-command = [
 
 qcom,mdss-dsi-panel-hbm-is-51cmd;
 
-qcom,dynamic-mode-switch-enabled;
-qcom,dynamic-mode-switch-type = "dynamic-resolution-switch-immediate";
-
 qcom,mdss-dsi-display-timings {
 	timing@0{
-		qcom,mdss-dsi-cmd-mode;
-		qcom,mdss-dsi-panel-framerate = <60>;
-		qcom,mdss-dsi-panel-width = <1080>;
-		qcom,mdss-dsi-panel-height = <2340>;
-		qcom,mdss-dsi-h-front-porch = <4>;
-		qcom,mdss-dsi-h-back-porch = <4>;
-		qcom,mdss-dsi-h-pulse-width = <4>;
-		qcom,mdss-dsi-h-sync-skew = <0>;
-		qcom,mdss-dsi-h-sync-pulse = <0>;
-		qcom,mdss-dsi-v-back-porch = <8>;
-		qcom,mdss-dsi-v-front-porch = <4>;
-		qcom,mdss-dsi-v-pulse-width = <4>;
-		qcom,mdss-dsi-h-left-border = <0>;
-		qcom,mdss-dsi-h-right-border = <0>;
-		qcom,mdss-dsi-v-top-border = <0>;
-		qcom,mdss-dsi-v-bottom-border = <0>;
-		qcom,mdss-dsi-panel-jitter = <0x20 0xa>; /* 60fps +/- 2 */
-		qcom,mdss-dsi-timing-switch-command = [
-			39 01 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0 */
-			15 01 00 00 00 00 02 6F 0E
-			15 01 00 00 00 00 02 BA 18
-			15 01 00 00 00 00 02 6F 03
-			39 01 00 00 00 00 04 C0 80 00 00
-			15 01 00 00 00 00 02 26 01];
-		qcom,mdss-dsi-on-command = [
-			39 00 00 00 00 00 05 FF AA 55 A5 81
-			15 00 00 00 00 00 02 6F 0D
-			15 00 00 00 00 00 02 F3 CB
-			39 00 00 00 00 00 05 FF AA 55 A5 00
-			39 00 00 00 00 00 06 F0 55 AA 52 08 01 /* Page 1*/
-			/*TSP_VTE, TSP_HTE*/
-			39 00 00 00 00 00 04 D1 07 02 37
-			39 00 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0 */
-			/*GPO0=TE, GPO1=ALL MIPI error, GPO2=TSP_HTE, GPO3=TSP_CTE*/
-			39 00 00 00 00 00 06 BE 0E 91 94 13 1F
-			/* Framne rate = 60hz */
-			15 00 00 00 00 00 02 B2 01 /* backlight fix */
-			15 00 00 00 00 00 02 6F 0E
-			15 00 00 00 00 00 02 BA 18
-			15 00 00 00 00 00 02 6F 03
-			39 00 00 00 00 00 04 C0 80 00 00
-			15 00 00 00 00 00 02 26 01
-			/* Done with frame rate setting */
-			05 00 00 00 00 00 01 35  /* Set tear on */
-			15 00 00 00 00 00 02 53 20 /* HBM off ,dimming=1frame*/
-			/* Spec calls for 51 06 40 0F FF*/
-			39 00 00 00 00 00 05 51 00 00 0F FF
-			39 00 00 00 00 00 05 2A 00 00 04 37 /* Column Addr set */
-			39 00 00 00 00 00 05 2B 00 00 09 23 /* Row Addr set */
-			/* PPS stable1 10bit3.75x slice 20 */
-			39 00 00 00 00 00 13 93 AB 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
-			15 00 00 00 00 00 02 90 01  /* Compression method selection*/
-			15 00 00 00 00 00 02 03 11 /* Compression mode */
-			05 01 00 00 00 00 01 2C /* Memory write */
-			05 01 00 00 78 00 01 11
-			15 00 00 00 00 00 02 55 00      /* ACL OFF */
-			05 01 00 00 00 00 01 29];       /* display on */
-		qcom,mdss-dsi-off-command = [
-			05 01 00 00 00 00 01 28		/* display_off */
-			05 01 00 00 78 00 01 10];	/* enter sleep mode */
-
-		qcom,mdss-dsi-timing-switch-command-state = "dsi_lp_mode";
-		qcom,mdss-dsi-on-command-state = "dsi_lp_mode";
-		qcom,mdss-dsi-off-command-state = "dsi_lp_mode";
-		qcom,mdss-dsi-force-tx-mode = "dsi_hs_mode";
-
-		qcom,compression-mode = "dsc";
-		/* Why QCOM doesn't use this, even it used 2 encoder
-		 * as for that dsi_sw43404_amoled_cmd, for ex */
-		/* qcom,mdss-dsc-encoders = <2>; */
-		qcom,mdss-dsc-version = <0x11>;
-		qcom,mdss-dsc-slice-height = <20>;
-		qcom,mdss-dsc-slice-width = <540>;
-		qcom,mdss-dsc-slice-per-pkt = <2>;
-		qcom,mdss-dsc-bit-per-component = <10>;
-		qcom,mdss-dsc-bit-per-pixel = <8>;
-		qcom,mdss-dsc-block-prediction-enable;
-	};
-	timing@1{
-		qcom,mdss-dsi-cmd-mode;
+		/* 90 FPS */
 		qcom,mdss-dsi-panel-framerate = <90>;
 		qcom,mdss-dsi-panel-width = <1080>;
 		qcom,mdss-dsi-panel-height = <2340>;
@@ -170,25 +88,22 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsi-h-right-border = <0>;
 		qcom,mdss-dsi-v-top-border = <0>;
 		qcom,mdss-dsi-v-bottom-border = <0>;
-		qcom,mdss-dsi-panel-jitter = <0x20 0xa>; /* 90fps +/- 2 */
-		qcom,mdss-dsi-timing-switch-command = [
-			39 01 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0 */
-			15 01 00 00 00 00 02 6F 0E
-			15 01 00 00 00 00 02 BA 18
-			15 01 00 00 00 00 02 6F 03
-			39 01 00 00 00 00 04 C0 00 00 00
-			15 01 00 00 00 00 02 26 01];
+		qcom,mdss-dsi-panel-jitter = <0x15 0xa>; /* 90fps +/- 2 */
 		qcom,mdss-dsi-on-command = [
 			39 00 00 00 00 00 05 FF AA 55 A5 81
 			15 00 00 00 00 00 02 6F 0D
 			15 00 00 00 00 00 02 F3 CB
+			/* Set OSC 101.6Mhz */
+			15 00 00 00 00 00 02 6F 05
+			39 00 00 00 00 00 03 FD 00 DA
+			/* End Set OSC */
 			39 00 00 00 00 00 05 FF AA 55 A5 00
 			39 00 00 00 00 00 06 F0 55 AA 52 08 01 /* Page 1*/
 			/*TSP_VTE, TSP_HTE*/
-			39 00 00 00 00 00 04 D1 07 02 37
-			39 00 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0 */
+			39 00 00 00 00 00 04 D1 07 02 10
+			39 00 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0*/
 			/*GPO0=TE, GPO1=ALL MIPI error, GPO2=TSP_HTE, GPO3=TSP_CTE*/
-			39 00 00 00 00 00 06 BE 0E 91 94 13 1F
+			39 00 00 00 00 00 05 BE 0E 09 94 93
 			/* Framne rate = 90hz */
 			15 00 00 00 00 00 02 B2 01 /* backlight fix */
 			15 00 00 00 00 00 02 6F 0E
@@ -197,7 +112,7 @@ qcom,mdss-dsi-display-timings {
 			39 00 00 00 00 00 04 C0 00 00 00
 			15 00 00 00 00 00 02 26 01
 			/* Done with frame rate setting */
-			05 00 00 00 00 00 01 35  /* Set tear on */
+			05 00 00 00 00 00 01 35	 /* Set tear on */
 			15 00 00 00 00 00 02 53 20 /* HBM off ,dimming=1frame*/
 			/* Spec calls for 51 06 40 0F FF*/
 			39 00 00 00 00 00 05 51 00 00 0F FF
@@ -210,12 +125,11 @@ qcom,mdss-dsi-display-timings {
 			05 01 00 00 00 00 01 2C /* Memory write */
 			05 01 00 00 78 00 01 11
 			15 00 00 00 00 00 02 55 00      /* ACL OFF */
-			05 01 00 00 00 00 01 29];       /* display on */
+			05 01 00 00 00 00 01 29];	/* display on */
 		qcom,mdss-dsi-off-command = [
 			05 01 00 00 00 00 01 28		/* display_off */
 			05 01 00 00 78 00 01 10];	/* enter sleep mode */
 
-		qcom,mdss-dsi-timing-switch-command-state = "dsi_lp_mode";
 		qcom,mdss-dsi-on-command-state = "dsi_lp_mode";
 		qcom,mdss-dsi-off-command-state = "dsi_lp_mode";
 		qcom,mdss-dsi-force-tx-mode = "dsi_hs_mode";
