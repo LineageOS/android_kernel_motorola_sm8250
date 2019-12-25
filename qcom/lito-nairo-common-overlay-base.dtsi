@@ -3,7 +3,7 @@
 #include "lito-audio-overlay.dtsi"
 #include "lito-thermal-overlay.dtsi"
 #include "lito-racer-nfc.dtsi"
-#include "lito-moto-racer-display.dtsi"
+#include "lito-moto-nairobi-display.dtsi"
 #include "lito-nairo-touchscreen.dtsi"
 #include "lito-nairo-vibrator.dtsi"
 #include "lito-nairo-fingerprint.dtsi"
