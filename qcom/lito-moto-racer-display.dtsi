@@ -31,7 +31,7 @@
 	connectors = <&sde_wb &sde_dsi &sde_rscc>;
 
 	mot_boe_gdx_667_1080p_cmd_v0: qcom,mdss_dsi_mot_boe_gdx_667_1080p_cmd_v0 {
-		#include "dsi-panel-mot-boe-667-1080p-racer-cmd-common.dtsi"
+		#include "dsi-panel-mot-boe-gdx-667-1080p-racer-cmd-common.dtsi"
 	};
 
 	mot_boe_667_1080p_cmd_v0: qcom,mdss_dsi_mot_boe_667_1080p_cmd_v0 {
@@ -39,7 +39,7 @@
 	};
 
 	mot_csot_gdx_667_1080p_cmd_v0: qcom,mdss_dsi_mot_csot_gdx_667_1080p_cmd_v0 {
-		#include "dsi-panel-mot-csot-667-1080p-racer-cmd-common.dtsi"
+		#include "dsi-panel-mot-csot-gdx-667-1080p-racer-cmd-common.dtsi"
 	};
 
 	mot_csot_lsi_667_1080p_cmd_v0: qcom,mdss_dsi_mot_csot_lsi_667_1080p_cmd_v0 {
@@ -67,43 +67,6 @@
 	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
 	qcom,mdss-dsi-display-timings {
 		timing@0 {
-			qcom,mdss-dsi-on-command = [
-				39 00 00 00 00 00 05 FF AA 55 A5 81
-				15 00 00 00 00 00 02 6F 0D
-				15 00 00 00 00 00 02 F3 CB
-				39 00 00 00 00 00 05 FF AA 55 A5 00
-				39 00 00 00 00 00 06 F0 55 AA 52 08 01 /* Page 1*/
-				/*TSP_VTE, TSP_HTE*/
-				39 00 00 00 00 00 04 D1 07 02 37
-				39 00 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0 */
-				/*GPO0=TE, GPO1=ALL MIPI error, GPO2=TSP_HTE, GPO3=TSP_CTE*/
-				39 00 00 00 00 00 06 BE 0E 91 94 13 1F
-				/* Framne rate = 60hz */
-				15 00 00 00 00 00 02 B2 01 /* backlight fix */
-				15 00 00 00 00 00 02 6F 0E
-				15 00 00 00 00 00 02 BA 18
-				15 00 00 00 00 00 02 6F 03
-				39 00 00 00 00 00 04 C0 80 00 00
-				15 00 00 00 00 00 02 26 01
-				/* Done with frame rate setting */
-				05 00 00 00 00 00 01 35  /* Set tear on */
-				15 00 00 00 00 00 02 53 20 /* HBM off ,dimming=1frame*/
-				/* Spec calls for 51 06 40 0F FF*/
-				39 00 00 00 00 00 05 51 00 00 0F FF
-				39 00 00 00 00 00 05 2A 00 00 04 37 /* Column Addr set */
-				39 00 00 00 00 00 05 2B 00 00 09 23 /* Row Addr set */
-				/* PPS stable1 10bit3.75x slice 20 */
-				39 00 00 00 00 00 13 93 AB 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
-				15 00 00 00 00 00 02 90 01  /* Compression method selection*/
-				15 00 00 00 00 00 02 03 11 /* Compression mode */
-				05 01 00 00 00 00 01 2C /* Memory write */
-				05 01 00 00 78 00 01 11
-				15 00 00 00 00 00 02 55 00      /* ACL OFF */
-				05 01 00 00 00 00 01 29];       /* display on */
-
-			/* Phy 4; w=2880 h=2340; 10bits 60hz; 3.75x dsc */
-			qcom,mdss-dsi-panel-phy-timings = [00 0D 03 03 1D 1D 04
-					03 01 02 04 00 0D 13];
 			qcom,display-topology = <2 2 1>;
 			qcom,default-topology-index = <0>;
 		};
@@ -128,10 +91,9 @@
 	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
 	qcom,mdss-dsi-display-timings {
 		timing@0 {
-			qcom,display-topology = <2 2 1>;
-			qcom,default-topology-index = <0>;
-		};
-		timing@1 {
+			/* Phy 4; w=2880 h=2340; 10bits 90hz; 3.75x dsc */
+			qcom,mdss-dsi-panel-phy-timings = [00 12 04 04 1E 1E 04
+							05 02 02 04 00 11 14];
 			qcom,display-topology = <2 2 1>;
 			qcom,default-topology-index = <0>;
 		};
@@ -169,53 +131,16 @@
 
 	qcom,mdss-dsi-panel-hdr-enabled;
 	qcom,mdss-dsi-panel-hdr-color-primaries = <14500 15500 32000
-	        17000 15500 30000 8000 3000>;
+					17000 15500 30000 8000 3000>;
 	qcom,mdss-dsi-panel-peak-brightness = <4200000>;
 	qcom,mdss-dsi-panel-blackness-level = <3230>;
 	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
 	qcom,mdss-dsi-display-timings {
 		timing@0 {
-			qcom,mdss-dsi-panel-framerate = <60>;
-			qcom,mdss-dsi-on-command = [
-				39 00 00 00 00 00 05 FF AA 55 A5 81
-				15 00 00 00 00 00 02 6F 0D
-				15 00 00 00 00 00 02 F3 CB
-				/* Set OSC 101.6Mhz */
-				15 00 00 00 00 00 02 6F 05
-				39 00 00 00 00 00 03 FD 00 DA
-				/* End Set OSC */
-				39 00 00 00 00 00 05 FF AA 55 A5 00
-				39 00 00 00 00 00 06 F0 55 AA 52 08 01 /* Page */
-				/*TSP_VTE, TSP_HTE*/
-				39 00 00 00 00 00 04 D1 07 02 37
-				39 00 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0 */
-				/*GPO0=TE, GPO1=ALL MIPI error, GPO2=TSP_HTE, GPO3=TSP_CTE*/
-				39 00 00 00 00 00 06 BE 0E 91 94 13 1F
-				/* Framne rate = 60hz */
-				15 00 00 00 00 00 02 B2 01 /* backlight fix */
-				15 00 00 00 00 00 02 6F 0E
-				15 00 00 00 00 00 02 BA 18
-				15 00 00 00 00 00 02 6F 03
-				39 00 00 00 00 00 04 C0 80 00 00
-				15 00 00 00 00 00 02 26 01
-				/* Done with frame rate setting */
-				05 00 00 00 00 00 01 35  /* Set tear on */
-				15 00 00 00 00 00 02 53 20 /* HBM off ,dimming=1frame*/
-				/* Spec calls for 51 06 40 0F FF*/
-				39 00 00 00 00 00 05 51 00 00 0F FF
-				39 00 00 00 00 00 05 2A 00 00 04 37 /* Column Addr set */
-				39 00 00 00 00 00 05 2B 00 00 09 23 /* Row Addr set */
-				39 00 00 00 00 00 13 93 AB 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
-				15 00 00 00 00 00 02 90 01  /* Compression method selection*/
-				15 00 00 00 00 00 02 03 11 /* Compression mode */
-				05 01 00 00 00 00 01 2C /* Memory write */
-				05 01 00 00 78 00 01 11
-				15 00 00 00 00 00 02 55 00 /* ACL OFF */
-				05 01 00 00 00 00 01 29];  /* display on */
-
-			/* Phy 4; w=2880 h=2340; 10bits 60hz; 3.75x dsc */
-			qcom,mdss-dsi-panel-phy-timings = [00 0D 03 03 1D 1D 04
-					03 01 02 04 00 0D 13];
+			qcom,display-topology = <2 2 1>;
+			qcom,default-topology-index = <0>;
+		};
+		timing@1 {
 			qcom,display-topology = <2 2 1>;
 			qcom,default-topology-index = <0>;
 		};
@@ -236,9 +161,6 @@
 	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
 	qcom,mdss-dsi-display-timings {
 		timing@0 {
-			/* Phy 4; w=2880 h=2340; 10bits 60hz; 3.75x dsc */
-			qcom,mdss-dsi-panel-phy-timings = [00 0D 03 03 1D 1D 04
-					03 01 02 04 00 0D 13];
 			qcom,display-topology = <2 2 1>;
 			qcom,default-topology-index = <0>;
 		};
