@@ -96,10 +96,16 @@
 &cs35l41_spk {
 	interrupts = <56 IRQ_TYPE_LEVEL_LOW>;
 	reset-gpios = <&tlmm 90 0>;
+	cirrus,gpio-config2 {
+		cirrus,gpio-src-select = <0x0>;
+	};
 };
 
 &cs35l41_rcv {
 	interrupts = <57 IRQ_TYPE_LEVEL_LOW>;
+	cirrus,gpio-config2 {
+		cirrus,gpio-src-select = <0x0>;
+	};
 };
 
 &cs47l35 {
