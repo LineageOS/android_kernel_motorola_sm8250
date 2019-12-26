@@ -23,58 +23,6 @@
 			bias-pull-up;
 		};
 	};
-
-	prince_reset_default: prince_reset_default {
-		mux {
-			pins = "gpio71";
-			function = "gpio";
-		};
-		config {
-			pins = "gpio71";
-			drive-strength = <2>; /* 2 MA */
-			bias-pull-up;
-			output-high;
-		};
-	};
-
-	prince_irq_default: prince_irq_default {
-		mux {
-			pins = "gpio85";
-			function = "gpio";
-		};
-		config {
-			pins = "gpio85";
-			drive-strength = <2>; /* 2 MA */
-			bias-pull-up;
-			input-enable;
-		};
-	};
-
-	prince_rcv_reset_default: prince_rcv_reset_default {
-		mux {
-			pins = "gpio92";
-			function = "gpio";
-		};
-		config {
-			pins = "gpio92";
-			drive-strength = <2>; /* 2 MA */
-			bias-pull-up;
-			output-high;
-		};
-	};
-
-	prince_rcv_irq_default: prince_rcv_irq_default {
-		mux {
-			pins = "gpio33";
-			function = "gpio";
-		};
-		config {
-			pins = "gpio33";
-			drive-strength = <2>; /* 2 MA */
-			bias-pull-up;
-			input-enable;
-		};
-	};
 };
 
 &L3C {
@@ -193,30 +141,6 @@
 	status="ok";
 	qcom,msm-mi2s-tx-lines = <1>; /*SD0 LPI_GPIO_12 gpio 127*/
 	qcom,msm-mi2s-rx-lines = <2>; /*SD1 LPI_GPIO_13 gpio 128*/
-};
-
-/* enable gpio12 used as SPI cs2 for cs35l41 */
-&qupv3_se1_spi_active {
-	mux {
-		pins = "gpio0", "gpio1", "gpio2",
-					"gpio3", "gpio12";
-	};
-	config {
-		pins = "gpio0", "gpio1", "gpio2",
-					"gpio3", "gpio12";
-	};
-};
-
-&qupv3_se1_spi_sleep {
-	mux {
-		pins = "gpio0", "gpio1", "gpio2",
-					"gpio3", "gpio12";
-	};
-
-	config {
-		pins = "gpio0", "gpio1", "gpio2",
-					"gpio3", "gpio12";
-	};
 };
 
 &qupv3_se8_spi {
@@ -380,127 +304,6 @@
 	};
 };
 
-&qupv3_se1_spi {
-	status = "okay";
-
-	cs35l41_spk: cs35l41@0 {
-		compatible = "cirrus,cs35l41";
-		spi-max-frequency = <9600000>;
-		reg = <0x0>;
-		reset-gpios = <&tlmm 71 0>;
-		interrupt-parent = <&tlmm>;
-		interrupts = <85 IRQ_TYPE_LEVEL_LOW>;
-		interrupt-controller;
-		#interrupt-cells = <2>;
-		interrupt-names = "prince_irq";
-
-		VA-supply = <&pm8150_s4>;
-		VP-supply = <&pm8150_s4>;
-
-		pinctrl-names = "default";
-		pinctrl-0 = <&prince_irq_default>, <&prince_reset_default>;
-
-		cirrus,right-channel-amp;
-		cirrus,boost-ind-nanohenry = <1000>; /* 1uH */
-		cirrus,boost-ctl-millivolt = <11000>;
-		cirrus,boost-peak-milliamp = <4000>;
-		cirrus,boost-cap-microfarad = <21>;
-		cirrus,amp-gain-zc;
-		cirrus,fast-switch = "spk_fast_switch1.txt", "spk_fast_switch2.txt",
-							"spk_fast_switch3.txt", "spk_fast_switch4.txt";
-
-		cirrus,gpio-config2 {
-			cirrus,gpio-output-enable = <0x01>;
-			cirrus,gpio-src-select = <0x04>;
-		};
-
-		adsps {
-			#address-cells = <1>;
-			#size-cells = <0>;
-			adsp@2b80000 {
-				reg = <0x2b80000>;
-				firmware {
-					protection {
-						cirrus,full-name;
-						cirrus,wmfw-file = "cs35l41-dsp1-spk-prot.wmfw";
-						cirrus,bin-file = "cs35l41-dsp1-spk-prot.bin";
-					};
-					calibration {
-						cirrus,full-name;
-						cirrus,wmfw-file = "cs35l41-dsp1-spk-prot.wmfw";
-						cirrus,bin-file = "cs35l41-dsp1-spk-cali.bin";
-					};
-					diagnostic {
-						cirrus,full-name;
-						cirrus,wmfw-file = "cs35l41-dsp1-spk-diag.wmfw";
-					};
-				};
-			};
-		};
-	};
-
-	cs35l41_rcv: cs35l41@1 {
-		compatible = "cirrus,cs35l41";
-		spi-max-frequency = <9600000>;
-		reg = <0x1>;
-		reset-gpios = <&tlmm 92 0>;
-		interrupt-parent = <&tlmm>;
-		/* MMI_STOPSHIP​ <Audio>: 86 is used by modem. there are irq storm happen */
-		interrupts = <33 IRQ_TYPE_LEVEL_LOW>;
-		interrupt-controller;
-		#interrupt-cells = <2>;
-		interrupt-names = "prince_irq";
-
-		VA-supply = <&pm8150_s4>;
-		VP-supply = <&pm8150_s4>;
-
-		pinctrl-names = "default";
-		pinctrl-0 = <&prince_rcv_irq_default>, <&prince_rcv_reset_default>;
-
-		cirrus,boost-ind-nanohenry = <1000>; /* 1uH */
-		cirrus,boost-ctl-millivolt = <11000>;
-		cirrus,boost-peak-milliamp = <4000>;
-		cirrus,boost-cap-microfarad = <21>;
-		cirrus,amp-gain-zc;
-		cirrus,fast-switch = "rcv_fast_switch1.txt", "rcv_fast_switch2.txt",
-							"rcv_fast_switch3.txt", "rcv_fast_switch4.txt";
-
-		cirrus,gpio-config2 {
-			cirrus,gpio-output-enable = <0x01>;
-			cirrus,gpio-src-select = <0x04>;
-		};
-
-		cirrus,gpio-config1 {
-			cirrus,gpio-src-select = <0x1>;
-			cirrus,gpio-output-enable;
-		};
-
-		adsps {
-			#address-cells = <1>;
-			#size-cells = <0>;
-			adsp@2b80000 {
-				reg = <0x2b80000>;
-				firmware {
-					protection {
-						cirrus,full-name;
-						cirrus,wmfw-file = "cs35l41-dsp1-spk-prot.wmfw";
-						cirrus,bin-file = "cs35l41-dsp1-rcv-prot.bin";
-					};
-					calibration {
-						cirrus,full-name;
-						cirrus,wmfw-file = "cs35l41-dsp1-spk-prot.wmfw";
-						cirrus,bin-file = "cs35l41-dsp1-rcv-cali.bin";
-					};
-					diagnostic {
-						cirrus,full-name;
-						cirrus,wmfw-file = "cs35l41-dsp1-spk-diag.wmfw";
-					};
-				};
-			};
-		};
-	};
-};
-
 &q6core {
 	lito_snd: sound {
 		status = "disabled";
@@ -592,13 +395,9 @@
 			"IN2L",  "MICBIAS2B",
 			"IN1BR", "MICBIAS1B";
 
-		asoc-codec = <&stub_codec>, <&ext_disp_audio_codec>, <&cs47l35>,
-				<&cs35l41_rcv>, <&cs35l41_spk>;
+		asoc-codec = <&stub_codec>, <&ext_disp_audio_codec>, <&cs47l35>;
 		asoc-codec-names = "msm-stub-codec.1",
 				"msm-ext-disp-audio-codec-rx",
-				"cs47l35-codec", "cs35l41-rcv", "cs35l41-spk";
-		cirrus,prince-max-devs = <2>;
-		cirrus,prince-devs = <&cs35l41_rcv>, <&cs35l41_spk>;
-		cirrus,prince-dev-prefix = "RCV", "SPK";
+				"cs47l35-codec";
 	};
 };
