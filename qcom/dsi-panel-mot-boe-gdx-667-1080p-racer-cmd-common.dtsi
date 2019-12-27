@@ -128,5 +128,17 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsi-on-command-state = "dsi_lp_mode";
 		qcom,mdss-dsi-off-command-state = "dsi_lp_mode";
 		qcom,mdss-dsi-force-tx-mode = "dsi_hs_mode";
+
+		qcom,compression-mode = "dsc";
+		/* Why QCOM doesn't use this, even it used 2 encoder
+		 * as for that dsi_sw43404_amoled_cmd, for ex */
+		/* qcom,mdss-dsc-encoders = <2>; */
+		qcom,mdss-dsc-version = <0x11>;
+		qcom,mdss-dsc-slice-height = <20>;
+		qcom,mdss-dsc-slice-width = <540>;
+		qcom,mdss-dsc-slice-per-pkt = <2>;
+		qcom,mdss-dsc-bit-per-component = <10>;
+		qcom,mdss-dsc-bit-per-pixel = <8>;
+		qcom,mdss-dsc-block-prediction-enable;
 	};
 };
