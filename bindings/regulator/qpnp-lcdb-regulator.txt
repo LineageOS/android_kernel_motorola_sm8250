@@ -45,6 +45,12 @@ First Level Node - LCDB module
 	Definition:  Required to control the LDO power down delay.
 		     Possible values are 0, 1, 4, 8.
 
+- qcom,pwrup-delay-ms
+	Usage:      optional
+	Value type: <u32>
+	Definition:  Required to control the LDO power up delay.
+		     Possible values are 0, 1, 4, 8.
+
 Touch-to-wake (TTW) properties:
 
 TTW supports 2 modes of operation - HW and SW. In the HW mode the enable/disable
