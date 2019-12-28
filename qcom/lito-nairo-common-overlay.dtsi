@@ -12,7 +12,6 @@
 
 #include <dt-bindings/interrupt-controller/arm-gic.h>
 #include "lito-nairo-common-overlay-base.dtsi"
-#include "camera/lito-camera-sensor-mot-racer-overlay.dtsi"
 #include "lito-nairo-audio-overlay.dtsi"
 #include "lito-nairo-sensor-overlay.dtsi"
 #include "lito-nairo-thermal.dtsi"
