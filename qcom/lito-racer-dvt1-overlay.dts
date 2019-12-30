@@ -42,6 +42,7 @@
 	};
 	config {
 		pins = "gpio56";
+		bias-disable;
 	};
 };
 
@@ -61,6 +62,7 @@
 	};
 	config {
 		pins = "gpio57";
+		bias-disable;
 	};
 };
 
@@ -94,17 +96,17 @@
 };
 
 &cs35l41_spk {
-	interrupts = <56 IRQ_TYPE_LEVEL_LOW>;
+	interrupts = <56 IRQ_TYPE_LEVEL_HIGH>;
 	reset-gpios = <&tlmm 90 0>;
 	cirrus,gpio-config2 {
-		cirrus,gpio-src-select = <0x0>;
+		cirrus,gpio-src-select = <0x5>;
 	};
 };
 
 &cs35l41_rcv {
-	interrupts = <57 IRQ_TYPE_LEVEL_LOW>;
+	interrupts = <57 IRQ_TYPE_LEVEL_HIGH>;
 	cirrus,gpio-config2 {
-		cirrus,gpio-src-select = <0x0>;
+		cirrus,gpio-src-select = <0x5>;
 	};
 };
 
