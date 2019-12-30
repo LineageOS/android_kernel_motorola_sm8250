@@ -130,8 +130,7 @@
 		synaptics,bus-reg-name = "pm8150_l17";
 		synaptics,x-flip;
 		synaptics,y-flip;
-		pinctrl-names = "pmx_ts_active", "pmx_ts_suspend";
-		pinctrl-0 = <&touch_reset_active &touch_int_active>;
-		pinctrl-1 = <&touch_reset_suspend &touch_int_suspend>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&touch_int_active>;
 	};
 };
