@@ -23,6 +23,7 @@
 #include "lito-nairo-audio-overlay.dtsi"
 #include "lito-nairo-sensor-overlay.dtsi"
 #include "lito-nairo-thermal.dtsi"
+#include "lito-nairo-fmr-overlay.dtsi"
 #include "lito-moto-common-overlay.dtsi"
 
 
