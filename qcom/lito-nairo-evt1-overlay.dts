@@ -24,6 +24,6 @@
 };
 &pm8150l_wled {
 	/delete-property/ qcom,string-cfg;
-	qcom,string-cfg = <7>;
+	qcom,string-cfg = <14>;
 };
 
