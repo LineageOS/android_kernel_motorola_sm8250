@@ -98,3 +98,9 @@
 		cirrus,gpio-src-select = <0x0>;
 	};
 };
+
+&q6core {
+	sound-madera {
+		qcom,model = "kona-madera-evt-snd-card";
+	};
+};
