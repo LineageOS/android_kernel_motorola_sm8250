@@ -17,6 +17,18 @@
 	modem-mmw0-usr {
 		status = "disabled";
 	};
+	modem-mmw1-usr {
+		status = "disabled";
+	};
+	modem-mmw2-usr {
+		status = "disabled";
+	};
+	modem-mmw3-usr {
+		status = "disabled";
+	};
+	modem-streamer-usr {
+		status = "disabled";
+	};
 	modem-skin-usr {
 		status = "disabled";
 	};
@@ -75,11 +87,15 @@
 	mmw-pa2-usr {
 		status = "disabled";
 	};
-	conn_therm {
+
+	camera-therm-usr {
+		status = "disabled";
+	};
+	cam_flash_therm {
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-governor = "user_space";
-		thermal-sensors = <&pm7250b_adc_tm ADC_AMUX_THM3_PU2>;
+		thermal-sensors = <&pm7250b_adc_tm ADC_GPIO4_PU2>;
 		wake-capable-sensor;
 		trips {
 			active-config0 {
@@ -90,14 +106,11 @@
 		};
 	};
 
-	camera-therm-usr {
-		status = "disabled";
-	};
-	sdx_therm {
+	bmr_w_therm {
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-governor = "user_space";
-		thermal-sensors = <&pm7250b_adc_tm ADC_GPIO4_PU2>;
+		thermal-sensors = <&pm7250b_adc_tm ADC_GPIO2_PU2>;
 		wake-capable-sensor;
 		trips {
 			active-config0 {
@@ -147,7 +160,7 @@
 	mmw-pa3-usr {
 		status = "disabled";
 	};
-	wifi_therm {
+	bmr_e_therm {
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-governor = "user_space";
@@ -201,7 +214,7 @@
 	mmw-pa1-usr {
 		status = "disabled";
 	};
-	quiet_therm {
+	bmr_n_therm {
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-governor = "user_space";
