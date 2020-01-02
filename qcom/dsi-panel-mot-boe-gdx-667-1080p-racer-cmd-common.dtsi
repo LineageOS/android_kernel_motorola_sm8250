@@ -89,6 +89,11 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsi-v-bottom-border = <0>;
 		qcom,mdss-dsi-panel-jitter = <0x20 0xa>; /* 60fps +/- 2 */
 		qcom,mdss-dsi-on-command = [
+			39 00 00 00 00 00 06 F0 55 AA 52 08 00
+			39 00 00 00 00 00 03 B5 84 00
+			15 00 00 00 00 00 02 6F 05
+			39 00 00 00 00 00 05 B5 7F 4E 17 54
+
 			39 00 00 00 00 00 05 FF AA 55 A5 81
 			15 00 00 00 00 00 02 6F 0D
 			15 00 00 00 00 00 02 F3 CB
