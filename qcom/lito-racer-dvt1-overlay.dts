@@ -142,7 +142,6 @@
 	};
 
 	sound-madera {
-		qcom,model = "kona-madera-snd-card-dvt1";
 		qcom,sec-mi2s-gpios = <&cdc_sec_mi2s_gpios>;
 	};
 };
