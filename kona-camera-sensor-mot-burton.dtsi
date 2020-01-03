@@ -235,7 +235,7 @@
 			sensor-position-roll = <90>;
 			sensor-position-pitch = <0>;
 			sensor-position-yaw = <180>;
-			led-flash-src = <&led_flash_rear>;
+			led-flash-src = <&led_flash_main>;
 			actuator-src = <&actuator_rear>;
 			eeprom-src = <&eeprom_rear>;
 			ois-src = <&ois_main>;
@@ -377,8 +377,36 @@
 		status = "ok";
 	};
 
-	led_flash_rear: qcom,led-flash@0 {
+	led_flash_main: led_flash_rear: qcom,led-flash@0 {
 		cell-index = <0>;
+		reg = <0x0>;
+		compatible = "qcom,camera-flash";
+		cci-master = <0>;
+		cam_v_custom1-supply = <&camera_flash_en_gpio>;
+		regulator-names = "cam_v_custom1";
+		rgltr-cntrl-support;
+		rgltr-min-voltage = <1808000>;
+		rgltr-max-voltage = <1808000>;
+		rgltr-load-current = <0>;
+		status = "ok";
+	};
+
+	led_flash_wide: qcom,led-flash@1 {
+		cell-index = <1>;
+		reg = <0x0>;
+		compatible = "qcom,camera-flash";
+		cci-master = <0>;
+		cam_v_custom1-supply = <&camera_flash_en_gpio>;
+		regulator-names = "cam_v_custom1";
+		rgltr-cntrl-support;
+		rgltr-min-voltage = <1808000>;
+		rgltr-max-voltage = <1808000>;
+		rgltr-load-current = <0>;
+		status = "ok";
+	};
+
+	led_flash_tele: qcom,led-flash@2 {
+		cell-index = <2>;
 		reg = <0x0>;
 		compatible = "qcom,camera-flash";
 		cci-master = <0>;
@@ -440,7 +468,7 @@
 		sensor-position-roll = <90>;
 		sensor-position-pitch = <0>;
 		sensor-position-yaw = <180>;
-		led-flash-src = <&led_flash_rear>;
+		led-flash-src = <&led_flash_wide>;
 		actuator-src = <&actuator_wide>;
 		eeprom-src = <&eeprom_wide>;
 		cam_vio-supply = <&pm8150a_l5>;
@@ -482,7 +510,7 @@
 		sensor-position-roll = <0>;
 		sensor-position-pitch = <0>;
 		sensor-position-yaw = <270>;
-		led-flash-src = <&led_flash_rear>;
+		led-flash-src = <&led_flash_tele>;
 		actuator-src = <&actuator_tele>;
 		eeprom-src = <&eeprom_tele>;
 		ois-src = <&ois_tele>;
