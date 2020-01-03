@@ -451,7 +451,7 @@
 };
 
 &tlmm{
-	cam_pmic_irq_default: cam-pmic-irq-default {
+	cam_pmic_irq_default: cam_pmic_irq_default {
 		mux {
 			pins = "gpio45";
 			function = "gpio";
@@ -471,9 +471,12 @@
 		compatible = "dlg,slg51000";
 		reg = <0x75>;
 
+		interrupt-parent = <&tlmm>;
+		interrupts = <45 IRQ_TYPE_LEVEL_LOW>;
+
 		dlg,cs-gpios = <&tlmm 44 0>;
 
-		pinctrl-names = "default";
+		pinctrl-names = "pmic_default";
 		pinctrl-0 = <&cam_pmic_irq_default>;
 
 		vin3-supply = <&pm8150a_bob>;
