@@ -185,6 +185,11 @@
 				39 00 00 00 00 00 04 C0 00 00 00
 				15 00 00 00 00 00 02 26 01
 				/* Done with frame rate setting */
+				/* Swire setting AVDD=7.6VDC, ELVDD=4.6VDC ELVSS=-4.2VDC*/
+				39 00 00 00 00 00 03 B5 84 00
+				15 00 00 00 00 00 02 6F 05
+				39 00 00 00 00 00 05 B5 7F 4E 17 54
+				/* End of swire setting*/
 				05 00 00 00 00 00 01 35	 /* Set tear on */
 				15 00 00 00 00 00 02 53 20 /* HBM off ,dimming=1frame*/
 				/* Spec calls for 51 06 40 0F FF*/
@@ -319,6 +324,11 @@
 				39 00 00 00 00 00 04 C0 80 00 00
 				15 00 00 00 00 00 02 26 01
 				/* Done with frame rate setting */
+				/* Swire setting AVDD=7.6VDC, ELVDD=4.6VDC ELVSS=-4.2VDC*/
+				39 00 00 00 00 00 03 B5 84 00
+				15 00 00 00 00 00 02 6F 05
+				39 00 00 00 00 00 05 B5 7F 4E 17 54
+				/* End of swire setting*/
 				05 00 00 00 00 00 01 35  /* Set tear on */
 				15 00 00 00 00 00 02 53 20 /* HBM off ,dimming=1frame*/
 				/* Spec calls for 51 06 40 0F FF*/
@@ -379,6 +389,11 @@
 				39 00 00 00 00 00 04 C0 00 00 00
 				15 00 00 00 00 00 02 26 01
 				/* Done with frame rate setting */
+				/* Swire setting AVDD=7.3VDC, ELVDD=4.6VDC ELVSS=-4.2VDC*/
+				39 00 00 00 00 00 08 B7 AA AA AA AA AA 00 00
+				15 00 00 00 00 00 02 6F 06
+				39 00 00 00 00 00 0B B5 4B 19 51 00 00 4B 23 51 00 00
+				/* End of swire setting*/
 				05 00 00 00 00 00 01 35  /* Set tear on */
 				15 00 00 00 00 00 02 53 20 /* HBM off ,dimming=1frame*/
 				/* Spec calls for 51 06 40 0F FF*/
