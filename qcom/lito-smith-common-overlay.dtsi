@@ -427,8 +427,10 @@
 		pinctrl-1 = <&ts_sub_active>;
 		synaptics,splash-screen-mode;
 		synaptics,control-dsi = <1>;
-		synaptics,bound-display = "qcom,mdss_dsi_mot_boe_269_800x600_cmd_v2";
+		synaptics,bound-display = "qcom,mdss_dsi_mot_boe_269_800x600_cmd";
 		synaptics,class-entry-name = "secondary";
+		mmi,control-dsi = <1>;
+		mmi,reset-on-resume = <1>;
 		config_modifier-names = "aod";
 			config_modifier-aod {
 			aod-suspended {
