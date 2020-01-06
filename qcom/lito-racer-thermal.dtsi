@@ -46,6 +46,9 @@
 	modem-mmw3-mod-usr {
 		status = "disabled";
 	};
+	xo-therm-step {
+		status = "disabled";
+	};
 
 	/* equal to pa_therm1 */
 	modem-lte-sub6-pa1 {
