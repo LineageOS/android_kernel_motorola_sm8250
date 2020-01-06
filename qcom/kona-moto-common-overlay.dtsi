@@ -446,6 +446,85 @@
 			};
 		};
 	};
+
+	mmw0-surface-step {
+		polling-delay-passive = <2000>;
+		polling-delay = <2000>;
+		thermal-governor = "step_wise";
+		trips {
+			modem_skin0_trip0: modem-skin0-trip0 {
+				temperature = <48000>;
+				hysteresis = <5000>;
+				type = "passive";
+			};
+		};
+		cooling-maps {
+			skin0_modem_lvl2 {
+				trip = <&modem_skin0_trip0>;
+				cooling-device = <&modem_mmw0 2 2>;
+			};
+		};
+	};
+
+	mmw1-surface-step {
+		polling-delay-passive = <2000>;
+		polling-delay = <2000>;
+		thermal-governor = "step_wise";
+		trips {
+			modem_skin1_trip0: modem-skin1-trip0 {
+				temperature = <48000>;
+				hysteresis = <5000>;
+				type = "passive";
+			};
+		};
+		cooling-maps {
+			skin1_modem_lvl2 {
+				trip = <&modem_skin1_trip0>;
+				cooling-device = <&modem_mmw1 2 2>;
+			};
+		};
+	};
+
+	sdx55-surface-step {
+		polling-delay-passive = <2000>;
+		polling-delay = <2000>;
+		thermal-governor = "step_wise";
+		trips {
+			modem_skin_trip0: modem-skin-trip0 {
+				temperature = <45000>;
+				hysteresis = <5000>;
+				type = "passive";
+			};
+			modem_skin_trip1: modem-skin-trip1 {
+				temperature = <50000>;
+				hysteresis = <6000>;
+				type = "passive";
+			};
+		};
+		cooling-maps {
+			skin_modem_lvl1 {
+				trip = <&modem_skin_trip0>;
+				cooling-device = <&modem_skin 1 1>;
+			};
+			/* Disable 5G */
+			skin_modem_lvl2 {
+				trip = <&modem_skin_trip1>;
+				cooling-device = <&modem_mmw0 3 3>;
+			};
+		};
+	};
+
+	front-usr {
+		polling-delay-passive = <2000>;
+		polling-delay = <2000>;
+		thermal-governor = "user_space";
+	};
+
+	back-usr {
+		polling-delay-passive = <2000>;
+		polling-delay = <2000>;
+		thermal-governor = "user_space";
+	};
 };
 
 &tlmm{
