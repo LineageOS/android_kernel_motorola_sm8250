@@ -4,6 +4,7 @@
 #include "lito-pmic-overlay.dtsi"
 #include "lito-thermal-overlay.dtsi"
 #include "camera/lito-camera-sensor-mot-smith.dtsi"
+#include "lito-moto-audio-overlay.dtsi"
 
 &utags {
 	compatible = "mmi,utags";
