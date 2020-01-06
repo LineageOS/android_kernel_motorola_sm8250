@@ -187,7 +187,7 @@ qcom,mdss-dsi-display-timings {
 			15 01 00 00 00 00 02 BA 18
 			15 01 00 00 00 00 02 6F 03
 			39 01 00 00 00 00 04 C0 00 00 00
-			15 01 00 00 00 00 02 26 01];
+			15 01 00 00 00 00 02 26 02];
 		qcom,mdss-dsi-on-command = [
 			39 00 00 00 00 00 05 FF AA 55 A5 81
 			15 00 00 00 00 00 02 6F 0D
@@ -209,7 +209,7 @@ qcom,mdss-dsi-display-timings {
 			15 00 00 00 00 00 02 BA 18
 			15 00 00 00 00 00 02 6F 03
 			39 00 00 00 00 00 04 C0 00 00 00
-			15 00 00 00 00 00 02 26 01
+			15 00 00 00 00 00 02 26 02
 			/* Done with frame rate setting */
 			/* Swire setting AVDD=7.3VDC, ELVDD=4.6VDC ELVSS=-4.2VDC*/
 			39 00 00 00 00 00 08 B7 AA AA AA AA AA 00 00
