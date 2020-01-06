@@ -63,7 +63,6 @@
 		qcom,msm-mi2s-master = <1>, <1>, <1>, <1>, <1>, <1>;
 		qcom,auxpcm-audio-intf = <1>;
 		qcom,wcn-bt = <1>;
-		qcom,ext-disp-audio-rx = <1>;
 		qcom,afe-rxtx-lb = <0>;
 		qcom,skip-aux-dev;
 		qcom,msm_audio_ssr_devs = <&audio_apr>, <&q6core>;
@@ -79,8 +78,7 @@
 				"msm-pcm-afe", "msm-lsm-client",
 				"msm-pcm-routing", "msm-compr-dsp",
 				"msm-pcm-dsp-noirq", "cs47l35-codec";
-		asoc-cpu = <&dai_dp>, <&dai_dp1>,
-				<&dai_mi2s0>, <&dai_mi2s1>,
+		asoc-cpu = <&dai_mi2s0>, <&dai_mi2s1>,
 				<&dai_mi2s2>, <&dai_mi2s3>,
 				<&dai_mi2s4>, <&dai_mi2s5>, <&dai_pri_auxpcm>,
 				<&dai_sec_auxpcm>, <&dai_tert_auxpcm>,
@@ -111,8 +109,7 @@
 				<&rx_cdc_dma_5_rx>, <&tx_cdc_dma_5_tx>,
 				<&rx_cdc_dma_6_rx>, <&rx_cdc_dma_7_rx>,
 				<&afe_loopback_tx>;
-		asoc-cpu-names = "msm-dai-q6-dp.0", "msm-dai-q6-dp.1",
-				"msm-dai-q6-mi2s.0", "msm-dai-q6-mi2s.1",
+		asoc-cpu-names = "msm-dai-q6-mi2s.0", "msm-dai-q6-mi2s.1",
 				"msm-dai-q6-mi2s.2", "msm-dai-q6-mi2s.3",
 				"msm-dai-q6-mi2s.4", "msm-dai-q6-mi2s.5",
 				"msm-dai-q6-auxpcm.1",
@@ -166,10 +163,9 @@
 			"IN1BR", "MICBIAS1A",
 			"IN1BR", "MICBIAS1B";
 
-		asoc-codec = <&stub_codec>, <&ext_disp_audio_codec>, <&cs47l35>,
+		asoc-codec = <&stub_codec>, <&cs47l35>,
 				<&cs35l41_spk>;
 		asoc-codec-names = "msm-stub-codec.1",
-				"msm-ext-disp-audio-codec-rx",
 				"cs47l35-codec", "cs35l41-spk";
 		cirrus,prince-max-devs = <1>;
 		cirrus,prince-devs = <&cs35l41_spk>;
