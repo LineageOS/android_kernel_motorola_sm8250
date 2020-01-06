@@ -1,4 +1,4 @@
-/* Copyright (c) 2019, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2019-2020, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -125,6 +125,11 @@ qcom,mdss-dsi-display-timings {
 			39 00 00 00 00 00 04 C0 80 00 00
 			15 00 00 00 00 00 02 26 01
 			/* Done with frame rate setting */
+			/* Swire setting AVDD=7.6VDC, ELVDD=4.6VDC ELVSS=-4.2VDC*/
+			39 00 00 00 00 00 03 B5 84 00
+			15 00 00 00 00 00 02 6F 05
+			39 00 00 00 00 00 05 B5 7F 4E 17 54
+			/* End of swire setting*/
 			05 00 00 00 00 00 01 35	 /* Set tear on */
 			15 00 00 00 00 00 02 53 20 /* HBM off ,dimming=1frame*/
 			/* Spec calls for 51 06 40 0F FF*/
@@ -204,6 +209,11 @@ qcom,mdss-dsi-display-timings {
 			39 00 00 00 00 00 04 C0 00 00 00
 			15 00 00 00 00 00 02 26 01
 			/* Done with frame rate setting */
+			/* Swire setting AVDD=7.6VDC, ELVDD=4.6VDC ELVSS=-4.2VDC*/
+			39 00 00 00 00 00 03 B5 84 00
+			15 00 00 00 00 00 02 6F 05
+			39 00 00 00 00 00 05 B5 7F 4E 17 54
+			/* End of swire setting*/
 			05 00 00 00 00 00 01 35	 /* Set tear on */
 			15 00 00 00 00 00 02 53 20 /* HBM off ,dimming=1frame*/
 			/* Spec calls for 51 06 40 0F FF*/
