@@ -128,8 +128,6 @@
 		synaptics,ubl-i2c-addr = <0x4b>;
 		synaptics,pwr-reg-name = "pm8150_l13";
 		synaptics,bus-reg-name = "pm8150_l17";
-		synaptics,x-flip;
-		synaptics,y-flip;
 		pinctrl-names = "default";
 		pinctrl-0 = <&touch_int_active>;
 	};
