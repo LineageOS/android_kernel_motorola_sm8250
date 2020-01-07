@@ -2,7 +2,6 @@
 /*
  * Copyright (c) 2016-2020, The Linux Foundation. All rights reserved.
  */
-
 #include <linux/clk.h>
 #include <linux/delay.h>
 #include <linux/gpio.h>
@@ -185,6 +184,7 @@ struct msm_asoc_mach_data {
 	int usbc_en2_gpio; /* used by gpio driver API */
 	int lito_v2_enabled;
 	int cirrus_prince_devs;
+	int awinic_aw88258_devs;
 	bool pmic_audio_clk;
 	struct clk *ref_clk;
 	struct device_node *dmic01_gpio_p; /* used by pinctrl API */
@@ -5799,6 +5799,16 @@ static struct snd_soc_pcm_stream cirrus_amp_params[] = {
 };
 #endif
 
+static struct snd_soc_pcm_stream awinic_amp_params[] = {
+	{
+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+		.rate_min = 48000,
+		.rate_max = 48000,
+		.channels_min = 1,
+		.channels_max = 1,  /* 2 channels for 1.536MHz SCLK */
+	},
+};
+
 #ifdef CONFIG_SND_SOC_CS47l35
 
 #define MADERA_CODEC_NAME "cs47l35-codec"
@@ -6740,6 +6750,24 @@ static struct snd_soc_dai_link msm_madera_stereo_prince_dai_links[] = {
 		.ignore_suspend = 1,
 		.params = &cirrus_amp_params[0],
 		.num_params = ARRAY_SIZE(cirrus_amp_params),
+	},
+};
+
+static struct snd_soc_dai_link msm_madera_aw88258_dai_links[] = {
+	{ /* codec to amp link */
+		.name = "CODEC-AMP-SPK",
+		.stream_name = "CODEC-AMP-SPK Playback",
+		.cpu_name = MADERA_CODEC_NAME,
+		.cpu_dai_name = MADERA_CPU_DAI_NAME,
+		.codec_name = "aw882xx_smartpa.1-0034",
+		.codec_dai_name = "aw882xx-aif",
+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+			SND_SOC_DAIFMT_CBS_CFS,
+		.no_pcm = 1,
+		.ignore_pmdown_time = 1,
+		.ignore_suspend = 1,
+		.params = &awinic_amp_params[0],
+		.num_params = ARRAY_SIZE(awinic_amp_params),
 	},
 };
 
@@ -7835,6 +7863,7 @@ static struct snd_soc_dai_link msm_madera_dai_links[
 			ARRAY_SIZE(msm_common_be_dai_links) +
 			ARRAY_SIZE(msm_mi2s_be_dai_links) +
 			ARRAY_SIZE(msm_madera_stereo_prince_dai_links) +
+			ARRAY_SIZE(msm_madera_aw88258_dai_links) +
 			ARRAY_SIZE(msm_auxpcm_be_dai_links) +
 			ARRAY_SIZE(ext_disp_be_dai_link) +
 			ARRAY_SIZE(msm_wcn_be_dai_links) +
@@ -8121,6 +8150,21 @@ static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev,
 					sizeof(msm_madera_stereo_prince_dai_links));
 				total_links +=
 					ARRAY_SIZE(msm_madera_stereo_prince_dai_links);
+			}
+		}
+
+		rc = of_property_read_u32(dev->of_node,
+				   "awinic,aw88258-max-devs", &pdata->awinic_aw88258_devs);
+		if (rc) {
+			dev_dbg(dev, "%s: No DT match awinic max devs interface\n",
+					__func__);
+		} else {
+			if (pdata->awinic_aw88258_devs == 1) {
+				memcpy(msm_madera_dai_links + total_links,
+					msm_madera_aw88258_dai_links,
+					sizeof(msm_madera_aw88258_dai_links));
+				total_links +=
+					ARRAY_SIZE(msm_madera_aw88258_dai_links);
 			}
 		}
 
