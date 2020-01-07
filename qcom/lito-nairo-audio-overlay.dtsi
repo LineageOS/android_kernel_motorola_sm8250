@@ -23,6 +23,30 @@
 			bias-pull-up;
 		};
 	};
+	aw882xx_reset_default: aw882xx_reset_default {
+		mux {
+			pins = "gpio71";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio71";
+			drive-strength = <2>; /* 2 MA */
+			bias-pull-up;
+			output-high;
+		};
+	};
+
+	aw882xx_irq_default: aw882xx_irq_default {
+		mux {
+			pins = "gpio56";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio56";
+			drive-strength = <2>; /* 2 MA */
+			bias-pull-up;
+		};
+	};
 };
 
 &L3C {
@@ -41,6 +65,24 @@
 		compatible = "mmi,aov-trigger";
 		status = "ok";
 	};
+};
+
+&qupv3_se9_i2c {
+        status = "ok";
+
+        aw882xx:aw882xx_smartpa@34 {
+                compatible = "awinic,aw882xx_smartpa";
+                reg = <0x34>;
+
+                pinctrl-names = "default";
+                pinctrl-0 = <&aw882xx_irq_default>, <&aw882xx_reset_default>;
+
+                reset-gpio = <&tlmm 71 0>;
+                irq-gpio = <&tlmm 56 0x2008>;
+                monitor-flag = <1>;
+                monitor-timer-val = <3000>;
+                status = "okay";
+        };
 };
 
 &pm8150_gpios {
@@ -399,5 +441,6 @@
 		asoc-codec-names = "msm-stub-codec.1",
 				"msm-ext-disp-audio-codec-rx",
 				"cs47l35-codec";
+		awinic,aw88258-max-devs = <1>;
 	};
 };
