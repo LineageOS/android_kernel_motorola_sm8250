@@ -13,13 +13,23 @@
 		label = "gpio-keys";
 
 		pinctrl-names = "default";
-		pinctrl-0 = <&key_vol_up_default>;
+		pinctrl-0 = <&key_vol_up_default &google_key_default>;
 
 		vol_up {
 			label = "volume_up";
 			gpios = <&pm8150l_gpios 5 GPIO_ACTIVE_LOW>;
 			linux,input-type = <1>;
 			linux,code = <KEY_VOLUMEUP>;
+			gpio-key,wakeup;
+			debounce-interval = <15>;
+			linux,can-disable;
+		};
+
+		google_key {
+			label = "google_key";
+			gpios = <&tlmm 26 GPIO_ACTIVE_LOW>;
+			linux,input-type = <1>;
+			linux,code = <KEY_HOME>;
 			gpio-key,wakeup;
 			debounce-interval = <15>;
 			linux,can-disable;
@@ -110,6 +120,19 @@
 			drive-strength = <2>; /* 2 MA */
 			bias-disable;
 			output-low;
+		};
+	};
+
+	google_key_default: google_key_default {
+		mux {
+			pins = "gpio26";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio26";
+			drive-strength = <2>;
+			bias-pull-up;
 		};
 	};
 };
