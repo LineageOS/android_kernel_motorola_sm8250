@@ -6018,6 +6018,7 @@ static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
 	snd_soc_dapm_ignore_suspend(dapm, "DSP2 Trigger Out");
 	snd_soc_dapm_ignore_suspend(dapm, "DSP3 Trigger Out");
 	snd_soc_dapm_ignore_suspend(dapm, "AIF1 Capture");
+	snd_soc_dapm_ignore_suspend(dapm, "AIF1 Playback");
 
 	snd_soc_dapm_sync(dapm);
 	snd_soc_dapm_force_enable_pin(dapm, "SYSCLK");
@@ -6094,7 +6095,10 @@ static int cirrus_amp_init(struct snd_soc_pcm_runtime *rtd)
 			dev_err(codec_component->dev, "Failed to add audio routes %d\n", ret);
 			return ret;
 		}
+		snd_soc_dapm_ignore_suspend(dapm, "RCV SPK");
 		snd_soc_dapm_ignore_suspend(dapm, "RCV AMP Playback");
+		snd_soc_dapm_ignore_suspend(dapm, "RCV VMON ADC");
+		snd_soc_dapm_ignore_suspend(dapm, "RCV AMP Capture");
 	} else if (!strcmp("SPK", name_prefix)) {
 		ret = snd_soc_dapm_add_routes(codec_dapm, cs35l41_spk_audio_paths,
 				ARRAY_SIZE(cs35l41_spk_audio_paths));
@@ -6102,7 +6106,10 @@ static int cirrus_amp_init(struct snd_soc_pcm_runtime *rtd)
 			dev_err(codec_component->dev, "Failed to add audio routes %d\n", ret);
 			return ret;
 		}
+		snd_soc_dapm_ignore_suspend(dapm, "SPK SPK");
 		snd_soc_dapm_ignore_suspend(dapm, "SPK AMP Playback");
+		snd_soc_dapm_ignore_suspend(dapm, "SPK VMON ADC");
+		snd_soc_dapm_ignore_suspend(dapm, "SPK AMP Capture");
 	}
 
 	snd_soc_dapm_sync(dapm);
