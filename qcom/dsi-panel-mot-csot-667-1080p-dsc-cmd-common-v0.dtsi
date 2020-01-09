@@ -16,9 +16,8 @@ qcom,mdss-dsi-panel-supplier = "csot";
 qcom,mdss-dsi-panel-type = "dsi_cmd_mode";
 qcom,mdss-dsi-virtual-channel-id = <0>;
 qcom,mdss-dsi-stream = <0>;
-/* Need to fix with and height */
-qcom,mdss-pan-physical-width-dimension = <68>;
-qcom,mdss-pan-physical-height-dimension = <147>;
+qcom,mdss-pan-physical-width-dimension = <69>;
+qcom,mdss-pan-physical-height-dimension = <154>;
 qcom,mdss-dsi-bpp = <30>;
 qcom,mdss-dsi-underflow-color = <0xff>;
 qcom,mdss-dsi-border-color = <0>;
@@ -106,7 +105,7 @@ qcom,mdss-dsi-display-timings {
 			/*GPO0=TE, GPO1=ALL MIPI error, GPO2=TSP_HTE, GPO3=TSP_CTE*/
 			39 00 00 00 00 00 06 BE 0E 91 94 13 1F
 			/* Framne rate = 90hz */
-			15 00 00 00 00 00 02 B2 01 /* backlight fix */
+			15 00 00 00 00 00 02 B2 00 /* backlight fix */
 			15 00 00 00 00 00 02 6F 0E
 			15 00 00 00 00 00 02 BA 18
 			15 00 00 00 00 00 02 6F 03
