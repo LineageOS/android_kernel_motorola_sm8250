@@ -276,10 +276,10 @@
 	qcom,platform-reset-gpio = <&tlmm 75 0>;
 
 	qcom,mdss-dsi-panel-hdr-enabled;
-	qcom,mdss-dsi-panel-hdr-color-primaries = <14950 14900 31850
-	        16650 14900 29650 7550 2500>;
+	qcom,mdss-dsi-panel-hdr-color-primaries = <14950 15800 34065
+		15890 13475 35235 6690 2885>;
 	qcom,mdss-dsi-panel-peak-brightness = <4200000>;
-	qcom,mdss-dsi-panel-blackness-level = <3230>;
+	qcom,mdss-dsi-panel-blackness-level = <2730>;
 	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
 	qcom,mdss-dsi-display-timings {
 		timing@0 {
@@ -298,10 +298,10 @@
 	qcom,platform-reset-gpio = <&tlmm 75 0>;
 
 	qcom,mdss-dsi-panel-hdr-enabled;
-	qcom,mdss-dsi-panel-hdr-color-primaries = <14950 14900 31850
-	        16650 14900 29650 7550 2500>;
+	qcom,mdss-dsi-panel-hdr-color-primaries = <14950 15800 34065
+		15890 13475 35235 6690 2885>;
 	qcom,mdss-dsi-panel-peak-brightness = <4200000>;
-	qcom,mdss-dsi-panel-blackness-level = <3230>;
+	qcom,mdss-dsi-panel-blackness-level = <2730>;
 	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
 	qcom,mdss-dsi-display-timings {
 		timing@0 {
