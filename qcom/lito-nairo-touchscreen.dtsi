@@ -68,12 +68,42 @@
 	};
 };
 
+&qupv3_se7_spi_pins {
+	qupv3_se7_spi_sleep: qupv3_se7_spi_sleep {
+		mux {
+			pins = "gpio6", "gpio7", "gpio8";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio6", "gpio7", "gpio8";
+			drive-strength = <6>;
+			bias-disable;
+		};
+	};
+
+
+	qupv3_se7_spi_cs_sleep: qupv3_se7_spi_cs_sleep {
+		mux {
+			pins = "gpio9";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio9";
+			drive-strength = <6>;
+			bias-pull-up;
+		};
+	};
+};
+
 &qupv3_se7_i2c {
 	status = "disabled";
 };
 
 &qupv3_se7_spi {
 	status = "ok";
+	pinctrl-1 = <&qupv3_se7_spi_sleep &qupv3_se7_spi_cs_sleep>;
 	focaltech@0 {
 		compatible = "focaltech,fts";
 		reg = <0x0>;
@@ -95,5 +125,17 @@
 		focaltech,dlfw_in_resume;
 		focaltech,report_gesture_key;
 		status = "/chosen", "mmi,panel_name", "tm_ft8756_636_1080x2300_vid";
+	};
+
+	novatek@0 {
+		compatible = "novatek,NVT-ts-spi";
+		reg = <0x0>;
+		spi-max-frequency = <9600000>;  /* 4800000,9600000,15000000,19200000 */
+		novatek,reset-gpio = <&tlmm 55 0x00>;
+		novatek,irq-gpio = <&tlmm 11 0x2001>;
+		novatek,def-max-resolution = <1080 2340>;
+		novatek,swrst-n8-addr = <0x03F0FE>;
+		novatek,spi-rd-fast-addr = <0x03F310>;
+		status = "/chosen", "mmi,panel_name", "tianma_nt36672c_1080x2520_670_dsc_vid";
 	};
 };
