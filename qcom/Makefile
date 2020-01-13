@@ -11,7 +11,8 @@ dtbo-$(CONFIG_ARCH_KONA) += \
 		kona-burton-evt1-overlay.dtbo \
 		kona-burton-dvt1-overlay.dtbo \
 		kona-burton-dvt1c-overlay.dtbo \
-                kona-burton-dvt2a-overlay.dtbo
+                kona-burton-dvt2a-overlay.dtbo \
+                kona-burton-pvt-overlay.dtbo
 
 kona-savannah-evt1-overlay.dtbo-base := kona-moto-base.dtb
 kona-savannah-evt2-overlay.dtbo-base := kona-moto-base-v2.dtb
@@ -19,6 +20,7 @@ kona-burton-evt1-overlay.dtbo-base   := kona-moto-base-v2.dtb
 kona-burton-dvt1-overlay.dtbo-base   := kona-moto-base-v2.dtb
 kona-burton-dvt1c-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
 kona-burton-dvt2a-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
+kona-burton-pvt-overlay.dtbo-base := kona-moto-base-v2.1.dtb
 else
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
         dtbo-$(CONFIG_ARCH_KONA) += \
