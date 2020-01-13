@@ -593,6 +593,12 @@
 	};
 };
 
+&pm8150_l13 {
+	regulator-min-microvolt = <3304000>;
+	regulator-max-microvolt = <3304000>;
+	qcom,init-voltage = <3304000>;
+};
+
 &qupv3_se13_i2c {
 	status = "okay";
 
