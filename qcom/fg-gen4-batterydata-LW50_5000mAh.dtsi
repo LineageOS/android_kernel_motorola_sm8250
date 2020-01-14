@@ -3,6 +3,7 @@ qcom,4275474_moto_lw50_5000mah_averaged_masterslave_nov25th2019 {
 	qcom,profile-revision = <24>;
 	/* #4275474_Moto_LW50_5000mAh_averaged_MasterSlave_Nov25th2019*/
 	qcom,max-voltage-uv = <4450000>;
+	qcom,fastchg-current-ma = <3600>;
 	qcom,fg-cc-cv-threshold-mv = <4440>;
 	qcom,nom-batt-capacity-mah = <5000>;
 	qcom,batt-id-kohm = <120>;
