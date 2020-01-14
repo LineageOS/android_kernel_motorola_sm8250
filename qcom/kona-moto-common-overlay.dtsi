@@ -192,6 +192,7 @@
 	qcom,wls-current-max-ua = <1300000>;
 	qcom,typec-legacy-rp-icl;
 	qcom,lpd-disable;
+	qcom,disable-suspend-on-collapse;
 };
 
 &spmi_bus {
