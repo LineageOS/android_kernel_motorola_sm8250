@@ -1,3 +1,4 @@
+#include <dt-bindings/regulator/qcom,rpmh-regulator-levels.h>
 &tlmm {
 	ets {
 		ets_int_active: ets_int_active {
@@ -90,6 +91,13 @@
 			};
 		};
 	};
+};
+
+&pm8150_l13 {
+	regulator-always-on;
+	qcom,init-voltage = <3304000>;
+	regulator-min-microvolt = <3304000>;
+	qcom,init-mode = <RPMH_REGULATOR_MODE_HPM>;
 };
 
 &soc {
