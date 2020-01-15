@@ -1,0 +1,210 @@
+#include <dt-bindings/clock/qcom,camcc-lito.h>
+
+&tlmm {
+	cam_sensor_mclk0_active: cam_sensor_mclk0_active {
+		/* MCLK0 */
+		mux {
+			pins = "gpio13";
+			function = "cam_mclk";
+		};
+
+		config {
+			pins = "gpio13";
+			bias-disable; /* No PULL */
+			drive-strength = <2>; /* 2 MA */
+		};
+	};
+
+	cam_sensor_mclk0_suspend: cam_sensor_mclk0_suspend {
+		/* MCLK0 */
+		mux {
+			pins = "gpio13";
+			function = "cam_mclk";
+		};
+
+		config {
+			pins = "gpio13";
+			bias-pull-down; /* PULL DOWN */
+			drive-strength = <2>; /* 2 MA */
+		};
+	};
+
+	cam_sensor_mclk1_active: cam_sensor_mclk1_active {
+		/* MCLK1 */
+		mux {
+			pins = "gpio14";
+			function = "cam_mclk";
+		};
+
+		config {
+			pins = "gpio14";
+			bias-disable; /* No PULL */
+			drive-strength = <2>; /* 2 MA */
+		};
+	};
+
+	cam_sensor_mclk1_suspend: cam_sensor_mclk1_suspend {
+		/* MCLK1 */
+		mux {
+			pins = "gpio14";
+			function = "cam_mclk";
+		};
+
+		config {
+			pins = "gpio14";
+			bias-pull-down; /* PULL DOWN */
+			drive-strength = <2>; /* 2 MA */
+		};
+	};
+
+	cam_sensor_mclk2_active: cam_sensor_mclk2_active {
+		/* MCLK2 */
+		mux {
+			pins = "gpio15";
+			function = "cam_mclk";
+		};
+
+		config {
+			pins = "gpio15";
+			bias-disable; /* No PULL */
+			drive-strength = <2>; /* 2 MA */
+		};
+	};
+
+	cam_sensor_mclk2_suspend: cam_sensor_mclk2_suspend {
+		/* MCLK2 */
+		mux {
+			pins = "gpio15";
+			function = "cam_mclk";
+		};
+
+		config {
+			pins = "gpio15";
+			bias-pull-down; /* PULL DOWN */
+			drive-strength = <2>; /* 2 MA */
+		};
+	};
+
+	cam_sensor_mclk3_active: cam_sensor_mclk3_active {
+		/* MCLK3 */
+		mux {
+			pins = "gpio16";
+			function = "cam_mclk";
+		};
+
+		config {
+			pins = "gpio16";
+			bias-disable; /* No PULL */
+			drive-strength = <2>; /* 2 MA */
+		};
+	};
+
+	cam_sensor_mclk3_suspend: cam_sensor_mclk3_suspend {
+		/* MCLK3 */
+		mux {
+			pins = "gpio16";
+			function = "cam_mclk";
+		};
+
+		config {
+			pins = "gpio16";
+			bias-pull-down; /* PULL DOWN */
+			drive-strength = <2>; /* 2 MA */
+		};
+	};
+
+	cam_sensor_mclk4_active: cam_sensor_mclk4_active {
+		/* MCLK4 */
+		mux {
+			pins = "gpio25";
+			function = "cam_mclk";
+		};
+
+		config {
+			pins = "gpio25";
+			bias-disable; /* No PULL */
+			drive-strength = <2>; /* 2 MA */
+		};
+	};
+
+	cam_sensor_mclk4_suspend: cam_sensor_mclk4_suspend {
+		/* MCLK4 */
+		mux {
+			pins = "gpio25";
+			function = "cam_mclk";
+		};
+
+		config {
+			pins = "gpio25";
+			bias-pull-down; /* PULL DOWN */
+			drive-strength = <2>; /* 2 MA */
+		};
+	};
+};
+&pm8150l_gpios {
+	rear_main_camera_reset_en {
+		rear_main_camera_reset_en_active: rear_main_camera_reset_en_active {
+			pins = "gpio6";
+			function = "normal";
+			qcom,drive-strength = <2>;
+			power-source = <0>;
+			bias-disable;
+			output-enable;
+		};
+		rear_main_camera_reset_en_suspend: rear_main_camera_reset_en_suspend {
+			pins = "gpio6";
+			function = "normal";
+			qcom,drive-strength = <2>;
+			power-source = <0>;
+			bias-pull-down;
+			output-low;
+		};
+	};
+};
+
+&cam_cci0 {
+	qcom,cam-sensor@0 {	//rear main GM1
+		cell-index = <0>;
+		compatible = "qcom,cam-sensor";
+		reg = <0x0>;
+		csiphy-sd-index = <2>;
+		sensor-position-roll = <90>;
+		sensor-position-pitch = <0>;
+		sensor-position-yaw = <180>;
+		//eeprom-src = <&eeprom_rear_main>;
+		//led-flash-src = <&led_flash_rear>;
+		//actuator-src = <&actuator_rear>;
+		cam_vio-supply = <&cam_iovdd_ldo>;
+		cam_vana-supply = <&cam_main_front_avdd_ldo>;
+		cam_vdig-supply = <&cam_main_front_dvdd_ldo>;
+		cam_clk-supply = <&titan_top_gdsc>;
+		regulator-names = "cam_vio", "cam_vana", "cam_vdig",
+			"cam_clk";
+		rgltr-cntrl-support;
+		rgltr-min-voltage = <1800000 2800000 1050000 0>;
+		rgltr-max-voltage = <1800000 2800000 1050000 0>;
+		rgltr-load-current = <0 80000 105000 0>;
+		gpio-no-mux = <0>;
+		pinctrl-names = "cam_default", "cam_suspend";
+		pinctrl-0 = <&cam_sensor_mclk2_active
+				&rear_main_camera_reset_en_active>;
+		pinctrl-1 = <&cam_sensor_mclk2_suspend
+				&rear_main_camera_reset_en_suspend>;
+		gpios = <&tlmm 15 0>,
+			<&pm8150l_gpios 6 0>;
+		gpio-reset = <1>;
+		gpio-req-tbl-num = <0 1>;
+		gpio-req-tbl-flags = <1 0>;
+		gpio-req-tbl-label = "CAMIF_MCLK2",
+					"CAM_RESET2";
+		cci-device = <0>;
+		cci-master = <0>;
+		status = "ok";
+		clocks = <&camcc CAM_CC_MCLK2_CLK>;
+		clock-names = "cam_clk";
+		clock-cntl-level = "turbo";
+		clock-rates = <24000000>;
+	};
+};
+
+
