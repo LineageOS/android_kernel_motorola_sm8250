@@ -19,7 +19,7 @@
 #include "lito-moto-nairobi-display.dtsi"
 #include "lito-nairo-touchscreen.dtsi"
 #include "lito-nairo-fingerprint.dtsi"
-
+#include "camera/lito-camera-sensor-mot-nairo-overlay.dtsi"
 #include "lito-nairo-audio-overlay.dtsi"
 #include "lito-nairo-sensor-overlay.dtsi"
 #include "lito-nairo-thermal.dtsi"
