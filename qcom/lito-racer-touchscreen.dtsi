@@ -96,7 +96,6 @@
 		status = "/chosen", "mmi,panel_name","contains","csot_lsi","boe_lsi";
 		compatible = "sec,sec_ts";
 		reg = <0x48>;
-		sec,vioen_gpio = <&tlmm 56 1>;
 		sec,rst_gpio = <&tlmm 8 0>;
 		sec,irq_gpio = <&tlmm 9 0>;
 		sec,irq_type = <0x2008>; /*IRQF_TRIGGER_LOW | IRQF_ONESHOT*/
