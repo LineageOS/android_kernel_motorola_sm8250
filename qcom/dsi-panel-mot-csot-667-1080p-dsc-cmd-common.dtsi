@@ -63,10 +63,11 @@ qcom,mdss-dsi-hbm-off-command = [
 
 qcom,mdss-dsi-acl-on-command = [
 		39 01 00 00 00 00 06 F0 55 AA 52 08 00
-		15 01 00 00 00 00 02 B0 0C
+		15 00 00 00 00 00 02 B0 0C
 		15 01 00 00 00 00 02 55 05];
 qcom,mdss-dsi-acl-off-command = [
-		15 01 00 00 00 00 02 55 00];
+		15 00 00 00 00 00 02 55 00
+		15 01 00 00 00 00 02 B0 00];
 
 qcom,mdss-dsi-panel-hbm-is-51cmd;
 
@@ -137,7 +138,8 @@ qcom,mdss-dsi-display-timings {
 			15 00 00 00 00 00 02 03 11 /* Compression mode */
 			05 01 00 00 00 00 01 2C /* Memory write */
 			05 01 00 00 78 00 01 11
-			15 00 00 00 00 00 02 55 00 /* ACL OFF */
+			15 00 00 00 00 00 02 B0 00 /* ACL OFF */
+			15 00 00 00 00 00 02 55 00
 			05 01 00 00 00 00 01 29];  /* display on */
 		qcom,mdss-dsi-off-command = [
 			05 01 00 00 00 00 01 28     /* display_off */
@@ -227,7 +229,8 @@ qcom,mdss-dsi-display-timings {
 			15 00 00 00 00 00 02 03 11 /* Compression mode */
 			05 01 00 00 00 00 01 2C /* Memory write */
 			05 01 00 00 78 00 01 11
-			15 00 00 00 00 00 02 55 00      /* ACL OFF */
+			15 00 00 00 00 00 02 B0 00      /* ACL OFF */
+			15 00 00 00 00 00 02 55 00
 			05 01 00 00 00 00 01 29];	/* display on */
 		qcom,mdss-dsi-off-command = [
 			05 01 00 00 00 00 01 28		/* display_off */
