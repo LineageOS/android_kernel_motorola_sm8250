@@ -332,6 +332,9 @@ static u32 mi2s_ebit_clk[MI2S_MAX] = {
 	Q6AFE_LPASS_CLK_ID_PRI_MI2S_EBIT,
 	Q6AFE_LPASS_CLK_ID_SEC_MI2S_EBIT,
 	Q6AFE_LPASS_CLK_ID_TER_MI2S_EBIT,
+	Q6AFE_LPASS_CLK_ID_QUAD_MI2S_EBIT,
+	Q6AFE_LPASS_CLK_ID_QUI_MI2S_EBIT,
+	Q6AFE_LPASS_CLK_ID_SEN_MI2S_EBIT,
 };
 
 static struct mi2s_conf mi2s_intf_conf[MI2S_MAX];
@@ -5257,7 +5260,13 @@ static int msm_mi2s_snd_startup(struct snd_pcm_substream *substream)
 			goto clk_off;
 		}
 #ifdef CONFIG_SND_SOC_CS47l35
-		ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_CBS_CFS | SND_SOC_DAIFMT_I2S);
+		fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF;
+		if (!mi2s_intf_conf[index].msm_is_mi2s_master)
+			fmt |= SND_SOC_DAIFMT_CBM_CFM;
+		else
+			fmt |= SND_SOC_DAIFMT_CBS_CFS;
+
+		ret = snd_soc_dai_set_fmt(codec_dai, fmt);
 		if (ret < 0) {
 			pr_err("%s: set fmt codec dai failed for MI2S (%d), err:%d\n",
 				__func__, index, ret);
@@ -5939,14 +5948,6 @@ static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
 			SND_SOC_CLOCK_IN);
 	if (ret != 0) {
 		dev_err(component->dev,  "Failed to set DSPCLK %d\n", ret);
-		return ret;
-	}
-
-	ret = snd_soc_component_set_sysclk(component, MADERA_CLK_OPCLK,
-			0, Q6AFE_LPASS_OSR_CLK_12_P288_MHZ,
-			SND_SOC_CLOCK_OUT);
-	if (ret != 0) {
-		dev_err(component->dev, "Failed to set OPCLK %d\n", ret);
 		return ret;
 	}
 
@@ -7316,6 +7317,8 @@ static struct snd_soc_dai_link msm_mi2s_be_dai_links[] = {
 #ifdef CONFIG_SND_SOC_CS47l35
 		.codec_name = MADERA_CODEC_NAME,
 		.codec_dai_name = MADERA_CODEC_AIF3_NAME,
+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+			SND_SOC_DAIFMT_CBS_CFS,
 #else
 		.codec_name = "msm-stub-codec.1",
 		.codec_dai_name = "msm-stub-rx",
@@ -7336,6 +7339,8 @@ static struct snd_soc_dai_link msm_mi2s_be_dai_links[] = {
 #ifdef CONFIG_SND_SOC_CS47l35
 		.codec_name = MADERA_CODEC_NAME,
 		.codec_dai_name = MADERA_CODEC_AIF3_NAME,
+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+			SND_SOC_DAIFMT_CBS_CFS,
 #else
 		.codec_name = "msm-stub-codec.1",
 		.codec_dai_name = "msm-stub-tx",
@@ -7443,6 +7448,8 @@ static struct snd_soc_dai_link msm_mi2s_be_dai_links[] = {
 		.codec_name = MADERA_CODEC_NAME,
 		.codec_dai_name = MADERA_CODEC_DAI_NAME,
 		.init = &cirrus_codec_init,
+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+			SND_SOC_DAIFMT_CBS_CFS,
 #else
 		.codec_name = "msm-stub-codec.1",
 		.codec_dai_name = "msm-stub-rx",
@@ -7463,6 +7470,8 @@ static struct snd_soc_dai_link msm_mi2s_be_dai_links[] = {
 #ifdef CONFIG_SND_SOC_CS47l35
 		.codec_name = MADERA_CODEC_NAME,
 		.codec_dai_name = MADERA_CODEC_DAI_NAME,
+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+			SND_SOC_DAIFMT_CBS_CFS,
 #else
 		.codec_name = "msm-stub-codec.1",
 		.codec_dai_name = "msm-stub-tx",
@@ -9272,7 +9281,6 @@ static int msm_asoc_machine_probe(struct platform_device *pdev)
 	if (!pdata->fsa_handle)
 		dev_dbg(&pdev->dev, "property %s not detected in node %s\n",
 			"fsa4480-i2c-handle", pdev->dev.of_node->full_name);
-
 	msm_i2s_auxpcm_init(pdev);
 	pdata->dmic01_gpio_p = of_parse_phandle(pdev->dev.of_node,
 					      "qcom,cdc-dmic01-gpios",
