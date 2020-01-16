@@ -258,6 +258,9 @@
 		DCVDD-supply = <&L3C>;
 		SPKVDD-supply = <&dummy_vreg>;
 
+		clocks = <&rpmhcc RPMH_LN_BB_CLK2>;
+		clock-names = "ref_clk";
+
 		gpio-controller;
 		#gpio-cells = <2>;
 
@@ -536,7 +539,8 @@
 		compatible = "qcom,kona-asoc-snd-madera";
 		qcom,model = "kona-madera-snd-card";
 		qcom,mi2s-audio-intf = <1>;
-		qcom,msm-mi2s-master = <1>, <1>, <1>, <1>, <1>, <1>;
+		qcom,msm-mi2s-master = <1>, <0>, <1>, <1>, <1>, <0>;
+		cirrus,pmic-audio-clk;
 		qcom,auxpcm-audio-intf = <1>;
 		qcom,wcn-btfm = <1>;
 		qcom,afe-rxtx-lb = <0>;
