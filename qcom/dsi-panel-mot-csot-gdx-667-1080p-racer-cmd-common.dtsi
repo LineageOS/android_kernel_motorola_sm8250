@@ -11,7 +11,7 @@
  */
 
 compatible = "qcom,mdss-dsi-panel";
-qcom,mdss-dsi-panel-name = "mipi_mot_cmd_csot_1080p_dsc_667";
+qcom,mdss-dsi-panel-name = "mipi_mot_cmd_csot_1080p_667";
 qcom,mdss-dsi-panel-supplier = "csot";
 qcom,mdss-dsi-panel-type = "dsi_cmd_mode";
 qcom,mdss-dsi-virtual-channel-id = <0>;
