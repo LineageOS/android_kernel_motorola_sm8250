@@ -17,8 +17,8 @@ qcom,mdss-dsi-panel-type = "dsi_cmd_mode";
 qcom,mdss-dsi-virtual-channel-id = <0>;
 qcom,mdss-dsi-stream = <0>;
 /* Need to fix with and height */
-qcom,mdss-pan-physical-width-dimension = <68>;
-qcom,mdss-pan-physical-height-dimension = <147>;
+qcom,mdss-pan-physical-width-dimension = <69>;
+qcom,mdss-pan-physical-height-dimension = <154>;
 qcom,mdss-dsi-bpp = <24>;
 qcom,mdss-dsi-underflow-color = <0xff>;
 qcom,mdss-dsi-border-color = <0>;
@@ -174,7 +174,7 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsi-h-right-border = <0>;
 		qcom,mdss-dsi-v-top-border = <0>;
 		qcom,mdss-dsi-v-bottom-border = <0>;
-		qcom,mdss-dsi-panel-jitter = <0x20 0xa>; /* 90fps +/- 2 */
+		qcom,mdss-dsi-panel-jitter = <0x15 0xa>; /* 90fps +/- 2 */
 		qcom,mdss-dsi-timing-switch-command = [
 			39 01 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0 */
 			15 01 00 00 00 00 02 6F 0E
