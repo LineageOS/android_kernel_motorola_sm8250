@@ -40,3 +40,8 @@
 		Semtech,button-flag = <0x07>;
 	};
 };
+
+&cs35l41_spk {
+	interrupts = <138 IRQ_TYPE_LEVEL_LOW>;
+	interrupt-names = "prince_irq";
+};

@@ -19,14 +19,9 @@
 	model = "Burton";
 	compatible = "qcom,kona-burton", "qcom,kona-moto", "qcom,kona";
 	qcom,msm-id = <356 0x20001>;
-	qcom,board-id = <0 0xB2A0>;
+	qcom,board-id = <0 0xB2B0>;
 };
 
 /*
- * Burton HW rev DVT2A specific changes go here
+ * Burton HW rev DVT2B specific changes go here
  */
-
-&cs35l41_spk {
-	interrupts = <138 IRQ_TYPE_LEVEL_LOW>;
-	interrupt-names = "prince_irq";
-};
