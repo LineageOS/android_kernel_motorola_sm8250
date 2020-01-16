@@ -1102,3 +1102,8 @@
 &usb1 {
 	status = "disabled";
 };
+
+&pm8150b_pdphy{
+	qcom,default-sink-caps = <5000 3000>, /* 5V @ 3A */
+				 <9000 3000>; /* 9V @ 3A */
+};
