@@ -238,6 +238,18 @@ sound_madera: sound-madera {
 		};
 	};
 
+	prince_spk_irq_default: prince_spk_irq_default {
+		mux {
+			pins = "gpio137";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio137";
+			drive-strength = <2>; /* 2 MA */
+			bias-pull-up;
+		};
+	};
+
 	qupv3_se2_spi_pins: qupv3_se2_spi_pins {
 		qupv3_se2_spi_active: qupv3_se2_spi_active {
 			mux {
@@ -373,18 +385,6 @@ sound_madera: sound-madera {
 			drive-strength = <2>; /* 2 MA */
 			bias-pull-up;
 			output-high;
-		};
-	};
-
-	prince_spk_irq_default: prince_spk_irq_default {
-		mux {
-			pins = "gpio11";
-			function = "gpio";
-		};
-		config {
-			pins = "gpio11";
-			drive-strength = <2>; /* 2 MA */
-			bias-pull-up;
 		};
 	};
 };
@@ -620,10 +620,10 @@ sound_madera: sound-madera {
 		reg = <0x40>;
 		reset-gpios = <&lpi_tlmm 10 0>;
 		interrupt-parent = <&tlmm>;
-		interrupts = <138 IRQ_TYPE_LEVEL_LOW>;
+		interrupts = <137 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-controller;
 		#interrupt-cells = <2>;
-		interrupt-names = "prince_irq";
+		interrupt-names = "prince_spk_irq";
 
 		VA-supply = <&pm8150_s4>;
 		VP-supply = <&pm8150_s4>;
