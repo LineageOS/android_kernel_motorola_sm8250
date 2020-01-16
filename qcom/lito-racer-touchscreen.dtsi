@@ -100,6 +100,7 @@
 		sec,irq_gpio = <&tlmm 9 0>;
 		sec,irq_type = <0x2008>; /*IRQF_TRIGGER_LOW | IRQF_ONESHOT*/
 		sec,max_coords = <1080 2340>;
+		sec,max_finger_size = <30 30>;
 		/* touchscreen_mmi class entries */
 		mmi,refresh-rate-update;
 		mmi,enable-gestures;
