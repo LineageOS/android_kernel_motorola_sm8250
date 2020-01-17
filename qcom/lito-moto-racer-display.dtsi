@@ -169,10 +169,10 @@
 			qcom,display-topology = <2 2 1>;
 			qcom,default-topology-index = <0>;
 		};
-		timing@1 {
+		/*timing@1 {
 			qcom,display-topology = <2 2 1>;
 			qcom,default-topology-index = <0>;
-		};
+		};*/
 	};
 };
 
