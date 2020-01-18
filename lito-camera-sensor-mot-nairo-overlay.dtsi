@@ -162,6 +162,43 @@
 	};
 };
 
+&soc {
+	led_flash_rear: qcom,camera-flash@0 {
+		cell-index = <0>;
+		reg = <0x00 0x00>;
+		compatible = "qcom,camera-flash";
+		flash-source = <&pm8150l_flash0 &pm8150l_flash1>;
+		torch-source = <&pm8150l_torch0 &pm8150l_torch1>;
+		switch-source = <&pm8150l_switch2>;
+		status = "ok";
+	};
+
+	led_flash_wide: qcom,camera-flash@1 {
+		cell-index = <1>;
+		reg = <0x01 0x00>;
+		compatible = "qcom,camera-flash";
+		flash-source = <&pm8150l_flash0 &pm8150l_flash1>;
+		torch-source = <&pm8150l_torch0 &pm8150l_torch1>;
+		switch-source = <&pm8150l_switch2>;
+		status = "ok";
+	};
+
+	led_flash_tele: qcom,camera-flash@2 {
+		cell-index = <2>;
+		reg = <0x02 0x00>;
+		compatible = "qcom,camera-flash";
+		flash-source = <&pm8150l_flash0 &pm8150l_flash1>;
+		torch-source = <&pm8150l_torch0 &pm8150l_torch1>;
+		switch-source = <&pm8150l_switch2>;
+		status = "ok";
+	};
+
+	qcom,cam-res-mgr {
+		compatible = "qcom,cam-res-mgr";
+		status = "ok";
+	};
+};
+
 &cam_cci0 {
 	qcom,cam-sensor@0 {	//rear main GM1
 		cell-index = <0>;
@@ -172,7 +209,7 @@
 		sensor-position-pitch = <0>;
 		sensor-position-yaw = <180>;
 		//eeprom-src = <&eeprom_rear_main>;
-		//led-flash-src = <&led_flash_rear>;
+		led-flash-src = <&led_flash_rear>;
 		//actuator-src = <&actuator_rear>;
 		cam_vio-supply = <&cam_iovdd_ldo>;
 		cam_vana-supply = <&cam_main_front_avdd_ldo>;
