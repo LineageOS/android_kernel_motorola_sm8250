@@ -20,6 +20,13 @@
 		qcom,mdss-dsi-mdp-trigger = "none";
 		qcom,mdss-dsi-reset-sequence = <1 10>, <0 1>, <1 10>;
 
+		qcom,mdss-dsi-cabc-mv-command = [15 01 00 00 00 00 02 55 03];
+		qcom,mdss-dsi-cabc-mv-command-state =  "dsi_lp_mode";
+		qcom,mdss-dsi-cabc-ui-command = [15 01 00 00 00 00 02 55 01];
+		qcom,mdss-dsi-cabc-ui-command-state =  "dsi_lp_mode";
+		qcom,mdss-dsi-cabc-dis-command = [15 01 00 00 00 00 02 55 00];
+		qcom,mdss-dsi-cabc-dis-command-state =  "dsi_lp_mode";
+
 		qcom,mdss-dsi-display-timings {
 			timing@0 {
 				qcom,mdss-dsi-panel-width = <1080>;
