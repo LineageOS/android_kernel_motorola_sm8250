@@ -138,7 +138,7 @@ qcom,mdss-dsi-display-timings {
 			15 00 00 00 00 00 02 90 01  /* Compression method selection*/
 			15 00 00 00 00 00 02 03 11 /* Compression mode */
 			05 01 00 00 00 00 01 2C /* Memory write */
-			05 01 00 00 78 00 01 11
+			05 01 00 00 64 00 01 11
 			15 00 00 00 00 00 02 55 00 /* ACL OFF */
 			05 01 00 00 00 00 01 29];  /* display on */
 		qcom,mdss-dsi-off-command = [
@@ -227,7 +227,7 @@ qcom,mdss-dsi-display-timings {
 			15 00 00 00 00 00 02 90 01  /* Compression method selection*/
 			15 00 00 00 00 00 02 03 11 /* Compression mode */
 			05 01 00 00 00 00 01 2C /* Memory write */
-			05 01 00 00 78 00 01 11
+			05 01 00 00 64 00 01 11
 			15 00 00 00 00 00 02 55 00      /* ACL OFF */
 			05 01 00 00 00 00 01 29];	/* display on */
 		qcom,mdss-dsi-off-command = [
@@ -252,4 +252,28 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsc-block-prediction-enable;
 	};
 
+};
+qcom,panel-supply-entries {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	qcom,panel-supply-entry@0 {
+		reg = <0>;
+		qcom,supply-name = "vddio";
+		qcom,supply-min-voltage = <1800000>;
+		qcom,supply-max-voltage = <1800000>;
+		qcom,supply-enable-load = <62000>;
+		qcom,supply-disable-load = <80>;
+		qcom,supply-post-on-sleep = <2>;
+	};
+
+	qcom,panel-supply-entry@1 {
+		reg = <1>;
+	        qcom,supply-name = "vdd";
+		qcom,supply-min-voltage = <3000000>;
+		qcom,supply-max-voltage = <3000000>;
+		qcom,supply-enable-load = <857000>;
+		qcom,supply-disable-load = <0>;
+		qcom,supply-post-on-sleep = <0>;
+	};
 };
