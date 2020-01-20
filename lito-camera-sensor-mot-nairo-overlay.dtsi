@@ -236,6 +236,20 @@
 };
 
 &cam_cci0 {
+	actuator_rear: qcom,actuator@0 {
+		cell-index = <0>;
+		reg = <0x0>;
+		compatible = "qcom,actuator";
+		cci-master = <0>;
+		cam_vio-supply = <&cam_iovdd_ldo>;
+		cam_vaf-supply = <&cam_main_macro_afvdd_ldo>;
+		regulator-names = "cam_vio", "cam_vaf";
+		rgltr-cntrl-support;
+		rgltr-min-voltage = <1800000 2800000>;
+		rgltr-max-voltage = <1800000 2800000>;
+		rgltr-load-current = <0 100000>;
+		status = "ok";
+	};
 	qcom,cam-sensor@0 {	//rear main GM1
 		cell-index = <0>;
 		compatible = "qcom,cam-sensor";
@@ -246,7 +260,7 @@
 		sensor-position-yaw = <180>;
 		//eeprom-src = <&eeprom_rear_main>;
 		led-flash-src = <&led_flash_rear>;
-		//actuator-src = <&actuator_rear>;
+		actuator-src = <&actuator_rear>;
 		cam_vio-supply = <&cam_iovdd_ldo>;
 		cam_vana-supply = <&cam_main_front_avdd_ldo>;
 		cam_vdig-supply = <&cam_main_front_dvdd_ldo>;
