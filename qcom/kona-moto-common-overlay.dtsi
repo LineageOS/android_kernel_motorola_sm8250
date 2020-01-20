@@ -241,9 +241,9 @@
 	qcom,fg-esr-timer-dischg-slow = <0 96>;
 	qcom,fg-esr-cal-soc-thresh = <26 230>;
 	qcom,fg-esr-cal-temp-thresh = <10 40>;
-	qcom,fg-cutoff-voltage = <3200>;
-	qcom,fg-empty-voltage = <3000>;
-	qcom,fg-sys-min-voltage = <3000>;
+	qcom,fg-cutoff-voltage = <3000>;
+	qcom,fg-empty-voltage = <2750>;
+	qcom,fg-sys-min-voltage = <2750>;
 };
 
 &pm8150_vadc {
