@@ -850,16 +850,30 @@
 		};
 	};
 
-	p938x_inputs: p938x-inputs {
+	p938x_irq: p938x-irq {
 		mux {
-			pins = "gpio108", "gpio83";
+			pins = "gpio108";
 			function = "gpio";
 		};
 
 		config {
-			pins = "gpio108", "gpio83";
+			pins = "gpio108";
 			drive-strength = <2>;
 			bias-pull-up;
+			input-enable;
+		};
+	};
+
+	p938x_det: p938x-det {
+		mux {
+			pins = "gpio83";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio83";
+			drive-strength = <2>;
+			bias-pull-down;
 			input-enable;
 		};
 	};
@@ -1001,7 +1015,7 @@
 					 "idt_p938x_sleep",
 					 "idt_p938x_boost";
 		pinctrl-names = "default";
-		pinctrl-0 = <&p938x_outputs &p938x_inputs>;
+		pinctrl-0 = <&p938x_outputs &p938x_irq &p938x_det>;
 		bpp-current = <950>;
 		epp-current-table =
 			<0 450>, <8000 600>, <10000 800>, <15000 1150>;
