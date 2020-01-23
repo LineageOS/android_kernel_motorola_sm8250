@@ -190,6 +190,14 @@
 		gpio-req-tbl-label = "CCI_I2C_DATA2",
 					"CCI_I2C_CLK2";
 
+		i2c_freq_100Khz_cci1: qcom,i2c_standard_mode {
+			hw-scl-stretch-en = <1>;
+		};
+
+		i2c_freq_400Khz_cci1: qcom,i2c_fast_mode {
+			hw-scl-stretch-en = <1>;
+		};
+
 		actuator_rear: qcom,actuator@0 {
 			cell-index = <0>;
 			reg = <0x0>;
