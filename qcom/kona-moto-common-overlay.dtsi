@@ -3,8 +3,8 @@
 #include "carrier-channel-ids.dtsi"
 
 #include "camera/kona-camera-sensor-mot-burton.dtsi"
-#include "kona-mot-burton-display.dtsi"
 #include "kona-pmic-overlay.dtsi"
+#include "kona-mot-burton-display.dtsi"
 #include "kona-thermal-overlay.dtsi"
 #include "kona-moto-audio-overlay.dtsi"
 #include "kona-mot-burton-fps.dtsi"
