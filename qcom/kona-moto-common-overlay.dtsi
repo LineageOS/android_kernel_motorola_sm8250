@@ -1132,3 +1132,7 @@
 	qcom,default-sink-caps = <5000 3000>, /* 5V @ 3A */
 				 <9000 3000>; /* 9V @ 3A */
 };
+
+&L5C {
+	regulator-always-on;
+};
