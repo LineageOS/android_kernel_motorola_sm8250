@@ -111,6 +111,7 @@
 		mmi,refresh-rate-update;
 		mmi,enable-gestures;
 		mmi,usb-charger-detection;
+		mmi,power-off-suspend;
 	};
 
 	synaptics_tcm@4b {
