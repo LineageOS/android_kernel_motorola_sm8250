@@ -93,6 +93,7 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsi-v-top-border = <0>;
 		qcom,mdss-dsi-v-bottom-border = <0>;
 		qcom,mdss-dsi-panel-jitter = <0x20 0xa>; /* 60fps +/- 2 */
+		qcom,mdss-dsi-panel-clockrate = <366000000>;
 		qcom,mdss-dsi-timing-switch-command = [
 			39 01 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0 */
 			15 01 00 00 00 00 02 6F 0E
@@ -178,6 +179,7 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsi-v-top-border = <0>;
 		qcom,mdss-dsi-v-bottom-border = <0>;
 		qcom,mdss-dsi-panel-jitter = <0x20 0xa>; /* 90fps +/- 2 */
+		qcom,mdss-dsi-panel-clockrate = <569000000>;
 		qcom,mdss-dsi-timing-switch-command = [
 			39 01 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0 */
 			15 01 00 00 00 00 02 6F 0E
