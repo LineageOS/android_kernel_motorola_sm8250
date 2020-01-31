@@ -241,6 +241,11 @@ enum {
 	EXT_DISP_RX_IDX_MAX,
 };
 
+enum {
+	MMI_FACTORY_BARE_BOARD,
+	MMI_FACTORY_BUILD,
+};
+
 struct msm_wsa881x_dev_info {
 	struct device_node *of_node;
 	u32 index;
@@ -8040,6 +8045,38 @@ struct snd_soc_card snd_soc_card_stub_msm = {
 	.name		= "kona-stub-snd-card",
 };
 
+static bool mmi_factory_check(int type)
+{
+	struct device_node *np = of_find_node_by_path("/chosen");
+	bool factory = false;
+	const char *bootargs = NULL;
+	char *bl_version = NULL;
+
+	if (!np)
+		return factory;
+
+	switch (type) {
+	case MMI_FACTORY_BARE_BOARD:
+		factory = of_property_read_bool(np,
+					"mmi,bare_board");
+		break;
+	case MMI_FACTORY_BUILD:
+		if (!of_property_read_string(np,
+					"bootargs", &bootargs)) {
+			bl_version = strstr(bootargs,
+					"androidboot.bootloader=");
+			if (bl_version && strstr(bl_version, "factory"))
+				factory = true;
+		}
+		break;
+	default:
+		factory = false;
+	}
+	of_node_put(np);
+
+	return factory;
+}
+
 static struct snd_soc_dai_link msm_stub_fe_dai_links[] = {
 	/* FrontEnd DAI Links */
 	{
@@ -8142,8 +8179,16 @@ static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev)
 		card->num_configs = 0;
 
 #ifdef CONFIG_SND_SOC_CS35l41
+
 		of_property_read_u32(dev->of_node,
 			"cirrus,prince-max-devs", &cirrus_prince_devs);
+
+		if((mmi_factory_check(MMI_FACTORY_BARE_BOARD) == true) &&
+		   (mmi_factory_check(MMI_FACTORY_BUILD) == true)){
+		    cirrus_prince_devs = 1;
+		    dev_err(dev, "Forcing the Number of cirrus_prince_devs to  = %d\n",
+			cirrus_prince_devs);
+		}
 
 		if (cirrus_prince_devs > 0) {
 			/* Alloc array of codec conf struct */
