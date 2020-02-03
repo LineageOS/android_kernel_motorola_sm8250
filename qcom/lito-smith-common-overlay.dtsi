@@ -487,11 +487,17 @@
 			   "vph_voltage";
 	qcom,battery-data = <&mot_batterydata>;
 	qcom,auto-recharge-soc = <98>;
-	qcom,step-charging-enable;
 	qcom,charger-temp-max = <800>;
 	qcom,smb-temp-max = <800>;
+	qcom,fcc-max-ua = <2500000>;
+	qcom,fv-max-uv = <4450000>;
+	qcom,usb-icl-ua = <3000000>;
+	qcom,typec-legacy-rp-icl;
+	qcom,lpd-disable;
 	qcom,suspend-input-on-debug-batt;
-	qcom,fcc-stepping-enable;
+	qcom,disable-suspend-on-collapse;
+	qcom,pd-voltage-max-uv = <5000000>;
+	qcom,usbpd-phandle = <&pm7250b_pdphy>;
 };
 
 &spmi_bus {
