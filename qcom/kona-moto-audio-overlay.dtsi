@@ -637,6 +637,7 @@ sound_madera: sound-madera {
 		cirrus,boost-peak-milliamp = <4000>;
 		cirrus,boost-cap-microfarad = <21>;
 		cirrus,amp-gain-zc;
+		cirrus,handle-adsp-ssr;
 
 		cirrus,gpio-config2 {
 			cirrus,gpio-polarity-invert = <0x01>;
