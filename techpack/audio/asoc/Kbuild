@@ -78,6 +78,9 @@ ifeq ($(KERNEL_BUILD), 0)
 	endif
 	ifneq (,$(filter nairo%, $(TARGET_PRODUCT)))
 		INCS    +=  -include $(AUDIO_ROOT)/config/litonairo_asoc.h
+        endif
+	ifneq (,$(filter smith%, $(TARGET_PRODUCT)))
+		INCS    +=  -include $(AUDIO_ROOT)/config/litosmith.h
 	endif
 	ifeq ($(CONFIG_ARCH_SDM660), y)
 		include $(AUDIO_ROOT)/config/sdm660auto.conf
