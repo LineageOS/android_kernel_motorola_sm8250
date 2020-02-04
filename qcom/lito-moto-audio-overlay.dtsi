@@ -1,6 +1,12 @@
 #include "lito-audio.dtsi"
 #include "lito-lpi.dtsi"
 
+&lpi_tdm2_sck_active {
+	config {
+		drive-strength = <2>;   /* 2 mA */
+	};
+};
+
 &soc {
 	dummy_vreg: dummy_vreg {
 		compatible = "regulator-fixed";
@@ -16,13 +22,23 @@
 };
 
 &dai_mi2s5 {
-	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&lpi_i2s2_sck_active &lpi_i2s2_ws_active
-			&lpi_i2s2_sd0_active &lpi_i2s2_sd1_active>;
-	pinctrl-1 = <&lpi_i2s2_sck_sleep &lpi_i2s2_ws_sleep
-			&lpi_i2s2_sd0_sleep &lpi_i2s2_sd1_sleep>;
 	qcom,msm-mi2s-rx-lines = <2>;
 	qcom,msm-mi2s-tx-lines = <1>;
+};
+
+&tdm_sen_rx {
+	qcom,msm-cpudai-tdm-sync-mode = <0>;
+	qcom,msm-cpudai-tdm-invert-sync = <0>;
+	dai_sen_tdm_rx_0: qcom,msm-dai-q6-tdm-sen-rx-0 {
+		qcom,msm-cpudai-tdm-header-start-offset = <0>;
+		qcom,msm-cpudai-tdm-header-width = <2>;
+		qcom,msm-cpudai-tdm-header-num-frame-repeat = <8>;
+	};
+};
+
+&tdm_sen_tx {
+	qcom,msm-cpudai-tdm-sync-mode = <0>;
+	qcom,msm-cpudai-tdm-invert-sync = <0>;
 };
 
 &pm8150_gpios {
@@ -50,6 +66,16 @@
 
 	bolero: bolero-cdc {
 		status = "disabled";
+	};
+
+	cdc_sen_tdm_gpios: msm_cdc_pinctrl_sen {
+		compatible = "qcom,msm-cdc-pinctrl";
+		pinctrl-names = "aud_active", "aud_sleep";
+		pinctrl-0 = <&lpi_tdm2_sck_active &lpi_tdm2_ws_active
+				&lpi_tdm2_sd0_active &lpi_tdm2_sd1_active>;
+		pinctrl-1 = <&lpi_tdm2_sck_sleep &lpi_tdm2_ws_sleep
+				&lpi_tdm2_sd0_sleep &lpi_tdm2_sd1_sleep>;
+		qcom,lpi-gpios;
 	};
 
 	sound-madera {
@@ -170,6 +196,7 @@
 		cirrus,prince-max-devs = <1>;
 		cirrus,prince-devs = <&cs35l41_spk>;
 		cirrus,prince-dev-prefix = "SPK";
+		qcom,sen-mi2s-gpios = <&cdc_sen_tdm_gpios>;
 	};
 
 };
