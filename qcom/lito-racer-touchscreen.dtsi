@@ -100,7 +100,7 @@
 		sec,irq_gpio = <&tlmm 9 0>;
 		sec,irq_type = <0x2008>; /*IRQF_TRIGGER_LOW | IRQF_ONESHOT*/
 		sec,max_coords = <1080 2340>;
-		sec,max_finger_size = <30 30>;
+		sec,size_to_pixel_multiple_factor = <1948>;
 		sec,suppression-control;
 		sec,regulator_avdd = "pm8150_l13";
 		sec,regulator_dvdd = "pm8150_l17";
