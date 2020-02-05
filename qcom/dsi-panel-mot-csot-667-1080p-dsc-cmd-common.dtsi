@@ -66,8 +66,7 @@ qcom,mdss-dsi-acl-on-command = [
 		15 00 00 00 00 00 02 B0 0C
 		15 01 00 00 00 00 02 55 05];
 qcom,mdss-dsi-acl-off-command = [
-		15 00 00 00 00 00 02 55 00
-		15 01 00 00 00 00 02 B0 00];
+		15 01 00 00 00 00 02 55 00];
 
 qcom,mdss-dsi-panel-hbm-is-51cmd;
 
