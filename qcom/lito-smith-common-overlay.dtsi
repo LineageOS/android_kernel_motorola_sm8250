@@ -645,6 +645,7 @@
 
 		pinctrl-names = "default";
 		pinctrl-0 = <&cam_pmic_irq_default &cam_pmic_en_default &flip_batt_en &flip_batt_plus_en>;
+		use-default-voltage;
 
 		regulators {
 			cam_f_vdda_ldo: ldo1 {
