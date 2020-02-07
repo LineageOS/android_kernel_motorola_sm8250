@@ -191,6 +191,59 @@
 			bias-pull-down;
 		};
 	};
+
+	laser_xsdn_active: laser_xsdn_active {
+		mux {
+			pins = "gpio5";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio5";
+			drive-strength = <2>;
+			bias-disable;
+		};
+	};
+
+	laser_xsdn_suspend: laser_xsdn_suspend {
+		mux {
+			pins = "gpio5";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio5";
+			drive-strength = <2>;
+			bias-pull-down; /* PULL DOWN */
+		};
+	};
+
+	laser_int_active: laser_int_active {
+		mux {
+			pins = "gpio26";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio26";
+			drive-strength = <2>;
+			bias-pull-up; /* PULL UP */
+		};
+	};
+
+	laser_int_suspend: laser_int_suspend {
+		mux {
+			pins = "gpio26";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio26";
+			drive-strength = <2>;
+			bias-pull-down; /* PULL DOWN */
+		};
+	};
+
 };
 
 &usb2_phy0 {
@@ -698,6 +751,25 @@
 			};
 		};
 	};
+
+	stmvl53l1@29 {
+		/* Enable once the matching driver is ported completely */
+		status = "ok";
+		compatible = "st,stmvl53l1";
+		reg = <0x29>;
+		vdd-vl53l1-supply = <&tof_vdd_ldo>;
+		gpios = <&tlmm 5 0>, <&tlmm 26 0>;
+		qcom,gpio-reset = <0>;
+		qcom,gpio-req-tbl-num = <0 1>;
+		qcom,gpio-req-tbl-flags = <0 1>;
+		qcom,gpio-req-tbl-label ="TOF_XSHUTDOWN","TOF_INT";
+		pinctrl-names = "laser_default", "laser_suspend";
+		pinctrl-0 = <&laser_xsdn_active &laser_int_active>;
+		pinctrl-1 = <&laser_xsdn_suspend &laser_int_suspend>;
+		st,sensorthreshold = <60 65>;
+		st,xtalkval = <0x3E8 0xFACD 0x0>;
+	};
+
 };
 
 &pm8008_8 {
