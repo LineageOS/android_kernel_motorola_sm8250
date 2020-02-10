@@ -9,14 +9,6 @@
 		regulator-always-on;
 	};
 
-	msm-cirrus-playback {
-		status = "ok";
-		compatible = "cirrus,msm-cirrus-playback";
-		usecase-names = "Normal", "Voice", "Ring", "Sonification";
-		usecase-indexes = <0 1 2 3>;
-		afe-port-id = <4104>;
-	};
-
 	aov_trigger {
 		compatible = "mmi,aov-trigger";
 		status = "ok";
