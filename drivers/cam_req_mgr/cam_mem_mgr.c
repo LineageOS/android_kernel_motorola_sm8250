@@ -473,6 +473,10 @@ static int cam_mem_util_ion_alloc(struct cam_mem_mgr_alloc_cmd *cmd,
 	} else {
 		heap_id = ION_HEAP(ION_SYSTEM_HEAP_ID) |
 			ION_HEAP(ION_CAMERA_HEAP_ID);
+
+		if (cmd->len > 0x200000) {
+			heap_id |= ION_HEAP(ION_MMNS_HEAP_ID);
+		}
 	}
 
 	if (cmd->flags & CAM_MEM_FLAG_CACHE)
@@ -1137,6 +1141,10 @@ int cam_mem_mgr_request_mem(struct cam_mem_mgr_request_desc *inp,
 	heap_id = ION_HEAP(ION_SYSTEM_HEAP_ID) |
 		ION_HEAP(ION_CAMERA_HEAP_ID);
 
+	if (inp->size > 0x200000) {
+		heap_id |= ION_HEAP(ION_MMNS_HEAP_ID);
+	}
+
 	rc = cam_mem_util_get_dma_buf(inp->size,
 		heap_id,
 		ion_flag,
@@ -1312,6 +1320,11 @@ int cam_mem_mgr_reserve_memory_region(struct cam_mem_mgr_request_desc *inp,
 
 	heap_id = ION_HEAP(ION_SYSTEM_HEAP_ID) |
 		ION_HEAP(ION_CAMERA_HEAP_ID);
+
+	if (inp->size > 0x200000) {
+		heap_id |= ION_HEAP(ION_MMNS_HEAP_ID);
+	}
+
 	rc = cam_mem_util_get_dma_buf(inp->size,
 		heap_id,
 		0,
