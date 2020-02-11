@@ -25,3 +25,9 @@
 /*
  * Smith HW rev DVT1A specific changes go here
  */
+
+&q6core {
+        sound-madera {
+                qcom,model = "kona-madera-princeb0-card";
+	};
+};
