@@ -926,6 +926,19 @@
 			bias-disable;
 		};
 	};
+	redriver_enable: redriver_enable {
+		mux {
+			pins = "gpio61";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio61";
+			drive-strength = <2>;
+			bias-pull-up;
+			output-high;
+		};
+	};
 };
 
 /* Need gpio 82 & 83 for WCHG */
@@ -1121,6 +1134,8 @@
 		compatible = "onnn,redriver";
 		reg = <0x1a>;
 		extcon = <&pm8150b_pdphy>, <&pm8150b_pdphy>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&redriver_enable>;
 		eq = /bits/ 8 <
 				/* Parameters for USB */
 				0x4 0x4 0x4 0x4
