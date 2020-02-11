@@ -58,10 +58,12 @@ lito-racer-dvt1-overlay.dtbo-base := lito-moto-base.dtb
 
 dtbo-$(CONFIG_NAIRO_DTB) += \
 		lito-nairo-evt1-overlay.dtbo \
-		lito-nairo-evt2-overlay.dtbo
+		lito-nairo-evt2-overlay.dtbo \
+		lito-nairo-evt3-overlay.dtbo
 
 lito-nairo-evt1-overlay.dtbo-base := lito-moto-base.dtb
 lito-nairo-evt2-overlay.dtbo-base := lito-moto-base.dtb
+lito-nairo-evt3-overlay.dtbo-base := lito-moto-base.dtb
 
 else
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
