@@ -170,6 +170,10 @@
 	qcom,mdss-dsi-display-timings {
 		timing@1 {
 			com,mdss-dsi-on-command = [
+				//VESA
+				39 01 00 00 00 00 05 FF AA 55 A5 80
+				15 00 00 00 00 00 02 6F 0A
+				15 01 00 00 00 00 02 FC 02
 				39 01 00 00 00 00 05 FF AA 55 A5 81
 				15 00 00 00 00 00 02 6F 0D
 				15 00 00 00 00 00 02 F3 CB
@@ -310,6 +314,10 @@
 	qcom,mdss-dsi-display-timings {
 		timing@0 {
 			qcom,mdss-dsi-on-command = [
+				//VESA
+				39 01 00 00 00 00 05 FF AA 55 A5 80
+				15 00 00 00 00 00 02 6F 0A
+				15 01 00 00 00 00 02 FC 02
 				39 01 00 00 00 00 05 FF AA 55 A5 81
 				15 00 00 00 00 00 02 6F 0D
 				15 00 00 00 00 00 02 F3 CB
@@ -372,6 +380,9 @@
 	qcom,mdss-dsi-display-timings {
 		timing@0 {
 			qcom,mdss-dsi-on-command = [
+				39 01 00 00 00 00 05 FF AA 55 A5 80
+				15 00 00 00 00 00 02 6F 0A
+				15 01 00 00 00 00 02 FC 02
 				39 01 00 00 00 00 05 FF AA 55 A5 81
 				15 00 00 00 00 00 02 6F 0D
 				15 00 00 00 00 00 02 F3 AB
