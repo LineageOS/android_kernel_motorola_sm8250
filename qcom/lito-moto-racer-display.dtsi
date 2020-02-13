@@ -68,10 +68,12 @@
 	qcom,mdss-brightness-max-level = <1600>;
 	qcom,mdss-dsi-display-timings {
 		timing@0 {
+			qcom,mdss-dsi-panel-clockrate = <569000000>;
 			qcom,display-topology = <2 2 1>;
 			qcom,default-topology-index = <0>;
 		};
 		timing@1 {
+			qcom,mdss-dsi-panel-clockrate = <569000000>;
 			qcom,display-topology = <2 2 1>;
 			qcom,default-topology-index = <0>;
 		};
@@ -141,10 +143,12 @@
 	qcom,mdss-brightness-max-level = <2047>;
 	qcom,mdss-dsi-display-timings {
 		timing@0 {
+			qcom,mdss-dsi-panel-clockrate = <569000000>;
 			qcom,display-topology = <2 2 1>;
 			qcom,default-topology-index = <0>;
 		};
 		timing@1 {
+			qcom,mdss-dsi-panel-clockrate = <569000000>;
 			qcom,display-topology = <2 2 1>;
 			qcom,default-topology-index = <0>;
 		};
@@ -166,10 +170,12 @@
 	qcom,mdss-brightness-max-level = <2047>;
 	qcom,mdss-dsi-display-timings {
 		timing@0 {
+			qcom,mdss-dsi-panel-clockrate = <569000000>;
 			qcom,display-topology = <2 2 1>;
 			qcom,default-topology-index = <0>;
 		};
 		timing@1 {
+			qcom,mdss-dsi-panel-clockrate = <569000000>;
 			qcom,display-topology = <2 2 1>;
 			qcom,default-topology-index = <0>;
 		};
