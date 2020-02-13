@@ -541,6 +541,8 @@
 
 &qupv3_se0_i2c {
 	status = "okay";
+	qcom,noise-rjct-scl = <3>;
+	qcom,noise-rjct-sda = <3>;
 	stmvl53l1@29 {
 		status = "ok";
 		compatible = "st,stmvl53l1";
