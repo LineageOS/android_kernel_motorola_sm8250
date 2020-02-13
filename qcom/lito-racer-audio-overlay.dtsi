@@ -539,8 +539,7 @@
 		compatible = "qcom,kona-asoc-snd-madera";
 		qcom,model = "kona-madera-snd-card";
 		qcom,mi2s-audio-intf = <1>;
-		qcom,msm-mi2s-master = <1>, <0>, <1>, <1>, <1>, <0>;
-		cirrus,pmic-audio-clk;
+		qcom,msm-mi2s-master = <1>, <1>, <1>, <1>, <1>, <1>;
 		qcom,auxpcm-audio-intf = <1>;
 		qcom,wcn-btfm = <1>;
 		qcom,afe-rxtx-lb = <0>;
