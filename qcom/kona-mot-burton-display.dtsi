@@ -170,37 +170,37 @@
 	qcom,mdss-dsi-display-timings {
 		timing@1 {
 			com,mdss-dsi-on-command = [
-				39 00 00 00 00 00 05 FF AA 55 A5 81
+				39 01 00 00 00 00 05 FF AA 55 A5 81
 				15 00 00 00 00 00 02 6F 0D
 				15 00 00 00 00 00 02 F3 CB
-				39 00 00 00 00 00 05 FF AA 55 A5 00
-				39 00 00 00 00 00 06 F0 55 AA 52 08 01 /* Page 1*/
+				39 01 00 00 00 00 05 FF AA 55 A5 00
+				39 01 00 00 00 00 06 F0 55 AA 52 08 01 /* Page 1*/
 				/*TSP_VTE, TSP_HTE*/
-				39 00 00 00 00 00 04 D1 07 02 37
-				39 00 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0 */
+				39 01 00 00 00 00 04 D1 07 02 37
+				39 01 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0 */
 				/*GPO0=TE, GPO1=ALL MIPI error, GPO2=TSP_HTE, GPO3=TSP_CTE*/
-				39 00 00 00 00 00 06 BE 0E 91 94 13 1F
+				39 01 00 00 00 00 06 BE 0E 91 94 13 1F
 				/* Framne rate = 90hz */
 				15 00 00 00 00 00 02 B2 01 /* backlight fix */
 				15 00 00 00 00 00 02 6F 0E
 				15 00 00 00 00 00 02 BA 18
 				15 00 00 00 00 00 02 6F 03
-				39 00 00 00 00 00 04 C0 00 00 00
+				39 01 00 00 00 00 04 C0 00 00 00
 				15 00 00 00 00 00 02 26 02
 				/* Done with frame rate setting */
 				/* Swire setting AVDD=7.6VDC, ELVDD=4.6VDC ELVSS=-4.2VDC*/
-				39 00 00 00 00 00 03 B5 84 00
+				39 01 00 00 00 00 03 B5 84 00
 				15 00 00 00 00 00 02 6F 05
-				39 00 00 00 00 00 05 B5 7F 4E 17 54
+				39 01 00 00 00 00 05 B5 7F 4E 17 54
 				/* End of swire setting*/
 				05 00 00 00 00 00 01 35	 /* Set tear on */
 				15 00 00 00 00 00 02 53 20 /* HBM off ,dimming=1frame*/
 				/* Spec calls for 51 06 40 0F FF*/
-				39 00 00 00 00 00 05 51 00 00 0F FF
-				39 00 00 00 00 00 05 2A 00 00 04 37 /* Column Addr set */
-				39 00 00 00 00 00 05 2B 00 00 09 23 /* Row Addr set */
+				39 01 00 00 00 00 05 51 00 00 0F FF
+				39 01 00 00 00 00 05 2A 00 00 04 37 /* Column Addr set */
+				39 01 00 00 00 00 05 2B 00 00 09 23 /* Row Addr set */
 				/* PPS stable1 10bit3.75x slice 20 */
-				39 00 00 00 00 00 13 93 AB 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
+				39 01 00 00 00 00 13 93 AB 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
 				15 00 00 00 00 00 02 90 01  /* Compression method selection*/
 				15 00 00 00 00 00 02 03 11 /* Compression mode */
 				05 01 00 00 00 00 01 2C /* Memory write */
@@ -266,11 +266,11 @@
 			qcom,default-topology-index = <0>;
 
 			qcom,mdss-dsi-hbm-dim-off-command = [
-				39 00 00 00 00 00 03 F0 5A 5A
-				39 00 00 00 00 00 03 B7 01 58
+				39 01 00 00 00 00 03 F0 5A 5A
+				39 01 00 00 00 00 03 B7 01 58
 				15 01 00 00 00 00 02 B0 07
 				15 01 00 00 00 00 02 B7 12
-				39 00 00 00 00 00 03 F0 5A 5A];
+				39 01 00 00 00 00 03 F0 5A 5A];
 		};
 	};
 };
@@ -310,37 +310,37 @@
 	qcom,mdss-dsi-display-timings {
 		timing@0 {
 			qcom,mdss-dsi-on-command = [
-				39 00 00 00 00 00 05 FF AA 55 A5 81
+				39 01 00 00 00 00 05 FF AA 55 A5 81
 				15 00 00 00 00 00 02 6F 0D
 				15 00 00 00 00 00 02 F3 CB
-				39 00 00 00 00 00 05 FF AA 55 A5 00
-				39 00 00 00 00 00 06 F0 55 AA 52 08 01 /* Page 1*/
+				39 01 00 00 00 00 05 FF AA 55 A5 00
+				39 01 00 00 00 00 06 F0 55 AA 52 08 01 /* Page 1*/
 				/*TSP_VTE, TSP_HTE*/
-				39 00 00 00 00 00 04 D1 07 02 37
-				39 00 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0 */
+				39 01 00 00 00 00 04 D1 07 02 37
+				39 01 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0 */
 				/*GPO0=TE, GPO1=ALL MIPI error, GPO2=TSP_HTE, GPO3=TSP_CTE*/
-				39 00 00 00 00 00 06 BE 0E 91 94 13 1F
+				39 01 00 00 00 00 06 BE 0E 91 94 13 1F
 				/* Framne rate = 60hz */
 				15 00 00 00 00 00 02 B2 01 /* backlight fix */
 				15 00 00 00 00 00 02 6F 0E
 				15 00 00 00 00 00 02 BA 18
 				15 00 00 00 00 00 02 6F 03
-				39 00 00 00 00 00 04 C0 80 00 00
+				39 01 00 00 00 00 04 C0 80 00 00
 				15 00 00 00 00 00 02 26 01
 				/* Done with frame rate setting */
 				/* Swire setting AVDD=7.6VDC, ELVDD=4.6VDC ELVSS=-4.2VDC*/
-				39 00 00 00 00 00 03 B5 84 00
+				39 01 00 00 00 00 03 B5 84 00
 				15 00 00 00 00 00 02 6F 05
-				39 00 00 00 00 00 05 B5 7F 4E 17 54
+				39 01 00 00 00 00 05 B5 7F 4E 17 54
 				/* End of swire setting*/
 				05 00 00 00 00 00 01 35  /* Set tear on */
 				15 00 00 00 00 00 02 53 20 /* HBM off ,dimming=1frame*/
 				/* Spec calls for 51 06 40 0F FF*/
-				39 00 00 00 00 00 05 51 00 00 0F FF
-				39 00 00 00 00 00 05 2A 00 00 04 37 /* Column Addr set */
-				39 00 00 00 00 00 05 2B 00 00 09 23 /* Row Addr set */
+				39 01 00 00 00 00 05 51 00 00 0F FF
+				39 01 00 00 00 00 05 2A 00 00 04 37 /* Column Addr set */
+				39 01 00 00 00 00 05 2B 00 00 09 23 /* Row Addr set */
 				/* PPS stable1 10bit3.75x slice 20 */
-				39 00 00 00 00 00 13 93 AB 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
+				39 01 00 00 00 00 13 93 AB 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
 				15 00 00 00 00 00 02 90 01  /* Compression method selection*/
 				15 00 00 00 00 00 02 03 11 /* Compression mode */
 				05 01 00 00 00 00 01 2C /* Memory write */
@@ -372,20 +372,20 @@
 	qcom,mdss-dsi-display-timings {
 		timing@0 {
 			qcom,mdss-dsi-on-command = [
-				39 00 00 00 00 00 05 FF AA 55 A5 81
+				39 01 00 00 00 00 05 FF AA 55 A5 81
 				15 00 00 00 00 00 02 6F 0D
 				15 00 00 00 00 00 02 F3 AB
 				/* Set OSC 101.6Mhz */
 				15 00 00 00 00 00 02 6F 05
-				39 00 00 00 00 00 03 FD 00 DA
+				39 01 00 00 00 00 03 FD 00 DA
 				/* End Set OSC */
-				39 00 00 00 00 00 05 FF AA 55 A5 00
-				39 00 00 00 00 00 06 F0 55 AA 52 08 01 /* Page 1*/
+				39 01 00 00 00 00 05 FF AA 55 A5 00
+				39 01 00 00 00 00 06 F0 55 AA 52 08 01 /* Page 1*/
 				/*TSP_VTE, TSP_HTE*/
-				39 00 00 00 00 00 04 D1 07 02 10
-				39 00 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0*/
+				39 01 00 00 00 00 04 D1 07 02 10
+				39 01 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0*/
 				/*GPO0=TE, GPO1=ALL MIPI error, GPO2=TSP_HTE, GPO3=TSP_CTE*/
-				39 00 00 00 00 00 05 BE 0E 09 94 93
+				39 01 00 00 00 00 05 BE 0E 09 94 93
 				/* Framne rate = 90hz */
 				15 00 00 00 00 00 02 B2 00 /* backlight fix */
 				15 00 00 00 00 00 02 6F 0E
@@ -395,18 +395,18 @@
 				15 00 00 00 00 00 02 26 01
 				/* Done with frame rate setting */
 				/* Swire setting AVDD=7.3VDC, ELVDD=4.6VDC ELVSS=-4.2VDC*/
-				39 00 00 00 00 00 08 B7 AA AA AA AA AA 00 00
+				39 01 00 00 00 00 08 B7 AA AA AA AA AA 00 00
 				15 00 00 00 00 00 02 6F 06
-				39 00 00 00 00 00 0B B5 4B 19 51 00 00 4B 23 51 00 00
+				39 01 00 00 00 00 0B B5 4B 19 51 00 00 4B 23 51 00 00
 				/* End of swire setting*/
 				05 00 00 00 00 00 01 35  /* Set tear on */
 				15 00 00 00 00 00 02 53 20 /* HBM off ,dimming=1frame*/
 				/* Spec calls for 51 06 40 0F FF*/
-				39 00 00 00 00 00 05 51 00 00 0F FF
-				39 00 00 00 00 00 05 2A 00 00 04 37 /* Column Addr set */
-				39 00 00 00 00 00 05 2B 00 00 09 23 /* Row Addr set */
+				39 01 00 00 00 00 05 51 00 00 0F FF
+				39 01 00 00 00 00 05 2A 00 00 04 37 /* Column Addr set */
+				39 01 00 00 00 00 05 2B 00 00 09 23 /* Row Addr set */
 				/* PPS stable1 10bit3.75x slice 20 */
-				39 00 00 00 00 00 13 93 AB 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
+				39 01 00 00 00 00 13 93 AB 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
 				15 00 00 00 00 00 02 90 01  /* Compression method selection*/
 				15 00 00 00 00 00 02 03 11 /* Compression mode */
 				05 01 00 00 00 00 01 2C /* Memory write */
