@@ -737,7 +737,7 @@ static int cam_ois_pkt_parse(struct cam_ois_ctrl_t *o_ctrl, void *arg)
 		}
 
 		if (o_ctrl->ois_postcalib_flag) {
-			CAM_DBG(CAM_OIS, "starting post calib data");
+			CAM_ERR(CAM_OIS, "starting post calib data");
 			rc = cam_ois_apply_settings(o_ctrl,
 			&o_ctrl->i2c_postcalib_data);
 			if (rc) {
@@ -865,101 +865,6 @@ static int cam_ois_pkt_parse(struct cam_ois_ctrl_t *o_ctrl, void *arg)
 			return rc;
 		}
 
-		rc = delete_request(&i2c_read_settings);
-		if (rc < 0) {
-			CAM_ERR(CAM_OIS,
-				"Failed in deleting the read settings");
-			return rc;
-		}
-		break;
-	}
-	case CAM_OIS_PACKET_OPCODE_ACTIVE_EIS: {
-		struct cam_buf_io_cfg *io_cfg;
-		struct cam_buf_io_cfg *timestamp_io_cfg;
-		struct i2c_settings_array i2c_read_settings;
-		struct timespec64 ts;
-		uintptr_t buf_addr = 0x0;
-		size_t buf_size = 0;
-		uint64_t timestamp;
-		uint8_t *timestampBuf;
-		uint32_t timestampBufLen;
-
-		if (o_ctrl->cam_ois_state < CAM_OIS_CONFIG) {
-			rc = -EINVAL;
-			CAM_WARN(CAM_OIS,
-				"Not in right state to read OIS: %d",
-				o_ctrl->cam_ois_state);
-			return rc;
-		}
-		CAM_DBG(CAM_OIS, "number of I/O configs: %d:",
-			csl_packet->num_io_configs);
-		if (csl_packet->num_io_configs < 2) {
-			CAM_ERR(CAM_OIS, "Not enough I/O Configs");
-			rc = -EINVAL;
-			return rc;
-		}
-
-		INIT_LIST_HEAD(&(i2c_read_settings.list_head));
-
-		io_cfg = (struct cam_buf_io_cfg *) ((uint8_t *)
-			&csl_packet->payload +
-			csl_packet->io_configs_offset);
-
-		if (io_cfg == NULL) {
-			CAM_ERR(CAM_OIS, "I/O config is invalid(NULL)");
-			rc = -EINVAL;
-			return rc;
-		}
-
-		timestamp_io_cfg = &io_cfg[1];
-
-		if (timestamp_io_cfg == NULL) {
-			CAM_ERR(CAM_OIS, "timestamp I/O config is invalid(NULL)");
-			rc = -EINVAL;
-			return rc;
-		}
-
-		offset = (uint32_t *)&csl_packet->payload;
-		offset += (csl_packet->cmd_buf_offset / sizeof(uint32_t));
-		cmd_desc = (struct cam_cmd_buf_desc *)(offset);
-		if (cmd_desc == NULL) {
-			CAM_ERR(CAM_OIS, "cmd desc is invalid(NULL)");
-			rc = -EINVAL;
-			return rc;
-		}
-
-		i2c_read_settings.is_settings_valid = 1;
-		i2c_read_settings.request_id = 0;
-		rc = cam_sensor_i2c_command_parser(&o_ctrl->io_master_info,
-			&i2c_read_settings,
-			cmd_desc, 1, io_cfg);
-		if (rc < 0) {
-			CAM_ERR(CAM_OIS, "OIS read pkt parsing failed: %d", rc);
-			return rc;
-		}
-
-		rc = cam_sensor_i2c_read_data(
-			&i2c_read_settings,
-			&o_ctrl->io_master_info);
-		if (rc < 0) {
-			CAM_ERR(CAM_OIS, "cannot read data rc: %d", rc);
-			delete_request(&i2c_read_settings);
-			return rc;
-		}
-
-		get_monotonic_boottime64(&ts);
-		timestamp =
-			(uint64_t)((ts.tv_sec * 1000000000) + ts.tv_nsec);
-		rc = cam_mem_get_cpu_buf(timestamp_io_cfg->mem_handle[0],
-				&buf_addr, &buf_size);
-		timestampBuf = (uint8_t *)buf_addr + timestamp_io_cfg->offsets[0];
-		timestampBufLen =  buf_size - timestamp_io_cfg->offsets[0];
-		if(timestampBufLen < sizeof(uint64_t)) {
-			CAM_ERR(CAM_OIS, "Buffer not large enough for timestamp");
-			return -EINVAL;
-		}
-
-		memcpy((void *)timestampBuf, (void *)&timestamp, sizeof(uint64_t));
 		rc = delete_request(&i2c_read_settings);
 		if (rc < 0) {
 			CAM_ERR(CAM_OIS,
