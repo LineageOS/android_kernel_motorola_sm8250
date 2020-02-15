@@ -340,6 +340,7 @@ struct sde_crtc {
 	struct sde_crtc_frame_event frame_events[SDE_CRTC_FRAME_EVENT_SIZE];
 	struct list_head frame_event_list;
 	spinlock_t spin_lock;
+	unsigned long revalidate_mask;
 
 	/* for handling internal event thread */
 	struct sde_crtc_event event_cache[SDE_CRTC_MAX_EVENT_COUNT];
@@ -377,6 +378,12 @@ struct sde_crtc {
 	int comp_ratio;
 
 	struct drm_property_blob *dspp_blob_info;
+};
+
+enum sde_crtc_dirty_flags {
+	SDE_CRTC_DIRTY_DEST_SCALER,
+	SDE_CRTC_DIRTY_DIM_LAYERS,
+	SDE_CRTC_DIRTY_MAX,
 };
 
 #define to_sde_crtc(x) container_of(x, struct sde_crtc, base)
@@ -428,6 +435,7 @@ struct sde_crtc_state {
 
 	struct msm_property_state property_state;
 	struct msm_property_value property_values[CRTC_PROP_COUNT];
+	DECLARE_BITMAP(dirty, SDE_CRTC_DIRTY_MAX);
 	uint64_t input_fence_timeout_ns;
 	uint32_t num_dim_layers;
 	struct sde_hw_dim_layer dim_layer[SDE_MAX_DIM_LAYERS];
