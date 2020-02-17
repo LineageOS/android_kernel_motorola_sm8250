@@ -318,7 +318,6 @@
 };
 
 &pm8150_vadc {
-	/delete-node/ xo_therm@4c;
 	/delete-node/ bmr_e_therm@4e;
 
 	pa_therm1@4d {
@@ -339,10 +338,6 @@
 };
 
 &pm8150_adc_tm {
-	io-channels = <&pm8150_vadc ADC_AMUX_THM1_PU2>,
-			<&pm8150_vadc ADC_AMUX_THM2_PU2>;
-
-	/delete-node/ xo_therm@4c;
 	/delete-node/ bmr_e_therm@4e;
 
 	pa_therm1@4d {
@@ -420,10 +415,6 @@
 	};
 
 	camera-therm-usr {
-		status = "disabled";
-	};
-
-	xo-therm-usr {
 		status = "disabled";
 	};
 
