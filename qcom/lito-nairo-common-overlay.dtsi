@@ -244,7 +244,7 @@
 						<60 4200 2500 0>;
 			qcom,iterm-ma = <150>;
 			qcom,vfloat-comp-uv = <20000>;
-			qcom,force-hvdcp-5v;
+			qcom,hvdcp-power-max = <20000>;
 		};
 	};
 };
