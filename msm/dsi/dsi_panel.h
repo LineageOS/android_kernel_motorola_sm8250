@@ -218,6 +218,11 @@ struct panel_param {
 	bool is_supported;
 };
 
+enum touch_state {
+	TOUCH_DEEP_SLEEP_STATE = 0,
+	TOUCH_LOW_POWER_STATE,
+};
+
 struct dsi_panel {
 	const char *name;
 	const char *type;
@@ -289,6 +294,9 @@ struct dsi_panel {
 	u32  bl_lvl_during_hbm;
 
 	struct panel_param *param_cmds;
+
+	enum touch_state tp_state;
+	bool tp_state_check_enable;
 };
 
 static inline bool dsi_panel_ulps_feature_enabled(struct dsi_panel *panel)
