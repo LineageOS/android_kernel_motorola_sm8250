@@ -19,7 +19,7 @@ qcom,mdss-dsi-stream = <0>;
 /* Need to fix with and height */
 qcom,mdss-pan-physical-width-dimension = <69>;
 qcom,mdss-pan-physical-height-dimension = <154>;
-qcom,mdss-dsi-bpp = <24>;
+qcom,mdss-dsi-bpp = <30>;
 qcom,mdss-dsi-underflow-color = <0xff>;
 qcom,mdss-dsi-border-color = <0>;
 
@@ -97,18 +97,22 @@ qcom,mdss-dsi-display-timings {
 			15 01 00 00 00 00 02 6F 03
 			15 01 00 00 00 00 02 C0 80];
 		qcom,mdss-dsi-on-command = [
+			//SWIRE config
+			39 01 00 00 00 00 06 F0 55 AA 52 08 00
+			15 01 00 00 00 00 02 6F 06
+			39 01 00 00 00 00 04 B5 4E 26 00
+			//CMD4
 			39 01 00 00 00 00 05 FF AA 55 A5 81
 			15 01 00 00 00 00 02 6F 0D
 			15 01 00 00 00 00 02 F3 A7
-                        //VBP/VFP Video Mode
-			//39 00 00 00 00 00 05 3B 00 12 00 0A
-                        //COMPRESSION_METHOD = 1 VESA, Slice 12
-			15 01 00 00 00 00 02 90 01  /* Compression method selection*/
-			39 01 00 00 00 00 13 93 89 28 00 0C 02 00 02 0E 01 1F 00 07 08 BB 08 7A 10 F0
-			15 01 00 00 00 00 02 03 11
-			05 01 00 00 00 00 01 2C
 
-			05 01 00 00 00 00 01 35	 /* Set tear on */
+			/* PPS stable1 10bit3.75x slice 20 */
+			15 01 00 00 00 00 02 90 01  /* Compression method selection*/
+			39 01 00 00 00 00 13 93 AB 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
+			15 01 00 00 00 00 02 03 11 /* Compression mode */
+			05 01 00 00 00 00 01 2C /* Memory write */
+
+			05 01 00 00 00 00 01 35 /* Set tear on */
 			15 01 00 00 00 00 02 53 20 /* HBM off ,dimming=1frame*/
 			39 01 00 00 00 00 05 51 00 00 0F FF
 			/* Spec calls for 51 06 40 0F FF*/
@@ -122,7 +126,7 @@ qcom,mdss-dsi-display-timings {
 			15 01 00 00 00 00 02 6F 03
 			15 01 00 00 00 00 02 C0 80
 
-			05 01 00 00 64 00 01 11
+			05 01 00 00 78 00 01 11
 			15 01 00 00 00 00 02 55 00      /* ACL OFF */
 			05 01 00 00 00 00 01 29];	/* display on */
 		qcom,mdss-dsi-off-command = [
@@ -139,10 +143,10 @@ qcom,mdss-dsi-display-timings {
 		 * as for that dsi_sw43404_amoled_cmd, for ex */
 		/* qcom,mdss-dsc-encoders = <2>; */
 		qcom,mdss-dsc-version = <0x11>;
-		qcom,mdss-dsc-slice-height = <12>;
+		qcom,mdss-dsc-slice-height = <20>;
 		qcom,mdss-dsc-slice-width = <540>;
 		qcom,mdss-dsc-slice-per-pkt = <2>;
-		qcom,mdss-dsc-bit-per-component = <8>;
+		qcom,mdss-dsc-bit-per-component = <10>;
 		qcom,mdss-dsc-bit-per-pixel = <8>;
 		qcom,mdss-dsc-block-prediction-enable;
 	};
@@ -169,18 +173,22 @@ qcom,mdss-dsi-display-timings {
 			15 01 00 00 00 00 02 6F 03
 			15 01 00 00 00 00 02 C0 00];
 		qcom,mdss-dsi-on-command = [
+			//SWIRE config
+			39 01 00 00 00 00 06 F0 55 AA 52 08 00
+			15 01 00 00 00 00 02 6F 06
+			39 01 00 00 00 00 04 B5 4E 26 00
+			//CMD4
 			39 01 00 00 00 00 05 FF AA 55 A5 81
 			15 01 00 00 00 00 02 6F 0D
 			15 01 00 00 00 00 02 F3 A7
-                        //VBP/VFP Video Mode
-			//39 00 00 00 00 00 05 3B 00 12 00 0A
-                        //COMPRESSION_METHOD = 1 VESA, Slice 12
-			15 01 00 00 00 00 02 90 01  /* Compression method selection*/
-			39 01 00 00 00 00 13 93 89 28 00 0C 02 00 02 0E 01 1F 00 07 08 BB 08 7A 10 F0
-			15 01 00 00 00 00 02 03 11
-			05 01 00 00 00 00 01 2C
 
-			05 01 00 00 00 00 01 35	 /* Set tear on */
+			/* PPS stable1 10bit3.75x slice 20 */
+			15 01 00 00 00 00 02 90 01  /* Compression method selection*/
+			39 01 00 00 00 00 13 93 AB 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
+			15 01 00 00 00 00 02 03 11 /* Compression mode */
+			05 01 00 00 00 00 01 2C /* Memory write */
+
+			05 01 00 00 00 00 01 35 /* Set tear on */
 			15 01 00 00 00 00 02 53 20 /* HBM off ,dimming=1frame*/
 			39 01 00 00 00 00 05 51 00 00 0F FF
 			/* Spec calls for 51 06 40 0F FF*/
@@ -189,12 +197,12 @@ qcom,mdss-dsi-display-timings {
 
 			39 01 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0 */
 			39 01 00 00 00 00 06 BE 0E 00 94 13 1F
-			/* Framne rate = 60hz */
+			/* Framne rate = 90hz */
 			15 01 00 00 00 00 02 B2 01 /* backlight fix */
 			15 01 00 00 00 00 02 6F 03
 			15 01 00 00 00 00 02 C0 00
 
-			05 01 00 00 64 00 01 11
+			05 01 00 00 78 00 01 11
 			15 01 00 00 00 00 02 55 00      /* ACL OFF */
 			05 01 00 00 00 00 01 29];	/* display on */
 		qcom,mdss-dsi-off-command = [
@@ -211,10 +219,10 @@ qcom,mdss-dsi-display-timings {
 		 * as for that dsi_sw43404_amoled_cmd, for ex */
 		/* qcom,mdss-dsc-encoders = <2>; */
 		qcom,mdss-dsc-version = <0x11>;
-		qcom,mdss-dsc-slice-height = <12>;
+		qcom,mdss-dsc-slice-height = <20>;
 		qcom,mdss-dsc-slice-width = <540>;
 		qcom,mdss-dsc-slice-per-pkt = <2>;
-		qcom,mdss-dsc-bit-per-component = <8>;
+		qcom,mdss-dsc-bit-per-component = <10>;
 		qcom,mdss-dsc-bit-per-pixel = <8>;
 		qcom,mdss-dsc-block-prediction-enable;
 	};
