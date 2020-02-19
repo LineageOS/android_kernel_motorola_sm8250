@@ -122,6 +122,10 @@ qcom,mdss-dsi-display-timings {
 			15 00 00 00 00 00 02 6F 06
 			39 01 00 00 00 00 0B B5 4B 19 51 00 00 4B 23 51 00 00
 			/* End of swire setting*/
+			/*PWM from 98% to 97%*/
+			39 01 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0*/
+			15 00 00 00 00 00 02 6F 16
+			39 01 00 00 00 00 08 B4 48 48 48 48 48 48 48
 			05 00 00 00 00 00 01 35	 /* Set tear on */
 			15 00 00 00 00 00 02 53 20 /* HBM off ,dimming=1frame*/
 			/* Spec calls for 51 06 40 0F FF*/
