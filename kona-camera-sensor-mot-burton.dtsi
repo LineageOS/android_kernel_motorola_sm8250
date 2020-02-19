@@ -198,6 +198,10 @@
 			hw-scl-stretch-en = <1>;
 		};
 
+		i2c_freq_1Mhz_cci1: qcom,i2c_fast_plus_mode {
+			hw-scl-stretch-en = <1>;
+		};
+
 		actuator_rear: qcom,actuator@0 {
 			cell-index = <0>;
 			reg = <0x0>;
