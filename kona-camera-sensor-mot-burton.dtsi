@@ -289,6 +289,18 @@
 };
 
 &cam_cci0 {
+		i2c_freq_100Khz_cci0: qcom,i2c_standard_mode {
+			hw-scl-stretch-en = <1>;
+		};
+
+		i2c_freq_400Khz_cci0: qcom,i2c_fast_mode {
+			hw-scl-stretch-en = <1>;
+		};
+
+		i2c_freq_1Mhz_cci0: qcom,i2c_fast_plus_mode {
+			hw-scl-stretch-en = <1>;
+		};
+
 	actuator_wide: qcom,actuator@1 {
 		cell-index = <1>;
 		reg = <0x1>;
