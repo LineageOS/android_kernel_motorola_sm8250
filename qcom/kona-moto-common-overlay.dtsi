@@ -1090,7 +1090,7 @@
 		cap_vdd-supply = <&pm8150a_l10>;
 		Semtech,reg-num = <45>;
 		Semtech,button-flag = <0x1F>;
-		Semtech,reg-init = <0x8020 0x001F001F
+		Semtech,reg-init = <0x8020 0x001F0000
 			0x801c 0x00000033
 			0x8024 0x11000846
 			0x8028 0x3ffe8000
