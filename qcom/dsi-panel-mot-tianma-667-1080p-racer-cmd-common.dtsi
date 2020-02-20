@@ -97,6 +97,11 @@ qcom,mdss-dsi-display-timings {
 			15 01 00 00 00 00 02 6F 03
 			15 01 00 00 00 00 02 C0 80];
 		qcom,mdss-dsi-on-command = [
+			//VESA
+			39 01 00 00 00 00 05 FF AA 55 A5 80
+			15 00 00 00 00 00 02 6F 0A
+			15 01 00 00 00 00 02 FC 02
+
 			//SWIRE config
 			39 01 00 00 00 00 06 F0 55 AA 52 08 00
 			15 01 00 00 00 00 02 6F 06
@@ -173,6 +178,11 @@ qcom,mdss-dsi-display-timings {
 			15 01 00 00 00 00 02 6F 03
 			15 01 00 00 00 00 02 C0 00];
 		qcom,mdss-dsi-on-command = [
+			//VESA
+			39 01 00 00 00 00 05 FF AA 55 A5 80
+			15 00 00 00 00 00 02 6F 0A
+			15 01 00 00 00 00 02 FC 02
+
 			//SWIRE config
 			39 01 00 00 00 00 06 F0 55 AA 52 08 00
 			15 01 00 00 00 00 02 6F 06
