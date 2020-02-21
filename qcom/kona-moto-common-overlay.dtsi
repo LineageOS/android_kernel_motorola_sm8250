@@ -501,22 +501,13 @@
 		polling-delay = <2000>;
 		thermal-governor = "step_wise";
 		trips {
-			modem_skin_trip0: modem-skin-trip0 {
-				temperature = <45000>;
-				hysteresis = <5000>;
-				type = "passive";
-			};
 			modem_skin_trip1: modem-skin-trip1 {
-				temperature = <50000>;
-				hysteresis = <6000>;
+				temperature = <47000>;
+				hysteresis = <3000>;
 				type = "passive";
 			};
 		};
 		cooling-maps {
-			skin_modem_lvl1 {
-				trip = <&modem_skin_trip0>;
-				cooling-device = <&modem_skin 1 1>;
-			};
 			/* Disable 5G */
 			skin_modem_lvl2 {
 				trip = <&modem_skin_trip1>;
