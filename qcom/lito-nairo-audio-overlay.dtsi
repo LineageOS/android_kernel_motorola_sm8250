@@ -209,7 +209,7 @@
 		CPVDD-supply = <&pm8150_s4>;
 		CPVDD1-supply = <&pm8150_s4>;
 		CPVDD2-supply = <&pm8150_s4>;
-		DCVDD-supply = <&L3C>;
+		DCVDD-supply = <&pm8150_s4>;
 		SPKVDD-supply = <&dummy_vreg>;
 
 		gpio-controller;
