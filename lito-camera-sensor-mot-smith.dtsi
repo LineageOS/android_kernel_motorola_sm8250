@@ -107,11 +107,12 @@
 		compatible = "qcom,camera-flash";
 		cci-master = <0>;
 		cam_v_custom1-supply = <&camera_flash_en_gpio>;
-		regulator-names = "cam_v_custom1";
+		cam_vio-supply = <&cam_f_vio_ldo>;
+		regulator-names = "cam_vio", "cam_v_custom1";
 		rgltr-cntrl-support;
-		rgltr-min-voltage = <1808000>;
-		rgltr-max-voltage = <1808000>;
-		rgltr-load-current = <0>;
+		rgltr-min-voltage = <1800000 1808000>;
+		rgltr-max-voltage = <1800000 1808000>;
+		rgltr-load-current = <0 0>;
 		status = "ok";
 	};
 
