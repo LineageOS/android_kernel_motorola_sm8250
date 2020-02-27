@@ -420,6 +420,7 @@
 		cirrus,boost-ctl-millivolt = <11000>;
 		cirrus,boost-peak-milliamp = <4000>;
 		cirrus,boost-cap-microfarad = <21>;
+		cirrus,asp-sdout-hiz = <3>;
 		cirrus,amp-gain-zc;
 		cirrus,fast-switch = "spk_fast_switch1.txt", "spk_fast_switch2.txt",
 							"spk_fast_switch3.txt", "spk_fast_switch4.txt";
@@ -476,6 +477,7 @@
 		cirrus,boost-ctl-millivolt = <11000>;
 		cirrus,boost-peak-milliamp = <4000>;
 		cirrus,boost-cap-microfarad = <21>;
+		cirrus,asp-sdout-hiz = <3>;
 		cirrus,amp-gain-zc;
 		cirrus,fast-switch = "rcv_fast_switch1.txt", "rcv_fast_switch2.txt",
 							"rcv_fast_switch3.txt", "rcv_fast_switch4.txt";
