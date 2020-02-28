@@ -5252,9 +5252,7 @@ int dsi_panel_enable(struct dsi_panel *panel)
 {
 	int rc = 0;
 	u8 pwr_mode;
-	static int panel_recovery_retry;
-	struct dsi_display *dsi_display = container_of(panel->host,
-										struct dsi_display, host);
+  	struct dsi_display *dsi_display = container_of(panel->host, struct dsi_display, host);
 
 	if (!panel) {
 		DSI_ERR("Invalid params\n");
@@ -5280,20 +5278,29 @@ int dsi_panel_enable(struct dsi_panel *panel)
 		}
 
 		if (pwr_mode != panel->disp_on_chk_val) {
-			DSI_ERR("%s: Read Pwr_mode=0%x is not matched with expected value =0x%x\n",
-				__func__, pwr_mode, panel->disp_on_chk_val);
+			DSI_ERR("%s: %s Read Pwr_mode=0%x is not matched with expected value =0x%x\n",
+				__func__, panel->name, pwr_mode, panel->disp_on_chk_val);
 
-			if (panel_recovery_retry++ > 5) {
+			if (panel->panel_recovery_retry++ > 5) {
 				DSI_ERR("%s: panel recovery failed for all retries",
 					__func__);
 
-				BUG();
-			}
+				panel->is_panel_dead = true;
+				panel->esd_utag_enable = false;
+				panel->no_panel_on_read_support = true;
 
-			dsi_display_trigger_panel_dead_event(dsi_display);
+				if (dsi_display_all_displays_dead()) {
+					DSI_ERR("%s:ALL panel recovery failed with 6 times,reboot\n",
+							__func__);
+					BUG();
+				} else
+					DSI_INFO("(%s)Panel dead,disable ESD recovery for it\n",
+							panel->name);
+			} else
+				dsi_display_trigger_panel_dead_event(dsi_display);
 		} else {
 			DSI_INFO("Pwr_mode(0x0A) = 0x%x\n", pwr_mode);
-			panel_recovery_retry = 0;
+			panel->panel_recovery_retry = 0;
 		}
 	} else
 		DSI_INFO("-: no_panel_on_read_support is set\n");

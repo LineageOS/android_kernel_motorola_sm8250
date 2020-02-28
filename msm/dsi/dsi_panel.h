@@ -327,7 +327,12 @@ struct dsi_panel {
 
 	enum touch_state tp_state;
 	bool tp_state_check_enable;
+
+	int panel_recovery_retry;
+	bool is_panel_dead;
 };
+
+bool dsi_display_all_displays_dead(void);
 
 static inline bool dsi_panel_ulps_feature_enabled(struct dsi_panel *panel)
 {
