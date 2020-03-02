@@ -94,7 +94,7 @@ qcom,mdss-dsi-display-timings {
 			15 00 00 00 00 00 02 FE 00 /*return to CMD0*/
 			05 01 00 00 78 00 01 11
 			15 00 00 00 00 00 02 35 00
-			15 00 00 00 00 00 03 51 00 00
+			39 00 00 00 00 00 03 51 00 00
 			15 00 00 00 00 00 02 55 00      /* ACL OFF */
 			05 01 00 00 00 00 01 29];	/* display on */
 		qcom,mdss-dsi-off-command = [
