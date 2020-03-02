@@ -479,8 +479,8 @@
 };
 
 &mot_csot_620_876x2142_cmd_v1 {
-        qcom,platform-te-gpio = <&tlmm 10 0>;
-        qcom,platform-reset-gpio = <&pm8150l_gpios 3 0>;
+	qcom,platform-te-gpio = <&tlmm 10 0>;
+	qcom,platform-reset-gpio = <&pm8150l_gpios 3 0>;
 
 	qcom,bklt-dcs-2bytes-enabled;
 	qcom,mdss-dsi-bl-min-level = <3>;
@@ -546,8 +546,8 @@
 };
 
 &mot_csot_620_876x2142_cmd_v2 {
-        qcom,platform-te-gpio = <&tlmm 10 0>;
-	qcom,platform-reset-gpio = <&tlmm 10 0>;
+	qcom,platform-te-gpio = <&tlmm 10 0>;
+	qcom,platform-reset-gpio = <&pm8150l_gpios 3 0>;
 
 	qcom,bklt-dcs-2bytes-enabled;
 	qcom,mdss-dsi-bl-min-level = <3>;
