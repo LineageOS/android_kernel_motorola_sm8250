@@ -47,7 +47,6 @@
 &L1C {
 	/delete-property/ qcom,init-mode;
 	qcom,init-mode = <RPMH_REGULATOR_MODE_HPM>;
-	regulator-always-on;
 };
 
 &mdss_mdp {
