@@ -61,9 +61,9 @@
 
 	mot_batterydata: qcom,battery-data {
 		qcom,batt-id-range-pct = <100>;
-		df-serialnum = "SB18C49475";
+		df-serialnum = "smithtestprof";
 		/* defender battery profile */
-		#include "4433124_Moto_SmithSM7250_2800mAh_Slave_Mar2nd2020_PM7250.dtsi";
+		#include "4433124_Moto_SmithSM7250_2800mAh_Slave_Mar2nd2020_PM7250.dtsi"
         };
 
 };
