@@ -14,7 +14,6 @@
 /plugin/;
 
 #include "lito-nairo-common-overlay.dtsi"
-#include "dsi-panel-mot-tm-ft8756-fhd-video.dtsi"
 
 / {
 	model = "Nairo";
