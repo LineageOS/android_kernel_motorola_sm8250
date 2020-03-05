@@ -1,6 +1,7 @@
 
 qcom,4433124_Moto_SmithSM7250_2800mAh_Slave_Mar2nd2020 {
     /* 4433124_Moto_SmithSM7250_2800mAh_Slave_Mar2nd2020 */
+    serialnum = "smithtestprof";
     qcom,max-voltage-uv = <4450000>;
     qcom,fg-cc-cv-threshold-uv = <4440000>;
     qcom,fastchg-current-ma = <1500>;
