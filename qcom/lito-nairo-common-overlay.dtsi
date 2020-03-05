@@ -56,9 +56,9 @@
 	};
 
 	mot_batterydata: qcom,battery-data {
-		df-serialnum = "SB18C66911";
+		df-serialnum = "SB18C74374";
 		qcom,batt-id-range-pct = <15>;
-		#include "qg-batterydata-lr50-atl-4500mah.dtsi"
+		#include "qg-batterydata-lz50-amperex-5000mah.dtsi"
 	};
 };
 
