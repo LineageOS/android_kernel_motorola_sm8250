@@ -125,7 +125,6 @@ qcom,mdss-dsi-display-timings {
 			39 01 00 00 00 00 05 2B 00 00 09 23 /* Row Addr set */
 
 			39 01 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0 */
-			39 01 00 00 00 00 06 BE 0E 00 94 13 1F
 			/* Framne rate = 60hz */
 			15 00 00 00 00 00 02 B2 01 /* backlight fix */
 			15 01 00 00 00 00 02 6F 03
@@ -206,7 +205,6 @@ qcom,mdss-dsi-display-timings {
 			39 01 00 00 00 00 05 2B 00 00 09 23 /* Row Addr set */
 
 			39 01 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0 */
-			39 01 00 00 00 00 06 BE 0E 00 94 13 1F
 			/* Framne rate = 90hz */
 			15 00 00 00 00 00 02 B2 01 /* backlight fix */
 			15 01 00 00 00 00 02 6F 03
