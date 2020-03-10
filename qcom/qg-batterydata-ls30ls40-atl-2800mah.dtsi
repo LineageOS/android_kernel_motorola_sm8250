@@ -4,7 +4,7 @@ qcom,4433124_Moto_SmithSM7250_2800mAh {
     serialnum = "ls30ls40";
     qcom,max-voltage-uv = <4450000>;
     qcom,fg-cc-cv-threshold-uv = <4440000>;
-    qcom,fastchg-current-ma = <1500>;
+    qcom,fastchg-current-ma = <2717>;
     qcom,batt-id-kohm = <0>;
     qcom,battery-beta = <3380>;
     qcom,battery-therm-kohm = <10>;
