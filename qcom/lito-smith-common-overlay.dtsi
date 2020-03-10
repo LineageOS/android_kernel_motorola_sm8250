@@ -600,7 +600,7 @@
 	qcom,auto-recharge-soc = <98>;
 	qcom,charger-temp-max = <800>;
 	qcom,smb-temp-max = <800>;
-	qcom,fcc-max-ua = <2500000>;
+	qcom,fcc-max-ua = <2700000>;
 	qcom,fv-max-uv = <4450000>;
 	qcom,usb-icl-ua = <3000000>;
 	qcom,typec-legacy-rp-icl;
@@ -617,8 +617,8 @@
 			compatible = "qcom,qpnp-smbcharger-mmi";
 			qcom,pmic-revid = <&pm7250b_revid>;
 			vbus-supply = <&smb5_vbus>;
-			mmi,fg-main-psy = "fg_main_battery";
-			mmi,fg-flip-psy = "fg_flip_battery";
+			mmi,max-main-psy = "fg_main_battery";
+			mmi,max-flip-psy = "fg_flip_battery";
 			status = "ok";
 			qcom,enable-charging-limit;
 			qcom,upper-limit-capacity = <75>;
@@ -1045,5 +1045,67 @@
 	wdog_cputctx {
 		compatible = "mmi,watchdog_cpu_ctx";
 		memory-region = <&wdog_cpuctx_mem>;
+	};
+};
+
+&tlmm{
+	bq27426_irq_main: bq27426-irq-battery-main {
+		mux {
+			pins = "gpio55";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio55";
+			drive-strength = <2>; /* 2 MA */
+			bias-disable;
+			input-enable;
+		};
+	};
+
+};
+
+&qupv3_se9_i2c {
+	bq27426_main: bq27426-battery-main@55 {
+		compatible = "ti,bq27426";
+		reg = <0x55>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&bq27426_irq_main>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <55 0>;
+		mmi,fg-psy-name = "fg_main_battery";
+		design-capacity = <1255>;
+		mmi,batt-profile-name = "LS30_ATL_1255MAH";
+	};
+};
+
+&tlmm{
+	bq27426_irq_flip: bq27426-irq-battery-flip {
+		mux {
+			pins = "gpio90";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio90";
+			drive-strength = <2>; /* 2 MA */
+			bias-disable;
+			input-enable;
+		};
+	};
+
+};
+
+&qupv3_se1_i2c {
+	bq27426_flip: bq27426-battery-flip@55 {
+		compatible = "ti,bq27426";
+		reg = <0x55>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&bq27426_irq_flip>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <90 0>;
+		mmi,fg-psy-name = "fg_flip_battery";
+		design-capacity = <1545>;
+		mmi,batt-profile-name = "LS40_ATL_1545MAH";
 	};
 };
