@@ -60,7 +60,7 @@
 	bq27426_main: bq27426-battery-main@55 {
 		compatible = "ti,bq27426";
 		reg = <0x55>;
-		status = "okay";
+		status = "disabled";
 		pinctrl-names = "default";
 		pinctrl-0 = <&bq27426_irq_main>;
 		interrupt-parent = <&tlmm>;
@@ -97,7 +97,7 @@
 	bq27426_flip: bq27426-battery-flip@55 {
 		compatible = "ti,bq27426";
 		reg = <0x55>;
-		status = "okay";
+		status = "disabled";
 		pinctrl-names = "default";
 		pinctrl-0 = <&bq27426_irq_flip>;
 		interrupt-parent = <&tlmm>;
