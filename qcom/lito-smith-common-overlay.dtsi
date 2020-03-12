@@ -105,19 +105,6 @@
 		};
 	};
 
-	flip_batt_plus_en: flip_batt_plus_en {
-		mux {
-			pins = "gpio28";
-			function = "gpio";
-		};
-		config {
-			pins = "gpio28";
-			drive-strength = <2>;
-			bias-pull-up;
-			output-high;
-		};
-	};
-
 	fps {
 		rst_active: rst_active {
 			mux {
@@ -695,7 +682,7 @@
 		dlg,cs-gpios = <&tlmm 44 0>;
 
 		pinctrl-names = "default";
-		pinctrl-0 = <&cam_pmic_irq_default &cam_pmic_en_default &flip_batt_en &flip_batt_plus_en>;
+		pinctrl-0 = <&cam_pmic_irq_default &cam_pmic_en_default &flip_batt_en>;
 		use-default-voltage;
 
 		regulators {
