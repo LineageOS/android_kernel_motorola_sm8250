@@ -257,6 +257,58 @@
 	};
 };
 
+&flash_led {
+	pm8150l_flash0: qcom,flash_0 {
+		label = "flash";
+		qcom,led-name = "led:flash_0";
+		qcom,max-current = <750>;
+		qcom,default-led-trigger = "flash0_trigger";
+		qcom,id = <0>;
+		qcom,current-ma = <500>;
+		qcom,duration-ms = <1280>;
+		qcom,ires-ua = <12500>;
+		qcom,hdrm-voltage-mv = <325>;
+		qcom,hdrm-vol-hi-lo-win-mv = <100>;
+	};
+
+	pm8150l_flash1: qcom,flash_1 {
+		label = "flash";
+		qcom,led-name = "led:flash_1";
+		qcom,max-current = <750>;
+		qcom,default-led-trigger = "flash1_trigger";
+		qcom,id = <1>;
+		qcom,current-ma = <500>;
+		qcom,duration-ms = <1280>;
+		qcom,ires-ua = <12500>;
+		qcom,hdrm-voltage-mv = <325>;
+		qcom,hdrm-vol-hi-lo-win-mv = <100>;
+	};
+
+	pm8150l_torch0: qcom,torch_0 {
+		label = "torch";
+		qcom,led-name = "led:torch_0";
+		qcom,max-current = <250>;
+		qcom,default-led-trigger = "torch0_trigger";
+		qcom,id = <0>;
+		qcom,current-ma = <50>;
+		qcom,ires-ua = <12500>;
+		qcom,hdrm-voltage-mv = <325>;
+		qcom,hdrm-vol-hi-lo-win-mv = <100>;
+	};
+
+	pm8150l_torch1: qcom,torch_1 {
+		label = "torch";
+		qcom,led-name = "led:torch_1";
+		qcom,max-current = <250>;
+		qcom,default-led-trigger = "torch1_trigger";
+		qcom,id = <1>;
+		qcom,current-ma = <50>;
+		qcom,ires-ua = <12500>;
+		qcom,hdrm-voltage-mv = <325>;
+		qcom,hdrm-vol-hi-lo-win-mv = <100>;
+	};
+};
+
 &soc {
 	camera_front_main_dvdd_ldo: gpio-regulator@0 {
 		compatible = "regulator-fixed";
