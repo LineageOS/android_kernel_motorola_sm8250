@@ -26,6 +26,10 @@
 };
 
 &pm8150_gpios {
+	interrupts = <0x0 0xc3 0x0 IRQ_TYPE_NONE>,
+		<0x0 0xc4 0x0 IRQ_TYPE_NONE>;
+	interrupt-names = "pm8150_gpio3", "pm8150_gpio4";
+	qcom,gpios-disallowed = <1 2 5 6 7 8 9 10>;
 	cdc_sleep_clk {
 		cdc_sleep_clk_default: cdc_sleep_clk_default {
 			pins = "gpio3";
