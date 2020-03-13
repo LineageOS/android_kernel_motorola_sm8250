@@ -189,6 +189,7 @@ struct msm_asoc_mach_data {
 	struct device_node *fsa_handle;
 	struct clk *lpass_audio_hw_vote;
 	int core_audio_vote_count;
+	struct gpio_desc *hac_nr_gpio;
 };
 
 struct tdm_port {
@@ -3519,6 +3520,51 @@ static int msm_bt_sample_rate_tx_put(struct snd_kcontrol *kcontrol,
 	return 0;
 }
 
+static int msm_hac_nr_get(struct snd_kcontrol *kcontrol,
+				     struct snd_ctl_elem_value *ucontrol)
+{
+	struct snd_soc_component *component =
+		snd_soc_kcontrol_component(kcontrol);
+	struct msm_asoc_mach_data *pdata = NULL;
+
+	if (!component) {
+		pr_err("%s - component not found\n", __func__);
+		return 0;
+	}
+
+	pdata = snd_soc_card_get_drvdata(component->card);
+
+	if (pdata->hac_nr_gpio)
+		ucontrol->value.integer.value[0] = gpiod_get_value_cansleep(pdata->hac_nr_gpio);
+	else {
+		pr_err("%s - HAC NR not supported\n", __func__);
+		ucontrol->value.integer.value[0] = -1;
+	}
+
+	return 0;
+}
+
+static int msm_hac_nr_put(struct snd_kcontrol *kcontrol,
+				     struct snd_ctl_elem_value *ucontrol)
+{
+	struct snd_soc_component *component =
+		snd_soc_kcontrol_component(kcontrol);
+	struct msm_asoc_mach_data *pdata = NULL;
+
+	if (!component) {
+		pr_err("%s - component not found\n", __func__);
+		return 0;
+	}
+	pdata = snd_soc_card_get_drvdata(component->card);
+
+	if(pdata->hac_nr_gpio)
+		gpiod_set_value_cansleep(pdata->hac_nr_gpio, !!ucontrol->value.integer.value[0]);
+	else
+		pr_err("%s - HAC NR not supported\n", __func__);
+
+	return 0;
+}
+
 static const struct snd_kcontrol_new msm_int_snd_controls[] = {
 	SOC_ENUM_EXT("WSA_CDC_DMA_RX_0 Channels", wsa_cdc_dma_rx_0_chs,
 			cdc_dma_rx_ch_get, cdc_dma_rx_ch_put),
@@ -3982,6 +4028,8 @@ static const struct snd_kcontrol_new msm_common_snd_controls[] = {
 			msm_vi_feed_tx_ch_get, msm_vi_feed_tx_ch_put),
 	SOC_SINGLE_MULTI_EXT("TDM Slot Map", SND_SOC_NOPM, 0, 255, 0,
 			TDM_MAX_SLOTS + MAX_PATH, NULL, tdm_slot_map_put),
+	SOC_SINGLE_EXT("HAC NR", SND_SOC_NOPM, 0, 1, 0,
+			msm_hac_nr_get, msm_hac_nr_put),
 };
 
 static const struct snd_kcontrol_new msm_snd_controls[] = {
@@ -8555,6 +8603,12 @@ static int msm_asoc_machine_probe(struct platform_device *pdev)
 	}
 	dev_info(&pdev->dev, "%s: Sound card %s registered\n",
 		 __func__, card->name);
+
+	pdata->hac_nr_gpio = devm_gpiod_get_optional(&pdev->dev,
+						     "hac-nr",
+						     GPIOD_OUT_LOW);
+	if (IS_ERR(pdata->hac_nr_gpio))
+		dev_info(&pdev->dev, "HAC NR GPIO not defined\n");
 
 	pdata->hph_en1_gpio_p = of_parse_phandle(pdev->dev.of_node,
 						"qcom,hph-en1-gpio", 0);
