@@ -550,19 +550,27 @@
 			qcom,enable-charging-limit;
 			qcom,upper-limit-capacity = <75>;
 			qcom,lower-limit-capacity = <60>;
-			qcom,mmi-temp-zones-main = <0 4200 240 0>,
-					<10 4200 600 240>,
-					<15 0 600 600>,
-					<45 4200 1205 840>,
-					<60 4200 600 0>;
-			qcom,iterm-ma-main = <80>;
-			qcom,mmi-temp-zones-flip = <0 4200 250 0>,
-					<10 4200 610 250>,
-					<15 0 610 610>,
-					<45 4200 1225 860>,
-					<60 4200 610 0>;
-			qcom,iterm-ma-flip = <80>;
+			qcom,mmi-temp-zones-main = <0 4200 243 0>,
+					<10 4200 608 243>,
+					<15 0 608 608>,
+					<45 4450 1217 1217>,
+					<60 4200 608 0>;
+			qcom,iterm-ma-main = <50>;
+			qcom,mmi-temp-zones-flip = <0 4200 300 0>,
+					<10 4200 750 300>,
+					<15 0 750 750>,
+					<45 4450 1500 1500>,
+					<60 4200 750 0>;
+			qcom,iterm-ma-flip = <50>;
 			qcom,vfloat-comp-uv = <20000>;
+			/* MMI_STOPSHIP charging: add params for basic sm */
+			qcom,mmi-temp-zones =
+				<0 4200 1200 450>,
+				<10 4200 1200 450>,
+				<15 0 1200 1200>,
+				<45 4450 2400 2400>,
+				<60 4200 1200 0>;
+			qcom,iterm-ma = <100>;
 		};
 	};
 };
