@@ -745,6 +745,7 @@
 		sec,suppression-control;
 		sec,pill-region-control;
 		sec,hold-distance-control;
+		sec,gs-distance-control;
 		pinctrl-names = "on_state", "off_state";
 		pinctrl-0 = <&touch_reset_active &touch_int_active>;
 		pinctrl-1 = <&touch_reset_active &touch_int_active>;
