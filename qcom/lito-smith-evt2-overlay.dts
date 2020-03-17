@@ -65,3 +65,17 @@
 &acc_headset {
 	cirrus,hsdet-gpios = <&tlmm 86 GPIO_ACTIVE_LOW>;
 };
+
+&pm7250b_vadc {
+	/delete-node/ pa_therm3;
+};
+
+&pm7250b_adc_tm {
+	/delete-node/ pa_therm3@53;
+};
+
+&thermal_zones {
+	pa-therm3-usr {
+		status = "disabled";
+	};
+};
