@@ -32,6 +32,7 @@
 			gpios = <&pm8150l_gpios 5 GPIO_ACTIVE_LOW>;
 			linux,input-type = <1>;
 			linux,code = <KEY_VOLUMEUP>;
+			mmi,key-swap-code = <KEY_VOLUMEDOWN>;
 			gpio-key,wakeup;
 			debounce-interval = <15>;
 			linux,can-disable;
@@ -65,6 +66,27 @@
 		#include "4433124_Moto_SmithSM7250_2800mAh_Slave_Mar2nd2020_PM7250.dtsi"
         };
 
+	key_swap {
+		compatible = "mmi,key_swap";
+		gpios = <&tlmm 115 0>;
+		key_swap,poll;
+		action-0 {
+			action-type = "swap";
+			code = <KEY_VOLUMEDOWN>;
+			swap = <KEY_VOLUMEUP>;
+		};
+		action-1 {
+			action-type = "swap";
+			swap = <KEY_VOLUMEDOWN>;
+			code = <KEY_VOLUMEUP>;
+		};
+	};
+};
+
+&pm8150_pon {
+	qcom,pon_2 {
+		mmi,key-swap-code = <KEY_VOLUMEUP>;
+	};
 };
 
 &tlmm{
