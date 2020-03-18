@@ -103,6 +103,7 @@
 		sec,size_to_pixel_multiple_factor = <1948>;
 		sec,suppression-control;
 		sec,pill-region-control;
+		sec,hold-distance-control;
 		sec,regulator_avdd = "pm8150_l13";
 		sec,regulator_dvdd = "pm8150_l17";
 		pinctrl-names = "on_state", "off_state";
