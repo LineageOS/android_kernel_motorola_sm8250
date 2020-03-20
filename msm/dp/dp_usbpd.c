@@ -7,6 +7,7 @@
 #include <linux/slab.h>
 #include <linux/device.h>
 #include <linux/delay.h>
+#include <linux/workqueue.h>
 
 #include "dp_usbpd.h"
 #include "dp_debug.h"
@@ -18,6 +19,8 @@
 /* USBPD-TypeC specific Macros */
 #define VDM_VERSION		0x0
 #define USB_C_DP_SID		0xFF01
+
+#define DELAY_REPEAT_ATTENTION 1500
 
 enum dp_usbpd_pin_assignment {
 	DP_USBPD_PIN_A,
@@ -66,6 +69,7 @@ struct dp_usbpd_private {
 	struct dp_usbpd dp_usbpd;
 	enum dp_usbpd_alt_mode alt_mode;
 	u32 dp_usbpd_config;
+	struct delayed_work	repeat_attention_work;
 };
 
 static const char *dp_usbpd_pin_name(u8 pin)
@@ -388,6 +392,15 @@ static void dp_usbpd_response_cb(struct usbpd_svid_handler *hdlr, u8 cmd,
 		if (pd->dp_cb && pd->dp_cb->attention)
 			pd->dp_cb->attention(pd->dev);
 
+
+		if(!pd->dp_usbpd.base.hpd_high)
+		{
+			DP_DEBUG("In attention and hpd_high is false so queue delay attention work\n");
+			cancel_delayed_work(&pd->repeat_attention_work);
+			schedule_delayed_work(&pd->repeat_attention_work,
+				msecs_to_jiffies(DELAY_REPEAT_ATTENTION));
+		}
+
 		break;
 	case DP_USBPD_VDM_STATUS:
 		pd->vdo = *vdos;
@@ -453,6 +466,35 @@ static int dp_usbpd_simulate_connect(struct dp_hpd *dp_hpd, bool hpd)
 
 error:
 	return rc;
+}
+
+static void dp_usbpd_repeat_attention_work(struct work_struct *w)
+{
+	int rc = 0;
+	struct dp_usbpd_private *dp_pd = container_of(w, struct dp_usbpd_private, repeat_attention_work.work);
+
+	DP_DEBUG("We are in delay attention work\n");
+	if (!dp_pd) {
+		DP_ERR("invalid input\n");
+		rc = -EINVAL;
+		goto error;
+	}
+
+	dp_usbpd_get_status(dp_pd);
+
+	dp_pd->dp_usbpd.base.hpd_high = true;
+
+	if (!dp_pd->dp_usbpd.base.alt_mode_cfg_done) {
+		if (dp_pd->dp_usbpd.port & BIT(1))
+			dp_usbpd_send_event(dp_pd, DP_USBPD_EVT_CONFIGURE);
+		return;
+	}
+
+	if (dp_pd->dp_cb && dp_pd->dp_cb->attention)
+		dp_pd->dp_cb->attention(dp_pd->dev);
+error:
+	return;
+
 }
 
 static int dp_usbpd_simulate_attention(struct dp_hpd *dp_hpd, int vdo)
@@ -553,6 +595,7 @@ struct dp_hpd *dp_usbpd_get(struct device *dev, struct dp_hpd_cb *cb)
 	usbpd->pd = pd;
 	usbpd->svid_handler = svid_handler;
 	usbpd->dp_cb = cb;
+	INIT_DELAYED_WORK(&usbpd->repeat_attention_work, dp_usbpd_repeat_attention_work);
 
 	dp_usbpd = &usbpd->dp_usbpd;
 	dp_usbpd->base.simulate_connect = dp_usbpd_simulate_connect;
