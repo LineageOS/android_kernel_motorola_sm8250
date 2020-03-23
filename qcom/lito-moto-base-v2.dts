@@ -11,17 +11,35 @@
  */
 
 /dts-v1/;
-/plugin/;
 
-#include "lito-smith-common-overlay.dtsi"
+#include "lito-v2.dtsi"
 
 / {
-	model = "Smith";
-	compatible = "qcom,lito-smith", "qcom,lito-moto", "qcom,lito";
-	qcom,msm-id = <400 0x20000>;
-	qcom,board-id = <0 0xB2A0>;
+	qcom,board-id = <0 0>;
+	channel-id-map = "";
+/*
+ * Some nodes need labels assigned to appear in __symbols__
+ */
+	chosen: chosen { };
+	aliases: aliases { };
+	reserved_memory: reserved-memory { };
+	mot_batterydata: qcom,battery-data { };
+	utags: utags { };
+	hw: hw { };
 };
 
-/*
- * Smith HW rev DVT2A specific changes go here
- */
+&firmware {
+        /delete-node/ android;
+};
+
+&qtee_apps_mem {
+	reg = <0x0 0x81e00000 0x0 0x4200000>;
+};
+
+&qcom_seecom {
+	reg = <0x82200000 0x3e00000>;
+};
+
+&qcom_smcinvoke {
+	reg = <0x82200000 0x3e00000>;
+};
