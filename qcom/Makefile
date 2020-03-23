@@ -40,6 +40,7 @@ dtbo-$(CONFIG_SMITH_DTB) += \
 		lito-smith-evt1-overlay.dtbo \
 		lito-smith-evt2-overlay.dtbo \
 		lito-smith-dvt1a-overlay.dtbo \
+                lito-smith-dvt1a2-overlay.dtbo \
 		lito-smith-dvt1b-overlay.dtbo \
 		lito-smith-dvt1c-overlay.dtbo \
 		lito-smith-dvt2a-overlay.dtbo
@@ -47,9 +48,10 @@ dtbo-$(CONFIG_SMITH_DTB) += \
 lito-smith-evt1-overlay.dtbo-base := lito-moto-base.dtb
 lito-smith-evt2-overlay.dtbo-base := lito-moto-base.dtb
 lito-smith-dvt1a-overlay.dtbo-base := lito-moto-base.dtb
-lito-smith-dvt1b-overlay.dtbo-base := lito-moto-base.dtb
-lito-smith-dvt1c-overlay.dtbo-base := lito-moto-base.dtb
-lito-smith-dvt2a-overlay.dtbo-base := lito-moto-base.dtb
+lito-smith-dvt1a2-overlay.dtbo-base := lito-moto-base-v2.dtb
+lito-smith-dvt1b-overlay.dtbo-base := lito-moto-base-v2.dtb
+lito-smith-dvt1c-overlay.dtbo-base := lito-moto-base-v2.dtb
+lito-smith-dvt2a-overlay.dtbo-base := lito-moto-base-v2.dtb
 
 dtbo-$(CONFIG_RACER_DTB) += \
 		lito-racer-evt1-overlay.dtbo \
