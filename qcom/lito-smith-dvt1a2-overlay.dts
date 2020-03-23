@@ -19,9 +19,15 @@
 	model = "Smith";
 	compatible = "qcom,lito-smith", "qcom,lito-moto", "qcom,lito";
 	qcom,msm-id = <400 0x20000>;
-	qcom,board-id = <0 0xB2A0>;
+	qcom,board-id = <0 0xB1A2>;
 };
 
 /*
- * Smith HW rev DVT2A specific changes go here
+ * Smith HW rev DVT1A2 specific changes go here
  */
+
+&q6core {
+        sound-madera {
+                qcom,model = "kona-madera-princeb0-card";
+	};
+};
