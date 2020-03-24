@@ -1,3 +1,5 @@
+#include "moto_therm_sys_temp.dtsi"
+
 &pm7250b_vadc {
 	quiet_therm@4e {
 		reg = <ADC_AMUX_THM2_PU2>;
