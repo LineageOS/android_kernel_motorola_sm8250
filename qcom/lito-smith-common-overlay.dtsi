@@ -62,8 +62,8 @@
 
 	mot_batterydata: qcom,battery-data {
 		qcom,batt-id-range-pct = <100>;
-		df-serialnum = "smithtestprof";
-		#include "4433124_Moto_SmithSM7250_2800mAh_Slave_Mar2nd2020_PM7250.dtsi"
+		df-serialnum = "ls30ls40";
+		#include "qg-batterydata-ls30ls40-atl-2800mah.dtsi"
         };
 
 	key_swap {
