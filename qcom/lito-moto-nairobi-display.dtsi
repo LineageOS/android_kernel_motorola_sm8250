@@ -83,6 +83,12 @@
 	qcom,mdss-dsi-panel-status-value = <0x9c>;
 	qcom,mdss-dsi-panel-status-read-length = <1>;
 
+	qcom,mdss-dsi-panel-hdr-enabled;
+	qcom,mdss-dsi-panel-hdr-color-primaries = <14500 15500 32000
+	        17000 15500 30000 8000 3000>;
+	qcom,mdss-dsi-panel-peak-brightness = <4200000>;
+	qcom,mdss-dsi-panel-blackness-level = <4200>;
+
 	qcom,tp_state_check_enable;
 
 	qcom,mdss-dsi-pan-enable-dynamic-fps;
