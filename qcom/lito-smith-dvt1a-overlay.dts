@@ -31,3 +31,9 @@
                 qcom,model = "kona-madera-princeb0-card";
 	};
 };
+
+/delete-node/ &ois_rear;
+
+&rear_sensor {
+	/delete-property/ ois-src;
+};
