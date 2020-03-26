@@ -119,7 +119,7 @@
 	};
 
 	synaptics_tcm@4b {
-		status = "/chosen","mmi,panel_name","tianma_syna_667_1080p_dsc_cmd";
+		status = "/chosen","mmi,panel_name","contains","tianma_syna";
 		compatible = "synaptics,tcm-i2c";
 		reg = <0x4b>;
 		interrupt-parent = <&tlmm>;
