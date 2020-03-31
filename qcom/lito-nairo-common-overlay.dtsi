@@ -305,6 +305,10 @@
 	};
 };
 
+&bcl_soc {
+	qcom,bcl-not-mitigate-icl = <2500>;
+};
+
 &tlmm{
 	cam_pmic_irq_default: cam-pmic-irq-default {
 		mux {
