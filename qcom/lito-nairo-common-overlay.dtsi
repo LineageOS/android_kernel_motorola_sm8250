@@ -25,6 +25,8 @@
 #include "lito-nairo-fmr-overlay.dtsi"
 #include "lito-moto-common-overlay.dtsi"
 
+#define NAIRO_RADIO_VZW   1
+#define NAIRO_RADIO_NA    2
 
 &soc {
 	gpio_keys {
