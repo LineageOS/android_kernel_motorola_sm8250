@@ -140,6 +140,20 @@
 			drive-strength = <6>; /* 6 MA */
 		};
 	};
+
+	cam_flash_en_default: cam_flash_en_default {
+		/* RESET */
+		mux {
+			pins = "gpio5";
+			function = "gpio";
+		};
+
+		config{
+			pins = "gpio5";
+			drive-strength = <2>; /* 2 MA */
+			output-low;
+		};
+	};
 };
 &pm8150l_gpios {
 	front_main_camera_reset_en {
@@ -321,6 +335,19 @@
 		gpio = <&pm8150l_gpios 10 0>;
 	};
 
+	camera_flash_en_gpio: gpio-regulator@1{
+		compatible = "regulator-fixed";
+		reg = <0x01 0x00>;
+		regulator-name = "camera_flash_en_gpio";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+		regulator-enable-ramp-delay = <233>;
+		enable-active-high;
+		gpio = <&tlmm 5 0>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&cam_flash_en_default>;
+	};
+
 	led_flash_rear: qcom,camera-flash@0 {
 		cell-index = <0>;
 		reg = <0x00 0x00>;
@@ -348,6 +375,20 @@
 		flash-source = <&pm8150l_flash0 &pm8150l_flash1>;
 		torch-source = <&pm8150l_torch0 &pm8150l_torch1>;
 		switch-source = <&pm8150l_switch2>;
+		status = "ok";
+	};
+
+	led_flash_macro: qcom,camera-flash@3 {
+		cell-index = <3>;
+		reg = <0x03 0x00>;
+		compatible = "qcom,camera-flash";
+		gpio-flash-support;
+		cam_v_custom1-supply = <&camera_flash_en_gpio>;
+		regulator-names = "cam_v_custom1";
+		rgltr-cntrl-support;
+		rgltr-min-voltage = <1800000>;
+		rgltr-max-voltage = <1800000>;
+		rgltr-load-current = <0>;
 		status = "ok";
 	};
 
@@ -477,7 +518,7 @@
 		clock-rates = <24000000>;
 	};
 
-	qcom,cam-sensor@1 {
+	qcom,cam-sensor@1 {    //front main ov16a1q
 		cell-index = <1>;
 		compatible = "qcom,cam-sensor";
 		reg = <0x1>;
@@ -518,7 +559,7 @@
 		clock-rates = <24000000>;
 	};
 
-	qcom,cam-sensor@4{
+	qcom,cam-sensor@4{    //s5k5e9
 		cell-index = <4>;
 		compatible = "qcom,cam-sensor";
 		reg = <0x4>;
@@ -528,6 +569,7 @@
 		sensor-position-yaw = <180>;
 		eeprom-src = <&eeprom_rear_macro>;
 		actuator-src = <&actuator_macro>;
+		led-flash-src = <&led_flash_macro>;
 		cam_vio-supply = <&cam_iovdd_ldo>;
 		cam_vana-supply = <&cam_wide_depth_macro_avdd_ldo>;
 		cam_vdig-supply = <&cam_wide_macro_dvdd_ldo>;
