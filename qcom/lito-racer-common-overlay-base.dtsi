@@ -271,6 +271,10 @@
 
 };
 
+&bcl_soc {
+	qcom,bcl-not-mitigate-icl = <1500>;
+};
+
 &thermal_zones {
 	xo-therm-step {
 		polling-delay-passive = <2000>;
