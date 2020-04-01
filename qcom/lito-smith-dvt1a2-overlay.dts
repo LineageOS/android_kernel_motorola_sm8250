@@ -37,3 +37,29 @@
 &rear_sensor {
 	/delete-property/ ois-src;
 };
+
+&prince_irq_default {
+	mux {
+		pins = "gpio85";
+	};
+	config {
+		pins = "gpio85";
+	};
+};
+
+&usb_aud_det_default {
+	mux {
+		pins = "gpio86";
+	};
+	config {
+		pins = "gpio86";
+	};
+};
+
+&cs35l41_spk {
+	interrupts = <85 IRQ_TYPE_LEVEL_LOW>;
+};
+
+&acc_headset {
+	cirrus,hsdet-gpios = <&tlmm 86 GPIO_ACTIVE_LOW>;
+};
