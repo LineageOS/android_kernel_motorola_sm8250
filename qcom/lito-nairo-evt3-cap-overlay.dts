@@ -22,3 +22,7 @@
 	qcom,board-id = <(NAIRO_RADIO_VZW << 8 | 0x4C) 0xA300>, <(NAIRO_RADIO_NA << 8 | 0x4C) 0xA300>;
 };
 
+&sx933x {
+	Semtech,button-flag = <0x03>;
+};
+
