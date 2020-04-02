@@ -46,6 +46,7 @@
 	modem-mmw3-mod-usr {
 		status = "disabled";
 	};
+
 	xo-therm-step {
 		status = "disabled";
 	};
@@ -222,3 +223,6 @@
 	};
 };
 
+&soc_trip {
+	temperature = <5>;
+};
