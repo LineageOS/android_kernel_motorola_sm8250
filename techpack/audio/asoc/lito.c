@@ -5959,6 +5959,8 @@ static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
 		return ret;
 	}
 
+	msm_add_mi2s_snd_controls(component);
+
 	ret = snd_soc_dapm_new_controls(dapm, msm_madera_dapm_widgets,
 			ARRAY_SIZE(msm_madera_dapm_widgets));
 	if (ret != 0) {
