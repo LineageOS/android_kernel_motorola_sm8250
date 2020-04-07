@@ -526,6 +526,24 @@
 	};
 };
 
+&thermal_zones {
+	soc {
+		trips {
+			soc_trip2:soc-trip2 {
+				temperature = <15>;
+				hysteresis = <0>;
+				type = "passive";
+			};
+		};
+		cooling-maps {
+			soc_modem {
+				trip = <&soc_trip2>;
+				cooling-device = <&modem_mmw0 3 3>;
+			};
+		};
+	};
+};
+
 &tlmm{
 	laser_xsdn_active: laser_xsdn_active {
 		mux {
