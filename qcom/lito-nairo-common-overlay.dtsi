@@ -424,3 +424,7 @@
 &pm8008_9 {
 	status = "disabled";
 };
+
+&ufshc_mem {
+	spm-level = <3>;
+};
