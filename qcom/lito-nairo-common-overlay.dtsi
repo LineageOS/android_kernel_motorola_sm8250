@@ -61,6 +61,7 @@
 		df-serialnum = "SB18C74374";
 		qcom,batt-id-range-pct = <15>;
 		#include "qg-batterydata-lz50-amperex-5000mah.dtsi"
+		#include "qg-batterydata-lz50-scud-5000mah.dtsi"
 	};
 };
 
