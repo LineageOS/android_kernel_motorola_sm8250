@@ -382,13 +382,14 @@
 		cell-index = <3>;
 		reg = <0x03 0x00>;
 		compatible = "qcom,camera-flash";
-		gpio-flash-support;
+		/* use main flashlight*/
+		flash-source = <&pm8150l_flash0 &pm8150l_flash1>;
+		torch-source = <&pm8150l_torch0 &pm8150l_torch1>;
+		switch-source = <&pm8150l_switch2>;
+		/* use ring flashlight*/
 		cam_v_custom1-supply = <&camera_flash_en_gpio>;
 		regulator-names = "cam_v_custom1";
-		rgltr-cntrl-support;
-		rgltr-min-voltage = <1800000>;
-		rgltr-max-voltage = <1800000>;
-		rgltr-load-current = <0>;
+		gpio-flash-support;
 		status = "ok";
 	};
 
