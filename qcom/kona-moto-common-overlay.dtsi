@@ -544,6 +544,10 @@
 	};
 };
 
+&soc_trip {
+	temperature = <5>;
+};
+
 &tlmm{
 	laser_xsdn_active: laser_xsdn_active {
 		mux {
