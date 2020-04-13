@@ -14,16 +14,11 @@
 /plugin/;
 
 #include "lito-nairo-common-overlay.dtsi"
-#include "dsi-panel-mot-tm-ft8756-fhd-video.dtsi"
 
 / {
 	model = "Nairo";
 	compatible = "qcom,lito-nairo", "qcom,lito-moto", "qcom,lito";
 	qcom,msm-id = <400 0x10000>, <440 0x10000>;
 	qcom,board-id = <0x4C 0xA100>;
-};
-&pm8150l_wled {
-	/delete-property/ qcom,string-cfg;
-	qcom,string-cfg = <14>;
 };
 
