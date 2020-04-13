@@ -441,6 +441,27 @@ static int cam_flash_init_subdev(struct cam_flash_ctrl *fctrl)
 	return rc;
 }
 
+static bool cam_flash_find_sku_to_use_pmic()
+{
+	char boot[6] = {'\0'};
+	char *match = (char *)strnstr(saved_command_line, "androidboot.radio=", strlen(saved_command_line));
+
+	if (match) {
+		memcpy(boot, (match + strlen("androidboot.radio=")), sizeof(boot));
+		CAM_INFO(CAM_FLASH, "androidboot.radio is %s", boot);
+		if (strnstr(boot, "JAPAN", strlen(boot)) ||strnstr(boot, "EMLA", strlen(boot))) {
+			/* SKU JAPAN or EMLA(EU/EMA) use PMIC*/
+			return true;
+		} else {
+			/* SKU VZW or NA use GPIO*/
+			return false;
+		}
+	}
+	CAM_ERR(CAM_FLASH, "NO SKU please check cmdline androidboot.radio");
+	return false;
+}
+
+
 static int32_t cam_flash_platform_probe(struct platform_device *pdev)
 {
 	int32_t rc = 0, i = 0;
@@ -521,11 +542,19 @@ static int32_t cam_flash_platform_probe(struct platform_device *pdev)
 		fctrl->func_tbl.power_ops = cam_flash_i2c_power_ops;
 		fctrl->func_tbl.flush_req = cam_flash_i2c_flush_request;
 	} else if (of_find_property(pdev->dev.of_node, "gpio-flash-support", NULL)) {
-		/* MOT_FLASHLIGHT_GPIO GPIO Flash */
-		fctrl->func_tbl.parser = cam_flash_gpio_pkt_parser;
-		fctrl->func_tbl.apply_setting = cam_flash_gpio_apply_setting;
-		fctrl->func_tbl.power_ops = cam_flash_gpio_power_ops;
-		fctrl->func_tbl.flush_req = cam_flash_gpio_flush_request;
+		if (cam_flash_find_sku_to_use_pmic()) {
+			/* PMIC Flash */
+			fctrl->func_tbl.parser = cam_flash_pmic_pkt_parser;
+			fctrl->func_tbl.apply_setting = cam_flash_pmic_apply_setting;
+			fctrl->func_tbl.power_ops = cam_flash_pmic_power_ops;
+			fctrl->func_tbl.flush_req = cam_flash_pmic_flush_request;
+		} else {
+			/* MOT_FLASHLIGHT_GPIO GPIO Flash */
+			fctrl->func_tbl.parser = cam_flash_gpio_pkt_parser;
+			fctrl->func_tbl.apply_setting = cam_flash_gpio_apply_setting;
+			fctrl->func_tbl.power_ops = cam_flash_gpio_power_ops;
+			fctrl->func_tbl.flush_req = cam_flash_gpio_flush_request;
+            }
 	} else {
 		if (fctrl->soc_info.gpio_data) {
 			rc = cam_sensor_util_request_gpio_table(
