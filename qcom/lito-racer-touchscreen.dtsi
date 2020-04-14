@@ -137,5 +137,8 @@
 		synaptics,bus-reg-name = "pm8150_l17";
 		pinctrl-names = "default";
 		pinctrl-0 = <&touch_int_active>;
+		/* touchscreen_mmi class entries */
+		mmi,enable-gestures;
+		mmi,power-off-suspend;
 	};
 };
