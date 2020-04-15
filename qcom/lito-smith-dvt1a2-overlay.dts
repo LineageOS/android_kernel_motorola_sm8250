@@ -26,12 +26,6 @@
  * Smith HW rev DVT1A2 specific changes go here
  */
 
-&q6core {
-        sound-madera {
-                qcom,model = "kona-madera-princeb0-card";
-	};
-};
-
 /delete-node/ &ois_rear;
 
 &rear_sensor {
