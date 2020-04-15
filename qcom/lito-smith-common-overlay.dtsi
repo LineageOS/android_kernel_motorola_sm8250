@@ -66,10 +66,19 @@
 		#include "qg-batterydata-ls30ls40-atl-2800mah.dtsi"
         };
 
+	flip_detection: flip_detection {
+		compatible = "extcon-gpio";
+		extcon-id = <62>;
+		extcon-gpios = <&tlmm 116 GPIO_ACTIVE_HIGH>;
+		debounce-ms = <200>;
+		irq-flags = <IRQ_TYPE_EDGE_BOTH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&flip_det_default>;
+	};
+
 	key_swap {
 		compatible = "mmi,key_swap";
-		gpios = <&tlmm 115 0>;
-		key_swap,poll;
+		extcon = <&flip_detection>;
 		action-0 {
 			action-type = "swap";
 			code = <KEY_VOLUMEDOWN>;
@@ -270,6 +279,17 @@
 		};
 	};
 
+	flip_det_default: flip_det_default {
+		mux {
+			pins = "gpio116";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio116";
+			drive-strength = <2>;
+			bias-no-pull;
+		};
+	};
 };
 
 &usb2_phy0 {
@@ -907,6 +927,7 @@
 
 	sx933x@28 {
 		compatible = "Semtech,sx933x";
+		extcon = <&flip_detection>;
 		reg = <0x28>;
 		interrupt-parent = <&tlmm>;
 		interrupts = <24 0>;
