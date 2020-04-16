@@ -119,7 +119,7 @@ qcom,mdss-dsi-display-timings {
 			39 01 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0 */
 			/*CSOT Frequency*/
 			15 01 00 00 00 00 02 6F 05
-			15 01 00 00 00 00 02 BA 21
+			15 01 00 00 00 00 02 BA 20
 			/*GPO0=TE, GPO1=ALL MIPI error, GPO2=TSP_HTE, GPO3=TSP_CTE*/
 			39 01 00 00 00 00 06 BE 0E 00 94 13 1F
 			/* Framne rate = 60hz */
@@ -227,7 +227,7 @@ qcom,mdss-dsi-display-timings {
 			39 01 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0*/
 			/*CSOT Frequency*/
 			15 01 00 00 00 00 02 6F 05
-			15 01 00 00 00 00 02 BA 21
+			15 01 00 00 00 00 02 BA 20
 			/*GPO0=TE, GPO1=ALL MIPI error, GPO2=TSP_HTE, GPO3=TSP_CTE*/
 			39 01 00 00 00 00 06 BE 0E 00 94 13 1F
 			/* Framne rate = 90hz */
