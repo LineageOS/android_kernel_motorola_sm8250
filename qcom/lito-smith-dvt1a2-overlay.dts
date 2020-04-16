@@ -63,6 +63,8 @@
 };
 
 &pm7250b_adc_tm {
+	io-channels = <&pm7250b_vadc ADC_AMUX_THM1_PU2>;
+
 	/delete-node/ pa_therm3@53;
 };
 
