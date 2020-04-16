@@ -118,7 +118,8 @@
 		};
 	};
 
-	bmr_w_therm {
+	/* bmr_w_therm */
+	mmw_trx_therm {
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-governor = "user_space";
@@ -172,7 +173,8 @@
 	mmw-pa3-usr {
 		status = "disabled";
 	};
-	bmr_e_therm {
+	/* bmr_e_therm */
+	mmw_m0_therm {
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-governor = "user_space";
@@ -226,7 +228,8 @@
 	mmw-pa1-usr {
 		status = "disabled";
 	};
-	bmr_n_therm {
+	/* bmr_n_therm */
+	mmw_m1_therm {
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-governor = "user_space";
