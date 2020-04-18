@@ -26,18 +26,9 @@
  * Smith HW rev EVT1 specific changes go here
  */
 
-&soc {
-	vreg_5p0: vreg_5v {
-		compatible = "regulator-fixed";
-		regulator-name = "vreg_5p0";
-		gpio = <&pm7250b_gpios 4 0>;
-		enable-active-high;
-	};
-};
 
-&pm7250b_charger {
-	vconn-parent-supply = <&vreg_5p0>;
-};
+
+
 
 &q6core {
 	sound-madera {
