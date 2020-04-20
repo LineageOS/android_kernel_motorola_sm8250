@@ -19,9 +19,9 @@
 	model = "Smith";
 	compatible = "qcom,lito-smith", "qcom,lito-moto", "qcom,lito";
 	qcom,msm-id = <400 0x20000>;
-	qcom,board-id = <0 0xB2A0>;
+	qcom,board-id = <0 0xC000>;
 };
 
 /*
- * Smith HW rev DVT2A specific changes go here
+ * Smith HW rev PVT specific changes go here
  */
