@@ -65,7 +65,7 @@
 
 		pinctrl-names = "default";
 		pinctrl-0 = <&flip_batt_plus_en>;
-		hac-nr-gpios = <&tlmm 28 0>;
+		hac-nr-gpios = <&tlmm 28 GPIO_ACTIVE_LOW>;
 
 		asoc-platform = <&pcm0>, <&pcm1>, <&pcm2>, <&voip>, <&voice>,
 				<&loopback>, <&compress>, <&hostless>,
@@ -292,8 +292,8 @@
 		config {
 			pins = "gpio28";
 			drive-strength = <2>;
-			bias-pull-down;
-			output-low;
+			bias-pull-up;
+			output-high;
 		};
 	};
 };
