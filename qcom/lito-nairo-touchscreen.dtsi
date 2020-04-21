@@ -152,6 +152,7 @@
 		himax,irq-gpio = <&tlmm 11 0x02>;
 		himax,rst-gpio = <&tlmm 55 0x01>;
 		report_type = <1>;
+		himax,report_gesture_key;
 		status = "/chosen", "mmi,panel_name", "tianma_hx83112f_1080x2520_670_dsc_vid";
 	};
 };
