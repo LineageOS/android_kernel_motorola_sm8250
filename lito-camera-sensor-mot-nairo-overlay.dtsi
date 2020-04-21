@@ -161,7 +161,7 @@
 			pins = "gpio1";
 			function = "normal";
 			qcom,drive-strength = <2>;
-			power-source = <0>;
+			power-source = <1>;
 			bias-disable;
 			output-enable;
 		};
@@ -169,7 +169,7 @@
 			pins = "gpio1";
 			function = "normal";
 			qcom,drive-strength = <2>;
-			power-source = <0>;
+			power-source = <1>;
 			bias-pull-down;
 			output-low;
 		};
@@ -177,7 +177,7 @@
 	/*       pmic gpio pins sequence：GPIO 7-11 in front, GPIO 1-6 in back    */
 	rear_main_camera_reset_en {
 		rear_main_camera_reset_en_active: rear_main_camera_reset_en_active {
-			pins = "gpio10","gpio6";
+			pins = "gpio6";
 			function = "normal";
 			qcom,drive-strength = <2>;
 			power-source = <1>;
@@ -185,7 +185,7 @@
 			output-enable;
 		};
 		rear_main_camera_reset_en_suspend: rear_main_camera_reset_en_suspend {
-			pins = "gpio10","gpio6";
+			pins = "gpio6";
 			function = "normal";
 			qcom,drive-strength = <2>;
 			power-source = <1>;
@@ -218,7 +218,7 @@
 			pins = "gpio7";
 			function = "normal";
 			qcom,drive-strength = <2>;
-                        power-source = <1>;
+			power-source = <1>;
 			bias-disable;
 			output-enable;
 			};
