@@ -8037,7 +8037,7 @@ static void dsi_display_is_probed (struct dsi_display *display,
 					int probe_status)
 
 {
-	int enable_idx;
+	int enable_idx = 0;
 
 	if (!display->display_type)
 		enable_idx = 0;
