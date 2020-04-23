@@ -105,6 +105,7 @@
 #define MADERA_FLL1_REFCLK             1
 #define MADERA_CLK_DSPCLK               8
 #define QCOM_MCLK_RATE                 19200000
+#define QCOM_SLEEPCLK_RATE             32768
 
 #define FLL_RATE_MADERA		294912000
 #define MADERA_SYSCLK_RATE	(FLL_RATE_MADERA / 3)
@@ -5866,8 +5867,8 @@ static int msm_mclk_event(struct snd_soc_dapm_widget *w,
 		break;
 	case SND_SOC_DAPM_POST_PMD:
 		ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
-			MADERA_FLL_SRC_MCLK1,
-			QCOM_MCLK_RATE, MADERA_SYSCLK_RATE);
+			MADERA_FLL_SRC_MCLK2,
+			QCOM_SLEEPCLK_RATE, MADERA_SYSCLK_RATE);
 		if (ret != 0) {
 			dev_err(component->dev, "Failed to set MADERA_FLL1_REFCLK %d\n", ret);
 			return ret;
@@ -5886,6 +5887,7 @@ static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
 {
 	int ret;
 	struct clk *ref_clk;
+	bool    use_refclk = false;
 	struct snd_soc_component *component =
 		snd_soc_rtdcom_lookup(rtd, MADERA_CODEC_NAME);
 	struct snd_soc_dapm_context *dapm;
@@ -5901,14 +5903,19 @@ static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
 	if (IS_ERR_OR_NULL(ref_clk))
 		dev_err(component->dev, "Failed to get ref_clk %ld\n",
 				     PTR_ERR(ref_clk));
+	else
+		use_refclk = true;
 
-	ret = clk_set_rate(ref_clk, QCOM_MCLK_RATE);
-	if (ret)
-		dev_err(component->dev, "Failed to set ref_clk %d\n",
-				     ret);
-	clk_prepare_enable(ref_clk);
 
-	dev_info(component->dev, "ENABLE ref clk\n");
+	if (use_refclk) {
+		ret = clk_set_rate(ref_clk, QCOM_MCLK_RATE);
+		if (ret)
+			dev_err(component->dev, "Failed to set ref_clk %d\n",
+					     ret);
+		clk_prepare_enable(ref_clk);
+
+		dev_info(component->dev, "ENABLE ref clk\n");
+	}
 
 	ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
 			-1, 0, 0);
@@ -5917,9 +5924,14 @@ static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
 		return ret;
 	}
 
-	ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
-			MADERA_FLL_SRC_MCLK1,
-			QCOM_MCLK_RATE, MADERA_SYSCLK_RATE);
+	if (use_refclk)
+		ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
+				MADERA_FLL_SRC_MCLK1,
+				QCOM_MCLK_RATE, MADERA_SYSCLK_RATE);
+	else
+		ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
+				MADERA_FLL_SRC_MCLK2,
+				QCOM_SLEEPCLK_RATE, MADERA_SYSCLK_RATE);
 	if (ret != 0) {
 		dev_err(component->dev,  "Failed to set FLL1REFCLK %d\n", ret);
 		return ret;
