@@ -422,9 +422,6 @@ sound_madera: sound-madera {
 		DCVDD-supply = <&pm8150_s4>;
 		SPKVDD-supply = <&dummy_vreg>;
 
-		clocks = <&clock_rpmh RPMH_LN_BB_CLK2>;
-		clock-names = "ref_clk";
-
 		gpio-controller;
 		#gpio-cells = <2>;
 
