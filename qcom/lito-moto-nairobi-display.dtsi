@@ -67,7 +67,6 @@
 	qcom,dsi-ctrl-num = <0>;
 	qcom,dsi-phy-num = <0>;
 
-	qcom,platform-te-gpio = <&tlmm 10 0>;
 	qcom,platform-reset-gpio = <&pm8150l_gpios 3 0>;
 
 	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
@@ -118,7 +117,6 @@
 	qcom,dsi-ctrl-num = <0>;
 	qcom,dsi-phy-num = <0>;
 
-	qcom,platform-te-gpio = <&tlmm 10 0>;
 	qcom,platform-reset-gpio = <&pm8150l_gpios 3 0>;
 
 	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
