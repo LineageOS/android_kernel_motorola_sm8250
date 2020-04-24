@@ -740,6 +740,10 @@
 	status = "disabled";
 };
 
+&usb0 {
+       mmi,ext-typec-switch;
+};
+
 /* ST54JNFC */
 &nfc_enable_active {
 	mux {
