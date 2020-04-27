@@ -141,6 +141,7 @@
 		pinctrl-0 = <&touch_int_active>;
 		/* touchscreen_mmi class entries */
 		mmi,enable-gestures;
+		mmi,usb-charger-detection;
 		mmi,power-off-suspend;
 	};
 };
