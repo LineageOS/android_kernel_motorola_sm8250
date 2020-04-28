@@ -256,7 +256,6 @@
 };
 
 &mot_boe_lsi_667_1080p_cmd_v0 {
-	qcom,mdss-dsi-panel-name = "mipi_mot_cmd_boe_lsi_1080p_dsc_667";
 	qcom,platform-te-gpio = <&tlmm 66 0>;
 	qcom,platform-reset-gpio = <&tlmm 75 0>;
 
