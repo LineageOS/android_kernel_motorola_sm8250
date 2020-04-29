@@ -447,7 +447,7 @@ static bool cam_flash_find_sku_to_use_pmic()
 	char *match = (char *)strnstr(saved_command_line, "androidboot.radio=", strlen(saved_command_line));
 
 	if (match) {
-		memcpy(boot, (match + strlen("androidboot.radio=")), sizeof(boot));
+		memcpy(boot, (match + strlen("androidboot.radio=")), sizeof(boot)-1);
 		CAM_INFO(CAM_FLASH, "androidboot.radio is %s", boot);
 		if (strnstr(boot, "JAPAN", strlen(boot)) ||strnstr(boot, "EMLA", strlen(boot))) {
 			/* SKU JAPAN or EMLA(EU/EMA) use PMIC*/
