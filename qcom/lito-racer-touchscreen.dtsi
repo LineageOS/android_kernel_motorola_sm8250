@@ -146,8 +146,6 @@
 		synaptics,power-delay-ms = <200>;
 		synaptics,ubl-i2c-addr = <0x4b>;
 		synaptics,size_to_pixel_multiple_factor = <15>;
-		synaptics,pill-region-control;
-		synaptics,gs-distance-control;
 		synaptics,pwr-reg-name = "pm8150_l13";
 		synaptics,bus-reg-name = "pm8150_l17";
 		pinctrl-names = "ts_mmi_on_state", "ts_mmi_off_state";
@@ -157,5 +155,8 @@
 		mmi,enable-gestures;
 		mmi,usb-charger-detection;
 		mmi,power-off-suspend;
+		mmi,suppression-control;
+		mmi,gs-distance-control;
+		mmi,pill-region-control;
 	};
 };
