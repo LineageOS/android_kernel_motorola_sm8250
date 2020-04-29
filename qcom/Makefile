@@ -95,6 +95,11 @@ lito-nairo-dvt2-cap-overlay.dtbo-base := lito-moto-base.dtb
 lito-nairo-pvt-overlay.dtbo-base := lito-moto-base.dtb
 lito-nairo-pvt-cap-overlay.dtbo-base := lito-moto-base.dtb
 
+dtbo-$(CONFIG_KIEV_DTB) += \
+		lagoon-kiev-evt1-overlay.dtbo
+
+lagoon-kiev-evt1-overlay.dtbo-base := lagoon-moto-base.dtb
+
 else
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
         dtbo-$(CONFIG_ARCH_KONA) += \
