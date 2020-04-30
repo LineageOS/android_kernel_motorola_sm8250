@@ -40,6 +40,7 @@
 &pm8150l_wled {
 	qcom,string-cfg = <15>;
 	qcom,cabc-sel = <1>;
+	qcom,ovp = <25000>;
 	status = "ok";
 
 	/delete-node/ wled_switch;
