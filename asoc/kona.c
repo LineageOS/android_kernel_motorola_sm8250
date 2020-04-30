@@ -717,7 +717,7 @@ static const char *const usb_ch_text[] = {"One", "Two", "Three", "Four",
 					   "Five", "Six", "Seven",
 					   "Eight"};
 static char const *tdm_sample_rate_text[] = {"KHZ_8", "KHZ_16", "KHZ_32",
-					     "KHZ_48", "KHZ_176P4",
+					     "KHZ_48", "KHZ_96","KHZ_176P4",
 					     "KHZ_352P8"};
 static char const *tdm_bit_format_text[] = {"S16_LE", "S24_LE", "S32_LE"};
 static char const *tdm_ch_text[] = {"One", "Two", "Three", "Four",
@@ -1694,9 +1694,12 @@ static int tdm_get_sample_rate(int value)
 		sample_rate = SAMPLING_RATE_48KHZ;
 		break;
 	case 4:
-		sample_rate = SAMPLING_RATE_176P4KHZ;
+		sample_rate = SAMPLING_RATE_96KHZ;
 		break;
 	case 5:
+		sample_rate = SAMPLING_RATE_176P4KHZ;
+		break;
+	case 6:
 		sample_rate = SAMPLING_RATE_352P8KHZ;
 		break;
 	default:
@@ -1723,11 +1726,14 @@ static int tdm_get_sample_rate_val(int sample_rate)
 	case SAMPLING_RATE_48KHZ:
 		sample_rate_val = 3;
 		break;
-	case SAMPLING_RATE_176P4KHZ:
+	case SAMPLING_RATE_96KHZ:
 		sample_rate_val = 4;
 		break;
-	case SAMPLING_RATE_352P8KHZ:
+	case SAMPLING_RATE_176P4KHZ:
 		sample_rate_val = 5;
+		break;
+	case SAMPLING_RATE_352P8KHZ:
+		sample_rate_val = 6;
 		break;
 	default:
 		sample_rate_val = 3;
@@ -4699,6 +4705,24 @@ static int kona_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 		channels = tdm_rx_cfg[interface][channel_interface].channels;
 
 	rate = params_rate(params);
+
+	switch (params_format(params)) {
+	case SNDRV_PCM_FORMAT_S32_LE:
+	case SNDRV_PCM_FORMAT_S24_3LE:
+	case SNDRV_PCM_FORMAT_S24_LE:
+		slot_offset = config->tdm_slot_offset;
+		slot_width =  32;
+		break;
+	case SNDRV_PCM_FORMAT_S16_LE:
+	default:
+#ifdef CONFIG_SND_SOC_CS47l35_TDM
+		slot_offset = slot_offset_16b;
+		slot_width = MADERA_TDM_SLOT_WIDTH_BITS;
+#else
+		slot_width = TDM_SLOT_WIDTH_BITS;
+#endif
+		break;
+	}
 	clk_freq = rate * slot_width * slots;
 
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
