@@ -145,7 +145,7 @@
 		synaptics,reset-delay-ms = <200>;
 		synaptics,power-delay-ms = <200>;
 		synaptics,ubl-i2c-addr = <0x4b>;
-		synaptics,size_to_pixel_multiple_factor = <15>;
+		synaptics,size_to_pixel_multiple_factor = <1948>;
 		synaptics,pwr-reg-name = "pm8150_l13";
 		synaptics,bus-reg-name = "pm8150_l17";
 		pinctrl-names = "ts_mmi_on_state", "ts_mmi_off_state";
