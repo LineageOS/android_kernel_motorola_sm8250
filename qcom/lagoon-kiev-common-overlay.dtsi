@@ -15,3 +15,18 @@
 #include "lagoon-moto-common-overlay.dtsi"
 #include "lagoon-moto-kiev-display.dtsi"
 
+&usb_qmp_dp_phy {
+	status = "disabled";
+};
+
+&usb0 {
+	dwc3@a600000 {
+		usb-phy = <&qusb_phy0>, <&usb_nop_phy>;
+		maximum-speed = "high-speed";
+	};
+};
+
+&sde_dp {
+	status = "disabled";
+};
+
