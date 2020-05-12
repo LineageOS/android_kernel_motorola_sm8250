@@ -32,3 +32,8 @@
         /delete-node/ android;
 };
 
+&spmi_bus{
+        /delete-node/ qcom,pmk8002@6;
+        /delete-node/ qcom,pmk8002@7;
+};
+
