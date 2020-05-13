@@ -1,6 +1,7 @@
 qcom,lz50-amperex-5000mah {
     /* 4458518_Lenovo_Nairobi_5000mAH_PM7250B_NEW4.45V_averaged_MasterSlave_Mar3th2020 */
     serialnum = "SB18C74374";
+    qcom,sdam-magic-number = <0x18c74374>;
     qcom,max-voltage-uv = <4450000>;
     qcom,fg-cc-cv-threshold-uv = <4440000>;
     qcom,fastchg-current-ma = <4000>;
