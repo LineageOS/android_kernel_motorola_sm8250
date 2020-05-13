@@ -158,5 +158,6 @@
 		mmi,suppression-control;
 		mmi,gs-distance-control;
 		mmi,pill-region-control;
+		mmi,hold-distance-control;
 	};
 };
