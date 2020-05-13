@@ -38,6 +38,19 @@
 			};
 		};
 
+		touch_reset_active_output_high: active_output_high {
+			mux {
+				pins = "gpio8";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio8";
+				drive-strength = <2>;
+				bias-disable;
+				output-high;
+			};
+		};
+
 		touch_reset_suspend: default {
 			mux {
 				pins = "gpio8";
@@ -137,8 +150,9 @@
 		synaptics,gs-distance-control;
 		synaptics,pwr-reg-name = "pm8150_l13";
 		synaptics,bus-reg-name = "pm8150_l17";
-		pinctrl-names = "default";
-		pinctrl-0 = <&touch_int_active>;
+		pinctrl-names = "ts_mmi_on_state", "ts_mmi_off_state";
+		pinctrl-0 = <&touch_reset_active_output_high &touch_int_active>;
+		pinctrl-1 = <&touch_reset_suspend &touch_int_suspend>;
 		/* touchscreen_mmi class entries */
 		mmi,enable-gestures;
 		mmi,usb-charger-detection;
