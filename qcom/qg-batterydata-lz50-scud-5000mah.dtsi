@@ -1,6 +1,7 @@
 qcom,lz50-scud-5000mah {
     /* 4534034_lenovo_Nairobi_5000mAH_PM7250B_averaged_MasterSlave_Apr7th2020 */
     serialnum = "SB18C74375";
+    qcom,sdam-magic-number = <0x18c74375>;
     qcom,max-voltage-uv = <4450000>;
     qcom,fg-cc-cv-threshold-uv = <4440000>;
     qcom,fastchg-current-ma = <4000>;
