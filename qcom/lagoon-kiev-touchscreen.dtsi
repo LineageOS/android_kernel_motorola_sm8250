@@ -1,0 +1,21 @@
+&qupv3_se0_i2c {
+	status = "disabled";
+};
+
+&qupv3_se0_spi {
+	status = "ok";
+	focaltech@0 {
+		compatible = "focaltech,fts";
+		reg = <0x0>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <22 0x02>;
+		spi-max-frequency=<20000000>;
+		focaltech,reset-gpio = <&tlmm 21 0x01>;
+		focaltech,irq-gpio = <&tlmm 22 0x02>;
+		focaltech,max-touch-number = <10>;
+		focaltech,display-coords =  <0 0 1080 2340>;
+		pinctrl-names = "pmx_ts_active","pmx_ts_suspend","pmx_ts_release";
+	};
+};
+
+
