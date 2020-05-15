@@ -14,6 +14,7 @@
 #include "lagoon-moto-common-overlay-base.dtsi"
 #include "lagoon-moto-common-overlay.dtsi"
 #include "lagoon-moto-kiev-display.dtsi"
+#include "lagoon-moto-kiev-nfc.dtsi"
 #include "camera/lagoon-camera-sensor-mot-kiev-overlay.dtsi"
 #include "lagoon-kiev-audio-overlay.dtsi"
 #include "lagoon-kiev-touchscreen.dtsi"
