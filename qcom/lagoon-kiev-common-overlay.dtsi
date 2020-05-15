@@ -16,6 +16,20 @@
 #include "lagoon-moto-kiev-display.dtsi"
 #include "camera/lagoon-camera-sensor-mot-kiev-overlay.dtsi"
 
+&soc {
+	qcom,tz_gpio {
+		compatible = "qcom,tz_gpio";
+		tlmm-tz = <13>,
+			<14>,
+			<15>,
+			<16>,
+			<45>,
+			<46>,
+			<56>,
+			<57>;
+	};
+};
+
 &usb_qmp_dp_phy {
 	status = "disabled";
 };
