@@ -78,7 +78,9 @@ dtbo-$(CONFIG_NAIRO_DTB) += \
 		lito-nairo-dvt1a-overlay.dtbo \
 		lito-nairo-dvt1a-cap-overlay.dtbo \
 		lito-nairo-dvt2-overlay.dtbo \
-		lito-nairo-dvt2-cap-overlay.dtbo
+		lito-nairo-dvt2-cap-overlay.dtbo \
+		lito-nairo-pvt-overlay.dtbo \
+		lito-nairo-pvt-cap-overlay.dtbo
 
 lito-nairo-evt1-overlay.dtbo-base := lito-moto-base.dtb
 lito-nairo-evt2-overlay.dtbo-base := lito-moto-base.dtb
@@ -90,6 +92,8 @@ lito-nairo-dvt1a-overlay.dtbo-base := lito-moto-base.dtb
 lito-nairo-dvt1a-cap-overlay.dtbo-base := lito-moto-base.dtb
 lito-nairo-dvt2-overlay.dtbo-base := lito-moto-base.dtb
 lito-nairo-dvt2-cap-overlay.dtbo-base := lito-moto-base.dtb
+lito-nairo-pvt-overlay.dtbo-base := lito-moto-base.dtb
+lito-nairo-pvt-cap-overlay.dtbo-base := lito-moto-base.dtb
 
 else
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
