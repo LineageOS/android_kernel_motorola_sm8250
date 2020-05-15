@@ -333,13 +333,12 @@
 		cell-index = <3>;
 		reg = <0x3>;
 		compatible = "qcom,eeprom";
-		cam_vaf-supply = <&cam_afvdd_ldo>;
 		cam_vio-supply = <&cam_iovdd_ldo>;
-		regulator-names = "cam_vaf", "cam_vio";
+		regulator-names = "cam_vio";
 		rgltr-cntrl-support;
-		rgltr-min-voltage = <2800000 1800000>;
-		rgltr-max-voltage = <2800000 1800000>;
-		rgltr-load-current = <100000 0>;
+		rgltr-min-voltage = <1800000>;
+		rgltr-max-voltage = <1800000>;
+		rgltr-load-current = <0>;
 		cci-device = <0>;
 		cci-master = <0>;
 		status = "ok";
