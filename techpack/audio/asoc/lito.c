@@ -7487,6 +7487,56 @@ static struct snd_soc_dai_link msm_mi2s_be_dai_links[] = {
 	},
 };
 
+static struct snd_soc_dai_link msm_pri_mi2s_aw882xx_fe_dai_links[] = {
+        {
+                .name = "PRI_MI2S_TX Hostless",
+                .stream_name = "PRI MI2S_TX Hostless",
+                .cpu_dai_name = "PRI_MI2S_TX_HOSTLESS",
+                .platform_name = "msm-pcm-hostless",
+                .dynamic = 1,
+                .dpcm_capture = 1,
+                .trigger = {SND_SOC_DPCM_TRIGGER_POST,
+                            SND_SOC_DPCM_TRIGGER_POST},
+                .no_host_mode = SND_SOC_DAI_LINK_NO_HOST,
+                .ignore_suspend = 1,
+                .ignore_pmdown_time = 1,
+                .codec_name = "snd-soc-dummy",
+                .codec_dai_name = "snd-soc-dummy-dai",
+        },
+};
+
+static struct snd_soc_dai_link msm_pri_mi2s_aw882xx_be_dai_links[] = {
+        {
+                .name = LPASS_BE_PRI_MI2S_RX,
+                .stream_name = "Primary MI2S Playback",
+                .cpu_dai_name = "msm-dai-q6-mi2s.0",
+                .platform_name = "msm-pcm-routing",
+                .codec_name = "aw882xx_smartpa.2-0034",
+                .codec_dai_name = "aw882xx-aif",
+                .no_pcm = 1,
+                .dpcm_playback = 1,
+                .id = MSM_BACKEND_DAI_PRI_MI2S_RX,
+                .be_hw_params_fixup = msm_be_hw_params_fixup,
+                .ops = &msm_mi2s_be_ops,
+                .ignore_suspend = 1,
+                .ignore_pmdown_time = 1,
+        },
+	{
+                .name = LPASS_BE_PRI_MI2S_TX,
+                .stream_name = "Primary MI2S Capture",
+                .cpu_dai_name = "msm-dai-q6-mi2s.0",
+                .platform_name = "msm-pcm-routing",
+                .codec_name = "aw882xx_smartpa.2-0034",
+                .codec_dai_name = "aw882xx-aif",
+                .no_pcm = 1,
+                .dpcm_capture = 1,
+                .id = MSM_BACKEND_DAI_PRI_MI2S_TX,
+                .be_hw_params_fixup = msm_be_hw_params_fixup,
+                .ops = &msm_mi2s_be_ops,
+                .ignore_suspend = 1,
+        },
+};
+
 static struct snd_soc_dai_link msm_mi2s_aw882xx_be_dai_links[] = {
 
 	{
@@ -8093,6 +8143,8 @@ static struct snd_soc_dai_link msm_kona_dai_links[
 			ARRAY_SIZE(msm_common_be_dai_links) +
 			ARRAY_SIZE(msm_mi2s_be_dai_links) +
 			ARRAY_SIZE(msm_auxpcm_be_dai_links) +
+			ARRAY_SIZE(msm_pri_mi2s_aw882xx_fe_dai_links) +
+			ARRAY_SIZE(msm_pri_mi2s_aw882xx_be_dai_links) +
 			ARRAY_SIZE(msm_wsa_cdc_dma_be_dai_links) +
 			ARRAY_SIZE(msm_rx_tx_cdc_dma_be_dai_links) +
 			ARRAY_SIZE(msm_va_cdc_dma_be_dai_links) +
@@ -8576,11 +8628,13 @@ static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev,
 		       sizeof(msm_common_dai_links));
 		total_links += ARRAY_SIZE(msm_common_dai_links);
 
-		memcpy(msm_kona_dai_links + total_links,
-		       msm_bolero_fe_dai_links,
-		       sizeof(msm_bolero_fe_dai_links));
-		total_links +=
-			ARRAY_SIZE(msm_bolero_fe_dai_links);
+		if (!(of_property_read_bool(dev->of_node, "awinic,aw882xx-dev"))) {
+			memcpy(msm_kona_dai_links + total_links,
+				msm_bolero_fe_dai_links,
+				sizeof(msm_bolero_fe_dai_links));
+			total_links +=
+				ARRAY_SIZE(msm_bolero_fe_dai_links);
+		}
 
 		memcpy(msm_kona_dai_links + total_links,
 		       msm_common_misc_fe_dai_links,
@@ -8592,11 +8646,24 @@ static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev,
 		       sizeof(msm_common_be_dai_links));
 		total_links += ARRAY_SIZE(msm_common_be_dai_links);
 
-		memcpy(msm_kona_dai_links + total_links,
+		if (of_property_read_bool(dev->of_node, "awinic,aw882xx-dev")) {
+				memcpy(msm_kona_dai_links + total_links,
+					msm_pri_mi2s_aw882xx_be_dai_links,
+					sizeof(msm_pri_mi2s_aw882xx_be_dai_links));
+				total_links +=
+					ARRAY_SIZE(msm_pri_mi2s_aw882xx_be_dai_links);
+				memcpy(msm_kona_dai_links + total_links,
+					msm_pri_mi2s_aw882xx_fe_dai_links,
+					sizeof(msm_pri_mi2s_aw882xx_fe_dai_links));
+				total_links +=
+					ARRAY_SIZE(msm_pri_mi2s_aw882xx_fe_dai_links);
+		} else {
+				memcpy(msm_kona_dai_links + total_links,
 		       msm_wsa_cdc_dma_be_dai_links,
 		       sizeof(msm_wsa_cdc_dma_be_dai_links));
 		total_links +=
 			ARRAY_SIZE(msm_wsa_cdc_dma_be_dai_links);
+		}
 
 		memcpy(msm_kona_dai_links + total_links,
 		       msm_rx_tx_cdc_dma_be_dai_links,

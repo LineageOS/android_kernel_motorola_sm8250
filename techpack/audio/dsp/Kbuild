@@ -83,6 +83,10 @@ ifeq ($(KERNEL_BUILD), 0)
 	ifneq (,$(filter nairo%, $(TARGET_PRODUCT)))
 		INCS    +=  -include $(AUDIO_ROOT)/config/litonairo.h
 	endif
+        ifneq (,$(filter kiev%, $(TARGET_PRODUCT)))
+                INCS    +=  -include $(AUDIO_ROOT)/config/litokiev.h
+        endif
+
 	ifeq ($(CONFIG_ARCH_SDM660), y)
 		include $(AUDIO_ROOT)/config/sdm660auto.conf
 		export

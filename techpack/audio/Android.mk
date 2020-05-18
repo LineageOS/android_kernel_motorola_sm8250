@@ -36,7 +36,7 @@ ifneq (,$(filter pstar%, $(TARGET_PRODUCT)))
 include $(MY_LOCAL_PATH)/asoc/codecs/aw882xx/Android.mk
 endif
 
-ifneq (,$(filter nairo%, $(TARGET_PRODUCT)))
+ifneq (,$(filter nairo% kiev%, $(TARGET_PRODUCT)))
 include $(MY_LOCAL_PATH)/asoc/codecs/aw882xx/Android.mk
 endif
 
