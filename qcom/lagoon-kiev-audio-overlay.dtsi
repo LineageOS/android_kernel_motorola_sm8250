@@ -1,0 +1,235 @@
+/* Copyright (c) 2019, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+#include <dt-bindings/interrupt-controller/irq.h>
+
+&tlmm{
+	pri_mi2s_sleep: pri_mi2s_sleep {
+		mux {
+			pins = "gpio88", "gpio89", "gpio90", "gpio91";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio88", "gpio89", "gpio90", "gpio91";
+			drive-strength = <2>;   /* 2 mA */
+			bias-pull-down;         /* PULL DOWN */
+			input-enable;
+		};
+	};
+
+	pri_mi2s_active: pri_mi2s_active {
+		mux {
+			pins = "gpio88", "gpio89", "gpio90", "gpio91";
+			function = "mi2s_0";
+		};
+
+		config {
+			pins = "gpio88", "gpio89", "gpio90", "gpio91";
+			drive-strength = <8>;   /* 8 mA */
+			bias-disable;           /* NO PULL */
+		};
+	};
+
+	aw882xx_reset_default: aw882xx_reset_default {
+		mux {
+			pins = "gpio58";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio58";
+			drive-strength = <2>; /* 2 MA */
+			bias-pull-up;
+			output-high;
+		};
+	};
+
+	aw882xx_irq_default: aw882xx_irq_default {
+		mux {
+			pins = "gpio59";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio59";
+			drive-strength = <2>; /* 2 MA */
+			bias-pull-up;
+		};
+	};
+};
+
+&fsa4480 {
+	status = "disabled";
+};
+
+&qupv3_se10_i2c {
+        status = "ok";
+        aw882xx:aw882xx_smartpa@34 {
+			compatible = "awinic,aw882xx_smartpa";
+			reg = <0x34>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&aw882xx_irq_default>, <&aw882xx_reset_default>;
+			reset-gpio = <&tlmm 58 0>;
+			irq-gpio = <&tlmm 59 0x2008>;
+			monitor-flag = <1>;
+			monitor-timer-val = <3000>;
+			status = "okay";
+		};
+};
+
+&bolero {
+	status = "okay";
+	qcom,num-macros = <3>;
+};
+
+&wsa_macro {
+	status = "disabled";
+};
+
+&wcd937x_codec {
+	status = "okay";
+};
+
+&wcd938x_rst_gpio {
+	status  = "okay";
+};
+
+&cdc_dmic01_gpios {
+	status = "disabled";
+};
+
+&cdc_dmic23_gpios {
+	status = "disabled";
+};
+
+&cdc_dmic45_gpios {
+	status = "disabled";
+};
+
+&wsa_swr_gpios {
+	status = "disabled";
+};
+
+&rx_swr_gpios {
+	status = "okay";
+};
+
+&tx_swr_gpios {
+	status = "okay";
+};
+
+&wsa_spkr_en1 {
+	status = "disabled";
+};
+
+&wsa_spkr_en2 {
+	status = "disabled";
+};
+
+&dai_mi2s0 {
+	status = "ok";
+	qcom,msm-mi2s-rx-lines = <1>;
+	qcom,msm-mi2s-tx-lines = <2>;
+};
+
+&dai_mi2s1 {
+	status = "disabled";
+};
+
+&dai_mi2s2 {
+	status = "disabled";
+};
+
+&dai_mi2s3 {
+	status = "disabled";
+};
+
+&dai_mi2s4 {
+	status = "disabled";
+};
+
+&dai_mi2s5 {
+	status = "disabled";
+};
+
+&soc {
+	cdc_pri_mi2s_gpios: msm_cdc_pinctrl_pri {
+		compatible = "qcom,msm-cdc-pinctrl";
+		pinctrl-names = "aud_active", "aud_sleep";
+		pinctrl-0 = <&pri_mi2s_active>;
+		pinctrl-1 = <&pri_mi2s_sleep>;
+	};
+};
+
+&lagoon_snd {
+	status = "ok";
+	compatible = "qcom,kona-asoc-snd";
+	qcom,model = "lagoon-awinic-snd-card";
+	qcom,wcn-btfm = <1>;
+	qcom,msm-mi2s-master = <1>, <1>, <1>, <1>, <1>, <1>;
+	qcom,ext-disp-audio-rx = <0>;
+	qcom,mi2s-audio-intf = <0>;
+	qcom,auxpcm-audio-intf = <0>;
+	qcom,afe-rxtx-lb = <0>;
+	qcom,msm-mbhc-usbc-audio-supported = <0>;
+	qcom,pri-mi2s-gpios = <&cdc_pri_mi2s_gpios>;
+
+	qcom,msm-mbhc-hphl-swh = <1>;
+	qcom,msm-mbhc-gnd-swh = <1>;
+	awinic,aw882xx-dev;
+	qcom,audio-routing =
+		"AMIC1", "MIC BIAS1",
+		"MIC BIAS1", "Analog Mic1",
+		"AMIC2", "MIC BIAS2",
+		"MIC BIAS2", "Analog Mic2",
+		"AMIC3", "MIC BIAS3",
+		"MIC BIAS3", "Analog Mic3",
+		"IN1_HPHL", "HPHL_OUT",
+		"IN2_HPHR", "HPHR_OUT",
+		"IN3_AUX", "AUX_OUT",
+		"TX SWR_ADC0", "ADC1_OUTPUT",
+		"TX SWR_ADC2", "ADC2_OUTPUT",
+		"WSA SRC0_INP", "SRC0",
+		"WSA_TX DEC0_INP", "TX DEC0 MUX",
+		"WSA_TX DEC1_INP", "TX DEC1 MUX",
+		"RX_TX DEC0_INP", "TX DEC0 MUX",
+		"RX_TX DEC1_INP", "TX DEC1 MUX",
+		"RX_TX DEC2_INP", "TX DEC2 MUX",
+		"RX_TX DEC3_INP", "TX DEC3 MUX",
+		"SpkrRight IN", "WSA_SPK2 OUT",
+		"VA_AIF1 CAP", "VA_SWR_CLK",
+		"VA_AIF2 CAP", "VA_SWR_CLK",
+		"VA_AIF3 CAP", "VA_SWR_CLK",
+		"VA SWR_ADC0", "VA_SWR_CLK",
+		"VA SWR_ADC1", "VA_SWR_CLK",
+		"VA SWR_ADC2", "VA_SWR_CLK",
+		"VA SWR_ADC3", "VA_SWR_CLK",
+		"VA SWR_MIC0", "VA_SWR_CLK",
+		"VA SWR_MIC1", "VA_SWR_CLK",
+		"VA SWR_MIC2", "VA_SWR_CLK",
+		"VA SWR_MIC3", "VA_SWR_CLK",
+		"VA SWR_MIC4", "VA_SWR_CLK",
+		"VA SWR_MIC5", "VA_SWR_CLK",
+		"VA SWR_MIC6", "VA_SWR_CLK",
+		"VA SWR_MIC7", "VA_SWR_CLK",
+		"VA SWR_ADC0", "ADC1_OUTPUT",
+		"VA SWR_ADC1", "ADC2_OUTPUT";
+	asoc-codec  = <&stub_codec>, <&bolero>;
+	asoc-codec-names = "msm-stub-codec.1", "bolero_codec";
+
+
+	qcom,wsa-max-devs = <0>;
+	/delete-property/ qcom,wsa-devs;
+	/delete-property/ qcom,wsa-aux-dev-prefix;
+	qcom,codec-max-aux-devs = <1>;
+	qcom,codec-aux-devs = <&wcd937x_codec>;
+	qcom,msm_audio_ssr_devs = <&audio_apr>, <&q6core>,
+				<&lpi_tlmm>, <&bolero>;
+};

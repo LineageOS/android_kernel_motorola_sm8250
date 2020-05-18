@@ -15,6 +15,7 @@
 #include "lagoon-moto-common-overlay.dtsi"
 #include "lagoon-moto-kiev-display.dtsi"
 #include "camera/lagoon-camera-sensor-mot-kiev-overlay.dtsi"
+#include "lagoon-kiev-audio-overlay.dtsi"
 
 &soc {
 	qcom,tz_gpio {
