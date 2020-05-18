@@ -371,6 +371,8 @@
 		polling-delay-passive = <2000>;
 		polling-delay = <2000>;
 		thermal-governor = "step_wise";
+		thermal-sensors = <&pm8150_adc_tm ADC_AMUX_THM2_PU2>;
+		wake-capable-sensor;
 		trips {
 			modem_mmw0_trip0: modem_mmw0_trip0 {
 				temperature = <70000>;
@@ -399,6 +401,8 @@
 		polling-delay-passive = <2000>;
 		polling-delay = <2000>;
 		thermal-governor = "step_wise";
+		thermal-sensors = <&pm8150l_adc_tm ADC_AMUX_THM3_PU2>;
+		wake-capable-sensor;
 		trips {
 			modem_mmw1_trip0: modem_mmw1_trip0 {
 				temperature = <70000>;
