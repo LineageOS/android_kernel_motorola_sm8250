@@ -168,7 +168,6 @@
 				1200000 900000
 				600000 300000>;
 	qcom,typec-legacy-rp-icl;
-	qcom,lpd-disable;
 	qcom,pd-voltage-max-uv = <9000000>;
 	qcom,usbpd-phandle = <&pm7250b_pdphy>;
 };
