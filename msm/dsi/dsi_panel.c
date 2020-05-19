@@ -134,6 +134,24 @@ static struct panel_param_val_map cabc_map[CABC_STATE_NUM] = {
 	{CABC_DIS_STATE, DSI_CMD_SET_CABC_DIS, NULL},
 };
 
+static struct panel_param_val_map hbm_map_s[HBM_STATE_NUM] = {
+	{HBM_OFF_STATE, DSI_CMD_SET_HBM_OFF, NULL},
+	{HBM_ON_STATE, DSI_CMD_SET_HBM_ON, NULL},
+	{HBM_FOD_ON_STATE, DSI_CMD_SET_HBM_FOD_ON, NULL},
+};
+
+static struct panel_param_val_map acl_map_s[ACL_STATE_NUM] = {
+	{ACL_OFF_STATE, DSI_CMD_SET_ACL_OFF, NULL},
+	{ACL_ON_STATE, DSI_CMD_SET_ACL_ON, NULL},
+};
+
+
+static struct panel_param_val_map cabc_map_s[CABC_STATE_NUM] = {
+	{CABC_UI_STATE, DSI_CMD_SET_CABC_UI, NULL},
+	{CABC_MV_STATE, DSI_CMD_SET_CABC_MV, NULL},
+	{CABC_DIS_STATE, DSI_CMD_SET_CABC_DIS, NULL},
+};
+
 static struct panel_param dsi_panel_param[PANEL_IDX_MAX][PARAM_ID_NUM] = {
 	{
 		{"HBM", hbm_map, HBM_STATE_NUM, HBM_OFF_STATE,
@@ -143,6 +161,14 @@ static struct panel_param dsi_panel_param[PANEL_IDX_MAX][PARAM_ID_NUM] = {
 		{"ACL", acl_map, ACL_STATE_NUM, ACL_OFF_STATE,
 			ACL_OFF_STATE, false}
 	},
+	{
+		{"HBM", hbm_map_s, HBM_STATE_NUM, HBM_OFF_STATE,
+				HBM_OFF_STATE, false},
+		{"ACL", acl_map_s, ACL_STATE_NUM, ACL_OFF_STATE,
+				ACL_OFF_STATE, false},
+		{"CABC", cabc_map_s, CABC_STATE_NUM, CABC_UI_STATE,
+				CABC_UI_STATE, false},
+	}
 };
 
 int dsi_dsc_create_pps_buf_cmd(struct msm_display_dsc_info *dsc, char *buf,
@@ -3951,13 +3977,13 @@ struct dsi_panel *dsi_panel_get(struct device *parent,
 				struct device_node *of_node,
 				struct device_node *parser_node,
 				const char *type,
-				int topology_override)
+				int topology_override,
+				u32 panel_idx)
 {
 	struct dsi_panel *panel;
 	struct dsi_parser_utils *utils;
 	const char *panel_physical_type;
 	int rc = 0;
-	u32 panel_idx = 0; /* Since only panel support for now */
 	const char *pname;
 
 	panel = kzalloc(sizeof(*panel), GFP_KERNEL);
@@ -3998,7 +4024,7 @@ struct dsi_panel *dsi_panel_get(struct device *parent,
 		DSI_DEBUG("failed to parse mot_panel_config, rc = %d\n", rc);
 
 	panel->param_cmds = dsi_panel_param[panel_idx];
-	rc = dsi_panel_parse_param_prop(panel, of_node, panel_idx );
+	rc = dsi_panel_parse_param_prop(panel, of_node, panel_idx);
 	if (rc)
 		pr_debug("failed to parse panel param prop, rc =%d\n", rc);
 
