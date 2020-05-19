@@ -43,6 +43,10 @@
 	qcom,ovp = <25000>;
 	status = "ok";
 
+	mmi,low-bl-force-cabc-disable;
+	mmi,low-bl-threshold = <200>;
+	mmi,low-bl-remap-percent = <80>;
+
 	/delete-node/ wled_switch;
 };
 
