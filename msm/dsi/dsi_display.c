@@ -218,6 +218,10 @@ int dsi_display_set_backlight(struct drm_connector *connector,
 		goto error;
 	}
 
+	if (!(panel->bl_config.bl_level && bl_lvl))
+		DSI_INFO("bl_level changed from %u to %u\n",
+		       (u32)(panel->bl_config.bl_level), (u32)bl_lvl);
+
 	panel->bl_config.bl_level = bl_lvl;
 
 	/* scale backlight */
