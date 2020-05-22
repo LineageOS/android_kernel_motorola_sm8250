@@ -132,3 +132,15 @@
 &pm8008_9 {
 	status = "disabled";
 };
+
+&pm6150l_rgb_led {
+	red {
+		label = "charging";
+	};
+	green {
+		status = "disabled";
+	};
+	blue {
+		status = "disabled";
+	};
+};
