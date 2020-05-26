@@ -144,3 +144,8 @@
 		status = "disabled";
 	};
 };
+
+&ufshc_mem {
+       spm-level = <3>;
+};
+
