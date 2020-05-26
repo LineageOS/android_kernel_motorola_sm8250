@@ -139,6 +139,9 @@ qcom,mdss-dsi-display-timings {
 			15 01 00 00 00 00 02 90 01  /* Compression method selection*/
 			15 01 00 00 00 00 02 03 11 /* Compression mode */
 			05 01 00 00 00 00 01 2C /* Memory write */
+			39 01 00 00 00 00 06 F0 55 AA 52 08 01 /* Page 1*/
+			39 01 00 00 00 00 03 B3 14 01
+			39 01 00 00 00 00 07 B7 1a 1a 1a 1a 1a 1a
 			05 01 00 00 64 00 01 11
 			15 00 00 00 00 00 02 55 00      /* ACL OFF */
 			05 01 00 00 00 00 01 29];       /* display on */
@@ -228,6 +231,9 @@ qcom,mdss-dsi-display-timings {
 			15 01 00 00 00 00 02 90 01  /* Compression method selection*/
 			15 01 00 00 00 00 02 03 11 /* Compression mode */
 			05 01 00 00 00 00 01 2C /* Memory write */
+			39 01 00 00 00 00 06 F0 55 AA 52 08 01 /* Page 1*/
+			39 01 00 00 00 00 03 B3 14 01
+			39 01 00 00 00 00 07 B7 1a 1a 1a 1a 1a 1a
 			05 01 00 00 64 00 01 11
 			15 01 00 00 00 00 02 55 00      /* ACL OFF */
 			05 01 00 00 00 00 01 29];       /* display on */
