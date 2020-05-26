@@ -4684,7 +4684,7 @@ static int kona_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 			ret = snd_soc_dai_set_fmt(codec_dais[i],
 						SND_SOC_DAIFMT_DSP_A |
 						SND_SOC_DAIFMT_CBS_CFS |
-						SND_SOC_DAIFMT_IB_NF);
+						SND_SOC_DAIFMT_NB_NF);
 			if (ret != 0) {
 				pr_err("%s: Failed to set %s's fmt: ret = %d\n",
 					codec_dais[i]->name, ret);
