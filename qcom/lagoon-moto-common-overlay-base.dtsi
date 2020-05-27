@@ -140,6 +140,14 @@
 			qcom,usbpd-phandle = <&pm7250b_pdphy>;
 		};
 	};
+
+	qcom,pm6350@0 {
+		qpnp-power-on-mmi@800 {
+			compatible = "qcom,qpnp-power-on-mmi";
+			interrupts = <0x0 0x8 0x3 IRQ_TYPE_EDGE_BOTH>;
+			interrupt-names = "kpdpwr-bark";
+		};
+	};
 };
 
 &pm7250b_charger {
