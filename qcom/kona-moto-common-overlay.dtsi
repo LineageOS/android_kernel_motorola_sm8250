@@ -648,6 +648,19 @@
 			};
 		};
 
+		touch_reset_active_output_high: active_output_high {
+			mux {
+				pins = "gpio38";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio38";
+				drive-strength = <2>;
+				bias-pull-down;
+				output-high;
+			};
+		};
+
 		touch_reset_suspend: default {
 			mux {
 				pins = "gpio38";
@@ -782,8 +795,18 @@
 		synaptics,ubl-i2c-addr = <0x4b>;
 		synaptics,pwr-reg-name = "pm8150_l13";
 		synaptics,bus-reg-name = "pm8150a_l1";
-		pinctrl-names = "default";
-		pinctrl-0 = <&touch_int_active>;
+		pinctrl-names = "ts_mmi_on_state", "ts_mmi_off_state";
+		pinctrl-0 = <&touch_reset_active_output_high &touch_int_active>;
+		pinctrl-1 = <&touch_reset_suspend &touch_int_suspend>;
+		/* touchscreen_mmi class entries */
+		mmi,enable-gestures;
+		mmi,usb-charger-detection;
+		mmi,power-off-suspend;
+		mmi,suppression-control;
+		mmi,gs-distance-control;
+		mmi,pill-region-control;
+		mmi,hold-distance-control;
+		mmi,fps_detection;
 	};
 };
 
