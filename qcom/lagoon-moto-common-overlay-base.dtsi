@@ -23,6 +23,16 @@
 			debounce-interval = <15>;
 			linux,can-disable;
 		};
+
+		google_key {
+			label = "google_key";
+			gpios = <&tlmm 11 GPIO_ACTIVE_LOW>;
+			linux,input-type = <1>;
+			linux,code = <KEY_SEARCH>;
+			gpio-key,wakeup;
+			debounce-interval = <15>;
+			linux,can-disable;
+		};
 	};
 
 	mot_batterydata: qcom,battery-data {
