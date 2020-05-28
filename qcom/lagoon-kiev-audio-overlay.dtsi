@@ -80,6 +80,7 @@
 			irq-gpio = <&tlmm 59 0x2008>;
 			monitor-flag = <1>;
 			monitor-timer-val = <3000>;
+			cali-re-val = <28672>;
 			status = "okay";
 		};
 };
