@@ -40,7 +40,8 @@
 &pm8150l_wled {
 	qcom,string-cfg = <15>;
 	qcom,cabc-sel = <1>;
-	qcom,ovp = <25000>;
+	qcom,ovp = <20500>;
+	qcom,boost-current-limit = <1050>;
 	status = "ok";
 
 	mmi,low-bl-force-cabc-disable;
