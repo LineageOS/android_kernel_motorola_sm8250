@@ -5570,6 +5570,10 @@ static int get_ec_ref_port_id(int value, int *index)
 		*index = 40;
 		port_id = AFE_PORT_ID_QUINARY_TDM_TX;
 		break;
+	case 41:
+	        *index = 41;
+		port_id = AFE_PORT_ID_SENARY_TDM_RX;
+		break;
 	default:
 		*index = 0; /* NONE */
 		pr_err("%s: Invalid value %d\n", __func__, value);
@@ -5628,6 +5632,7 @@ static const char *const ec_ref_rx[] = { "None", "SLIM_RX", "I2S_RX",
 	"SLIM_7_RX", "RX_CDC_DMA_RX_0", "RX_CDC_DMA_RX_1", "RX_CDC_DMA_RX_2",
 	"RX_CDC_DMA_RX_3", "TX_CDC_DMA_TX_0", "TERT_TDM_RX_2", "SEC_TDM_TX_0",
 	"DISPLAY_PORT1", "SEN_MI2S_RX", "SENARY_MI2S_TX", "QUIN_TDM_TX_0",
+	"SEN_TDM_RX_0",
 };
 
 static const struct soc_enum msm_route_ec_ref_rx_enum[] = {
@@ -29047,6 +29052,7 @@ static const struct snd_soc_dapm_route intercon_tdm[] = {
 	{"QUIN_TDM_RX_2_Voice Mixer", "VoiceMMode1", "VOICEMMODE1_DL"},
 	{"QUIN_TDM_RX_2", NULL, "QUIN_TDM_RX_2_Voice Mixer"},
 
+	{"AUDIO_REF_EC_UL1 MUX", "SEN_TDM_RX_0", "SEN_TDM_RX_0"},
 	{"VoiceMMode1_Tx Mixer", "QUAT_TDM_TX_0_MMode1", "QUAT_TDM_TX_0"},
 	{"VoiceMMode1_Tx Mixer", "SEN_MI2S_TX_MMode1", "SEN_MI2S_TX"},
 	{"VoiceMMode1_Tx Mixer", "SEN_TDM_TX_0_MMode1", "SEN_TDM_TX_0"},
