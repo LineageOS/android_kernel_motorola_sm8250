@@ -152,6 +152,7 @@
 		pinctrl-0 = <&touch_reset_active_output_high &touch_int_active>;
 		pinctrl-1 = <&touch_reset_suspend &touch_int_suspend>;
 		/* touchscreen_mmi class entries */
+		mmi,max_coords = <1080 2340>;
 		mmi,enable-gestures;
 		mmi,usb-charger-detection;
 		mmi,power-off-suspend;
@@ -159,6 +160,7 @@
 		mmi,gs-distance-control;
 		mmi,pill-region-control;
 		mmi,hold-distance-control;
+		mmi,poison-slot-control;
 		mmi,fps_detection;
 	};
 };
