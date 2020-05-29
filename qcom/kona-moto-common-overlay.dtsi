@@ -1090,9 +1090,9 @@
 		pinctrl-0 = <&p938x_outputs &p938x_irq &p938x_det>;
 		bpp-current = <950>;
 		epp-current-table =
-			<0 450>, <8000 600>, <10000 800>, <15000 1150>;
+			<0 450>, <8000 750>, <10000 950>, <15000 1350>;
 		bpp-voltage = <5000>;
-		epp-voltage = <12000>;
+		epp-voltage = <10000>;
 		vdd-i2c-supply = <&dummy_vreg>;
 		/* Setting 0x0320, 0x0258, 0x0DAC. They are little endian,
 		 * so swap them in the byte array */
