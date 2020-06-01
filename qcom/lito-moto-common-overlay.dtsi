@@ -76,3 +76,8 @@
 		qcom,bark-time = <22000>;
 	};
 };
+
+&pm7250b_pdphy {
+	qcom,default-sink-caps = <5000 3000>, /*5V @ 3A*/
+				 <9000 3000>; /*9V @ 3A*/
+};
