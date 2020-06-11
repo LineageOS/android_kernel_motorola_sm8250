@@ -35,6 +35,37 @@
 	};
 };
 
+&soc {
+	gpio_keys {
+		pinctrl-0 = <&key_vol_up_default &google_key_default>;
+
+		google_key {
+			label = "google_key";
+			gpios = <&tlmm 11 GPIO_ACTIVE_LOW>;
+			linux,input-type = <1>;
+			linux,code = <KEY_SEARCH>;
+			gpio-key,wakeup;
+			debounce-interval = <15>;
+			linux,can-disable;
+		};
+	};
+};
+
+&tlmm{
+	google_key_default: google_key_default {
+		mux {
+			pins = "gpio11";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio11";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+	};
+};
+
 &usb_qmp_dp_phy {
 	status = "disabled";
 };
