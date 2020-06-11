@@ -684,6 +684,7 @@
 	qcom,disable-suspend-on-collapse;
 	qcom,pd-voltage-max-uv = <5000000>;
 	qcom,usbpd-phandle = <&pm7250b_pdphy>;
+	qcom,hvdcp2-current-override;
 };
 
 &spmi_bus {
