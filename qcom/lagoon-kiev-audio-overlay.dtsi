@@ -78,6 +78,7 @@
 			pinctrl-0 = <&aw882xx_irq_default>, <&aw882xx_reset_default>;
 			reset-gpio = <&tlmm 58 0>;
 			irq-gpio = <&tlmm 59 0x2008>;
+			fade-in-out = <1>;
 			monitor-flag = <1>;
 			monitor-timer-val = <3000>;
 			cali-re-val = <28672>;
