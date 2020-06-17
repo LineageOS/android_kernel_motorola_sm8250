@@ -20,6 +20,7 @@
 #include "lagoon-kiev-touchscreen.dtsi"
 #include "lagoon-kiev-sensor-overlay.dtsi"
 #include "lagoon-moto-kiev-fps-overlay.dtsi"
+#include "lagoon-kiev-thermal.dtsi"
 
 &soc {
 	qcom,tz_gpio {
@@ -179,4 +180,3 @@
 &ufshc_mem {
        spm-level = <3>;
 };
-
