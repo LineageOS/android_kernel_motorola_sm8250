@@ -533,7 +533,6 @@
 		cirrus,boost-peak-milliamp = <4000>;
 		cirrus,boost-cap-microfarad = <21>;
 		cirrus,amp-gain-zc;
-		cirrus,disable-wake-ctrl;
 		cirrus,fast-switch = "fast_switch_music.txt",
 				     "fast_switch_voice.txt",
 				     "fast_switch_ringtone.txt",
