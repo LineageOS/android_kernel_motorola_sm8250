@@ -623,6 +623,26 @@
 		polling-delay = <2000>;
 		thermal-governor = "user_space";
 	};
+
+	front-step {
+		polling-delay-passive = <2000>;
+		polling-delay = <2000>;
+		thermal-governor = "step_wise";
+		trips {
+			modem_trip1: modem-trip1 {
+				temperature = <48000>;
+				hysteresis = <3000>;
+				type = "passive";
+			};
+		};
+		cooling-maps {
+			/* Disable 5G */
+			skin_modem_lvl2 {
+				trip = <&modem_trip1>;
+				cooling-device = <&modem_skin 2 2>;
+			};
+		};
+	};
 };
 
 &pm7250b_charger {
