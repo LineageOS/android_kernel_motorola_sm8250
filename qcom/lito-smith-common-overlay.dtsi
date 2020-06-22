@@ -700,6 +700,7 @@
 			mmi,max-main-psy = "fg_main_battery";
 			mmi,max-flip-psy = "fg_flip_battery";
 			status = "ok";
+			qcom,force-hvdcp-5v;
 			qcom,enable-charging-limit;
 			qcom,upper-limit-capacity = <75>;
 			qcom,lower-limit-capacity = <60>;
