@@ -772,11 +772,12 @@
 		sec,hold-grip-control;
 		pinctrl-names = "on_state", "off_state";
 		pinctrl-0 = <&touch_reset_active &touch_int_active>;
-		pinctrl-1 = <&touch_reset_active &touch_int_active>;
+		pinctrl-1 = <&touch_reset_suspend &touch_int_suspend>;
 		/* touchscreen_mmi class entries */
 		mmi,refresh-rate-update;
 		mmi,enable-gestures;
 		mmi,usb-charger-detection;
+		mmi,power-off-suspend;
 	};
 
 	synaptics_tcm@4b {
