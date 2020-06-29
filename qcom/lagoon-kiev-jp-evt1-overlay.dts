@@ -16,6 +16,7 @@
 #include <dt-bindings/interrupt-controller/arm-gic.h>
 #include "lagoon-kiev-common-overlay.dtsi"
 #include "lagoon-kiev-jp-vibrator-overlay.dtsi"
+#include "lagoon-moto-kiev-jp-fps-overlay.dtsi"
 
 #define KIEV_RADIO_JP 5
 
