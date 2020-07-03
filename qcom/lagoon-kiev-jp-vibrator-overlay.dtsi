@@ -2,15 +2,6 @@
 	status = "disabled";
 };
 
-&tlmm{
-	haptic_reset {
-		haptic_reset_default: haptic_reset_default {
-			pins = "gpio20";
-			bias-pull-up;
-		};
-	};
-};
-
 &qupv3_se7_i2c {
 	status = "okay";
 
@@ -18,16 +9,8 @@
 		compatible = "awinic,aw8624_haptic";
 		reg = <0x5A>;
 		reset-gpio = <&tlmm 20 0>;
-		haptic-context-gpio = <&tlmm 19 0>;
-		long-gain-normal = <0x80>;
-		long-gain-reduced = <0x80>;
-		pinctrl-names = "default";
-		pinctrl-0 = <&haptic_reset_default>;
-		status = "okay";
 
-		ram-update-delay;
-		real-i2c-addr = <0x5A>;
-
+		vib_mode = < 0 >;  /*mode:  RAM mode->0; CONT mode -> 1*/
 		vib_f0_pre = < 2350 >;
 		vib_f0_cali_percen = < 7 >;
 		vib_cont_drv_lev = < 125 >;
@@ -35,19 +18,17 @@
 		vib_cont_td = < 0xF06C >;
 		vib_cont_zc_thr = < 0x08F8 >;
 		vib_cont_num_brk = < 3 >;
-		vib_f0_coeff = < 260 >;
-
-		vib_duration_time = < 15 60 0 0 0 >;
-		vib_brake_ram_config = < 1 1 90 60 20 3 1 3    1 1 90 60 30 5 1 3    0 0 50 40 25 0 5 3 >;
+		vib_f0_coeff = < 260 >; /*Don't modify it*/
+		vib_duration_time = < 20 30 60 0 0 >;
 		vib_brake_cont_config = < 1 1 90 42 20 5 2 2 0 0 0  0  0  0 0 0 0 0 0   0  0  0 0 0 >;
-		vib_f0_trace_parameter = < 9 3 1 31 >;
-		vib_bemf_config = < 0 8 3 0xf8 >;
-
-		vib_sw_brake = < 0x2c >;
-		vib_wavseq = < 0 1 1 2 0 0 0 0 0 0 0 0 0 0 0 0 >;  /*wavseq1-seq8 0x07-0x0E*/
-		vib_wavloop = < 0 6 1 15 0 0 0 0 0 0>;             /*loop1-mainloog 0x0f-0x13*/
-		vib_td_brake = < 42720 42720 42720 >;              /*level0  level1  level2*/
+		vib_f0_trace_parameter = < 9 5 1 15 >;
+		vib_bemf_config = < 0x10 0x08 0x23 0xf8 >;
+		vib_sw_brake = < 0x2c 0x08>; /*cont brake,other brake*/
+		vib_wavseq = < 1 2 3 4 5 6 7 8 9 10 0 0 0 0 0 0 >; /*wavseq1-seq8 0x07-0x0E*/
+		vib_wavloop = < 1 1 1 1 1 1 1 1 1 1>;/*loop1-mainloog 0x0f-0x13*/
+		vib_td_brake = < 42720 42720 42720 >; /*level0  level1  level2*/
 		vib_tset = < 0x11 >;
-		vib_func_parameter1 = < 1000 >;
+		vib_func_parameter1 = < 1 >;
+		status = "okay";
 	};
 };
