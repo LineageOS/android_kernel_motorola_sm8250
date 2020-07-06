@@ -67,6 +67,9 @@
 	qcom,mdss-dsi-panel-status-value = <0x9c>;
 	qcom,mdss-dsi-panel-status-read-length = <1>;
 
+	qcom,mdss-dsi-bl-default-level = <2048>;
+	qcom,mdss-brightness-max-level = <4095>;
+
         qcom,mdss-dsi-panel-hdr-enabled;
         qcom,mdss-dsi-panel-hdr-color-primaries = <15600 16150 33750
 				15900 13150 34200 7500 3000>;
