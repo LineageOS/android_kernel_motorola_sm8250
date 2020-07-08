@@ -497,16 +497,26 @@
 		thermal-governor = "step_wise";
 		trips {
 			modem_skin_trip1: modem-skin-trip1 {
+				temperature = <44000>;
+				hysteresis = <2000>;
+				type = "passive";
+			};
+			modem_skin_trip2: modem-skin-trip2 {
 				temperature = <47000>;
 				hysteresis = <3000>;
 				type = "passive";
 			};
 		};
 		cooling-maps {
-			/* Disable 5G */
-			skin_modem_lvl2 {
+			/* CQI=0 */
+			modem_skin_l1 {
 				trip = <&modem_skin_trip1>;
-				cooling-device = <&modem_mmw0 3 3>;
+				cooling-device = <&modem_skin 1 1>;
+			};
+			/* Disable 5G */
+			modem_skin_l2 {
+				trip = <&modem_skin_trip2>;
+				cooling-device = <&modem_skin 2 2>;
 			};
 		};
 	};
