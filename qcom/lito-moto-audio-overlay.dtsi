@@ -187,8 +187,9 @@
 			"IN2R",  "MICBIAS2A",
 			"IN1AR", "MICBIAS2A",
 			"IN1BR", "MICBIAS1A",
-			"IN1BR", "MICBIAS1B";
-
+			"IN1BR", "MICBIAS1B",
+			"SEN_TDM_RX_0", "MCLK",
+			"SEN_TDM_TX_0", "MCLK";
 		asoc-codec = <&stub_codec>, <&cs47l35>,
 				<&cs35l41_spk>;
 		asoc-codec-names = "msm-stub-codec.1",
