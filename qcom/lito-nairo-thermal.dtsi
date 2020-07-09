@@ -259,7 +259,7 @@
 		};
 	};
 
-	modem-sub6-step {
+	modem-skin-step {
 		polling-delay-passive = <5000>;
 		polling-delay = <5000>;
 		thermal-sensors = <&tsens1 10>;
@@ -280,7 +280,7 @@
 		cooling-maps {
 			modem_sub6_lvl0 {
 				trip = <&modem_sub_trip0>;
-				cooling-device = <&modem_tj 1 1>;
+				cooling-device = <&modem_skin 1 1>;
 			};
 		};
 	};
@@ -356,11 +356,11 @@
 		cooling-maps {
 			modem_mmw0_lvl0 {
 				trip = <&modem_mmw0_trip0>;
-				cooling-device = <&modem_mmw0 1 1>;
+				cooling-device = <&modem_mmw_skin0 1 1>;
 			};
 			modem_mmw0_lvl1 {
 				trip = <&modem_mmw0_trip1>;
-				cooling-device = <&modem_mmw0 2 2>;
+				cooling-device = <&modem_mmw_skin0 2 2>;
 			};
 		};
 	};
@@ -386,11 +386,11 @@
 		cooling-maps {
 			modem_mmw1_lvl0 {
 				trip = <&modem_mmw1_trip0>;
-				cooling-device = <&modem_mmw1 1 1>;
+				cooling-device = <&modem_mmw_skin1 1 1>;
 			};
 			modem_mmw1_lvl1 {
 				trip = <&modem_mmw1_trip1>;
-				cooling-device = <&modem_mmw1 2 2>;
+				cooling-device = <&modem_mmw_skin1 2 2>;
 			};
 		};
 	};
