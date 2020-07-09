@@ -76,6 +76,8 @@
         qcom,mdss-dsi-panel-peak-brightness = <4500000>;
         qcom,mdss-dsi-panel-blackness-level = <3000>;
 
+	qcom,tp_state_check_enable;
+
 	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
 	qcom,mdss-dsi-display-timings {
 		timing@0 {
