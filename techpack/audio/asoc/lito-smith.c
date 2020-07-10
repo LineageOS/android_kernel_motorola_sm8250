@@ -98,7 +98,6 @@
 #define MADERA_FLL_SRC_MCLK2            1
 #define MADERA_FLL1_REFCLK             1
 #define MADERA_CLK_DSPCLK               8
-#define MADERA_CLK_OPCLK               3
 #define QCOM_MCLK_RATE                 19200000
 #define QCOM_SLEEPCLK_RATE             32768
 
@@ -5669,8 +5668,6 @@ static int msm_mclk_event(struct snd_soc_dapm_widget *w,
 static struct snd_soc_dapm_route cs47l35_audio_paths[] = {
 #ifndef CONFIG_SND_SOC_CS35L41
 	{"AIF1 Playback", NULL, "SPK AMP Capture"},
-	{"SPK AMP Playback", NULL, "OPCLK"},
-	{"SPK AMP Capture", NULL, "OPCLK"},
 #endif
 };
 
@@ -5746,14 +5743,6 @@ static int cirrus_codec_init(struct snd_soc_pcm_runtime *rtd)
 			SND_SOC_CLOCK_IN);
 	if (ret != 0) {
 		dev_err(component->dev,  "Failed to set DSPCLK %d\n", ret);
-		return ret;
-	}
-
-	ret = snd_soc_component_set_sysclk(component, MADERA_CLK_OPCLK,
-			0, Q6AFE_LPASS_OSR_CLK_12_P288_MHZ,
-			SND_SOC_CLOCK_OUT);
-	if (ret != 0) {
-		dev_err(component->dev, "Failed to set OPCLK %d\n", ret);
 		return ret;
 	}
 
