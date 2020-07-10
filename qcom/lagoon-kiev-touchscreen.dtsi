@@ -16,6 +16,8 @@
 		focaltech,max-touch-number = <10>;
 		focaltech,display-coords =  <0 0 1080 2400>;
 		pinctrl-names = "pmx_ts_active","pmx_ts_suspend","pmx_ts_release";
+		/* touchscreen_mmi class entries*/
+		mmi,notify_to_display;
 	};
 };
 
