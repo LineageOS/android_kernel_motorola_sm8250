@@ -18,6 +18,7 @@
 		pinctrl-names = "pmx_ts_active","pmx_ts_suspend","pmx_ts_release";
 		/* touchscreen_mmi class entries*/
 		mmi,notify_to_display;
+		mmi,class-entry-name = "ft8756";
 	};
 };
 
