@@ -266,21 +266,25 @@
 		thermal-governor = "step_wise";
 		wake-capable-sensor;
 		trips {
-			modem_sub_trip0: modem_sub_trip0 {
+			modem_skin_trip0: modem_skin_trip0 {
 				temperature = <65000>;
 				hysteresis = <5000>;
 				type = "passive";
 			};
-			modem_sub_trip2: modem_sub_trip2 {
-				temperature = <95000>;
+			modem_skin_trip1: modem_skin_trip1 {
+				temperature = <68000>;
 				hysteresis = <5000>;
 				type = "passive";
 			};
 		};
 		cooling-maps {
-			modem_sub6_lvl0 {
-				trip = <&modem_sub_trip0>;
+			modem_skin_lvl0 {
+				trip = <&modem_skin_trip0>;
 				cooling-device = <&modem_skin 1 1>;
+			};
+			modem_skin_lvl1 {
+				trip = <&modem_skin_trip1>;
+				cooling-device = <&modem_skin 2 2>;
 			};
 		};
 	};
@@ -308,6 +312,16 @@
 				type = "passive";
 			};
 		};
+		cooling-maps {
+			pa1_sub6_lvl0 {
+				trip = <&pa1_sub_trip0>;
+				cooling-device = <&modem_pa_fr1 1 1>;
+			};
+			pa1_sub6_lvl1 {
+				trip = <&pa1_sub_trip1>;
+				cooling-device = <&modem_pa_fr1 2 2>;
+			};
+		};
 	};
 
 	pa2-sub6-step {
@@ -331,6 +345,16 @@
 				temperature = <80000>;
 				hysteresis = <5000>;
 				type = "passive";
+			};
+		};
+		cooling-maps {
+			pa2_sub6_lvl0 {
+				trip = <&pa2_sub_trip0>;
+				cooling-device = <&modem_pa_fr1 1 1>;
+			};
+			pa2_sub6_lvl1 {
+				trip = <&pa2_sub_trip1>;
+				cooling-device = <&modem_pa_fr1 2 2>;
 			};
 		};
 	};
