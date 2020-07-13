@@ -15,11 +15,11 @@
 		focaltech,irq-gpio = <&tlmm 22 0x02>;
 		focaltech,max-touch-number = <10>;
 		focaltech,display-coords =  <0 0 1080 2400>;
+		focaltech,notify_to_panel;
 		pinctrl-names = "ts_mmi_on_state", "ts_mmi_off_state";
 		pinctrl-0 = <&ts_active>;
 		pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
 		/* touchscreen_mmi class entries*/
-		mmi,notify_to_display;
 		mmi,class-entry-name = "ft8756";
 	};
 };
