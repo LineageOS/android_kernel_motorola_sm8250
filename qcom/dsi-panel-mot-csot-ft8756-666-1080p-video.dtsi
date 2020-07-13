@@ -68,7 +68,7 @@
 				qcom,mdss-dsi-panel-width = <1080>;
 				qcom,mdss-dsi-panel-height = <2400>;
 				qcom,mdss-dsi-h-front-porch = <16>;
-				qcom,mdss-dsi-h-back-porch = <43>;
+				qcom,mdss-dsi-h-back-porch = <16>;
 				qcom,mdss-dsi-h-pulse-width = <6>;
 				qcom,mdss-dsi-h-sync-skew = <0>;
 				qcom,mdss-dsi-v-back-porch = <32>;
@@ -101,11 +101,6 @@
 				];
 				qcom,mdss-dsi-on-command-state = "dsi_lp_mode";
 				qcom,mdss-dsi-off-command-state = "dsi_lp_mode";
-
-				qcom,mdss-dsi-panel-phy-timings = [00 20 08 08 24 23 08
-							08 05 02 04 00];
-				qcom,display-topology = <1 0 1>;
-				qcom,default-topology-index = <0>;
 			};
 		};
 
