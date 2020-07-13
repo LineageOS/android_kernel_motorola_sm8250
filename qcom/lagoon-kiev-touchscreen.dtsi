@@ -5,7 +5,7 @@
 &qupv3_se0_spi {
 	status = "ok";
 	focaltech@0 {
-		status = "/chosen","mmi,panel_name","contains","tm_ft8756_666";
+		status = "/chosen","mmi,panel_name","contains","tm_ft8756_666","csot_ft8756_666";
 		compatible = "focaltech,fts";
 		reg = <0x0>;
 		interrupt-parent = <&tlmm>;
