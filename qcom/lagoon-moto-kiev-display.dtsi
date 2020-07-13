@@ -13,6 +13,7 @@
 #include "dsi-panel-mot-dummy-qhd-video.dtsi"
 #include "lagoon-sde-display.dtsi"
 #include "dsi-panel-mot-tianma-ft8756-666-1080p-video.dtsi"
+#include "dsi-panel-mot-csot-ft8756-666-1080p-video.dtsi"
 
 &sde_dp {
 	status = "disabled";
@@ -90,6 +91,45 @@
 	};
 };
 
+&dsi_ft8756_csot_video {
+	qcom,platform-te-gpio = <&tlmm 23 0>;
+	qcom,platform-reset-gpio = <&pm6150l_gpios 9 0>;
+
+	qcom,mdss-dsi-hbm-on-command = [15 01 00 00 00 00 02 51 FF];
+	qcom,mdss-dsi-hbm-on-command-state =  "dsi_lp_mode";
+	qcom,mdss-dsi-hbm-off-command = [15 01 00 00 00 00 02 51 CC];
+	qcom,mdss-dsi-hbm-off-command-state =  "dsi_lp_mode";
+	qcom,mdss-dsi-hbm-type = "lcd-dcs-wled";
+
+	qcom,esd-check-enabled;
+	qcom,mdss-dsi-panel-status-check-mode = "reg_read";
+	qcom,mdss-dsi-panel-status-command = [06 01 00 01 00 00 01 0A];
+	qcom,mdss-dsi-panel-status-command-state = "dsi_lp_mode";
+	qcom,mdss-dsi-panel-status-value = <0x9c>;
+	qcom,mdss-dsi-panel-status-read-length = <1>;
+
+	qcom,mdss-dsi-bl-default-level = <2048>;
+	qcom,mdss-brightness-max-level = <4095>;
+
+        qcom,mdss-dsi-panel-hdr-enabled;
+        qcom,mdss-dsi-panel-hdr-color-primaries = <15600 16150 33750
+				15900 13150 34200 7500 3000>;
+        qcom,mdss-dsi-panel-peak-brightness = <4500000>;
+        qcom,mdss-dsi-panel-blackness-level = <3000>;
+
+	qcom,tp_state_check_enable;
+
+	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
+	qcom,mdss-dsi-display-timings {
+		timing@0 {
+			qcom,mdss-dsi-panel-framerate = <60>;
+			qcom,mdss-dsi-panel-phy-timings = [00 20 08 09 25 23 09
+							09 06 02 04 00];
+			qcom,display-topology = <1 0 1>;
+			qcom,default-topology-index = <0>;
+		};
+	};
+};
 &mot_dummy_vid_qhd {
 	qcom,platform-reset-gpio = <&pm6150l_gpios 9 0>;
 
