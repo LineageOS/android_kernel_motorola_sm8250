@@ -20,6 +20,7 @@
 		pinctrl-0 = <&ts_active>;
 		pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
 		/* touchscreen_mmi class entries*/
+		mmi,enable-gestures;
 		mmi,class-entry-name = "ft8756";
 	};
 };
