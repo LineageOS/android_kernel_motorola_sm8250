@@ -1001,6 +1001,7 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&capsense_gpio_pins>;
 		cap_vdd-supply = <&pm8150_l13>;
+		reinit-on-i2c-failure;
 		Semtech,reg-num = <59>;
 		Semtech,button-flag = <0x1F>;
 		flip-gpio-when-open = <0>;
