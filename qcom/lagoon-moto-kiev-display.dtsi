@@ -28,7 +28,7 @@
 };
 
 &pm6150l_wled {
-	qcom,string-cfg = <15>;
+	qcom,string-cfg = <7>;
 	qcom,cabc-sel = <1>;
 	qcom,ovp = <25000>;
 	status = "ok";
