@@ -126,7 +126,7 @@
 					<60 4200 2185 0>;
 			qcom,iterm-ma = <110>;
 			qcom,vfloat-comp-uv = <20000>;
-			qcom,hvdcp-power-max = <20000>;
+			qcom,hvdcp-power-max = <15000>;
 		};
 	};
 };
