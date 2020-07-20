@@ -21,6 +21,7 @@
 		pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
 		/* touchscreen_mmi class entries*/
 		mmi,enable-gestures;
+		mmi,usb-charger-detection;
 		mmi,class-entry-name = "ft8756";
 	};
 };
