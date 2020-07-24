@@ -49,6 +49,9 @@
 	vddio_disp-supply = <&L1E>;
 	vsp_disp-supply = <&lcdb_ldo_vreg>;
 	vsn_disp-supply = <&lcdb_ncp_vreg>;
+
+	qcom,platform-mot-ext-feature-enable;
+	qcom,platform-mot-early-power-enable;
 };
 
 &dsi_ft8756_tm_video {
