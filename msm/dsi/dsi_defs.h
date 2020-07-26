@@ -639,6 +639,7 @@ struct dsi_display_mode_priv_info {
 	u32 dsi_transfer_time_us;
 	u64 clk_rate_hz;
 	u64 min_dsi_clk_hz;
+	u32 phy_drive_strength;
 
 	struct msm_display_topology topology;
 	struct msm_display_dsc_info dsc;

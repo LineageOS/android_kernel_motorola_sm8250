@@ -248,6 +248,16 @@ int dsi_phy_set_clk_freq(struct msm_dsi_phy *phy,
 		struct link_clk_freq *clk_freq);
 
 /**
+ * dsi_phy_set_drive_strength_params() - drive strength parameters for the panel
+ * @phy:          DSI PHY handle
+ * @drive_strength:         DSI PHY Drive Strength
+ *
+ * Return: error code.
+ */
+int dsi_phy_set_drive_strength_params(struct msm_dsi_phy *phy,
+				 u32 drive_strength);
+
+/**
  * dsi_phy_set_timing_params() - timing parameters for the panel
  * @phy:          DSI PHY handle
  * @timing:       array holding timing params.
