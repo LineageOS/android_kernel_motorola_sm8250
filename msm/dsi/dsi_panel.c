@@ -3058,6 +3058,27 @@ int dsi_dsc_populate_static_param(struct msm_display_dsc_info *dsc)
 	return 0;
 }
 
+static int dsi_panel_parse_phy_ldo(struct dsi_display_mode *mode,
+		struct dsi_parser_utils *utils)
+{
+	u32 data;
+	int rc = 0;
+	struct dsi_display_mode_priv_info *priv_info;
+
+	if (!mode || !mode->priv_info)
+		return -EINVAL;
+
+	priv_info = mode->priv_info;
+
+	rc = utils->read_u32(utils->data,
+			"qcom,mdss-dsi-panel-phy-drive-strength", &data);
+	if (rc)
+		DSI_DEBUG("Unsupport to set Phy Driver Strength\n");
+	else
+		priv_info->phy_drive_strength = data;
+
+	return rc;
+}
 
 static int dsi_panel_parse_phy_timing(struct dsi_display_mode *mode,
 		struct dsi_parser_utils *utils)
@@ -4543,6 +4564,12 @@ int dsi_panel_get_mode(struct dsi_panel *panel,
 		if (rc)
 			DSI_ERR(
 			"failed to parse panel jitter config, rc=%d\n", rc);
+
+		rc = dsi_panel_parse_phy_ldo(mode, utils);
+		if (rc) {
+			DSI_ERR(
+			"failed to parse panel phy ldo rc=%d\n", rc);
+		}
 
 		rc = dsi_panel_parse_phy_timing(mode, utils);
 		if (rc) {
