@@ -5209,6 +5209,16 @@ static int dsi_display_set_mode_sub(struct dsi_display *display,
 		dsi_display_validate_dms_fps(display->panel->cur_mode, mode);
 	}
 
+	if (priv_info->phy_drive_strength) {
+		display_for_each_ctrl(i, display) {
+			ctrl = &display->ctrl[i];
+			rc = dsi_phy_set_drive_strength_params(ctrl->phy,
+					priv_info->phy_drive_strength);
+			if (rc)
+				DSI_ERR("Fail to add drive strength params\n");
+		}
+	}
+
 	if (priv_info->phy_timing_len) {
 		display_for_each_ctrl(i, display) {
 			ctrl = &display->ctrl[i];
