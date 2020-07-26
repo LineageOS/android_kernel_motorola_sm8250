@@ -1069,6 +1069,32 @@ int dsi_phy_set_clk_freq(struct msm_dsi_phy *phy,
 }
 
 /**
+ * dsi_phy_set_drive_strength_params - drive strength parameters for the panel
+ * @phy:          DSI PHY handle
+ * @drive strength:       array holding timing params.
+ *
+ * Return: error code.
+ */
+int dsi_phy_set_drive_strength_params(struct msm_dsi_phy *phy,
+			      u32 drive_strength)
+{
+	int rc = 0;
+
+	if (!phy || !drive_strength) {
+		DSI_PHY_ERR(phy, "Invalid params\n");
+		return -EINVAL;
+	}
+
+	mutex_lock(&phy->phy_lock);
+
+
+	phy->cfg.phy_drive_strength = drive_strength;
+
+	mutex_unlock(&phy->phy_lock);
+	return rc;
+}
+
+/**
  * dsi_phy_set_timing_params() - timing parameters for the panel
  * @phy:          DSI PHY handle
  * @timing:       array holding timing params.
@@ -1101,7 +1127,6 @@ int dsi_phy_set_timing_params(struct msm_dsi_phy *phy,
 
 	if (phy->hw.ops.commit_phy_timing && commit)
 		phy->hw.ops.commit_phy_timing(&phy->hw, &phy->cfg.timing);
-
 	mutex_unlock(&phy->phy_lock);
 	return rc;
 }
