@@ -48,4 +48,5 @@
 	df-serialnum = "SB18C85232";
 	qcom,batt-id-range-pct = <15>;
 	#include "qg-batterydata-mk50-atl-5000mah.dtsi"
+	#include "qg-batterydata-mk50-scud-5000mah.dtsi"
 };
