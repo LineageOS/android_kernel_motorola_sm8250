@@ -172,7 +172,9 @@ sound_madera: sound-madera {
 			"IN2L",  "MICBIAS2A",
 			"IN2L",  "GPSW",
 			"IN2R",  "MICBIAS2B",
-			"IN1BR", "MICBIAS1B";
+			"IN1BR", "MICBIAS1B",
+			"QUAT_TDM_RX_0", "MCLK",
+			"QUAT_TDM_TX_0", "MCLK";
 
 		asoc-codec = <&stub_codec>, <&ext_disp_audio_codec>, <&cs47l35>,
 				<&cs35l41_rcv>, <&cs35l41_spk>;
