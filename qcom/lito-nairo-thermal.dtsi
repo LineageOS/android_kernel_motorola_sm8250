@@ -262,18 +262,18 @@
 	modem-skin-step {
 		polling-delay-passive = <5000>;
 		polling-delay = <5000>;
-		thermal-sensors = <&tsens1 10>;
+		thermal-sensors = <&pm8150_adc_tm ADC_XO_THERM_PU2>;
 		thermal-governor = "step_wise";
 		wake-capable-sensor;
 		trips {
 			modem_skin_trip0: modem_skin_trip0 {
-				temperature = <58000>;
-				hysteresis = <3000>;
+				temperature = <49500>;
+				hysteresis = <2000>;
 				type = "passive";
 			};
 			modem_skin_trip1: modem_skin_trip1 {
-				temperature = <61000>;
-				hysteresis = <3000>;
+				temperature = <52000>;
+				hysteresis = <2500>;
 				type = "passive";
 			};
 		};
