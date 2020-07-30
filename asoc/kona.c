@@ -111,6 +111,8 @@
 #define MADERA_DSPCLK_RATE	(FLL_RATE_MADERA / 2)
 #define MADERA_TDM_SLOTS_MAX 4
 #define MADERA_TDM_SLOT_WIDTH_BITS 16
+#define MADERA_TDM_CLOCK_RATE \
+	(MADERA_TDM_SLOT_WIDTH_BITS * MADERA_TDM_SLOTS_MAX * SAMPLING_RATE_48KHZ)
 #endif
 
 enum {
@@ -933,6 +935,10 @@ static struct snd_soc_card snd_soc_card_kona_msm;
 static int dmic_0_1_gpio_cnt;
 static int dmic_2_3_gpio_cnt;
 static int dmic_4_5_gpio_cnt;
+
+#ifdef CONFIG_SND_SOC_CS47l35_TDM
+static unsigned int madera_tdm_clk_freq;
+#endif
 
 static void *def_wcd_mbhc_cal(void);
 
@@ -4650,8 +4656,6 @@ static int kona_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 #ifdef CONFIG_SND_SOC_CS47l35_TDM
 	unsigned int slot_offset_16b[8] = {0,2,4,6,8,10,12,14};
 	struct snd_soc_dai **codec_dais = rtd->codec_dais;
-	struct snd_soc_component *component =
-		snd_soc_rtdcom_lookup(rtd, MADERA_CODEC_NAME);
 	int i;
 #endif
 
@@ -4724,6 +4728,9 @@ static int kona_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 		break;
 	}
 	clk_freq = rate * slot_width * slots;
+#ifdef CONFIG_SND_SOC_CS47l35_TDM
+	madera_tdm_clk_freq = clk_freq;
+#endif
 
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 		/*2 slot config - bits 0 and 1 set for the first two slots */
@@ -4761,7 +4768,7 @@ static int kona_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 			ret = snd_soc_dai_set_fmt(codec_dais[i],
 						SND_SOC_DAIFMT_DSP_A |
 						SND_SOC_DAIFMT_CBS_CFS |
-						SND_SOC_DAIFMT_IB_NF);
+						SND_SOC_DAIFMT_NB_NF);
 			if (ret != 0) {
 				pr_err("%s: Failed to set %s's fmt: ret = %d\n",
 					codec_dais[i]->name, ret);
@@ -4779,14 +4786,6 @@ static int kona_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 			}
 
 		}
-		pr_debug("%s: set madera tdm clk %d\n",	__func__, clk_freq);
-
-		ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
-			MADERA_CLK_SRC_AIF1BCLK,
-			clk_freq, MADERA_SYSCLK_RATE);
-		if (ret < 0)
-			pr_err("%s: set sysclk failed, err:%d\n",
-				__func__, ret);
 #endif
 	} else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
 		/*2 slot config - bits 0 and 1 set for the first two slots */
@@ -5854,7 +5853,12 @@ static int msm_mclk_event(struct snd_soc_dapm_widget *w,
 	case SND_SOC_DAPM_PRE_PMU:
 		ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
 			MADERA_CLK_SRC_AIF1BCLK,
-			mi2s_clk[QUAT_MI2S].clk_freq_in_hz, MADERA_SYSCLK_RATE);
+#ifdef CONFIG_SND_SOC_CS47l35_TDM
+			madera_tdm_clk_freq ? madera_tdm_clk_freq : MADERA_TDM_CLOCK_RATE,
+#else
+			mi2s_clk[QUAT_MI2S].clk_freq_in_hz,
+#endif
+			MADERA_SYSCLK_RATE);
 		if (ret != 0) {
 			dev_err(component->dev, "Failed to set MADERA_FLL1_REFCLK %d\n", ret);
 			return ret;
