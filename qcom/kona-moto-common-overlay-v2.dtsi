@@ -1,0 +1,101 @@
+/* Copyright (c) 2020, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+#include "carrier-channel-ids.dtsi"
+
+#include "kona-pmic-overlay.dtsi"
+#include "kona-audio-overlay.dtsi"
+#include "kona-thermal-overlay.dtsi"
+
+
+&utags {
+	compatible = "mmi,utags";
+	mmi,main-utags = "/dev/block/bootdevice/by-name/utags";
+	mmi,backup-utags = "/dev/block/bootdevice/by-name/utagsBackup";
+};
+
+&hw {
+	compatible = "mmi,utags";
+	mmi,dir-name = "hw";
+	mmi,main-utags = "/dev/block/bootdevice/by-name/hw";
+};
+
+
+&reserved_memory{
+	ramoops_mem {
+		compatible = "ramoops";
+		no-map;
+		reg = <0x0 0xaf000000 0x0 0xc0000>;
+		console-size = <0x40000>;
+		pmsg-size = <0x40000>;
+		record-size = <0x3f800>;
+	};
+
+	tzlog_dump_mem: tzlog_dump_mem_region {
+		no-map;
+		reg = <0x0 0xaefd0000 0x0 0x30000>;
+	};
+
+	mmi_annotate_mem: mmi_annotate_mem_region {
+		no-map;
+		reg = <0x0 0xaefcf800 0x0 0x800>;
+	};
+
+	wdog_cpuctx_mem: wdog_cpuctx_region {
+		no-map;
+		reg = <0x0 0xaef9d800 0x0 (0x6400 * 8)>;
+	};
+
+	mmns_mem: mmns_region {
+		compatible = "shared-dma-pool";
+		reusable;
+		alignment = <0x0 0x400000>;
+		size = <0 0x2D000000>;
+	};
+};
+
+&soc {
+	tzlog_dump {
+		compatible = "mmi,tzlog-dump";
+		memory-region = <&tzlog_dump_mem>;
+	};
+
+	mmi_annotate {
+		compatible = "mmi,annotate";
+		memory-region = <&mmi_annotate_mem>;
+		mem-size = <0x20000>;
+	};
+
+	wdog_cputctx {
+		compatible = "mmi,watchdog_cpu_ctx";
+		memory-region = <&wdog_cpuctx_mem>;
+	};
+
+	sys_temp_support {
+		compatible = "mmi,sys-temp";
+		mmi,temperature-names = "front_temp",
+					"back_temp";
+		status = "ok";
+	};
+
+	qcom,ion {
+		compatible = "qcom,msm-ion";
+		qcom,ion-heap@30 { /* MMNS HEAP */
+			reg = <30>;
+			memory-region = <&mmns_mem>;
+			qcom,ion-heap-type = "DMA_RESERVED";
+		};
+	};
+};
+
