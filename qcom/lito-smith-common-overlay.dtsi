@@ -976,7 +976,7 @@
 		vib_mode = <1>;   /*mode:   RAM mode->0; CONT mode -> 1*/
 		vib_f0_pre = <2000>;
 		vib_f0_cali_percen = <7>;
-		vib_cont_drv_lev = <88>;
+		vib_cont_drv_lev = <79>;
 		vib_cont_drv_lvl_ov = <140>;
 		vib_cont_td = <0x009a>;
 		vib_cont_zc_thr = <0x0ff1>;
