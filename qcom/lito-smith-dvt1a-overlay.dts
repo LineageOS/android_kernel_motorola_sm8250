@@ -32,7 +32,9 @@
 	};
 };
 
+/* MMI_STOPSHIP camera: smith R bringup
 /delete-node/ &ois_rear;
+*/
 
 &rear_sensor {
 	/delete-property/ ois-src;
