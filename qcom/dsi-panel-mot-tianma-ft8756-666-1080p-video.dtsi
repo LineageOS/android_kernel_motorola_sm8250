@@ -13,7 +13,7 @@
 &mdss_mdp {
 	dsi_ft8756_tm_video: qcom,mdss_dsi_mot_tm_ft8756_666_1080x2300_vid {
 		qcom,mdss-dsi-panel-name = "mipi_mot_video_tm_ft8756_666_1080p";
-
+		qcom,mdss-dsi-panel-supplier = "tianma";
 		qcom,mdss-dsi-panel-type = "dsi_video_mode";
 		qcom,mdss-dsi-virtual-channel-id = <0>;
 		qcom,mdss-dsi-stream = <0>;
@@ -125,6 +125,7 @@
 				qcom,supply-max-voltage = <5500000>;
 				qcom,supply-enable-load = <100000>;
 				qcom,supply-disable-load = <100>;
+				qcom,supply-pre-off-sleep = <5>;
 				qcom,supply-post-on-sleep = <3>;
 			};
 
@@ -135,6 +136,7 @@
 				qcom,supply-max-voltage = <5500000>;
 				qcom,supply-enable-load = <100000>;
 				qcom,supply-disable-load = <100>;
+				qcom,supply-pre-off-sleep = <5>;
 			};
 		};
 
