@@ -630,16 +630,26 @@
 		thermal-governor = "step_wise";
 		trips {
 			modem_trip1: modem-trip1 {
-				temperature = <48000>;
+				temperature = <46000>;
+				hysteresis = <2000>;
+				type = "passive";
+			};
+			modem_trip2: modem-trip2 {
+				temperature = <50000>;
 				hysteresis = <3000>;
 				type = "passive";
 			};
 		};
 		cooling-maps {
+			/* Throttle DL speeds */
+			skin_modem_lvl1 {
+				trip = <&modem_trip1>;
+				cooling-device = <&modem_pa_fr1 1 1>;
+			};
 			/* Disable 5G */
 			skin_modem_lvl2 {
-				trip = <&modem_trip1>;
-				cooling-device = <&modem_skin 2 2>;
+				trip = <&modem_trip2>;
+				cooling-device = <&modem_pa_fr1 2 2>;
 			};
 		};
 	};
