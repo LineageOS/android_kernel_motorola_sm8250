@@ -1102,7 +1102,7 @@ static int dsi_display_dispUtil_prepare(const char *cmd_buf, u32 cmd_buf_len,
 	/* DISPUTIL_CMD_TYPE = 1 for DSI write cmd
 	 * DISPUTIL_CMD_TYPE = 0 for DSI read cmd */
 	if (cmd_buf[DISPUTIL_CMD_TYPE] == DISPUTIL_DSI_READ) {
-		cmd->msg.flags |= MIPI_DSI_MSG_READ; /* This is a read DSI */
+		//cmd->msg.flags |= MIPI_DSI_MSG_READ; /* This is a read DSI */
 		cmd->msg.rx_buf = motUtil_data->rd_buf;
 		/* cmd_buf[3] = number bytes host wants to read */
 		cmd->msg.rx_len = cmd_buf[DISPUTIL_NUM_BYTE_RD];
