@@ -53,7 +53,7 @@ qcom,mdss-dsi-panel-status-value = <0x9c>;
 qcom,mdss-dsi-panel-status-read-length = <1>;
 
 qcom,bklt-dcs-2bytes-enabled;
-qcom,mdss-dsi-bl-min-level = <3>;
+qcom,mdss-dsi-bl-min-level = <21>;
 qcom,mdss-dsi-bl-max-level = <2047>;
 qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
 
