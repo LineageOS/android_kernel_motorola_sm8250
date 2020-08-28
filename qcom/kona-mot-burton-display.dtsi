@@ -303,6 +303,12 @@
 				15 00 00 00 00 00 02 90 01  /* Compression method selection*/
 				15 00 00 00 00 00 02 03 11 /* Compression mode */
 				05 01 00 00 00 00 01 2C /* Memory write */
+				/*Close R Corner*/
+				39 01 00 00 00 00 06 f0 55 AA 52 08 07
+				15 01 00 00 00 00 02 C0 10
+				/*Set Hi-Z for mura reduction*/
+				39 01 00 00 00 00 06 f0 55 AA 52 08 00
+				15 01 00 00 00 00 02 C5 13
 				05 01 00 00 78 00 01 11
 				15 00 00 00 00 00 02 B0 00      /* ACL OFF */
 				15 00 00 00 00 00 02 55 00
@@ -351,6 +357,12 @@
 				15 00 00 00 00 00 02 90 01  /* Compression method selection*/
 				15 00 00 00 00 00 02 03 11 /* Compression mode */
 				05 01 00 00 00 00 01 2C /* Memory write */
+				/*Close R Corner*/
+				39 01 00 00 00 00 06 f0 55 AA 52 08 07
+				15 01 00 00 00 00 02 C0 10
+				/*Set Hi-Z for mura reduction*/
+				39 01 00 00 00 00 06 f0 55 AA 52 08 00
+				15 01 00 00 00 00 02 C5 13
 				05 01 00 00 78 00 01 11
 				15 00 00 00 00 00 02 B0 00      /* ACL OFF */
 				15 00 00 00 00 00 02 55 00
