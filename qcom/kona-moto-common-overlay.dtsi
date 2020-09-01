@@ -503,7 +503,7 @@
 			};
 			modem_skin_trip2: modem-skin-trip2 {
 				temperature = <47000>;
-				hysteresis = <3000>;
+				hysteresis = <5000>;
 				type = "passive";
 			};
 		};
