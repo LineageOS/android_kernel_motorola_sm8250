@@ -12,6 +12,7 @@
 
 #include "kona-moto-common-overlay-v2.dtsi"
 #include "kona-nio-audio-overlay.dtsi"
+#include "kona-mot-nio-display.dtsi"
 
 /*
  * NIO HW rev EVT1 specific changes go here
