@@ -85,6 +85,9 @@ ifeq ($(KERNEL_BUILD), 0)
 		export
 		INCS    +=  -include $(AUDIO_ROOT)/config/sdm660autoconf.h
 	endif
+	ifneq (,$(filter nio%, $(TARGET_PRODUCT)))
+                INCS    +=  -include $(AUDIO_ROOT)/config/konanio.h
+        endif
 endif
 
 
