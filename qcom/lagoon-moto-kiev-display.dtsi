@@ -39,7 +39,8 @@
 
 &pm6150l_lcdb {
 	status = "ok";
-	qcom,pwrup-delay-ms = <1>;
+	qcom,pwrup-delay-ms = <8>;
+	qcom,pwrdn-delay-ms = <8>;
 };
 
 &sde_dsi {
