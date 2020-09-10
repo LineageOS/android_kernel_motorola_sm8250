@@ -15,6 +15,7 @@
 #include "kona-mot-nio-display.dtsi"
 #include "kona-nio-fps.dtsi"
 #include "kona-nio-sensor-overlay.dtsi"
+#include "kona-nio-battery-thermal.dtsi"
 
 /*
  * NIO HW rev EVT1 specific changes go here
@@ -225,90 +226,6 @@
 
 &soc_trip {
 	temperature = <5>;
-};
-
-&pm8150b_vadc {
-	#address-cells = <1>;
-	#size-cells = <0>;
-
-	vph_pwr@83 {
-		reg = <ADC_VPH_PWR>;
-		label = "vph_pwr";
-		qcom,pre-scaling = <1 3>;
-	};
-
-	conn_therm@4f {
-		reg = <ADC_AMUX_THM3_PU2>;
-		label = "conn_therm";
-		qcom,ratiometric;
-		qcom,hw-settle-time = <200>;
-		qcom,pre-scaling = <1 1>;
-	};
-
-	chg_sbux@99 {
-		reg = <ADC_SBUx>;
-		label = "chg_sbux";
-		qcom,pre-scaling = <1 3>;
-	};
-
-	mid_chg_div6@1e {
-		reg = <ADC_MID_CHG_DIV6>;
-		label = "chg_mid";
-		qcom,pre-scaling = <1 6>;
-	};
-
-	usb_in_i_uv@7 {
-		reg = <ADC_USB_IN_I>;
-		label = "usb_in_i_uv";
-		qcom,pre-scaling = <1 1>;
-	};
-
-	usb_in_v_div_16@8 {
-		reg = <ADC_USB_IN_V_16>;
-		label = "usb_in_v_div_16";
-		qcom,pre-scaling = <1 16>;
-	};
-};
-
-&pm8150b_charger {
-	status = "ok";
-	qcom,sec-charger-config = <1>;
-	qcom,auto-recharge-soc = <98>;
-	io-channels = <&pm8150b_vadc ADC_MID_CHG_DIV6>,
-			  <&pm8150b_vadc ADC_USB_IN_I>,
-			  <&pm8150b_vadc ADC_SBUx>,
-			  <&pm8150b_vadc ADC_VPH_PWR>,
-			  <&pm8150b_vadc ADC_CHG_TEMP>;
-	io-channel-names = "mid_voltage",
-			   "usb_in_current",
-			   "sbux_res",
-			   "vph_voltage",
-			   "chg_temp";
-	qcom,battery-data = <&kona_mtp_batterydata>;
-	qcom,step-charging-enable;
-	qcom,sw-jeita-enable;
-	qcom,wd-bark-time-secs = <16>;
-	qcom,suspend-input-on-debug-batt;
-	qcom,fcc-stepping-enable;
-	qcom,smb-internal-pull-kohm = <0>;
-};
-
-&pm8150b_fg {
-	status = "ok";
-	qcom,battery-data = <&kona_mtp_batterydata>;
-	qcom,hold-soc-while-full;
-	qcom,linearize-soc;
-	qcom,five-pin-battery;
-	qcom,cl-wt-enable;
-	qcom,soc-scale-mode-en;
-	qcom,force-calib-level = <130>;
-	/* ESR fast calibration */
-	qcom,fg-esr-timer-chg-fast = <0 7>;
-	qcom,fg-esr-timer-dischg-fast = <0 7>;
-	qcom,fg-esr-timer-chg-slow = <0 96>;
-	qcom,fg-esr-timer-dischg-slow = <0 96>;
-	qcom,fg-esr-cal-soc-thresh = <26 230>;
-	qcom,fg-esr-cal-temp-thresh = <10 40>;
 };
 
 &qupv3_se15_i2c {
