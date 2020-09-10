@@ -14,6 +14,8 @@
 #include "kona-nio-audio-overlay.dtsi"
 #include "kona-mot-nio-display.dtsi"
 #include "kona-nio-fps.dtsi"
+#include "kona-nio-sensor-overlay.dtsi"
+
 /*
  * NIO HW rev EVT1 specific changes go here
  */
