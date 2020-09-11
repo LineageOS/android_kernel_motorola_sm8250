@@ -15,7 +15,6 @@
 #include "carrier-channel-ids.dtsi"
 
 #include "kona-pmic-overlay.dtsi"
-#include "kona-audio-overlay.dtsi"
 #include "kona-thermal-overlay.dtsi"
 
 
