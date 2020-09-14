@@ -989,7 +989,8 @@ static int dsi_panel_send_param_cmd(struct dsi_panel *panel,
 	struct panel_param *panel_param;
 	struct dsi_cmd_desc *cmds;
 	ssize_t len;
-	u32 count;
+	u32 count = 0;
+
 
 	const struct mipi_dsi_host_ops *ops = panel->host->ops;
 	panel_param = &panel->param_cmds[param_info->param_idx];
@@ -1028,20 +1029,23 @@ static int dsi_panel_send_param_cmd(struct dsi_panel *panel,
 
 		cmds = param_map_state->cmds->cmds;
 		count = param_map_state->cmds->count;
+		for (i = 0; i < count; i++) {
+		        if (param_map_state->cmds->state == DSI_CMD_SET_STATE_LP)
+		              cmds->msg.flags |= MIPI_DSI_MSG_USE_LPM;
 
-		for (i =0; i < count; i++) {
-			if (param_map_state->cmds->state == DSI_CMD_SET_STATE_LP)
-				cmds->msg.flags |= MIPI_DSI_MSG_USE_LPM;
-			if (cmds->last_command)
-				cmds->msg.flags |= MIPI_DSI_MSG_LASTCOMMAND;
-			len = ops->transfer(panel->host, &cmds->msg);
-			if (len < 0) {
-				rc = len;
-				DSI_ERR("%s:failed to send param cmd, rc=%d\n",
-						__func__, rc);
-				goto end;
-			}
-			cmds++;
+		        if (cmds->last_command)
+		              cmds->msg.flags |= MIPI_DSI_MSG_LASTCOMMAND;
+
+		        len = ops->transfer(panel->host, &cmds->msg);
+		        if (len < 0) {
+		              rc = len;
+		              DSI_ERR("failed to set cmds, rc=%d\n", rc);
+		              goto end;
+		        }
+		        if (cmds->post_wait_ms)
+		              usleep_range(cmds->post_wait_ms*1000,
+		                       ((cmds->post_wait_ms*1000)+10));
+		        cmds++;
 		}
 		panel_param->value = param_info->value;
 		DSI_INFO("(%d) is setting new value %d\n",
