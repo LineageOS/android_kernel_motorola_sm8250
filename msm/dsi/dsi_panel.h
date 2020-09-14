@@ -40,8 +40,8 @@
 
 #define BRIGHTNESS_HBM_ON	0xFFFFFFFE
 #define BRIGHTNESS_HBM_OFF	(BRIGHTNESS_HBM_ON - 1)
-#define HBM_BRIGHTNESS(value) ((value) == HBM_ON_STATE ?\
-			BRIGHTNESS_HBM_ON : BRIGHTNESS_HBM_OFF)
+#define HBM_BRIGHTNESS(value) ((value) == HBM_OFF_STATE ?\
+			BRIGHTNESS_HBM_OFF : BRIGHTNESS_HBM_ON)
 
 /* HBM implementation is different, depending on display and backlight hardware
  * design, which is classified into the following types:
