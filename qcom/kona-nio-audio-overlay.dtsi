@@ -326,7 +326,7 @@
 	qcom,msm-mi2s-master = <1>, <1>, <1>, <1>, <1>, <1>;
         qcom,auxpcm-audio-intf = <1>;
 	qcom,wcn-bt = <1>;
-	/*Todo, add this later. qcom,ext-disp-audio-rx = <1>;*/
+	qcom,ext-disp-audio-rx = <1>;
 	qcom,audio-routing =
 		"AMIC1", "MIC BIAS1",
 		"MIC BIAS1", "Analog Mic1",
@@ -418,9 +418,9 @@
 	qcom,cdc-dmic01-gpios = <&cdc_dmic01_gpios>;
 	qcom,cdc-dmic23-gpios = <&cdc_dmic23_gpios>;
 	qcom,cdc-dmic45-gpios = <&cdc_dmic45_gpios>;
-	asoc-codec  = <&stub_codec>, <&bolero>, <&aw882xx>; /* Todo: this shoudle be enabled in display dtsi  <&ext_disp_audio_codec>;*/
-	asoc-codec-names = "msm-stub-codec.1", "bolero_codec","aw882xx_codec";
-			   /* "msm-ext-disp-audio-codec-rx";*/
+	asoc-codec  = <&stub_codec>, <&bolero>, <&aw882xx>, <&ext_disp_audio_codec>;
+	asoc-codec-names = "msm-stub-codec.1", "bolero_codec","aw882xx_codec",
+			   "msm-ext-disp-audio-codec-rx";
 	qcom,wsa-max-devs = <0>;
 	qcom,wsa-aux-dev-prefix = "SpkrLeft", "SpkrRight",
 				  "SpkrLeft", "SpkrRight";
