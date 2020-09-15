@@ -9,6 +9,7 @@
 #define MAX_I2C_BUFFER_SIZE					65536
 #define AW882XX_I2C_READ_MSG_NUM		2
 
+#define AW_VOL_COUNT				(3)
 #define AW882XX_FLAG_START_ON_MUTE			(1 << 0)
 #define AW882XX_FLAG_SKIP_INTERRUPTS		(1 << 1)
 #define AW882XX_FLAG_SAAM_AVAILABLE			(1 << 2)
@@ -43,6 +44,11 @@
 #define AFE_PARAM_ID_AWDSP_RX_REAL_DATA_L       (0X10013D21)
 #define AFE_PARAM_ID_AWDSP_RX_REAL_DATA_R       (0X10013D22)
 
+enum {
+	AW_FIRST_ENTRY = 0,
+	AW_NOT_FIRST_ENTRY = 1,
+};
+
 enum AWINIC_CALI_CMD{
 	AW_CALI_CMD_NONE = 0,
 	AW_CALI_CMD_START,
@@ -71,6 +77,11 @@ struct cali_data{
 struct params_data{
 	int32_t data[AW882XX_PARAMS_NUM];
 };
+struct ptr_params_data {
+	int len;
+	int32_t *data;
+};
+
 
 #define AW882XX_IOCTL_MAGIC                'a'
 #define AW882XX_IOCTL_SET_CALI_CFG         _IOWR(AW882XX_IOCTL_MAGIC, 1, struct cali_cfg)
@@ -84,6 +95,8 @@ struct params_data{
 #define AW882XX_IOCTL_GET_VMAX             _IOWR(AW882XX_IOCTL_MAGIC, 9, int32_t)
 #define AW882XX_IOCTL_SET_PARAM            _IOWR(AW882XX_IOCTL_MAGIC, 10,struct params_data)
 #define AW882XX_IOCTL_ENABLE_CALI          _IOWR(AW882XX_IOCTL_MAGIC, 11,int8_t)
+#define AW882XX_IOCTL_SET_PTR_PARAM_NUM    _IOWR(AW882XX_IOCTL_MAGIC, 12, struct ptr_params_data)
+
 
 enum aw882xx_init {
 	AW882XX_INIT_ST = 0,
@@ -167,7 +180,8 @@ struct aw882xx_monitor{
 	struct work_struct work;
 	uint32_t is_enable;
 	uint16_t pre_vol;
-	int16_t pre_temp;
+	uint16_t vol_count;
+	uint8_t first_entry;
 
 	struct aw882xx_low_vol vol_cfg;
 	struct aw882xx_low_temp temp_cfg;
@@ -232,6 +246,10 @@ struct aw882xx {
 #ifdef AW882XX_RUNIN_TEST
 	struct delayed_work adsp_status;
 #endif
+	struct delayed_work fade_work;
+	int delayed_time;
+	int fade_work_start;
+	int is_fade_in;
 	int sysclk;
 	int rate;
 	int pstream;
@@ -250,6 +268,7 @@ struct aw882xx {
 	uint32_t cali_re;
 	uint32_t default_re;
 	uint8_t cur_gain;
+	uint8_t need_fade;
 	unsigned int cfg_num;
 	unsigned int afe_rx_portid;
 	unsigned int afe_tx_portid;
