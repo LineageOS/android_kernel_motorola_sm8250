@@ -1,7 +1,7 @@
 /*
  * aw882xx.c   aw882xx codec module
  *
- * Version: v0.1.10
+ * Version: v0.1.16
  *
  * keep same with AW882XX_VERSION
  *
@@ -14,7 +14,6 @@
  * Free Software Foundation;  either version 2 of the  License, or (at your
  * option) any later version.
  */
-
 #ifdef CONFIG_AW882XX_CODEC
 
 #include <linux/module.h>
@@ -50,7 +49,7 @@
  ******************************************************/
 #define AW882XX_I2C_NAME "aw882xx_smartpa"
 
-#define AW882XX_VERSION "v0.1.10"
+#define AW882XX_VERSION "v0.1.16"
 
 #define AW882XX_RATES SNDRV_PCM_RATE_8000_48000
 #define AW882XX_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
@@ -65,6 +64,7 @@
 
 
 #define CALI_BUF_MAX 100
+#define DELAY_TIME_MAX 300
 #define AWINIC_CALI_FILE  "/mnt/vendor/persist/factory/audio/aw_cali.bin"
 
 #ifdef CONFIG_AW882XX_DSP
@@ -100,7 +100,8 @@ static int aw882xx_set_cali_re(struct aw882xx *aw882xx, uint32_t cali_re);
 static int aw882xx_load_profile_params(struct aw882xx *aw882xx);
 static int aw882xx_skt_set_dsp(int value);
 static int aw882xx_send_profile_params_to_dsp(struct aw882xx *aw882xx, int profile_id, bool is_fade);
-static void aw882xx_fade_in_out(struct aw882xx *aw882xx, bool is_fade_in);
+static void aw882xx_fade_in_out(struct aw882xx *aw882xx);
+static void aw882xx_volume_set(struct aw882xx *aw882xx, unsigned int value);
 
 /*monitor  voltage and temperature table*/
 static struct aw882xx_low_vol vol_down_table[] = {
@@ -295,8 +296,12 @@ static void aw882xx_run_mute(struct aw882xx *aw882xx, bool mute)
 	pr_debug("%s: enter\n", __func__);
 
 	if (mute) {
-		if (aw882xx->afe_profile)
-			aw882xx_fade_in_out(aw882xx, false);
+		if (aw882xx->need_fade) {
+			aw882xx->is_fade_in = 0;
+			aw882xx->fade_work_start = 1;
+			cancel_delayed_work_sync(&aw882xx->fade_work);
+			aw882xx_fade_in_out(aw882xx);
+		}
 		aw882xx_i2c_write_bits(aw882xx, AW882XX_SYSCTRL2_REG,
 				AW882XX_HMUTE_MASK,
 				AW882XX_HMUTE_ENABLE_VALUE);
@@ -304,8 +309,13 @@ static void aw882xx_run_mute(struct aw882xx *aw882xx, bool mute)
 		aw882xx_i2c_write_bits(aw882xx, AW882XX_SYSCTRL2_REG,
 				AW882XX_HMUTE_MASK,
 				AW882XX_HMUTE_DISABLE_VALUE);
-		if (aw882xx->afe_profile)
-			aw882xx_fade_in_out(aw882xx, true);
+		if (aw882xx->need_fade) {
+			aw882xx->is_fade_in = 1;
+			aw882xx->fade_work_start = 1;
+			aw882xx_volume_set(aw882xx, VOLUME_MIN_NEG_90_DB);
+			schedule_delayed_work(&aw882xx->fade_work,
+							msecs_to_jiffies(aw882xx->delayed_time));
+		}
 	}
 }
 
@@ -499,6 +509,9 @@ static void aw882xx_start(struct aw882xx *aw882xx)
 		__func__, aw882xx->monitor.is_enable, aw882xx->spk_rcv_mode);
 	if (aw882xx->monitor.is_enable &&
 		(aw882xx->spk_rcv_mode == AW882XX_SPEAKER_MODE)) {
+		aw882xx->monitor.first_entry = AW_FIRST_ENTRY;
+		aw882xx->monitor.pre_vol = 0;
+		aw882xx->monitor.vol_count = 0;
 		schedule_work(&aw882xx->monitor.work);
 	}
 	if (aw882xx->afe_profile) {
@@ -630,7 +643,6 @@ static void aw882xx_reg_loaded(const struct firmware *cont, void *context)
 {
 	struct aw882xx *aw882xx = context;
 	struct aw882xx_container *aw882xx_cfg;
-	bool afe_profile_reload = false;
 	int ret = -1;
 
 	if (!cont) {
@@ -659,20 +671,23 @@ static void aw882xx_reg_loaded(const struct firmware *cont, void *context)
 		pr_err("%s: reg update fail\n", __func__);
 	} else {
 		pr_err("%s: reg update sucess\n", __func__);
-		aw882xx_run_mute(aw882xx, true);
+		//aw882xx_run_mute(aw882xx, true);
+		aw882xx_volume_set(aw882xx, VOLUME_MIN_NEG_90_DB);
+		aw882xx_i2c_write_bits(aw882xx, AW882XX_SYSCTRL2_REG,
+				AW882XX_HMUTE_MASK,
+				AW882XX_HMUTE_ENABLE_VALUE);
 		aw882xx_set_vcalb(aw882xx);
 	}
 	mutex_unlock(&aw882xx->lock);
 	kfree(aw882xx_cfg);
 	if (aw882xx->afe_profile) {
 		aw882xx_load_profile_params(aw882xx);
-		afe_profile_reload = true;
-		aw882xx->afe_profile = 0;
+		aw882xx->need_fade = 0;
 	}
 	aw882xx_start(aw882xx);
 
-	if (afe_profile_reload) {
-		aw882xx->afe_profile = 1;
+	if (aw882xx->afe_profile) {
+		aw882xx->need_fade = 1;
 	}
 }
 
@@ -1069,25 +1084,30 @@ static void aw882xx_volume_set(struct aw882xx *aw882xx, unsigned int value)
 	unsigned int reg_value = 0;
 	unsigned int real_value = ((value / VOLUME_STEP_DB) << 4) + (value % VOLUME_STEP_DB) * 2;
 
-	if(real_value > aw882xx->cur_gain) {
-		/* cal real value */
-		aw882xx_i2c_read(aw882xx, AW882XX_HAGCCFG4_REG, &reg_value);
+	aw882xx_i2c_read(aw882xx, AW882XX_HAGCCFG4_REG, &reg_value);
+	if(real_value >= aw882xx->cur_gain) {
 		real_value = (real_value << 8) | (reg_value & 0x00ff);
-		/* write value */
-		aw882xx_i2c_write(aw882xx, AW882XX_HAGCCFG4_REG, real_value);
+	} else {
+		real_value = (aw882xx->cur_gain << 8) | (reg_value & 0x00ff);
 	}
+	/* write value */
+	aw882xx_i2c_write(aw882xx, AW882XX_HAGCCFG4_REG, real_value);
 }
 
-static void aw882xx_fade_in_out(struct aw882xx *aw882xx, bool is_fade_in)
+static void aw882xx_fade_in_out(struct aw882xx *aw882xx)
 {
 	int i = 0;
 
+	if(aw882xx == NULL) {
+		aw882xx->fade_work_start = 0;
+		return;
+	}
 	//volume up
-	if (is_fade_in) {
+	if (aw882xx->is_fade_in) {
 		i = VOLUME_MIN_NEG_90_DB;
 		do {
 			aw882xx_volume_set(aw882xx, i);
-			i -= FADE_STEP_DB;
+			i -= FADE_STEP_DB;       //6
 			usleep_range(1400,1600);
 		} while (i >= 0);
 	} else {  // volume down
@@ -1097,6 +1117,24 @@ static void aw882xx_fade_in_out(struct aw882xx *aw882xx, bool is_fade_in)
 			usleep_range(1400,1600);
 		} while (i <= VOLUME_MIN_NEG_90_DB);
 	}
+	aw882xx->fade_work_start = 0;
+}
+
+static void aw882xx_fade_work_func(struct work_struct *work)
+{
+	struct delayed_work *d_work;
+	struct aw882xx *aw882xx;
+
+	d_work = to_delayed_work(work);
+	aw882xx = container_of(d_work, struct aw882xx, fade_work);
+	if(aw882xx == NULL) {
+		pr_debug("%s: can not get aw882xx from fade_work\n", __func__);
+		return;
+	}
+	pr_debug("%s: enter in: %d\n", __func__, aw882xx->is_fade_in);
+
+	aw882xx_fade_in_out(aw882xx);
+	pr_debug("%s: exit\n", __func__);
 }
 
 static int aw882xx_send_profile_params_to_dsp(struct aw882xx *aw882xx, int profile_id, bool is_fade)
@@ -1193,7 +1231,7 @@ static int aw882xx_skt_disable_get(struct snd_kcontrol *kcontrol,
 
 static int aw882xx_skt_set_dsp(int value)
 {
-        int ret;
+	int ret;
 	int port_id = g_aw882xx->afe_rx_portid;
 	int module_id = AW_MODULE_ID_COPP;
 	int param_id =  AW_MODULE_PARAMS_ID_COPP_ENABLE;
@@ -1255,6 +1293,34 @@ static int aw882xx_monitor_set(struct snd_kcontrol *kcontrol,
 	return 0;
 }
 
+static int aw882xx_fade_dealyed_time_get(struct snd_kcontrol *kcontrol,
+	struct snd_ctl_elem_value *ucontrol)
+{
+	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
+	struct aw882xx *aw882xx = snd_soc_component_get_drvdata(codec);
+
+
+	pr_debug("%s: aw882xx_fade_dealyed_time_get %d\n",
+		__func__, aw882xx->delayed_time);
+
+	ucontrol->value.integer.value[0] = aw882xx->delayed_time;
+
+	return 0;
+}
+
+static int aw882xx_fade_dealyed_time_set(struct snd_kcontrol *kcontrol,
+	struct snd_ctl_elem_value *ucontrol)
+{
+	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
+	struct aw882xx *aw882xx = snd_soc_component_get_drvdata(codec);
+
+	aw882xx->delayed_time = ucontrol->value.integer.value[0];
+
+	pr_debug("%s: aw882xx_fade_dealyed_time_set %d ms \n", __func__, aw882xx->delayed_time);
+	return 0;
+}
+
+
 #ifdef AW882XX_RUNIN_TEST
 static int aw882xx_runin_test_get(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *ucontrol)
@@ -1305,8 +1371,8 @@ static void aw882xx_set_adsp_module_status(struct work_struct *work)
 	if (ret) {
 		 pr_err("%s: disable skt failed !\n", __func__);
 	}
-	pr_info("%s: disable skt and  afe module \n", __func__);
 
+	pr_info("%s: disable skt and  afe module \n", __func__);
 }
 #endif
 
@@ -1329,6 +1395,8 @@ static struct snd_kcontrol_new aw882xx_controls[] = {
 		aw882xx_skt_disable_get, aw882xx_skt_disable_set),
 	SOC_ENUM_EXT("aw882xx_monitor_switch", aw882xx_snd_enum[1],
 		aw882xx_monitor_get, aw882xx_monitor_set),
+	SOC_SINGLE_EXT("aw882xx_fade_dealyed_time", SND_SOC_NOPM, 0, DELAY_TIME_MAX, 0,
+		       aw882xx_fade_dealyed_time_get, aw882xx_fade_dealyed_time_set),
 #ifdef AW882XX_RUNIN_TEST
 	SOC_ENUM_EXT("aw882xx_runin_test", aw882xx_snd_enum[0],
 		aw882xx_runin_test_get, aw882xx_runin_test_set),
@@ -1389,8 +1457,8 @@ static int aw882xx_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 	case SND_SOC_DAIFMT_I2S:
 		if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) !=
 			SND_SOC_DAIFMT_CBS_CFS) {
-//			dev_err(component->dev, "%s: invalid codec master mode\n",
-//				__func__);
+			dev_err(component->dev, "%s: invalid codec master mode\n",
+				__func__);
 			return -EINVAL;
 		}
 		break;
@@ -1940,6 +2008,33 @@ static int aw882xx_parse_dt(struct device *dev, struct aw882xx *aw882xx,
 			monitor->vol_down_table[i].ipeak,
 			monitor->vol_down_table[i].gain);
 
+	for(i = 0; i < monitor->vol_down_num; i++) {
+		if(monitor->vol_down_table[i].vol >=
+			monitor->vol_up_table[monitor->vol_up_num - 1 -i].vol) {
+			dev_err(aw882xx->dev,"%s: use default table\n", __func__);
+			monitor->vol_up_table = vol_up_table;
+			monitor->vol_up_num= sizeof(vol_up_table) /
+								sizeof(struct aw882xx_low_vol);
+			monitor->vol_down_table = vol_down_table;
+			monitor->vol_down_num = sizeof(vol_down_table) /
+								sizeof(struct aw882xx_low_vol);
+			break;
+		}
+	}
+
+	for(i = 1; i < monitor->vol_down_num; i++) {
+		if(monitor->vol_up_table[monitor->vol_up_num - i].vol >=
+		   monitor->vol_down_table[i].vol) {
+			dev_err(aw882xx->dev,"%s: use default table\n", __func__);
+			monitor->vol_up_table = vol_up_table;
+			monitor->vol_up_num= sizeof(vol_up_table) /
+								sizeof(struct aw882xx_low_vol);
+			monitor->vol_down_table = vol_down_table;
+			monitor->vol_down_num = sizeof(vol_down_table) /
+								sizeof(struct aw882xx_low_vol);
+			break;
+		}
+	}
 	/*get low temp table cfg*/
 	ret = aw882xx_parse_low_temp_cfg(dev, aw882xx, np, "up",
 			&monitor->temp_up_table, &monitor->temp_up_num);
@@ -1963,6 +2058,33 @@ static int aw882xx_parse_dt(struct device *dev, struct aw882xx *aw882xx,
 			monitor->temp_down_table[i].gain,
 			monitor->temp_down_table[i].vmax);
 
+	for(i = 0; i < monitor->temp_down_num; i++) {
+		if(monitor->temp_down_table[i].temp >=
+		   monitor->temp_up_table[monitor->temp_up_num - 1 -i].temp) {
+			dev_err(aw882xx->dev,"%s: use default table\n", __func__);
+			monitor->temp_up_table = temp_up_table;
+			monitor->temp_up_num= sizeof(temp_up_table) /
+								sizeof(struct aw882xx_low_temp);
+			monitor->temp_down_table = temp_down_table;
+			monitor->temp_down_num = sizeof(temp_down_table) /
+								sizeof(struct aw882xx_low_temp);
+			break;
+		}
+	}
+
+	for(i = 1; i < monitor->temp_down_num; i++) {
+		if(monitor->temp_up_table[monitor->temp_up_num - i].temp >=
+		   monitor->temp_down_table[i].temp) {
+			dev_err(aw882xx->dev,"%s: use default table\n", __func__);
+			monitor->temp_up_table = temp_up_table;
+			monitor->temp_up_num= sizeof(temp_up_table) /
+								sizeof(struct aw882xx_low_temp);
+			monitor->temp_down_table = temp_down_table;
+			monitor->temp_down_num = sizeof(temp_down_table) /
+								sizeof(struct aw882xx_low_temp);
+			break;
+		}
+	}
 	return 0;
 }
 
@@ -2253,6 +2375,54 @@ static ssize_t aw882xx_default_re_show(struct device *dev,
 	return len;
 }
 
+static ssize_t aw882xx_spk_temp_show(struct device *dev,
+	struct device_attribute *attr, char *buf)
+{
+	struct aw882xx *aw882xx = dev_get_drvdata(dev);
+	ssize_t len = 0;
+	int ret = -1;
+	int16_t data_len  = _IOC_SIZE(AW882XX_IOCTL_GET_CALI_DATA);
+	int32_t spk_temp = 0;
+	char *data_ptr = NULL;
+	unsigned int reg_value = 0;
+
+	if(aw882xx == NULL) {
+		goto fail_temp;
+	}
+	data_ptr = kmalloc(data_len, GFP_KERNEL);
+	if (data_ptr == NULL) {
+		pr_err("%s : malloc failed !\n", __func__);
+		goto fail_temp;
+	}
+
+	aw882xx_i2c_read(aw882xx, AW882XX_SYSST_REG, &reg_value);
+	if (!(reg_value & AW882XX_PLLS_LOCKED_VALUE)) {
+		pr_err("%s: NO I2S CLK\n", __func__);
+		goto exit_temp;
+	}
+
+	ret = aw_send_afe_cal_apr(aw882xx->afe_rx_portid,
+					aw882xx->afe_tx_portid,
+					AFE_PARAM_ID_AWDSP_RX_REAL_DATA_L,
+					data_ptr, data_len, false);
+	if (ret) {
+		pr_err("%s: dsp_msg_read error: %d\n", __func__, ret);
+		goto exit_temp;
+	}
+
+	memcpy(&spk_temp, data_ptr + sizeof(int32_t), sizeof(int32_t));
+	len += snprintf(buf+len, PAGE_SIZE-len,
+			"aw882xx spk_temp: %d\n", spk_temp);
+	return len;
+
+exit_temp:
+	kfree(data_ptr);
+fail_temp:
+	len += snprintf(buf+len, PAGE_SIZE-len,
+			"aw882xx spk_temp: fail\n");
+	return len;
+}
+
 #ifdef AW_DEBUG
 static ssize_t aw882xx_vol_store(struct device *dev,
 	struct device_attribute *attr, const char *buf, size_t count)
@@ -2323,6 +2493,8 @@ static int aw882xx_cali_operation(struct aw882xx *aw882xx,
 	int16_t data_len  = _IOC_SIZE(cmd);
 	int ret = 0;
 	char *data_ptr = NULL;
+	struct ptr_params_data *p_params;
+	int32_t *p_data;
 
 
 	data_ptr = kmalloc(data_len, GFP_KERNEL);
@@ -2514,6 +2686,47 @@ static int aw882xx_cali_operation(struct aw882xx *aw882xx,
 			}
 			pr_debug("%s: set params done", __func__);
 		} break;
+		case AW882XX_IOCTL_SET_PTR_PARAM_NUM: {
+			if (copy_from_user(data_ptr, (void __user *)arg, data_len)) {
+				ret = -EFAULT;
+				goto exit;
+			}
+			p_params = (struct ptr_params_data *)data_ptr;
+			if (p_params->data == NULL || (!p_params->len)) {
+				pr_err("%s: p_params error\n", __func__);
+				ret = -EFAULT;
+				goto exit;
+			}
+			p_data = kzalloc(p_params->len, GFP_KERNEL);
+			if (!p_data) {
+				pr_err("%s: error allocating memory\n", __func__);
+				ret = -ENOMEM;
+				goto exit;
+			}
+
+			if (copy_from_user(p_data, (void __user *)p_params->data,
+					p_params->len)) {
+				kfree(p_data);
+				p_data = NULL;
+				ret = -EFAULT;
+				goto exit;
+			}
+
+			ret = aw_send_afe_cal_apr(aw882xx->afe_rx_portid,
+			            aw882xx->afe_tx_portid,
+			            AFE_PARAM_ID_AWDSP_RX_PARAMS,
+			            p_data, p_params->len, true);
+			if (ret) {
+				pr_err("%s: dsp_msg_write error: 0x%x\n",
+				      __func__, AFE_PARAM_ID_AWDSP_RX_PARAMS);
+				kfree(p_data);
+				p_data = NULL;
+				ret =-EFAULT;
+				goto exit;
+			}
+			kfree(p_data);
+			p_data = NULL;
+		} break;
 		default: {
 			pr_err("%s : cmd %d\n", __func__, cmd);
 		} break;
@@ -2535,6 +2748,8 @@ static DEVICE_ATTR(mec, S_IWUSR | S_IRUGO,
 	aw882xx_mec_show, aw882xx_mec_store);
 static DEVICE_ATTR(default_re, S_IWUSR | S_IRUGO,
 	aw882xx_default_re_show, NULL);
+static DEVICE_ATTR(spk_temp, S_IWUSR | S_IRUGO,
+	aw882xx_spk_temp_show, NULL);
 #ifdef AW_DEBUG
 static DEVICE_ATTR(vol, S_IWUSR | S_IRUGO,
 	aw882xx_vol_show, aw882xx_vol_store);
@@ -2549,6 +2764,7 @@ static struct attribute *aw882xx_attributes[] = {
 	&dev_attr_spk_rcv.attr,
 	&dev_attr_mec.attr,
 	&dev_attr_default_re.attr,
+	&dev_attr_spk_temp.attr,
 #ifdef AW_DEBUG
 	&dev_attr_vol.attr,
 	&dev_attr_temp.attr,
@@ -2675,8 +2891,20 @@ static int aw882xx_monitor_get_voltage(struct aw882xx *aw882xx,
 	local_vol = (*vol) * AW882XX_MONITOR_VBAT_RANGE
 				 / AW882XX_MONITOR_INT_10BIT;
 
-	*vol = local_vol;
-	pr_debug("%s: chip voltage is %d\n", __func__, local_vol);
+	if(aw882xx->monitor.vol_count < AW_VOL_COUNT) {
+		aw882xx->monitor.vol_count++;
+		if(aw882xx->monitor.pre_vol == 0) {
+			*vol = local_vol;
+		} else {
+			*vol = (aw882xx->monitor.pre_vol * (AW_VOL_COUNT -1 ) +
+					local_vol) / AW_VOL_COUNT;
+		}
+	} else {
+		*vol = (aw882xx->monitor.pre_vol * (AW_VOL_COUNT -1 ) +
+					local_vol) / AW_VOL_COUNT;
+	}
+	aw882xx->monitor.pre_vol = *vol;
+	pr_debug("%s: cur voltage is %d, vol is %d\n", __func__, local_vol, *vol);
 	return 0;
 }
 static int aw882xx_monitor_voltage(struct aw882xx *aw882xx,
@@ -2705,27 +2933,37 @@ static int aw882xx_monitor_voltage(struct aw882xx *aw882xx,
 	if (ret < 0)
 		return ret;
 #endif
-	if (monitor->pre_vol > voltage) {
-		/* vol down*/
+
+	if (monitor->first_entry == AW_FIRST_ENTRY) {
 		for (i = 0; i < monitor->vol_down_num; i++) {
 			if (voltage < monitor->vol_down_table[i].vol) {
-			    *vol_cfg = monitor->vol_down_table[i];
-			    break;
+				*vol_cfg = monitor->vol_down_table[i];
+				return 0;
 			}
 		}
-	} else if (monitor->pre_vol < voltage) {
-		/*vol up*/
-		for (i = 0; i < monitor->vol_up_num; i++) {
-			if (voltage > monitor->vol_up_table[i].vol) {
-				*vol_cfg = monitor->vol_up_table[i];
-				break;
-			}
-		}
-	} else {
-		/*vol no change*/
-		pr_debug("%s: voltage no change\n", __func__);
+
+		*vol_cfg = monitor->vol_up_table[0];
+		return 0;
 	}
-	monitor->pre_vol = voltage;
+
+	if (voltage < monitor->vol_down_table[0].vol) {
+		*vol_cfg = monitor->vol_down_table[0];
+		return 0;
+	}
+
+	for (i = 1; i < monitor->vol_down_num; i++) {
+		if ((monitor->vol_up_table[monitor->vol_down_num - i].vol < voltage) &&
+			(voltage < monitor->vol_down_table[i].vol)) {
+			*vol_cfg = monitor->vol_down_table[i];
+			return 0;
+		}
+	}
+
+	if (voltage > monitor->vol_up_table[0].vol) {
+		*vol_cfg = monitor->vol_up_table[0];
+		return 0;
+	}
+
 	return 0;
 }
 static int aw882xx_monitor_get_temperature(struct aw882xx *aw882xx,  int *temp)
@@ -2771,31 +3009,48 @@ static int aw882xx_monitor_temperature(struct aw882xx *aw882xx,
 	if (ret < 0)
 		return ret;
 #endif
-	if (monitor->pre_temp > current_temp) {
-		/*temp down*/
+
+	if (monitor->first_entry == AW_FIRST_ENTRY) {
+		monitor->first_entry = AW_NOT_FIRST_ENTRY;
 		for (i = 0; i < monitor->temp_down_num; i++) {
 			if (current_temp < monitor->temp_down_table[i].temp) {
 				temp_cfg->ipeak = monitor->temp_down_table[i].ipeak;
 				temp_cfg->gain = monitor->temp_down_table[i].gain;
 				temp_cfg->vmax = monitor->temp_down_table[i].vmax;
-				break;
+				return 0;
 			}
 		}
-	} else if (monitor->pre_temp < current_temp) {
-		/*temp up*/
-		for (i = 0; i < monitor->temp_up_num; i++) {
-			if (current_temp > monitor->temp_up_table[i].temp) {
-				temp_cfg->ipeak = monitor->temp_up_table[i].ipeak;
-				temp_cfg->gain  = monitor->temp_up_table[i].gain;
-				temp_cfg->vmax  = monitor->temp_up_table[i].vmax;
-				break;
-			}
-		}
-	} else {
-		/*temp no change*/
-		pr_debug("%s: temperature no change\n", __func__);
+
+		temp_cfg->ipeak = monitor->temp_up_table[0].ipeak;
+		temp_cfg->gain = monitor->temp_up_table[0].gain;
+		temp_cfg->vmax = monitor->temp_up_table[0].vmax;
+		return 0;
 	}
-	monitor->pre_temp = current_temp;
+
+	if (current_temp < monitor->temp_down_table[0].temp) {
+		temp_cfg->ipeak = monitor->temp_down_table[0].ipeak;
+		temp_cfg->gain = monitor->temp_down_table[0].gain;
+		temp_cfg->vmax = monitor->temp_down_table[0].vmax;
+		return 0;
+	}
+
+	for (i = 1; i < monitor->temp_down_num; i++) {
+		if ((monitor->temp_up_table[monitor->temp_down_num - i].temp < current_temp)
+			 && (current_temp < monitor->temp_down_table[i].temp)) {
+			temp_cfg->ipeak = monitor->temp_down_table[i].ipeak;
+			temp_cfg->gain  = monitor->temp_down_table[i].gain;
+			temp_cfg->vmax  = monitor->temp_down_table[i].vmax;
+			return 0;
+		}
+	}
+
+	if (current_temp > monitor->temp_up_table[0].temp) {
+		temp_cfg->ipeak = monitor->temp_up_table[0].ipeak;
+		temp_cfg->gain  = monitor->temp_up_table[0].gain;
+		temp_cfg->vmax  = monitor->temp_up_table[0].vmax;
+		return 0;
+	}
+
 	return 0;
 }
 
@@ -2861,7 +3116,11 @@ static void aw882xx_monitor_set_gain(struct aw882xx *aw882xx, uint8_t gain)
 	unsigned int read_reg_val;
 	int ret;
 
-	if (gain == GAIN_NONE)
+	if(aw882xx == NULL) {
+		return;
+	}
+
+	if (gain == GAIN_NONE || (aw882xx->fade_work_start == 1))
 		return;
 
 	ret = aw882xx_i2c_read(aw882xx, AW882XX_HAGCCFG4_REG, &reg_val);
@@ -2949,6 +3208,36 @@ static void aw882xx_monitor_work(struct aw882xx *aw882xx)
 	aw882xx_monitor_set_vmax(aw882xx, set_cfg.vmax);
 }
 
+static void aw882xx_monitor_init_gain(struct aw882xx *aw882xx)
+{
+	struct aw882xx_low_vol *vol_cfg = &aw882xx->monitor.vol_cfg;
+	struct aw882xx_low_temp *temp_cfg = &aw882xx->monitor.temp_cfg;
+	struct aw882xx_low_temp set_cfg;
+	int ret;
+
+	if (aw882xx == NULL) {
+		pr_err("%s: pointer is NULL\n", __func__);
+		return;
+	}
+
+	ret = aw882xx_monitor_voltage(aw882xx, vol_cfg);
+	if (ret < 0) {
+		pr_err("%s: monitor voltage failed\n", __func__);
+		return;
+	}
+
+	ret = aw882xx_monitor_temperature(aw882xx, temp_cfg);
+	if (ret < 0) {
+		pr_err("%s: monitor temperature failed\n", __func__);
+		return;
+	}
+
+	memcpy(&set_cfg, temp_cfg, sizeof(struct aw882xx_low_temp));
+
+	aw882xx_monitor_get_cfg(&set_cfg, vol_cfg);
+	aw882xx->cur_gain = set_cfg.gain;
+}
+
 static int aw882xx_get_hmute(struct aw882xx *aw882xx)
 {
 	unsigned int reg_val = 0;
@@ -2986,15 +3275,13 @@ void init_aw882xx_monitor(struct aw882xx_monitor *monitor)
 	hrtimer_init(&monitor->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
 	monitor->timer.function = aw882xx_monitor_timer_func;
 	INIT_WORK(&monitor->work, aw882xx_monitor_work_func);
-	monitor->pre_vol = 5000;
-	monitor->pre_temp = 100;
-
+	monitor->pre_vol = 0;
+	monitor->vol_count = 0;
 	monitor->vol_cfg.ipeak = monitor->vol_up_table[0].ipeak;
 	monitor->vol_cfg.gain = monitor->vol_up_table[0].gain;
 	monitor->temp_cfg.ipeak = monitor->temp_up_table[0].ipeak;
 	monitor->temp_cfg.gain = monitor->temp_up_table[0].gain;
 	monitor->temp_cfg.vmax = monitor->temp_up_table[0].vmax;
-
 #ifdef AW_DEBUG
 	 monitor->test_vol = 0;
 	 monitor->test_temp = 0;
@@ -3132,11 +3419,16 @@ static int aw882xx_i2c_probe(struct i2c_client *i2c,
 	}
 
 	init_aw882xx_monitor(&aw882xx->monitor);
-
+	aw882xx_monitor_init_gain(aw882xx);
 	init_aw882xx_misc_driver(aw882xx);
 	g_aw882xx = aw882xx;
 
 	aw882xx->default_re = 0;
+	aw882xx->need_fade = 0;
+	aw882xx->fade_work_start = 0;
+	aw882xx->delayed_time = 0;
+	aw882xx->is_fade_in = 0;
+
 	/*init profile*/
 	mutex_init(&aw882xx->profile.lock);
 	aw882xx->profile.cur_profile = 0;
@@ -3146,6 +3438,7 @@ static int aw882xx_i2c_probe(struct i2c_client *i2c,
 		aw882xx->profile.data[i] = NULL;
 	}
 
+	INIT_DELAYED_WORK(&aw882xx->fade_work, aw882xx_fade_work_func);
 	/*global init*/
 	atomic_set(&g_algo_rx_enable, 0);
 	atomic_set(&g_algo_tx_enable, 0);
