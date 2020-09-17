@@ -272,6 +272,21 @@
 	};
 };
 
+&tlmm {
+	redriver_enable: redriver_enable {
+		mux {
+			pins = "gpio12";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio12";
+			drive-strength = <2>;
+			bias-pull-up;
+			output-high;
+		};
+	};
+};
 &qupv3_se15_i2c {
 	status = "okay";
 
@@ -347,6 +362,34 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&haptic_irq_default &haptic_rst_default>;
 		status = "okay";
+	};
+
+	redriver: redriver@1a {
+		compatible = "onnn,redriver";
+		reg = <0x1a>;
+		extcon = <&pm8150b_pdphy>, <&pm8150b_pdphy>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&redriver_enable>;
+		eq = /bits/ 8 <
+				/* Parameters for USB */
+				0x4 0x4 0x4 0x4
+				/* Parameters for DP */
+				0x6 0x4 0x4 0x6>;
+		flat-gain = /bits/ 8 <
+				/* Parameters for USB */
+				0x3 0x1 0x1 0x3
+				/* Parameters for DP */
+				0x2 0x1 0x1 0x2>;
+		output-comp = /bits/ 8 <
+				/* Parameters for USB */
+				0x3 0x3 0x3 0x3
+				/* Parameters for DP */
+				0x3 0x3 0x3 0x3>;
+		loss-match = /bits/ 8 <
+				/* Parameters for USB */
+				0x1 0x3 0x3 0x1
+				/* Parameters for DP */
+				0x3 0x3 0x3 0x3>;
 	};
 };
 
