@@ -15,12 +15,15 @@ static int32_t cam_flash_driver_cmd(struct cam_flash_ctrl *fctrl,
 	int rc = 0;
 	int i = 0;
 	struct cam_control *cmd = (struct cam_control *)arg;
+	struct cam_sensor_power_ctrl_t  *power_info = NULL;
 
 	if (!fctrl || !arg) {
 		CAM_ERR(CAM_FLASH, "fctrl/arg is NULL with arg:%pK fctrl%pK",
 			fctrl, arg);
 		return -EINVAL;
 	}
+
+	power_info = &fctrl->power_info;
 
 	if (cmd->handle_type != CAM_HANDLE_USER_POINTER) {
 		CAM_ERR(CAM_FLASH, "Invalid handle type: %d",
@@ -123,6 +126,16 @@ static int32_t cam_flash_driver_cmd(struct cam_flash_ctrl *fctrl,
 			CAM_WARN(CAM_FLASH, "Power Down Failed");
 
 		fctrl->flash_state = CAM_FLASH_STATE_INIT;
+
+		/*MOT_FLASHLIGHT_GPIO BEGIN*/
+		if (soc_private->is_gpio_flash && (NULL != power_info)) {
+			kfree(power_info->power_setting);
+			kfree(power_info->power_down_setting);
+			power_info->power_setting = NULL;
+			power_info->power_down_setting = NULL;
+			power_info->power_setting_size = 0;
+			power_info->power_down_setting_size = 0;
+		} /*MOT_FLASHLIGHT_GPIO END*/
 		break;
 	}
 	case CAM_QUERY_CAP: {
@@ -174,6 +187,10 @@ static int32_t cam_flash_driver_cmd(struct cam_flash_ctrl *fctrl,
 		}
 
 		cam_flash_off(fctrl);
+		/*MOT_FLASHLIGHT_GPIO BEGIN*/
+		if (soc_private->is_gpio_flash) {
+			cam_flash_gpio_off(fctrl);
+		} /*MOT_FLASHLIGHT_GPIO END*/
 		fctrl->func_tbl.flush_req(fctrl, FLUSH_ALL, 0);
 		fctrl->last_flush_req = 0;
 		fctrl->flash_state = CAM_FLASH_STATE_ACQUIRE;
@@ -503,6 +520,12 @@ static int32_t cam_flash_platform_probe(struct platform_device *pdev)
 		fctrl->func_tbl.apply_setting = cam_flash_i2c_apply_setting;
 		fctrl->func_tbl.power_ops = cam_flash_i2c_power_ops;
 		fctrl->func_tbl.flush_req = cam_flash_i2c_flush_request;
+	} else if (of_find_property(pdev->dev.of_node, "gpio-flash-support", NULL)) {
+		/* MOT_FLASHLIGHT_GPIO GPIO Flash */
+		fctrl->func_tbl.parser = cam_flash_gpio_pkt_parser;
+		fctrl->func_tbl.apply_setting = cam_flash_gpio_apply_setting;
+		fctrl->func_tbl.power_ops = cam_flash_gpio_power_ops;
+		fctrl->func_tbl.flush_req = cam_flash_gpio_flush_request;
 	} else {
 		if (fctrl->soc_info.gpio_data) {
 			rc = cam_sensor_util_request_gpio_table(
