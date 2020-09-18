@@ -2031,6 +2031,7 @@ static int sde_connector_get_panel_vendor_info(struct drm_connector *connector)
 	connector->display_info.panel_id = info.panel_id;
 	connector->display_info.panel_ver = info.panel_ver;
 	connector->display_info.panel_regDA = info.panel_regDA;
+	connector->display_info.panel_regDB = info.panel_regDB;
 	strncpy(connector->display_info.panel_name, info.panel_name,
 					sizeof(info.panel_name));
 	strncpy(connector->display_info.panel_supplier, info.panel_supplier,

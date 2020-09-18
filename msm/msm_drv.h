@@ -529,6 +529,7 @@ struct msm_resource_caps_info {
  * @panel_id
  * @panel_ver
  * @panel_regDA
+ * @panel_regDB
  * @panel_name[MSM_DISP_NAME_LEN_MAX];
  * @width_mm:           Physical width
  * @height_mm:          Physical height
@@ -557,6 +558,7 @@ struct msm_display_info {
 	uint64_t panel_id;
 	uint64_t panel_ver;
 	uint32_t panel_regDA;
+	uint32_t panel_regDB;
 	char panel_name[MSM_DISP_NAME_LEN_MAX];
 	char panel_supplier[MSM_DISP_NAME_LEN_MAX];
 
