@@ -15,6 +15,7 @@
 #include "kona-nio-audio-overlay.dtsi"
 #include "kona-mot-nio-display.dtsi"
 #include "kona-nio-fps.dtsi"
+#include "camera/kona-camera-sensor-mot-nio.dtsi"
 #include "kona-nio-sensor-overlay.dtsi"
 #include "kona-nio-battery-thermal.dtsi"
 
