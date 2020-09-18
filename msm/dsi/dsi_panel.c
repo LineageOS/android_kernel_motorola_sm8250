@@ -1855,6 +1855,7 @@ int dsi_panel_parse_panel_cfg(struct dsi_panel *panel, bool is_primary)
 
 	panel_ver = (u32)panel->panel_ver;
 	panel->panel_regDA = (u32)panel->panel_ver & 0xff;
+	panel->panel_regDB = ((u32)panel->panel_ver & 0xff00) >> 8;
 	DSI_INFO("BL: panel(%s) =%s, panel_id =0x%016llx  panel_ver=0x%016llx\n",
 			is_primary? "primary": "secondary",
 			panel->panel_name, panel->panel_id, panel->panel_ver);

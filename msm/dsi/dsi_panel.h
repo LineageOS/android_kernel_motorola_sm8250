@@ -312,6 +312,7 @@ struct dsi_panel {
 	u64 panel_id;
 	u64 panel_ver;
 	u32 panel_regDA;
+	u32 panel_regDB;
 	char panel_name[DSI_PANEL_MAX_PANEL_LEN];
 	char panel_supplier[DSI_PANEL_MAX_PANEL_LEN];
 
