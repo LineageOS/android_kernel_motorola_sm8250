@@ -53,14 +53,14 @@ qcom,mdss-dsi-panel-status-value = <0x9c>;
 qcom,mdss-dsi-panel-status-read-length = <1>;
 
 qcom,bklt-dcs-2bytes-enabled;
-qcom,mdss-dsi-bl-min-level = <21>;
-qcom,mdss-dsi-bl-max-level = <2047>;
+qcom,mdss-dsi-bl-min-level = <3>;
+qcom,mdss-dsi-bl-max-level = <1600>;
 qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
 
 qcom,mdss-dsi-hbm-on-command = [
 		39 01 00 00 00 00 03 51 0F FF];
 qcom,mdss-dsi-hbm-off-command = [
-		39 01 00 00 00 00 03 51 07 FF];
+		39 01 00 00 00 00 03 51 06 40];
 
 qcom,mdss-dsi-acl-on-command = [
 		39 01 00 00 00 00 06 F0 55 AA 52 08 00
@@ -133,6 +133,12 @@ qcom,mdss-dsi-display-timings {
 			39 01 00 00 00 00 06 F0 55 AA 52 08 01 /* Page 1*/
 			39 01 00 00 00 00 03 B3 14 01
 			39 01 00 00 00 00 07 B7 1e 1e 1e 1e 1e 1e
+
+			39 01 00 00 00 00 06 f0 55 AA 52 08 07
+			15 01 00 00 00 00 02 C0 10
+			39 01 00 00 00 00 06 f0 55 AA 52 08 00
+			15 01 00 00 00 00 02 C5 13
+
 			05 01 00 00 64 00 01 11
 			15 01 00 00 00 00 02 55 00      /* ACL OFF */
 			05 01 00 00 00 00 01 29];       /* display on */
