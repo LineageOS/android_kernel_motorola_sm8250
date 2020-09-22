@@ -26,9 +26,27 @@
  * Smith HW rev EVT1 specific changes go here
  */
 
+&tlmm {
+	cam_flash_inhibit: cam_flash_inhibit {
+		/* INHIBIT */
+		mux {
+			pins = "gpio100";
+			function = "gpio";
+		};
 
+		config {
+			pins = "gpio100";
+			drive-strength = <2>; /* 2 MA */
+			output-low;
+		};
+	};
+};
 
-
+&led_flash_rear {
+	pinctrl-names = "cam_default", "cam_suspend";
+	pinctrl-0 = <&cam_flash_inhibit>;
+	pinctrl-1 = <&cam_flash_inhibit>;
+};
 
 &q6core {
 	sound-madera {
@@ -41,6 +59,10 @@
 };
 
 &rear_sensor {
+	/delete-property/ ois-src;
+};
+
+&cli_sensor {
 	/delete-property/ ois-src;
 };
 
