@@ -904,6 +904,9 @@ int dsi_panel_set_backlight(struct dsi_panel *panel, u32 bl_lvl)
 	if (dsi_panel_set_hbm_backlight(panel, &bl_lvl))
 		return 0;
 
+	if( bl_lvl < panel->bl_config.bl_min_level && bl_lvl != 0)
+             bl_lvl = panel->bl_config.bl_min_level;
+
 	DSI_DEBUG("backlight type:%d lvl:%d\n", bl->type, bl_lvl);
 	switch (bl->type) {
 	case DSI_BACKLIGHT_WLED:
