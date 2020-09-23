@@ -37,6 +37,7 @@ qcom,mdss-dsi-mdp-trigger = "none";
 qcom,mdss-dsi-reset-sequence = <0 2>, <1 35>;
 qcom,mdss-dsi-lp11-init;
 qcom,mdss-dsi-tx-eot-append;
+qcom,mdss-dsi-force-clock-lane-hs;
 
 qcom,mdss-dsi-te-pin-select = <1>;
 qcom,mdss-dsi-te-dcs-command = <1>;
