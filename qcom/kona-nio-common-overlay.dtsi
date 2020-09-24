@@ -71,7 +71,11 @@
 
 	 qcom,tz_gpio {
 		compatible = "qcom,tz_gpio";
-		tlmm-tz = <40>,
+		tlmm-tz = <28>,
+			<29>,
+			<30>,
+			<31>,
+			<40>,
 			<41>,
 			<42>,
 			<43>;
@@ -463,5 +467,15 @@
 		pinctrl-1 = <&laser_xsdn_suspend &laser_int_suspend>;
 		st,sensorthreshold = <60 65>;
 		st,xtalkval = <0x9C4 0xFACD 0x0>;
+	};
+};
+
+&spmi_bus {
+	qcom,pm8009@a {
+		status = "disabled";
+	};
+
+	qcom,pm8009@b {
+		status = "disabled";
 	};
 };
