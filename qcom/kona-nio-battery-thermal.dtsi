@@ -80,7 +80,6 @@
         qcom,suspend-input-on-debug-batt;
         qcom,usbpd-phandle = <&pm8150b_pdphy>;
         qcom,typec-legacy-rp-icl;
-        qcom,lpd-disable;
         qcom,disable-suspend-on-collapse;
         qcom,thermal-mitigation = <4000000 3500000
                         3000000 2500000
