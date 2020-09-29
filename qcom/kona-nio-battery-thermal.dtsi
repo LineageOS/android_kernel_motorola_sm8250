@@ -54,7 +54,8 @@
         mot_batterydata: qcom,battery-data {
                 qcom,batt-id-range-pct = <15>;
                 df-serialnum = "SB18C74374";
-                #include "fg-gen4-batterydata-LZ50_5000mAh.dtsi"
+		#include "fg-gen4-batterydata-LZ50-5000mAh-Amperex.dtsi"
+		#include "fg-gen4-batterydata-LZ50-5000mAh-SCUD.dtsi"
         };
 };
 
@@ -106,7 +107,6 @@
                         qcom,iterm-ma = <150>;
                         qcom,vfloat-comp-uv = <20000>;
                         qcom,hvdcp-power-max = <20000>;
-                        qcom,dc-icl-ma = <1300>;
                 };
         };
 
