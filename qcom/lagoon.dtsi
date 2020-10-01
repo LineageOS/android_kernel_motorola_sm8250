@@ -428,7 +428,7 @@
 		removed_region: removed_region@c0000000 {
 			compatible = "removed-dma-pool";
 			no-map;
-			reg = <0x0 0xc0000000 0x0 0x3900000>;
+			reg = <0x0 0xc0000000 0x0 0x4300000>;
 		};
 
 		qseecom_mem: qseecom_region {
@@ -1557,7 +1557,7 @@
 
 	qcom_seecom: qseecom@c1700000 {
 		compatible = "qcom,qseecom";
-		reg = <0xc1700000 0x2200000>;
+		reg = <0xc1700000 0x2C00000>;
 		reg-names = "secapp-region";
 		memory-region = <&qseecom_mem>;
 		qcom,hlos-num-ce-hw-instances = <1>;
@@ -1573,7 +1573,7 @@
 
 	qcom_smcinvoke: smcinvoke@c1700000 {
 		compatible = "qcom,smcinvoke";
-		reg = <0xc1700000 0x2200000>;
+		reg = <0xc1700000 0x2C00000>;
 		reg-names = "secapp-region";
 	};
 
