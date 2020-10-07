@@ -214,6 +214,7 @@ int dsi_display_set_backlight(struct drm_connector *connector,
 
 	mutex_lock(&panel->panel_lock);
 	if (!dsi_panel_initialized(panel)) {
+		DSI_INFO("Ignor bl_level %u as panel is not init.\n",(u32)bl_lvl);
 		rc = -EINVAL;
 		goto error;
 	}
