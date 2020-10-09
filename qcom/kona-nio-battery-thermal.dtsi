@@ -136,7 +136,7 @@
         qcom,fg-cutoff-voltage = <3200>;
         qcom,fg-empty-voltage = <3000>;
         qcom,fg-sys-min-voltage = <3000>;
-        qcom,fg-sys-term-current = <(-500)>;
+        qcom,fg-sys-term-current = <(-400)>;
 };
 
 &pm8150_vadc {
