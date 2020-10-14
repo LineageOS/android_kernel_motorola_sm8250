@@ -61,6 +61,10 @@
 		interrupts = <64 0x02>;
 		interrupt-names = "sx933x_irq";
 		Semtech,nirq-gpio= <&tlmm 64 0x02>;
+		/*use PH3/4 as the reference sensor
+		set it to 0xff if the ref-phases-x is not used*/
+		Semtech,ref-phases-a = <3>;
+		Semtech,ref-phases-b = <4>;
 		Semtech,button-flag = <0x07>;
 		Semtech,headset-reg-num = <4>;
 		Semtech,headset-reg = <
