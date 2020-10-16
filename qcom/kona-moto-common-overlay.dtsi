@@ -799,6 +799,7 @@
 		pinctrl-names = "ts_mmi_on_state", "ts_mmi_off_state";
 		pinctrl-0 = <&touch_reset_active_output_high &touch_int_active>;
 		pinctrl-1 = <&touch_reset_suspend &touch_int_suspend>;
+		synaptics,size_to_pixel_multiple_factor = <1948>;
 		/* touchscreen_mmi class entries */
 		mmi,enable-gestures;
 		mmi,usb-charger-detection;
