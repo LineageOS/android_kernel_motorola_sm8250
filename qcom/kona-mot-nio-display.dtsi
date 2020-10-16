@@ -174,7 +174,7 @@
 	qcom,platform-reset-gpio = <&tlmm 75 0>;
 
 	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
-	qcom,mdss-dsi-bl-min-level = <1>;
+	qcom,mdss-dsi-bl-min-level = <26>;
 	qcom,mdss-dsi-bl-max-level = <4095>;
 	qcom,mdss-dsi-bl-default-level = <2048>;
 	qcom,mdss-brightness-max-level = <4095>;
@@ -225,7 +225,7 @@
 	qcom,platform-reset-gpio = <&tlmm 75 0>;
 
 	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
-	qcom,mdss-dsi-bl-min-level = <1>;
+	qcom,mdss-dsi-bl-min-level = <26>;
 	qcom,mdss-dsi-bl-max-level = <4095>;
 	qcom,mdss-dsi-bl-default-level = <2048>;
 	qcom,mdss-brightness-max-level = <4095>;
