@@ -655,7 +655,7 @@
 			config {
 				pins = "gpio38";
 				drive-strength = <2>;
-				bias-pull-down;
+				bias-disable;
 				output-high;
 			};
 		};
@@ -800,6 +800,8 @@
 		pinctrl-1 = <&touch_reset_suspend &touch_int_suspend>;
 		synaptics,size_to_pixel_multiple_factor = <1948>;
 		/* touchscreen_mmi class entries */
+		mmi,max_coords = <1080 2340>;
+		mmi,poison-slot-control;
 		mmi,enable-gestures;
 		mmi,usb-charger-detection;
 		mmi,power-off-suspend;
