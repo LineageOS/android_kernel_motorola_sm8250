@@ -102,6 +102,10 @@ dtbo-$(CONFIG_KIEV_DTB) += \
 lagoon-kiev-evt1-overlay.dtbo-base := lagoon-moto-base.dtb
 lagoon-kiev-jp-evt1-overlay.dtbo-base := lagoon-moto-base.dtb
 
+dtbo-$(CONFIG_KYOTO_DTB) += lagoon-kyoto-evt1-overlay.dtbo
+
+lagoon-kyoto-evt1-overlay.dtbo-base := lagoon-moto-base.dtb
+
 else
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
         dtbo-$(CONFIG_ARCH_KONA) += \
