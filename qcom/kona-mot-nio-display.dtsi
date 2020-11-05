@@ -239,10 +239,10 @@
 	qcom,mdss-dsi-panel-status-read-length = <1>;
 
 	qcom,mdss-dsi-panel-hdr-enabled;
-	qcom,mdss-dsi-panel-hdr-color-primaries = <14500 15500 32000
-	        17000 15500 30000 8000 3000>;
-	qcom,mdss-dsi-panel-peak-brightness = <4200000>;
-	qcom,mdss-dsi-panel-blackness-level = <4200>;
+	qcom,mdss-dsi-panel-hdr-color-primaries = <15600 16450 34000
+	        16000 13250 34500 7500 3000>;
+	qcom,mdss-dsi-panel-peak-brightness = <4500000>;
+	qcom,mdss-dsi-panel-blackness-level = <3000>;
 
 	qcom,tp_state_check_enable;
 
