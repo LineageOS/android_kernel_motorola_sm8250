@@ -17,6 +17,10 @@ endif
 ifeq ($(CONFIG_ARCH_SDM660), y)
 include $(srctree)/techpack/audio/config/sdm660auto.conf
 endif
+ifeq ($(CONFIG_NIO_DTB), y)
+include $(srctree)/techpack/audio/config/konanio.conf
+export $(shell sed 's/=.*//' $(srctree)/techpack/audio/config/konanio.conf)
+endif
 
 # Use USERINCLUDE when you must reference the UAPI directories only.
 USERINCLUDE     += \
@@ -49,6 +53,11 @@ ifeq ($(CONFIG_ARCH_SDM660), y)
 LINUXINCLUDE    += \
                 -include $(srctree)/techpack/audio/config/sdm660autoconf.h
 endif
+ifeq ($(CONFIG_NIO_DTB), y)
+LINUXINCLUDE    += \
+                -include $(srctree)/techpack/audio/config/konanio.h
+endif
+
 obj-y += soc/
 obj-y += dsp/
 obj-y += ipc/
