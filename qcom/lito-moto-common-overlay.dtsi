@@ -76,6 +76,10 @@
 		mem-size = <0x20000>;
 	};
 
+	mmi_relay {
+		compatible = "mmi,sys-relay";
+	};
+
 	wdog: qcom,wdt@17c10000 {
 		qcom,bark-time = <22000>;
 	};
