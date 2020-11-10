@@ -15,8 +15,8 @@
 #include <linux/notifier.h>
 #include <linux/regmap.h>
 #include <linux/gpio/consumer.h>
-#include <irqchip/irq-madera.h>
-#include <mfd/madera/pdata.h>
+#include <linux/irqchip/irq-madera.h>
+#include <linux/mfd/madera/pdata.h>
 #include <linux/regulator/consumer.h>
 #include <sound/madera-pdata.h>
 

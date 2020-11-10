@@ -1,12 +1,13 @@
-// SPDX-License-Identifier: GPL-2.0
 /*
  * Regmap tables for CS47L35 codec
  *
- * Copyright (C) 2015-2017 Cirrus Logic
+ * Copyright 2015-2016 Cirrus Logic
+ *
+ * Author: Piotr Stankiewicz <piotrs@opensource.wolfsonmicro.com>
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by the
- * Free Software Foundation; version 2.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  */
 
 #include <linux/device.h>
@@ -178,6 +179,7 @@ static const struct reg_default cs47l35_reg_default[] = {
 	{ 0x00000448, 0x0a83 }, /* R1096 (0x448) - eDRE Enable */
 	{ 0x0000044a, 0x0000 }, /* R1098 (0x44a) - eDRE Manual */
 	{ 0x00000450, 0x0000 }, /* R1104 (0x450) - DAC AEC Control 1 */
+	{ 0x00000451, 0x0000 }, /* R1105 (0x451) - DAC AEC Control 2 */
 	{ 0x00000458, 0x0000 }, /* R1112 (0x458) - Noise Gate Control */
 	{ 0x00000490, 0x0069 }, /* R1168 (0x490) - PDM SPK1 CTRL 1 */
 	{ 0x00000491, 0x0000 }, /* R1169 (0x491) - PDM SPK1 CTRL 2 */
@@ -970,6 +972,7 @@ static bool cs47l35_16bit_readable_register(struct device *dev,
 	case MADERA_EDRE_ENABLE:
 	case MADERA_EDRE_MANUAL:
 	case MADERA_DAC_AEC_CONTROL_1:
+	case MADERA_DAC_AEC_CONTROL_2:
 	case MADERA_NOISE_GATE_CONTROL:
 	case MADERA_PDM_SPK1_CTRL_1:
 	case MADERA_PDM_SPK1_CTRL_2:
@@ -1409,10 +1412,90 @@ static bool cs47l35_16bit_readable_register(struct device *dev,
 	case MADERA_ISRC2INT4MIX_INPUT_1_SOURCE:
 	case MADERA_FX_CTRL1:
 	case MADERA_FX_CTRL2:
-	case MADERA_EQ1_1 ... MADERA_EQ1_21:
-	case MADERA_EQ2_1 ... MADERA_EQ2_21:
-	case MADERA_EQ3_1 ... MADERA_EQ3_21:
-	case MADERA_EQ4_1 ... MADERA_EQ4_21:
+	case MADERA_EQ1_1:
+	case MADERA_EQ1_2:
+	case MADERA_EQ1_3:
+	case MADERA_EQ1_4:
+	case MADERA_EQ1_5:
+	case MADERA_EQ1_6:
+	case MADERA_EQ1_7:
+	case MADERA_EQ1_8:
+	case MADERA_EQ1_9:
+	case MADERA_EQ1_10:
+	case MADERA_EQ1_11:
+	case MADERA_EQ1_12:
+	case MADERA_EQ1_13:
+	case MADERA_EQ1_14:
+	case MADERA_EQ1_15:
+	case MADERA_EQ1_16:
+	case MADERA_EQ1_17:
+	case MADERA_EQ1_18:
+	case MADERA_EQ1_19:
+	case MADERA_EQ1_20:
+	case MADERA_EQ1_21:
+	case MADERA_EQ2_1:
+	case MADERA_EQ2_2:
+	case MADERA_EQ2_3:
+	case MADERA_EQ2_4:
+	case MADERA_EQ2_5:
+	case MADERA_EQ2_6:
+	case MADERA_EQ2_7:
+	case MADERA_EQ2_8:
+	case MADERA_EQ2_9:
+	case MADERA_EQ2_10:
+	case MADERA_EQ2_11:
+	case MADERA_EQ2_12:
+	case MADERA_EQ2_13:
+	case MADERA_EQ2_14:
+	case MADERA_EQ2_15:
+	case MADERA_EQ2_16:
+	case MADERA_EQ2_17:
+	case MADERA_EQ2_18:
+	case MADERA_EQ2_19:
+	case MADERA_EQ2_20:
+	case MADERA_EQ2_21:
+	case MADERA_EQ3_1:
+	case MADERA_EQ3_2:
+	case MADERA_EQ3_3:
+	case MADERA_EQ3_4:
+	case MADERA_EQ3_5:
+	case MADERA_EQ3_6:
+	case MADERA_EQ3_7:
+	case MADERA_EQ3_8:
+	case MADERA_EQ3_9:
+	case MADERA_EQ3_10:
+	case MADERA_EQ3_11:
+	case MADERA_EQ3_12:
+	case MADERA_EQ3_13:
+	case MADERA_EQ3_14:
+	case MADERA_EQ3_15:
+	case MADERA_EQ3_16:
+	case MADERA_EQ3_17:
+	case MADERA_EQ3_18:
+	case MADERA_EQ3_19:
+	case MADERA_EQ3_20:
+	case MADERA_EQ3_21:
+	case MADERA_EQ4_1:
+	case MADERA_EQ4_2:
+	case MADERA_EQ4_3:
+	case MADERA_EQ4_4:
+	case MADERA_EQ4_5:
+	case MADERA_EQ4_6:
+	case MADERA_EQ4_7:
+	case MADERA_EQ4_8:
+	case MADERA_EQ4_9:
+	case MADERA_EQ4_10:
+	case MADERA_EQ4_11:
+	case MADERA_EQ4_12:
+	case MADERA_EQ4_13:
+	case MADERA_EQ4_14:
+	case MADERA_EQ4_15:
+	case MADERA_EQ4_16:
+	case MADERA_EQ4_17:
+	case MADERA_EQ4_18:
+	case MADERA_EQ4_19:
+	case MADERA_EQ4_20:
+	case MADERA_EQ4_21:
 	case MADERA_DRC1_CTRL1:
 	case MADERA_DRC1_CTRL2:
 	case MADERA_DRC1_CTRL3:
