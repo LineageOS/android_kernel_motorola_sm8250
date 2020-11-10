@@ -12,12 +12,12 @@
 #define MADERA_PDATA_H
 
 #include <linux/kernel.h>
-#include <irqchip/irq-madera-pdata.h>
+#include <linux/irqchip/irq-madera-pdata.h>
 #include <linux/regulator/arizona-ldo1.h>
 #include <linux/regulator/arizona-micsupp.h>
 #include <linux/regulator/machine.h>
 #include <sound/madera-pdata.h>
-#include <extcon/extcon-madera-pdata.h>
+#include <linux/extcon/extcon-madera-pdata.h>
 
 #define MADERA_MAX_MICBIAS		4
 #define MADERA_MAX_CHILD_MICBIAS	4
