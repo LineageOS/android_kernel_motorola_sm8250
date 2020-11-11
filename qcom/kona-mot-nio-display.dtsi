@@ -264,8 +264,8 @@
 	qcom,mdss-dsi-display-timings {
 		timing@0 {
 			/* Phy 4; w=1080 h=2520; 8bits 90hz; 3.75x dsc */
-			qcom,mdss-dsi-panel-phy-timings = [00 24 0A 0A 1A 24 0A
-					0A 09 02 04 00 1E 0F];
+			qcom,mdss-dsi-panel-phy-timings = [00 1C 07 07 17 22 07
+					07 08 02 04 00 18 0C];
 			qcom,display-topology = <1 1 1>;
 			qcom,default-topology-index = <0>;
 		};
