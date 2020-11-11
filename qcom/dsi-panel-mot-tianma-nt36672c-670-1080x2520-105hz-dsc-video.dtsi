@@ -34,7 +34,7 @@
 			timing@0 {
 				qcom,mdss-dsi-panel-width = <1080>;
 				qcom,mdss-dsi-panel-height = <2520>;
-				qcom,mdss-dsi-h-front-porch = <76>;
+				qcom,mdss-dsi-h-front-porch = <80>;
 				qcom,mdss-dsi-h-back-porch = <56>;
 				qcom,mdss-dsi-h-pulse-width = <12>;
 				qcom,mdss-dsi-h-sync-skew = <0>;
