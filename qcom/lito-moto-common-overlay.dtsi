@@ -53,6 +53,10 @@
 		reg = <0x0  MMI_ANNOTATE_BASE
 				0x0 MMI_ANNOTATE_SIZE>;
 	};
+
+	mmi_relay {
+		compatible = "mmi,sys-relay";
+	};
 };
 
 &soc {
