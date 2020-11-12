@@ -82,6 +82,10 @@
 			<42>,
 			<43>;
 	};
+
+	mmi_relay {
+		compatible = "mmi,sys-relay";
+	};
 };
 
 &vendor {
