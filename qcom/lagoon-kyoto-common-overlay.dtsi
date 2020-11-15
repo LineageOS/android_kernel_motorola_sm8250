@@ -13,7 +13,7 @@
 #include <dt-bindings/interrupt-controller/arm-gic.h>
 #include "lagoon-moto-common-overlay-base.dtsi"
 #include "lagoon-moto-common-overlay.dtsi"
-#include "lagoon-moto-kiev-display.dtsi"
+#include "lagoon-moto-kyoto-display.dtsi"
 #include "lagoon-moto-kiev-nfc.dtsi"
 #include "camera/lagoon-camera-sensor-mot-kiev-overlay.dtsi"
 #include "lagoon-kyoto-audio-overlay.dtsi"
