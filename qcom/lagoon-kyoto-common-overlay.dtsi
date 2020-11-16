@@ -21,7 +21,7 @@
 #include "lagoon-kyoto-sensor-overlay.dtsi"
 #include "lagoon-kiev-thermal.dtsi"
 #include "lagoon-kiev-fmr-overlay.dtsi"
-#include "lagoon-moto-kiev-charger.dtsi"
+#include "lagoon-moto-kyoto-charger.dtsi"
 
 &soc {
 	qcom,tz_gpio {
