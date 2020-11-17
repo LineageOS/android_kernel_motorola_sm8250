@@ -19,7 +19,7 @@
 #include "lagoon-kyoto-audio-overlay.dtsi"
 #include "lagoon-kyoto-touchscreen.dtsi"
 #include "lagoon-kyoto-sensor-overlay.dtsi"
-#include "lagoon-kiev-thermal.dtsi"
+#include "lagoon-kyoto-thermal.dtsi"
 #include "lagoon-kiev-fmr-overlay.dtsi"
 #include "lagoon-moto-kyoto-charger.dtsi"
 
