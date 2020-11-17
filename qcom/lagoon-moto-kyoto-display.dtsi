@@ -55,13 +55,14 @@
 
 	//qcom,tp_state_check_enable;
 
-	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
+	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0",
+				"src_byte_clk0", "src_pixel_clk0",
+				"shadow_byte_clk0", "shadow_pixel_clk0";
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
 	qcom,mdss-dsi-t-clk-post = <0x0E>;
 	qcom,mdss-dsi-t-clk-pre = <0x37>;
 	qcom,mdss-dsi-display-timings {
 		timing@0 {
-			qcom,mdss-dsi-panel-clockrate = <972000000>;
-			qcom,mdss-dsi-panel-framerate = <60>;
 			qcom,mdss-dsi-panel-phy-timings = [00 21 08 08 25 22 09
 							08 09 02 04 00];
 			qcom,display-topology = <1 0 1>;
