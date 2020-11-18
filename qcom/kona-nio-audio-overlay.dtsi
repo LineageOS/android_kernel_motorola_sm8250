@@ -163,6 +163,7 @@
                 reset-gpio = <&tlmm 139 0>;
                 irq-gpio = <&tlmm 138 0x2008>;
                 monitor-flag = <1>;
+		fade-flag = <1>;
                 monitor-timer-val = <3000>;
                 status = "okay";
         };
