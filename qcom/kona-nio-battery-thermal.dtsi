@@ -432,6 +432,7 @@
         };
 };
 
+/*
 &thermal_zones {
         soc {
                 trips {
@@ -449,6 +450,7 @@
                 };
         };
 };
+*/
 
 &pm8150l_rgb_led {
         red {
@@ -473,7 +475,4 @@
                 status = "disabled";
         };
 };
-
-
-
 
