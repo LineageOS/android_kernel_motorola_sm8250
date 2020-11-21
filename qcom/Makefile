@@ -99,12 +99,12 @@ dtbo-$(CONFIG_KIEV_DTB) += \
 		lagoon-kiev-evt1-overlay.dtbo \
 		lagoon-kiev-jp-evt1-overlay.dtbo
 
-lagoon-kiev-evt1-overlay.dtbo-base := lagoon-moto-base.dtb
-lagoon-kiev-jp-evt1-overlay.dtbo-base := lagoon-moto-base.dtb
+lagoon-kiev-evt1-overlay.dtbo-base := lagoon-moto-base-kiev.dtb
+lagoon-kiev-jp-evt1-overlay.dtbo-base := lagoon-moto-base-kiev.dtb
 
 dtbo-$(CONFIG_KYOTO_DTB) += lagoon-kyoto-evt1-overlay.dtbo
 
-lagoon-kyoto-evt1-overlay.dtbo-base := lagoon-moto-base.dtb
+lagoon-kyoto-evt1-overlay.dtbo-base := lagoon-moto-base-kyoto.dtb
 
 else
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)

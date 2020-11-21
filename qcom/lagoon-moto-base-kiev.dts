@@ -1,4 +1,4 @@
-/* Copyright (c) 2019, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2020, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -12,28 +12,7 @@
 
 /dts-v1/;
 
-#include "lagoon.dtsi"
-
-/ {
-	qcom,board-id = <0 0>;
-	channel-id-map = "";
-/*
- * Some nodes need labels assigned to appear in __symbols__
- */
-	chosen: chosen { };
-	aliases: aliases { };
-	reserved_memory: reserved-memory { };
-	mot_batterydata: qcom,battery-data { };
-	utags: utags { };
-	hw: hw { };
-};
-
+/* kiev */
 &firmware {
         /delete-node/ android;
 };
-
-&spmi_bus{
-        /delete-node/ qcom,pmk8002@6;
-        /delete-node/ qcom,pmk8002@7;
-};
-
