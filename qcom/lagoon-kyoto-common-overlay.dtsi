@@ -15,7 +15,7 @@
 #include "lagoon-moto-common-overlay.dtsi"
 #include "lagoon-moto-kyoto-display.dtsi"
 #include "lagoon-moto-kyoto-nfc.dtsi"
-#include "camera/lagoon-camera-sensor-mot-kiev-overlay.dtsi"
+#include "camera/lagoon-camera-sensor-mot-kyoto-overlay.dtsi"
 #include "lagoon-kyoto-audio-overlay.dtsi"
 #include "lagoon-kyoto-touchscreen.dtsi"
 #include "lagoon-kyoto-sensor-overlay.dtsi"
