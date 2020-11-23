@@ -28,6 +28,14 @@
 	hw: hw { };
 };
 
+/delete-node/ &secure_display_memory;
+
+&soc {
+	qcom,ion {
+		/delete-node/ qcom,ion-heap@10;
+	};
+};
+
 &firmware {
 	android {
 		/delete-node/ fstab;
