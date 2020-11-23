@@ -40,7 +40,7 @@
 	qcom,platform-te-gpio = <&tlmm 23 0>;
 	qcom,platform-reset-gpio = <&pm6150l_gpios 9 0>;
 
-	//qcom,esd-check-enabled;
+	qcom,esd-check-enabled;
 	qcom,mdss-dsi-panel-status-check-mode = "reg_read";
 	qcom,mdss-dsi-panel-status-command = [06 01 00 01 00 00 01 0A];
 	qcom,mdss-dsi-panel-status-command-state = "dsi_lp_mode";
