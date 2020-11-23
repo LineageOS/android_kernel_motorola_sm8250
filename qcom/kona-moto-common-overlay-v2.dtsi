@@ -56,12 +56,6 @@
 		reg = <0x0 0xaef9d800 0x0 (0x6400 * 8)>;
 	};
 
-	mmns_mem: mmns_region {
-		compatible = "shared-dma-pool";
-		reusable;
-		alignment = <0x0 0x400000>;
-		size = <0 0x2D000000>;
-	};
 };
 
 &soc {
@@ -86,15 +80,6 @@
 		mmi,temperature-names = "front_temp",
 					"back_temp";
 		status = "ok";
-	};
-
-	qcom,ion {
-		compatible = "qcom,msm-ion";
-		qcom,ion-heap@30 { /* MMNS HEAP */
-			reg = <30>;
-			memory-region = <&mmns_mem>;
-			qcom,ion-heap-type = "DMA_RESERVED";
-		};
 	};
 };
 
