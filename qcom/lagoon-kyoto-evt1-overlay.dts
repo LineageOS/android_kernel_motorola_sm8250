@@ -15,7 +15,6 @@
 
 #include <dt-bindings/interrupt-controller/arm-gic.h>
 #include "lagoon-kyoto-common-overlay.dtsi"
-#include "lagoon-moto-kiev-fps-overlay.dtsi"
 
 / {
 	model = "kyoto";
