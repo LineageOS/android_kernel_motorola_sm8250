@@ -11,6 +11,7 @@
  */
 
 /dts-v1/;
+#include "lagoon-moto-base.dtsi"
 
 /* kiev */
 &firmware {
