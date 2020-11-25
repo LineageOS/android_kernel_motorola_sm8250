@@ -138,6 +138,9 @@
         qcom,fg-empty-voltage = <3000>;
         qcom,fg-sys-min-voltage = <3000>;
         qcom,fg-sys-term-current = <(-400)>;
+        qcom,ki-coeff-low-chg = <1500>;
+        qcom,ki-coeff-med-chg = <1500>;
+        qcom,ki-coeff-hi-chg = <123>;
 };
 
 &pm8150_vadc {
