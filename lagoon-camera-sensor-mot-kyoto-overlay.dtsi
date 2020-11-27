@@ -696,7 +696,7 @@
 		sensor-position-yaw = <180>;
 		led-flash-src = <&led_flash_main>;
 		actuator-src = <&actuator_main>;
-		//eeprom-src = <&eeprom_main>;
+		eeprom-src = <&eeprom_main>;
 		cam_vio-supply = <&cam_iovdd>;
 		cam_vana-supply = <&cam_avdd_main>;
 		cam_vdig-supply = <&cam_dvdd_main>;
