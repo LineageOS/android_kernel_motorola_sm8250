@@ -201,6 +201,11 @@ struct cam_flash_ctrl {
 	uint8_t                             flash_type;
 	bool                                is_regulator_enabled;
 	struct cam_flash_func_tbl           func_tbl;
+	/*MOT_FLASHLIGHT_GPIO BEGIN*/
+	/*For flash lights switching between different flash sources*/
+	struct cam_flash_func_tbl           default_func_tbl;
+	struct cam_flash_func_tbl           alt_func_tbl;
+	/*MOT_FLASHLIGHT_GPIO END*/
 	struct led_trigger           *flash_trigger[CAM_FLASH_MAX_LED_TRIGGERS];
 	struct led_trigger           *torch_trigger[CAM_FLASH_MAX_LED_TRIGGERS];
 /* I2C related setting */
