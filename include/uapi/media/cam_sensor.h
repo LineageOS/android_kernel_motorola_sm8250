@@ -390,6 +390,10 @@ struct cam_sensor_acquire_dev {
 	uint32_t    handle_type;
 	uint32_t    reserved;
 	uint64_t    info_handle;
+	/*MOT_FLASHLIGHT_GPIO BEGIN*/
+	uint32_t    param;
+	uint32_t    reserved1;
+	/*MOT_FLASHLIGHT_GPIO END*/
 } __attribute__((packed));
 
 /**

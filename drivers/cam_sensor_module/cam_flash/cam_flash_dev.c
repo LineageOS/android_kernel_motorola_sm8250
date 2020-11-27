@@ -9,6 +9,53 @@
 #include "cam_flash_core.h"
 #include "cam_common_util.h"
 
+/*MOT_FLASHLIGHT_GPIO BEGIN*/
+typedef enum {
+	FLASH_ALT_INVALID,
+	FLASH_ALT_PMIC,
+	FLASH_ALT_GPIO,
+	FLASH_ALT_NUM,
+} cam_flash_alt_type;
+
+typedef enum {
+	FLASH_SOURCE_INVALID,
+	FLASH_SOURCE_DEFAULT,
+	FLASH_SOURCE_ALTERNATIVE,
+} FlashSourceType;
+
+static cam_flash_alt_type alt_flash_type = FLASH_ALT_INVALID;
+static int cam_flash_select_alt_flash_by_device(char *str)
+{
+	if (!strcmp(str, "nio")) {
+		alt_flash_type = FLASH_ALT_GPIO;
+	} else {
+		alt_flash_type = FLASH_ALT_INVALID;
+	}
+	CAM_DBG(CAM_FLASH, "device name:%s, isPmicAltFlash:%d", str, alt_flash_type);
+	return 1;
+}
+__setup("androidboot.device=", cam_flash_select_alt_flash_by_device);
+
+static int cam_flash_switching_flash_source(struct cam_flash_ctrl *fctrl, FlashSourceType source)
+{
+
+	if (source == FLASH_SOURCE_DEFAULT) {
+		fctrl->func_tbl.parser = fctrl->default_func_tbl.parser;
+		fctrl->func_tbl.apply_setting = fctrl->default_func_tbl.apply_setting;
+		fctrl->func_tbl.power_ops = fctrl->default_func_tbl.power_ops;
+		fctrl->func_tbl.flush_req = fctrl->default_func_tbl.flush_req;
+		CAM_DBG(CAM_FLASH, "Set default flash source");
+	} else {
+		fctrl->func_tbl.parser = fctrl->alt_func_tbl.parser;
+		fctrl->func_tbl.apply_setting = fctrl->alt_func_tbl.apply_setting;
+		fctrl->func_tbl.power_ops = fctrl->alt_func_tbl.power_ops;
+		fctrl->func_tbl.flush_req = fctrl->alt_func_tbl.flush_req;
+		CAM_DBG(CAM_FLASH, "Set alt flash source");
+	}
+	return 0;
+}
+/*MOT_FLASHLIGHT_GPIO END*/
+
 static int32_t cam_flash_driver_cmd(struct cam_flash_ctrl *fctrl,
 		void *arg, struct cam_flash_private_soc *soc_private)
 {
@@ -60,6 +107,15 @@ static int32_t cam_flash_driver_cmd(struct cam_flash_ctrl *fctrl,
 			CAM_ERR(CAM_FLASH, "Failed Copying from User");
 			goto release_mutex;
 		}
+
+		/*MOT_FLASHLIGHT_GPIO BEGIN*/
+		CAM_DBG(CAM_FLASH, "is_gpio_flash:%d, alt_flash_type:%d, flash source from user:%d",
+			soc_private->is_gpio_flash, alt_flash_type, flash_acq_dev.param);
+
+		if (soc_private->is_gpio_flash && alt_flash_type != FLASH_ALT_INVALID) {
+			cam_flash_switching_flash_source(fctrl, flash_acq_dev.param);
+		}
+		/*MOT_FLASHLIGHT_GPIO END*/
 
 		bridge_params.session_hdl = flash_acq_dev.session_handle;
 		bridge_params.ops = &fctrl->bridge_intf.ops;
@@ -441,29 +497,6 @@ static int cam_flash_init_subdev(struct cam_flash_ctrl *fctrl)
 	return rc;
 }
 
-static bool cam_flash_find_sku_to_use_pmic()
-{
-	char boot[6] = {'\0'};
-	char *match = (char *)strnstr(saved_command_line, "androidboot.radio=", strlen(saved_command_line));
-
-	if (match) {
-		memcpy(boot, (match + strlen("androidboot.radio=")), sizeof(boot)-1);
-		CAM_INFO(CAM_FLASH, "androidboot.radio is %s", boot);
-		if (strnstr(boot, "JAPAN", strlen(boot))
-			|| strnstr(boot, "EMLA", strlen(boot))
-			|| strnstr(boot, "AUS", strlen(boot))) {
-			/* SKU JAPAN or EMLA(EU/EMA) use PMIC*/
-			return true;
-		} else {
-			/* SKU VZW or NA use GPIO*/
-			return false;
-		}
-	}
-	CAM_ERR(CAM_FLASH, "NO SKU please check cmdline androidboot.radio");
-	return false;
-}
-
-
 static int32_t cam_flash_platform_probe(struct platform_device *pdev)
 {
 	int32_t rc = 0, i = 0;
@@ -544,20 +577,47 @@ static int32_t cam_flash_platform_probe(struct platform_device *pdev)
 		fctrl->func_tbl.power_ops = cam_flash_i2c_power_ops;
 		fctrl->func_tbl.flush_req = cam_flash_i2c_flush_request;
 	} else if (of_find_property(pdev->dev.of_node, "gpio-flash-support", NULL)) {
-		if (cam_flash_find_sku_to_use_pmic()) {
-			/* PMIC Flash */
+		if (alt_flash_type == FLASH_ALT_GPIO) {
+			/* Default flash is PMIC Flash */
+			fctrl->default_func_tbl.parser = cam_flash_pmic_gpio_pkt_parser;
+			fctrl->default_func_tbl.apply_setting = cam_flash_pmic_gpio_apply_setting;
+			fctrl->default_func_tbl.power_ops = cam_flash_pmic_gpio_power_ops;
+			fctrl->default_func_tbl.flush_req = cam_flash_pmic_gpio_flush_request;
 
-			fctrl->func_tbl.parser = cam_flash_pmic_gpio_pkt_parser;
-			fctrl->func_tbl.apply_setting = cam_flash_pmic_gpio_apply_setting;
-			fctrl->func_tbl.power_ops = cam_flash_pmic_gpio_power_ops;
-			fctrl->func_tbl.flush_req = cam_flash_pmic_gpio_flush_request;
+			/* Alternative flash is GPIO Flash */
+			fctrl->alt_func_tbl.parser = cam_flash_gpio_pkt_parser;
+			fctrl->alt_func_tbl.apply_setting = cam_flash_gpio_apply_setting;
+			fctrl->alt_func_tbl.power_ops = cam_flash_gpio_power_ops;
+			fctrl->alt_func_tbl.flush_req = cam_flash_gpio_flush_request;
+		} else if(alt_flash_type == FLASH_ALT_PMIC) {
+			/* Default flash is GPIO Flash */
+			fctrl->default_func_tbl.parser = cam_flash_gpio_pkt_parser;
+			fctrl->default_func_tbl.apply_setting = cam_flash_gpio_apply_setting;
+			fctrl->default_func_tbl.power_ops = cam_flash_gpio_power_ops;
+			fctrl->default_func_tbl.flush_req = cam_flash_gpio_flush_request;
+
+			/* Alternative flash is PMIC Flash */
+			fctrl->alt_func_tbl.parser = cam_flash_pmic_gpio_pkt_parser;
+			fctrl->alt_func_tbl.apply_setting = cam_flash_pmic_gpio_apply_setting;
+			fctrl->alt_func_tbl.power_ops = cam_flash_pmic_gpio_power_ops;
+			fctrl->alt_func_tbl.flush_req = cam_flash_pmic_gpio_flush_request;
 		} else {
-			/* MOT_FLASHLIGHT_GPIO GPIO Flash */
-			fctrl->func_tbl.parser = cam_flash_gpio_pkt_parser;
-			fctrl->func_tbl.apply_setting = cam_flash_gpio_apply_setting;
-			fctrl->func_tbl.power_ops = cam_flash_gpio_power_ops;
-			fctrl->func_tbl.flush_req = cam_flash_gpio_flush_request;
-            }
+			/* Set all flash sources to GPIO Flash */
+			fctrl->default_func_tbl.parser = cam_flash_gpio_pkt_parser;
+			fctrl->default_func_tbl.apply_setting = cam_flash_gpio_apply_setting;
+			fctrl->default_func_tbl.power_ops = cam_flash_gpio_power_ops;
+			fctrl->default_func_tbl.flush_req = cam_flash_gpio_flush_request;
+
+			fctrl->alt_func_tbl.parser = cam_flash_gpio_pkt_parser;
+			fctrl->alt_func_tbl.apply_setting = cam_flash_gpio_apply_setting;
+			fctrl->alt_func_tbl.power_ops = cam_flash_gpio_power_ops;
+			fctrl->alt_func_tbl.flush_req = cam_flash_gpio_flush_request;
+		}
+
+		fctrl->func_tbl.parser = fctrl->default_func_tbl.parser;
+		fctrl->func_tbl.apply_setting = fctrl->default_func_tbl.apply_setting;
+		fctrl->func_tbl.power_ops = fctrl->default_func_tbl.power_ops;
+		fctrl->func_tbl.flush_req = fctrl->default_func_tbl.flush_req;
 	} else {
 		if (fctrl->soc_info.gpio_data) {
 			rc = cam_sensor_util_request_gpio_table(
