@@ -167,6 +167,9 @@
 	mot_tianma_syna_667_1080p_cmd_v1: qcom,mdss_dsi_mot_tianma_syna_667_1080p_cmd_v1 {
 		#include "dsi-panel-mot-tianma-667-1080p-dsc-cmd-common.dtsi"
 	};
+	mot_tianma_syna_667_1080p_cmd_v2: qcom,mdss_dsi_mot_tianma_syna_667_1080p_cmd_v2 {
+		#include "dsi-panel-mot-tianma-667-1080p-dsc-cmd-common.dtsi"
+	};
 
 };
 
@@ -441,6 +444,54 @@
 			/* Phy 4; w=2880 h=2340; 10bits 90hz; 3.75x dsc */
 			qcom,display-topology = <2 2 1>;
 			qcom,default-topology-index = <0>;
+			qcom,mdss-dsi-on-command = [
+				//SWIRE config
+				39 01 00 00 00 00 06 F0 55 AA 52 08 00
+				15 01 00 00 00 00 02 6F 06
+				39 01 00 00 00 00 04 B5 4E 26 00
+				//VESA
+				39 01 00 00 00 00 05 FF AA 55 A5 80
+				15 00 00 00 00 00 02 6F 0A
+				15 01 00 00 00 00 02 FC 02
+				//CMD4
+				39 01 00 00 00 00 05 FF AA 55 A5 81
+				15 01 00 00 00 00 02 6F 0D
+				15 01 00 00 00 00 02 F3 A7
+
+				/* PPS stable1 10bit3.75x slice 20 */
+				15 01 00 00 00 00 02 90 01  /* Compression method selection*/
+				39 01 00 00 00 00 13 93 AB
+				   28 00 14 02 00 02 0E 01
+				   E8 00 07 05 0E 05 16 10
+				   F0
+				15 01 00 00 00 00 02 03 11 /* Compression mode */
+				05 01 00 00 00 00 01 2C /* Memory write */
+
+				05 01 00 00 00 00 01 35 /* Set tear on */
+				15 01 00 00 00 00 02 53 20 /* HBM off ,dimming=1frame*/
+				39 01 00 00 00 00 05 51 00 00 0F FF
+				/* Spec calls for 51 06 40 0F FF*/
+				39 01 00 00 00 00 05 2A 00 00 04 37 /* Column Addr set */
+				39 01 00 00 00 00 05 2B 00 00 09 23 /* Row Addr set */
+
+				39 01 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0 */
+				39 01 00 00 00 00 06 BE 0E 00 94 13 1F
+				/* Framne rate = 90hz */
+				15 01 00 00 00 00 02 B2 01 /* backlight fix */
+				15 01 00 00 00 00 02 6F 03
+				15 01 00 00 00 00 02 C0 00
+
+				/*accurate frequency to 90hz*/
+				39 01 00 00 00 00 03 BA 02 3B
+
+				/*Disable Corner R smooth feature*/
+				39 01 00 00 00 00 06 F0 55 AA 52 08 07
+				39 01 00 00 00 00 07 B0 A5 40 78 70 00 00
+				15 01 00 00 00 00 02 C0 10
+
+				05 01 00 00 78 00 01 11
+				15 01 00 00 00 00 02 55 00      /* ACL OFF */
+				05 01 00 00 00 00 01 29];	/* display on */
 		};
 	};
 };
@@ -461,55 +512,40 @@
 			/* Phy 4; w=2880 h=2340; 10bits 90hz; 3.75x dsc */
 			qcom,display-topology = <2 2 1>;
 			qcom,default-topology-index = <0>;
-		        qcom,mdss-dsi-on-command = [
-				//VESA
-				39 01 00 00 00 00 05 FF AA 55 A5 80
-				15 00 00 00 00 00 02 6F 0A
-				15 01 00 00 00 00 02 FC 02
+		};
+	};
+};
 
-				//SWIRE config
-				39 01 00 00 00 00 06 F0 55 AA 52 08 00
-				15 01 00 00 00 00 02 6F 06
-				39 01 00 00 00 00 04 B5 4E 26 00
-				//CMD4
-				39 01 00 00 00 00 05 FF AA 55 A5 81
-				15 01 00 00 00 00 02 6F 0D
-				15 01 00 00 00 00 02 F3 A7
+&mot_tianma_syna_667_1080p_cmd_v2 {
+	qcom,platform-te-gpio = <&tlmm 66 0>;
+	qcom,platform-reset-gpio = <&tlmm 75 0>;
 
-				/* PPS stable1 10bit3.75x slice 20 */
-				15 01 00 00 00 00 02 90 01  /* Compression method selection*/
-				39 01 00 00 00 00 13 93 AB 28 00 14 02 00 02 0E 01 E8 00 07 05 0E 05 16 10 F0
-				15 01 00 00 00 00 02 03 11 /* Compression mode */
-				05 01 00 00 00 00 01 2C /* Memory write */
+	qcom,mdss-dsi-hbm-on-command = [
+		39 00 00 00 00 00 06 F0 55 AA 52 08 00
+		15 00 00 00 00 00 02 6F 09
+		15 01 00 00 00 00 02 B4 00
+		15 01 00 00 00 00 02 6F 1C
+		39 01 00 00 00 00 02 B4 EC];
 
-				05 01 00 00 00 00 01 35 /* Set tear on */
-				15 01 00 00 00 00 02 53 20 /* HBM off ,dimming=1frame*/
-				39 01 00 00 00 00 05 51 00 00 0F FF
-				/* Spec calls for 51 06 40 0F FF*/
-				39 01 00 00 00 00 05 2A 00 00 04 37 /* Column Addr set */
-				39 01 00 00 00 00 05 2B 00 00 09 23 /* Row Addr set */
+	qcom,mdss-dsi-hbm-fod-on-command = [
+		39 00 00 00 00 00 06 F0 55 AA 52 08 00
+		15 00 00 00 00 00 02 6F 09
+		15 01 00 00 00 00 02 B4 00
+		15 01 00 00 00 00 02 6F 1C
+		39 01 00 00 00 00 02 B4 48];
 
-				39 01 00 00 00 00 06 F0 55 AA 52 08 00 /* Page 0 */
-				39 01 00 00 00 00 06 BE 0E 00 94 13 1F
-				/* Framne rate = 90hz */
-				15 01 00 00 00 00 02 B2 01 /* backlight fix */
-				15 01 00 00 00 00 02 6F 03
-				15 01 00 00 00 00 02 C0 00
-				15 01 00 00 00 00 02 26 01
+	qcom,mdss-dsi-panel-hdr-enabled;
+	qcom,mdss-dsi-panel-hdr-color-primaries = <14500 15500 32000
+					17000 15500 30000 8000 3000>;
+	qcom,mdss-dsi-panel-peak-brightness = <4200000>;
+	qcom,mdss-dsi-panel-blackness-level = <3230>;
 
-				/*accurate frequency to 90hz*/
-				39 01 00 00 00 00 06 F0 55 AA 52 08 00
-				39 01 00 00 00 00 09 BA 02 36 00 18 00 04 00 01
-				39 01 00 00 00 00 09 BB 02 36 00 18 00 04 00 21
-
-				/*Disable Corner R smooth feature*/
-				39 01 00 00 00 00 06 F0 55 AA 52 08 07
-				39 01 00 00 00 00 07 B0 a5 40 78 70 00 00
-				15 01 00 00 00 00 02 C0 10
-
-				05 01 00 00 78 00 01 11
-				15 01 00 00 00 00 02 55 00      /* ACL OFF */
-				05 01 00 00 00 00 01 29];	/* display on */
+	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
+	qcom,mdss-dsi-display-timings {
+		timing@0 {
+			/* Phy 4; w=2880 h=2340; 10bits 90hz; 3.75x dsc */
+			qcom,display-topology = <2 2 1>;
+			qcom,default-topology-index = <0>;
 		};
 	};
 };
