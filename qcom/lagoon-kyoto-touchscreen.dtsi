@@ -23,12 +23,11 @@
 		pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
 		pinctrl-2 = <&pmx_ts_release>;
 
-		panel = <&dsi_rm692a9_vx_cmd
-			 &dsi_r66451_amoled_60hz_cmd
-			 &dsi_r66451_amoled_90hz_cmd
-			 &dsi_r66451_amoled_120hz_cmd
-			 &dsi_r66451_amoled_60hz_video
-			 &dsi_r66451_amoled_90hz_video
-			 &dsi_r66451_amoled_120hz_video>;
+		panel = <&dsi_rm692a9_vx_cmd>;
+		/* touchscreen_mmi class entries*/
+		mmi,enable-gestures;
+		mmi,enable-palm;
+		mmi,usb-charger-detection;
+		mmi,class-entry-name = "ft3518u";
 	};
 };
