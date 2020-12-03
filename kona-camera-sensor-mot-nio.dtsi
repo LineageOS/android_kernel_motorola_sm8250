@@ -460,6 +460,7 @@
 		rgltr-min-voltage = <2800000 1800000>;
 		rgltr-max-voltage = <2800000 1800000>;
 		rgltr-load-current = <0 0>;
+		multi-user-support;
 	};
 
 	/* EEPROM for camera ID: 2 */
