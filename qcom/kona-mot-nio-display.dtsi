@@ -43,10 +43,6 @@
 	/delete-node/ wled_switch;
 };
 
-&sde_dsi1 {
-	status = "disabled";
-};
-
 &soc {
 	ext_disp: qcom,msm-ext-disp {
 		compatible = "qcom,msm-ext-disp";
@@ -167,7 +163,11 @@
 };
 
 &mdss_mdp {
-	connectors = <&sde_dp &sde_wb &sde_dsi &sde_dsi1 &sde_rscc>;
+	connectors = <&sde_dp &sde_wb &sde_dsi &sde_rscc>;
+};
+
+&sde_dsi1 {
+	status = "disabled";
 };
 
 &mot_tm_nt36672c_670_1080x2520_90hz_dsc_vid {
