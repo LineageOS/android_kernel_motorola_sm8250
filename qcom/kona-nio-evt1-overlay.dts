@@ -18,7 +18,7 @@
 / {
 	model = "nio";
 	compatible = "qcom,kona-nio", "qcom,kona-moto", "qcom,kona";
-	qcom,msm-id = <356 0x20000>;
+	qcom,msm-id = <356 0x20001>;
 	qcom,board-id = <0 0xA000>;
 };
 
