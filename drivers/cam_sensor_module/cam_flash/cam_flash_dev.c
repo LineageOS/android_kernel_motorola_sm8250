@@ -15,6 +15,7 @@ typedef enum {
 	FLASH_ALT_PMIC,
 	FLASH_ALT_GPIO,
 	FLASH_ALT_NUM,
+	FLASH_SELECT_BY_SKU,
 } cam_flash_alt_type;
 
 typedef enum {
@@ -23,18 +24,62 @@ typedef enum {
 	FLASH_SOURCE_ALTERNATIVE,
 } FlashSourceType;
 
+typedef enum {
+	MOT_PRODUCT_INVALID,
+	MOT_PRODUCT_NIO,
+	MOT_PRODUCT_NAIRO,
+} MotProductType;
+
 static cam_flash_alt_type alt_flash_type = FLASH_ALT_INVALID;
-static int cam_flash_select_alt_flash_by_device(char *str)
+static MotProductType mot_product_type = MOT_PRODUCT_INVALID;
+static bool pmic_selected_by_sku = false;
+static int cam_flash_select_alt_flash_by_device(void)
 {
-	if (!strcmp(str, "nio")) {
-		alt_flash_type = FLASH_ALT_GPIO;
-	} else {
-		alt_flash_type = FLASH_ALT_INVALID;
+	char boot[16] = {'\0'};
+	int max_len = sizeof(boot)-1;
+	char *match = (char *)strnstr(saved_command_line, "androidboot.device=", strlen(saved_command_line));
+
+	if (match) {
+		memcpy(boot, (match + strlen("androidboot.device=")), sizeof(boot)-1);
+		CAM_INFO(CAM_FLASH, "androidboot.device is %s", boot);
+		if (strnstr(boot, "nio", max_len)) {
+			alt_flash_type = FLASH_ALT_GPIO;
+			mot_product_type = MOT_PRODUCT_NIO;
+		} else if (strnstr(boot, "nairo", max_len)) {
+			alt_flash_type = FLASH_SELECT_BY_SKU;
+			mot_product_type = MOT_PRODUCT_NAIRO;
+		} else {
+			alt_flash_type = FLASH_ALT_INVALID;
+		}
 	}
-	CAM_DBG(CAM_FLASH, "device name:%s, isPmicAltFlash:%d", str, alt_flash_type);
-	return 1;
+	CAM_DBG(CAM_FLASH, "alt_flash_type:%d, mot_product_type:%d", alt_flash_type, mot_product_type);
+	return 0;
 }
-__setup("androidboot.device=", cam_flash_select_alt_flash_by_device);
+
+static int cam_flash_select_flash_by_sku(void)
+{
+	char boot[16] = {'\0'};
+	int max_len = sizeof(boot)-1;
+	char *match = (char *)strnstr(saved_command_line, "androidboot.radio=", strlen(saved_command_line));
+
+	if (match) {
+		memcpy(boot, (match + strlen("androidboot.radio=")), sizeof(boot)-1);
+		CAM_INFO(CAM_FLASH, "androidboot.radio is %s", boot);
+		if (mot_product_type == MOT_PRODUCT_NAIRO) {
+			if (strnstr(boot, "JAPAN", max_len)
+				|| strnstr(boot, "EMLA", max_len)
+				|| strnstr(boot, "AUS", max_len)) {
+				/* SKU JAPAN or EMLA(EU/EMA) use PMIC*/
+				pmic_selected_by_sku = true;
+			} else {
+				/* SKU VZW or NA use GPIO*/
+				pmic_selected_by_sku = false;
+			}
+		}
+	}
+	CAM_DBG(CAM_FLASH, "androidboot.radio=:%s, pmic_selected_by_sku:%d", boot, pmic_selected_by_sku);
+	return 0;
+}
 
 static int cam_flash_switching_flash_source(struct cam_flash_ctrl *fctrl, FlashSourceType source)
 {
@@ -112,7 +157,8 @@ static int32_t cam_flash_driver_cmd(struct cam_flash_ctrl *fctrl,
 		CAM_DBG(CAM_FLASH, "is_gpio_flash:%d, alt_flash_type:%d, flash source from user:%d",
 			soc_private->is_gpio_flash, alt_flash_type, flash_acq_dev.param);
 
-		if (soc_private->is_gpio_flash && alt_flash_type != FLASH_ALT_INVALID) {
+		if (soc_private->is_gpio_flash &&
+			(alt_flash_type == FLASH_ALT_PMIC || alt_flash_type == FLASH_ALT_GPIO)) {
 			cam_flash_switching_flash_source(fctrl, flash_acq_dev.param);
 		}
 		/*MOT_FLASHLIGHT_GPIO END*/
@@ -577,6 +623,8 @@ static int32_t cam_flash_platform_probe(struct platform_device *pdev)
 		fctrl->func_tbl.power_ops = cam_flash_i2c_power_ops;
 		fctrl->func_tbl.flush_req = cam_flash_i2c_flush_request;
 	} else if (of_find_property(pdev->dev.of_node, "gpio-flash-support", NULL)) {
+		cam_flash_select_alt_flash_by_device();
+		cam_flash_select_flash_by_sku();
 		if (alt_flash_type == FLASH_ALT_GPIO) {
 			/* Default flash is PMIC Flash */
 			fctrl->default_func_tbl.parser = cam_flash_pmic_gpio_pkt_parser;
@@ -589,7 +637,7 @@ static int32_t cam_flash_platform_probe(struct platform_device *pdev)
 			fctrl->alt_func_tbl.apply_setting = cam_flash_gpio_apply_setting;
 			fctrl->alt_func_tbl.power_ops = cam_flash_gpio_power_ops;
 			fctrl->alt_func_tbl.flush_req = cam_flash_gpio_flush_request;
-		} else if(alt_flash_type == FLASH_ALT_PMIC) {
+		} else if (alt_flash_type == FLASH_ALT_PMIC) {
 			/* Default flash is GPIO Flash */
 			fctrl->default_func_tbl.parser = cam_flash_gpio_pkt_parser;
 			fctrl->default_func_tbl.apply_setting = cam_flash_gpio_apply_setting;
@@ -618,6 +666,22 @@ static int32_t cam_flash_platform_probe(struct platform_device *pdev)
 		fctrl->func_tbl.apply_setting = fctrl->default_func_tbl.apply_setting;
 		fctrl->func_tbl.power_ops = fctrl->default_func_tbl.power_ops;
 		fctrl->func_tbl.flush_req = fctrl->default_func_tbl.flush_req;
+
+		if (alt_flash_type == FLASH_SELECT_BY_SKU) {
+			if (pmic_selected_by_sku == true) {
+				/* PMIC Flash */
+				fctrl->func_tbl.parser = cam_flash_pmic_gpio_pkt_parser;
+				fctrl->func_tbl.apply_setting = cam_flash_pmic_gpio_apply_setting;
+				fctrl->func_tbl.power_ops = cam_flash_pmic_gpio_power_ops;
+				fctrl->func_tbl.flush_req = cam_flash_pmic_gpio_flush_request;
+			} else {
+				/* MOT_FLASHLIGHT_GPIO GPIO Flash */
+				fctrl->func_tbl.parser = cam_flash_gpio_pkt_parser;
+				fctrl->func_tbl.apply_setting = cam_flash_gpio_apply_setting;
+				fctrl->func_tbl.power_ops = cam_flash_gpio_power_ops;
+				fctrl->func_tbl.flush_req = cam_flash_gpio_flush_request;
+			}
+		}
 	} else {
 		if (fctrl->soc_info.gpio_data) {
 			rc = cam_sensor_util_request_gpio_table(
