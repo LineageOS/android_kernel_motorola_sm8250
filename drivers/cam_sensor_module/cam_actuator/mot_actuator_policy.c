@@ -28,7 +28,7 @@ int mot_actuator_get(mot_actuator_client user)
 
 	CAM_DBG(CAM_ACTUATOR, "Obtain actuator from: %d", user);
 
-	test_and_set_bit(0x01 << user, &mot_actuator_consumers);
+	test_and_set_bit(user, &mot_actuator_consumers);
 
 	return atomic_add_return(1, &mot_actuator_ref_count);
 }
@@ -43,7 +43,7 @@ int mot_actuator_put(mot_actuator_client user)
 
 	CAM_DBG(CAM_ACTUATOR, "Release actuator from: %d", user);
 
-	test_and_clear_bit(0x01 << user, &mot_actuator_consumers);
+	test_and_clear_bit(user, &mot_actuator_consumers);
 
 	return atomic_sub_return(1, &mot_actuator_ref_count);
 }
@@ -67,13 +67,13 @@ ssize_t mot_actuator_dump(char *buf)
 	unsigned int consumers = mot_actuator_get_consumers();
 
 	item_len += sprintf(buf+item_len, "refCount: %d\n", mot_actuator_get_ref_count());
-	item_len += sprintf(buf+item_len, "Consumers:\n");
+	item_len += sprintf(buf+item_len, "Consumers (0x%x):\n", consumers);
 
-	if (consumers & (0x01 << ACTUATOR_CLIENT_CAMERA)) {
+	if (consumers & CLINET_CAMERA_MASK) {
 		item_len += sprintf(buf+item_len, "camera");
 	}
 
-	if (consumers & (0x01 << ACTUATOR_CLIENT_VIBRATOR)) {
+	if (consumers & CLINET_VIBRATOR_MASK) {
 		item_len += sprintf(buf+item_len, " vibrator");
 	}
 

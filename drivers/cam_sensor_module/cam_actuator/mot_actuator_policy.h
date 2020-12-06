@@ -8,6 +8,9 @@ typedef enum {
 	ACTUATOR_CLIENT_MAX
 } mot_actuator_client;
 
+#define CLINET_CAMERA_MASK (0x01 << ACTUATOR_CLIENT_CAMERA)
+#define CLINET_VIBRATOR_MASK (0x01 << ACTUATOR_CLIENT_VIBRATOR)
+
 int mot_actuator_get(mot_actuator_client user);
 int mot_actuator_put(mot_actuator_client user);
 ssize_t mot_actuator_dump(char *buf);
