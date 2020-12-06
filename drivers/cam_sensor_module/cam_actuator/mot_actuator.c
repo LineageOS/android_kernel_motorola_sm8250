@@ -344,6 +344,7 @@ static int32_t mot_actuator_vib_move_lens(uint32_t index)
 				CAM_DBG(CAM_ACTUATOR, "init acutator sucess", ret);
 				mot_actuator_state = MOT_ACTUATOR_INITED;
 			} else {
+				mot_actuator_release_cci(index);
 				CAM_ERR(CAM_ACTUATOR, "init acutator failed, ret=%d!!!", ret);
 			}
 		} else {
@@ -358,20 +359,29 @@ static int32_t mot_actuator_vib_move_lens(uint32_t index)
 
 	if (ret == 0 && mot_actuator_state == MOT_ACTUATOR_INITED) {
 		/*Move lens to the specified position.*/
-		if (mot_actuator_get_consumers() == 0) {
+		unsigned int consumers = mot_actuator_get_consumers();
+
+		CAM_DBG(CAM_ACTUATOR, "actuator consumers: %d", consumers);
+
+		if ((consumers & CLINET_VIBRATOR_MASK) == 0) {
 			mot_actuator_get(ACTUATOR_CLIENT_VIBRATOR);
+		}
+
+		if (consumers == 0) {
+			/*Just move lens when camera off and before first vibrating*/
 			ret = mot_actuator_move_lens_by_dac(index, lens_safe_pos_dac);
 			if (ret == 0) {
 				CAM_DBG(CAM_ACTUATOR, "actuator:%d is safe now, please start vibrating");
-				mot_actuator_state = MOT_ACTUATOR_STARTED;
 			} else {
 				CAM_ERR(CAM_ACTUATOR, "write dac failed, ret=%d!!!", ret);
 			}
 		} else {
-			CAM_DBG(CAM_ACTUATOR, "actuator is under camera control");
+			CAM_DBG(CAM_ACTUATOR, "actuator is already in position.");
 		}
+
+		mot_actuator_state = MOT_ACTUATOR_STARTED;
 	} else {
-		CAM_DBG(CAM_ACTUATOR, "already inited. state: %d ret=%d.", mot_actuator_state, ret);
+		CAM_DBG(CAM_ACTUATOR, "already in position. state: %d ret=%d.", mot_actuator_state, ret);
 	}
 
 	return ret;
@@ -594,17 +604,26 @@ static struct platform_device mot_actuator_device = {
 
 static void mot_actuator_delayed_process(struct work_struct *work)
 {
-	/*struct mot_actuator_ctrl_t *ts_data = container_of(work,
-                                  struct mot_actuator_ctrl_t, delay_work.work);*/
+	struct mot_actuator_ctrl_t *actuator_fctrl = container_of(work,
+                                  struct mot_actuator_ctrl_t, delay_work.work);
+	unsigned int consumers = 0;
+	int actuatorUsers = 0;
 
-	mutex_lock(&mot_actuator_fctrl.actuator_lock);
-	if (mot_actuator_put(ACTUATOR_CLIENT_VIBRATOR) == 0) {
+	mutex_lock(&actuator_fctrl->actuator_lock);
+	consumers = mot_actuator_get_consumers();
+	if ((consumers & CLINET_VIBRATOR_MASK) != 0) {
+		actuatorUsers = mot_actuator_put(ACTUATOR_CLIENT_VIBRATOR);
+	}
+	if ((consumers & (~CLINET_VIBRATOR_MASK)) == 0) {
+		//Only park lens when there's no other user holding actuator.
 		mot_actuator_park_lens(0);
 	}
-	mot_actuator_power_off(0);
-	mot_actuator_release_cci(0);
+	if (mot_actuator_state >= MOT_ACTUATOR_INITED && mot_actuator_state < MOT_ACTUATOR_RELEASED) {
+		mot_actuator_power_off(0);
+		mot_actuator_release_cci(0);
+	}
 	mot_actuator_state = MOT_ACTUATOR_RELEASED;
-	mutex_unlock(&mot_actuator_fctrl.actuator_lock);
+	mutex_unlock(&actuator_fctrl->actuator_lock);
 }
 
 static inline ssize_t msm_actuator_show(struct device *dev,
