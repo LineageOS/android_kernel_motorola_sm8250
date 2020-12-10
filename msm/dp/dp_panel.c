@@ -77,19 +77,19 @@ struct dp_panel_private {
 };
 
 static const struct dp_panel_info fail_safe = {
-	.h_active = 640,
-	.v_active = 480,
-	.h_back_porch = 48,
-	.h_front_porch = 16,
-	.h_sync_width = 96,
+	.h_active = 1920,
+	.v_active = 1080,
+	.h_back_porch = 148,
+	.h_front_porch = 88,
+	.h_sync_width = 44,
 	.h_active_low = 0,
-	.v_back_porch = 33,
-	.v_front_porch = 10,
-	.v_sync_width = 2,
+	.v_back_porch = 36,
+	.v_front_porch = 4,
+	.v_sync_width = 5,
 	.v_active_low = 0,
 	.h_skew = 0,
 	.refresh_rate = 60,
-	.pixel_clk_khz = 25200,
+	.pixel_clk_khz = 148500,
 	.bpp = 24,
 };
 
