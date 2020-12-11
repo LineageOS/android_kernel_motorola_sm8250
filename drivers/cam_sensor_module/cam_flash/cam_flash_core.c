@@ -1271,6 +1271,7 @@ int cam_flash_i2c_flush_request(struct cam_flash_ctrl *fctrl,
 	int i = 0;
 	uint32_t cancel_req_id_found = 0;
 	struct i2c_settings_array *i2c_set = NULL;
+	struct i2c_settings_list *i2c_list;
 
 	if (!fctrl) {
 		CAM_ERR(CAM_FLASH, "Device data is NULL");
@@ -1291,6 +1292,18 @@ int cam_flash_i2c_flush_request(struct cam_flash_ctrl *fctrl,
 				continue;
 
 			if (i2c_set->is_settings_valid == 1) {
+				/* If any flash_off request pending,
+				 * process it before deleting it
+				 */
+				list_for_each_entry(i2c_list,
+					&(i2c_set->list_head), list) {
+					rc = cam_sensor_util_i2c_apply_setting(
+						&(fctrl->io_master_info), i2c_list);
+					if (rc) {
+						CAM_ERR(CAM_FLASH,
+						"Failed to apply settings: %d", rc);
+					}
+				}
 				rc = delete_request(i2c_set);
 				if (rc < 0)
 					CAM_ERR(CAM_FLASH,
