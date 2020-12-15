@@ -401,7 +401,6 @@
 
 		qcom,max-pclk-frequency-khz = <675000>;
 
-		qcom,mst-enable;
 		qcom,widebus-enable;
 		qcom,dsc-feature-enable;
 		qcom,fec-feature-enable;
