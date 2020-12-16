@@ -47,13 +47,11 @@
 	qcom,mdss-dsi-panel-status-value = <0x9c>;
 	qcom,mdss-dsi-panel-status-read-length = <1>;
 
-	qcom,mdss-dsi-bl-default-level = <128>;
+	qcom,mdss-dsi-bl-default-level = <1024>;
 	qcom,mdss-brightness-max-level = <2047>;
 
         qcom,mdss-dsi-panel-peak-brightness = <4500000>;
         qcom,mdss-dsi-panel-blackness-level = <3000>;
-
-	//qcom,tp_state_check_enable;
 
 	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0",
 				"src_byte_clk0", "src_pixel_clk0",
