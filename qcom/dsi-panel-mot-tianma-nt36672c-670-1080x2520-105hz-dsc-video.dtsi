@@ -78,7 +78,7 @@
 				];
 				qcom,mdss-dsi-off-command = [
 					05 01 00 00 15 00 01 28
-					05 01 00 00 33 00 01 10];
+					05 01 00 00 47 00 01 10];
 				qcom,mdss-dsi-on-command-state = "dsi_lp_mode";
 				qcom,mdss-dsi-off-command-state = "dsi_hs_mode";
 
@@ -103,6 +103,7 @@
 				qcom,supply-enable-load = <150000>;
 				qcom,supply-disable-load = <100>;
 				qcom,supply-post-on-sleep = <1>;
+				qcom,supply-post-off-sleep = <10>;
 			};
 
 			qcom,panel-supply-entry@1 {
