@@ -527,6 +527,7 @@
 		15 01 00 00 00 00 02 6F 1C
 		39 01 00 00 00 00 02 B4 EC];
 
+	qcom,mdss-dsi-hbm-fod;
 	qcom,mdss-dsi-hbm-fod-on-command = [
 		39 00 00 00 00 00 06 F0 55 AA 52 08 00
 		15 00 00 00 00 00 02 6F 09
