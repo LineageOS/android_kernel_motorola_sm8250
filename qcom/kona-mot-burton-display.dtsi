@@ -521,19 +521,21 @@
 	qcom,platform-reset-gpio = <&tlmm 75 0>;
 
 	qcom,mdss-dsi-hbm-on-command = [
-		39 00 00 00 00 00 06 F0 55 AA 52 08 00
-		15 00 00 00 00 00 02 6F 09
+		39 01 00 00 00 00 06 F0 55 AA 52 08 00
+		15 01 00 00 00 00 02 6F 09
 		15 01 00 00 00 00 02 B4 00
 		15 01 00 00 00 00 02 6F 1C
-		39 01 00 00 00 00 02 B4 EC];
+		15 01 00 00 00 00 02 B4 EC
+		39 01 00 00 00 00 03 51 0F FF];
 
 	qcom,mdss-dsi-hbm-fod;
 	qcom,mdss-dsi-hbm-fod-on-command = [
-		39 00 00 00 00 00 06 F0 55 AA 52 08 00
-		15 00 00 00 00 00 02 6F 09
+		39 01 00 00 00 00 06 F0 55 AA 52 08 00
+		15 01 00 00 00 00 02 6F 09
 		15 01 00 00 00 00 02 B4 00
 		15 01 00 00 00 00 02 6F 1C
-		39 01 00 00 00 00 02 B4 48];
+		15 01 00 00 00 00 02 B4 48
+		39 01 00 00 00 00 03 51 0F FF];
 
 	qcom,mdss-dsi-panel-hdr-enabled;
 	qcom,mdss-dsi-panel-hdr-color-primaries = <14500 15500 32000
