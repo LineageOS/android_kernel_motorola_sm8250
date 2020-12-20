@@ -16,6 +16,9 @@
 #include "cam_debug_util.h"
 #include "mot_actuator_policy.h"
 
+extern int mot_actuator_on_vibrate_start(void);
+extern int mot_actuator_on_vibrate_stop(void);
+
 static atomic_t mot_actuator_ref_count = ATOMIC_INIT(0);
 static unsigned long mot_actuator_consumers = ATOMIC_INIT(0);
 
@@ -36,6 +39,7 @@ EXPORT_SYMBOL(mot_actuator_get);
 
 int mot_actuator_put(mot_actuator_client user)
 {
+	unsigned long consumers = 0;
 	if (user <= ACTUATOR_CLIENT_INVALID || user >= ACTUATOR_CLIENT_MAX) {
 		CAM_ERR(CAM_ACTUATOR, "INVALID CLIENT!!!");
 		return 0;
@@ -44,6 +48,17 @@ int mot_actuator_put(mot_actuator_client user)
 	CAM_DBG(CAM_ACTUATOR, "Release actuator from: %d", user);
 
 	test_and_clear_bit(user, &mot_actuator_consumers);
+
+	consumers = mot_actuator_get_consumers();
+	if (((consumers & CLINET_VIBRATOR_MASK) == CLINET_VIBRATOR_MASK) &&
+		(user != ACTUATOR_CLIENT_VIBRATOR)) {
+		//If only vibrator noise eliminator exists, move lens to required position
+		CAM_DBG(CAM_ACTUATOR, "Set actuator pos for vibrator");
+		mot_actuator_on_vibrate_start();
+		if ((mot_actuator_get_consumers() & CLINET_VIBRATOR_MASK) == 0) {
+			mot_actuator_on_vibrate_stop();
+		}
+	}
 
 	return atomic_sub_return(1, &mot_actuator_ref_count);
 }
