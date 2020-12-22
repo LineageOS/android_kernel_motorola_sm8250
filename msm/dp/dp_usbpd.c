@@ -269,6 +269,8 @@ static void dp_usbpd_disconnect_cb(struct usbpd_svid_handler *hdlr)
 	pd->dp_usbpd.base.alt_mode_cfg_done = false;
 	DP_DEBUG("\n");
 
+	cancel_delayed_work_sync(&pd->repeat_attention_work);
+
 	if (pd->dp_cb && pd->dp_cb->disconnect)
 		pd->dp_cb->disconnect(pd->dev);
 }
