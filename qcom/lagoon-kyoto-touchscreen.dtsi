@@ -23,7 +23,8 @@
 		pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
 		pinctrl-2 = <&pmx_ts_release>;
 
-		panel = <&dsi_rm692a9_vx_cmd>;
+		panel = <&dsi_rm692a9_vx_cmd
+			&dsi_rm692d7_vxr_cmd>;
 		/* touchscreen_mmi class entries*/
 		mmi,enable-gestures;
 		mmi,enable-palm;
