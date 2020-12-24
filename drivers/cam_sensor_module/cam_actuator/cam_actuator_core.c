@@ -255,7 +255,13 @@ int32_t cam_actuator_apply_settings(struct cam_actuator_ctrl_t *a_ctrl,
 		CAM_ERR(CAM_ACTUATOR, " Invalid settings");
 		return -EINVAL;
 	}
-
+#ifdef CONFIG_AF_NOISE_ELIMINATION
+	/*Usually actuator initial setting will execute power down reset(PD), actuator can't respond
+	  CCI access for a while after PD. Add lock to avoid access actuator while PD operation.*/
+	if (a_ctrl->is_multi_user_supported) {
+		mot_actuator_lock();
+	}
+#endif
 	list_for_each_entry(i2c_list,
 		&(i2c_set->list_head), list) {
 		rc = cam_actuator_i2c_modes_util(
@@ -271,6 +277,14 @@ int32_t cam_actuator_apply_settings(struct cam_actuator_ctrl_t *a_ctrl,
 				i2c_set->request_id);
 		}
 	}
+
+#ifdef CONFIG_AF_NOISE_ELIMINATION
+	/*Usually actuator initial setting will execute power down reset(PD), actuator can't respond
+	  CCI access for a while after PD. Add lock to avoid access actuator while PD operation.*/
+	if (a_ctrl->is_multi_user_supported) {
+		mot_actuator_unlock();
+	}
+#endif
 
 	return rc;
 }

@@ -278,6 +278,18 @@ static int mot_actuator_init_runtime(void)
 	return 0;
 }
 
+static int32_t mot_actuator_apply_settings(struct camera_io_master *io_master_info,
+	struct cam_sensor_i2c_reg_setting *write_setting)
+{
+	/*Usually actuator initial setting will execute power down reset(PD), actuator can't respond
+	  CCI access for a while after PD. Add lock to avoid access actuator while PD operation.*/
+	int32_t ret = 0;
+	mot_actuator_lock();
+	ret = camera_io_dev_write(io_master_info, write_setting);
+	mot_actuator_unlock();
+	return ret;
+}
+
 static struct cam_sensor_i2c_reg_setting *mot_actuator_get_init_settings(uint32_t index)
 {
 	uint32_t actuator_index = mot_dev_list[mot_device_index].actuator_info[index].actuator_type - MOT_ACTUATOR_FIRST;
@@ -296,7 +308,7 @@ static int32_t mot_actuator_move_lens_by_dac(uint32_t index, uint32_t dac_value)
 	/*Fill the DAC value*/
 	dac_setting->reg_setting[0].reg_data = dac_value;
 	CAM_DBG(CAM_ACTUATOR, "move lens to DAC pos: %d", dac_value);
-	return camera_io_dev_write(&mot_actuator_runtime[index].io_master, dac_setting);
+	return mot_actuator_apply_settings(&mot_actuator_runtime[index].io_master, dac_setting);
 }
 
 static int32_t mot_actuator_power_on(uint32_t index)
@@ -367,7 +379,7 @@ static int32_t mot_actuator_vib_move_lens(uint32_t index)
 		mot_actuator_power_on(index);
 		ret = mot_actuator_init_cci(index);
 		if (ret == 0) {
-			ret = camera_io_dev_write(&mot_actuator_runtime[index].io_master, mot_actuator_get_init_settings(index));
+			ret = mot_actuator_apply_settings(&mot_actuator_runtime[index].io_master, mot_actuator_get_init_settings(index));
 			if (ret == 0) {
 				CAM_DBG(CAM_ACTUATOR, "init acutator sucess", ret);
 				mot_actuator_state = MOT_ACTUATOR_INITED;
@@ -466,10 +478,16 @@ static int32_t mot_actuator_park_lens(uint32_t index)
 
 int mot_actuator_on_vibrate_start(void)
 {
+	ktime_t start,end,duration;
+	start = ktime_get();
 	cancel_delayed_work(&mot_actuator_fctrl.delay_work);
 	mutex_lock(&mot_actuator_fctrl.actuator_lock);
 	mot_actuator_vib_move_lens(0);
 	mutex_unlock(&mot_actuator_fctrl.actuator_lock);
+	end = ktime_get();
+	duration = ktime_sub(end, start);
+	duration /= 1000;
+	CAM_DBG(CAM_ACTUATOR, "Move lens delay: %dus", duration);
 	return 0;
 }
 EXPORT_SYMBOL(mot_actuator_on_vibrate_start);
