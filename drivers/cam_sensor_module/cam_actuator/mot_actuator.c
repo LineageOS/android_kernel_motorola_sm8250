@@ -69,6 +69,7 @@ typedef struct {
 	uint16_t cci_master;
 	char *regulator_list[REGULATOR_NUM];
 	uint32_t regulator_volt_uv[REGULATOR_NUM];
+	bool park_lens_needed;
 } mot_actuator_hw_info;
 
 typedef struct {
@@ -151,6 +152,7 @@ static const mot_dev_info mot_dev_list[MOT_DEVICE_NUM] = {
 				.cci_master = 0x0,
 				.regulator_list = {"ldo7", "ldo5"},
 				.regulator_volt_uv = {1800000, 2800000},
+				.park_lens_needed = true,
 			},
 		},
 	},
@@ -184,6 +186,7 @@ struct mot_actuator_ctrl_t {
 	struct cam_subdev v4l2_dev_str;
 	struct platform_device *pdev;
 	char device_name[20];
+	struct workqueue_struct *mot_actuator_wq;
 	struct delayed_work delay_work;
 	struct mutex actuator_lock;
 };
@@ -419,6 +422,11 @@ static int32_t mot_actuator_park_lens(uint32_t index)
 	unsigned int consumers = 0;
 	int32_t ret = 0;
 
+	if (mot_dev_list[mot_device_index].actuator_info[index].park_lens_needed == false) {
+		CAM_DBG(CAM_ACTUATOR, "Park lens is not needed.");
+		return 0;
+	}
+
 	while (cur_len_pos > lens_park_pos) {
 		consumers = mot_actuator_get_consumers();
 		if ((consumers & (~CLINET_VIBRATOR_MASK)) != 0) {
@@ -468,7 +476,13 @@ EXPORT_SYMBOL(mot_actuator_on_vibrate_start);
 
 int mot_actuator_on_vibrate_stop(void)
 {
-	schedule_delayed_work(&mot_actuator_fctrl.delay_work, msecs_to_jiffies(VIBRATING_MAX_INTERVAL));
+	if (mot_actuator_fctrl.mot_actuator_wq != NULL) {
+		queue_delayed_work(mot_actuator_fctrl.mot_actuator_wq,
+			&mot_actuator_fctrl.delay_work, msecs_to_jiffies(VIBRATING_MAX_INTERVAL));
+	} else {
+		//Dedicated work queue may create failed, use default one.
+		schedule_delayed_work(&mot_actuator_fctrl.delay_work, msecs_to_jiffies(VIBRATING_MAX_INTERVAL));
+	}
 	return 0;
 }
 EXPORT_SYMBOL(mot_actuator_on_vibrate_stop);
@@ -844,10 +858,16 @@ static int mot_actuator_init_subdev(struct mot_actuator_ctrl_t *f_ctrl)
 	platform_device_register(&mot_actuator_device);
 	f_ctrl->v4l2_dev_str.pdev = &mot_actuator_device;
 
+	f_ctrl->mot_actuator_wq = NULL;
+	f_ctrl->mot_actuator_wq = create_singlethread_workqueue("mot_actuator_wq");
+	if (f_ctrl->mot_actuator_wq == NULL) {
+		pr_err("%s: create work queue failed!!!", __func__);
+	}
+
 	INIT_DELAYED_WORK(&f_ctrl->delay_work, mot_actuator_delayed_process);
 	mutex_init(&f_ctrl->actuator_lock);
 
-	{
+	{//Debug/tuning interfaces
 		int i;
 		for (i=0; i<ARRAY_SIZE(mot_actuator_attrs); i++) {
 			rc = sysfs_create_file(&f_ctrl->v4l2_dev_str.pdev->dev.kobj,
@@ -875,6 +895,12 @@ static void __exit mot_actuator_exit(void)
 {
 	pr_debug("%s\n", __func__);
 
+	cancel_delayed_work_sync(&mot_actuator_fctrl.delay_work);
+	if (mot_actuator_fctrl.mot_actuator_wq != NULL) {
+		flush_workqueue(mot_actuator_fctrl.mot_actuator_wq);
+		destroy_workqueue(mot_actuator_fctrl.mot_actuator_wq);
+		mot_actuator_fctrl.mot_actuator_wq = NULL;
+	}
 	cam_unregister_subdev(&mot_actuator_fctrl.v4l2_dev_str);
 }
 
