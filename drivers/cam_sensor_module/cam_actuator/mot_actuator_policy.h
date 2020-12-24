@@ -13,6 +13,8 @@ typedef enum {
 
 int mot_actuator_get(mot_actuator_client user);
 int mot_actuator_put(mot_actuator_client user);
+void mot_actuator_lock(void);
+void mot_actuator_unlock(void);
 ssize_t mot_actuator_dump(char *buf);
 unsigned int mot_actuator_get_consumers(void);
 #endif /*__MOT_ACTUATOR_POLICY_H__*/

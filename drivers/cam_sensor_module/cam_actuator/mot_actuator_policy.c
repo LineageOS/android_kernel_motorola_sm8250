@@ -21,6 +21,7 @@ extern int mot_actuator_on_vibrate_stop(void);
 
 static atomic_t mot_actuator_ref_count = ATOMIC_INIT(0);
 static unsigned long mot_actuator_consumers = ATOMIC_INIT(0);
+static struct mutex actuator_res_lock = __MUTEX_INITIALIZER(actuator_res_lock);
 
 int mot_actuator_get(mot_actuator_client user)
 {
@@ -75,6 +76,18 @@ unsigned int mot_actuator_get_consumers(void)
 	return mot_actuator_consumers;
 }
 EXPORT_SYMBOL(mot_actuator_get_consumers);
+
+void mot_actuator_lock(void)
+{
+	mutex_lock(&actuator_res_lock);
+}
+EXPORT_SYMBOL(mot_actuator_lock);
+
+void mot_actuator_unlock(void)
+{
+	mutex_unlock(&actuator_res_lock);
+}
+EXPORT_SYMBOL(mot_actuator_unlock);
 
 ssize_t mot_actuator_dump(char *buf)
 {
