@@ -23,6 +23,12 @@
 #include <soc/qcom/qseecomi.h>
 #include <soc/qcom/qtee_shmbridge.h>
 
+#ifndef CONFIG_DEBUG_FS
+#include <linux/proc_fs.h>
+static struct proc_dir_entry *tzdbg_root;
+#define TZDBG_ROOT_DIR "tzdbg"
+#endif
+
 /* QSEE_LOG_BUF_SIZE = 32K */
 #define QSEE_LOG_BUF_SIZE 0x8000
 
@@ -1131,7 +1137,11 @@ static ssize_t tzdbgfs_read_unencrypted(struct file *file, char __user *buf,
 	size_t count, loff_t *offp)
 {
 	int len = 0;
+#ifdef CONFIG_DEBUG_FS
 	int tz_id = *(int *)(file->private_data);
+#else
+	int tz_id = *(int *)(long)PDE_DATA(file_inode(file));
+#endif
 
 	if (tz_id == TZDBG_BOOT || tz_id == TZDBG_RESET ||
 		tz_id == TZDBG_INTERRUPT || tz_id == TZDBG_GENERAL ||
@@ -1196,7 +1206,11 @@ static ssize_t tzdbgfs_read_encrypted(struct file *file, char __user *buf,
 				      size_t count, loff_t *offp)
 {
 	int len = 0, ret = 0;
+#ifdef CONFIG_DEBUG_FS
 	int tz_id = *(int *)(file->private_data);
+#else
+	int tz_id = *(int *)(long)PDE_DATA(file_inode(file));
+#endif
 	struct tzdbg_stat *stat = &(tzdbg.stat[tz_id]);
 
 	pr_debug("%s: tz_id = %d\n", __func__, tz_id);
@@ -1239,7 +1253,11 @@ static ssize_t tzdbgfs_read(struct file *file, char __user *buf,
 	int tz_id = TZDBG_STATS_MAX;
 
 	if (file->private_data)
+#ifdef CONFIG_DEBUG_FS
 		tz_id = *(int *)(file->private_data);
+#else
+		tz_id = *(int *)(long)PDE_DATA(file_inode(file));
+#endif
 	else {
 		pr_err("%s: file data private null unable to proceed\n",
 			__func__);
@@ -1412,6 +1430,7 @@ static void tzdbg_free_encrypted_log_buf(struct platform_device *pdev)
 
 static int  tzdbgfs_init(struct platform_device *pdev)
 {
+#ifdef CONFIG_DEBUG_FS
 	int rc = 0;
 	int i;
 	struct dentry           *dent_dir;
@@ -1441,13 +1460,47 @@ err:
 	debugfs_remove_recursive(dent_dir);
 
 	return rc;
+#else
+    int rc = 0;
+    int i;
+    struct proc_dir_entry *proc_d_entry = NULL;
+
+    tzdbg_root = proc_mkdir(TZDBG_ROOT_DIR, NULL);
+    if (NULL == tzdbg_root) {
+        dev_err(&pdev->dev, "Created dir /proc/%s error!\n", TZDBG_ROOT_DIR);
+        return -1;
+    }
+
+    dev_info(&pdev->dev, "Created dir /proc/%s \n", TZDBG_ROOT_DIR);
+
+    for (i = 0; i < TZDBG_STATS_MAX; i++) {
+        tzdbg.debug_tz[i] = i;
+        proc_d_entry = proc_create_data(tzdbg.stat[i].name, 0444, tzdbg_root, &tzdbg_fops, &tzdbg.debug_tz[i]);
+        if (proc_d_entry == NULL) {
+            dev_err(&pdev->dev, "TZ proc_create_data %s failed\n", tzdbg.stat[i].name);
+            rc = -ENOMEM;
+            goto err;
+        }
+    }
+
+    platform_set_drvdata(pdev, tzdbg_root);
+
+    return 0;
+err:
+    remove_proc_subtree(TZDBG_ROOT_DIR, NULL);
+    return rc;
+#endif
 }
 
 static void tzdbgfs_exit(struct platform_device *pdev)
 {
+#ifdef CONFIG_DEBUG_FS
 	struct dentry *dent_dir;
 	dent_dir = platform_get_drvdata(pdev);
 	debugfs_remove_recursive(dent_dir);
+#else
+    remove_proc_subtree(TZDBG_ROOT_DIR, NULL);
+#endif
 }
 
 static int __update_hypdbg_base(struct platform_device *pdev,
