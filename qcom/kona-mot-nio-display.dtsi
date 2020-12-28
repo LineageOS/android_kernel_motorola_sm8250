@@ -33,6 +33,7 @@
 	mmi,low-bl-force-cabc-disable;
 	mmi,low-bl-threshold = <200>;
 	mmi,low-bl-remap-percent = <80>;
+	mmi,low-bl-delay-ms = <50>;
 
 	qcom,wled-bl-step-up;
 	qcom,wled-bl-step-sequence = <255 5>, <2048 6>;
