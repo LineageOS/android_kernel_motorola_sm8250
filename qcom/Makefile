@@ -107,6 +107,11 @@ dtbo-$(CONFIG_BERLIN_DTB) += \
 
 lagoon-berlin-evt1-overlay.dtbo-base := lagoon-moto-base-berlin.dtb
 
+dtbo-$(CONFIG_BERLNA_DTB) += \
+		lagoon-berlna-evt1-overlay.dtbo
+
+lagoon-berlna-evt1-overlay.dtbo-base := lagoon-moto-base-berlna.dtb
+
 dtbo-$(CONFIG_KYOTO_DTB) += lagoon-kyoto-evt1-overlay.dtbo
 
 lagoon-kyoto-evt1-overlay.dtbo-base := lagoon-moto-base-kyoto.dtb
