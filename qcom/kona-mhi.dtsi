@@ -433,7 +433,7 @@
 			mhi_chan@101 {
 				reg = <101>;
 				label = "IP_HW0";
-				mhi,num-elements = <1024>;
+				mhi,num-elements = <512>;
 				mhi,event-ring = <8>;
 				mhi,chan-dir = <2>;
 				mhi,data-type = <4>;
