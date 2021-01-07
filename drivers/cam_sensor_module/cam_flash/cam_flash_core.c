@@ -1541,6 +1541,10 @@ static int cam_flash_i2c_delete_req(struct cam_flash_ctrl *fctrl,
 	frame_offset = del_req_id % MAX_PER_FRAME_ARRAY;
 	fctrl->i2c_data.per_frame[frame_offset].is_settings_valid = false;
 
+	/* delete/invalidate the request */
+	frame_offset = del_req_id % MAX_PER_FRAME_ARRAY;
+	fctrl->i2c_data.per_frame[frame_offset].is_settings_valid = false;
+
 	cam_flash_i2c_flush_nrt(fctrl);
 
 	return 0;
