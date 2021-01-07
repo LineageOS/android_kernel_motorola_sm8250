@@ -69,8 +69,11 @@
 					15 01 00 00 00 00 02 1D 20
 					15 01 00 00 00 00 02 8A 00
 					15 01 00 00 00 00 02 8B 20
-					15 01 00 00 00 00 02 A3 19
-					15 01 00 00 00 00 02 A6 13
+					15 01 00 00 00 00 02 98 8B
+					15 01 00 00 00 00 02 9D 4E
+					15 01 00 00 00 00 02 9F B2
+					15 01 00 00 00 00 02 A3 0E
+					15 01 00 00 00 00 02 A6 09
 					15 01 00 00 00 00 02 FF 10
 					15 01 00 00 00 00 02 51 CC
 					15 01 00 00 00 00 02 53 2C
@@ -105,7 +108,7 @@
 				qcom,supply-enable-load = <150000>;
 				qcom,supply-disable-load = <100>;
 				qcom,supply-post-on-sleep = <1>;
-				qcom,supply-post-off-sleep = <10>;
+				qcom,supply-post-off-sleep = <30>;
 			};
 
 			qcom,panel-supply-entry@1 {
