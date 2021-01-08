@@ -137,6 +137,7 @@
 			qcom,iterm-ma = <110>;
 			qcom,vfloat-comp-uv = <20000>;
 			qcom,hvdcp-power-max = <15000>;
+			qcom,usbpd-phandle = <&pm7250b_pdphy>;
 		};
 	};
 };
