@@ -21,6 +21,7 @@
 			<60 4200 3600 0>;
 	qcom,iterm-ma = <243>;
 	qcom,vfloat-comp-uv = <20000>;
+	qcom,pd-power-max = <20000>;
 };
 
 &pm7250b_charger {
