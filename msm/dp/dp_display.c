@@ -13,6 +13,7 @@
 #include <linux/extcon.h>
 #include <linux/soc/qcom/fsa4480-i2c.h>
 #include <linux/usb/usbpd.h>
+#include <linux/pm_wakeup.h>
 
 #include "sde_connector.h"
 
@@ -193,6 +194,8 @@ struct dp_display_private {
 	bool process_hpd_connect;
 
 	struct notifier_block usb_nb;
+
+	struct wakeup_source *dp_wakelock;
 };
 
 static const struct of_device_id dp_dt_match[] = {
@@ -441,6 +444,7 @@ static void dp_display_hdcp_cb_work(struct work_struct *work)
 		return;
 	}
 
+	__pm_stay_awake(dp->dp_wakelock);
 	if (dp->hdcp_delayed_off) {
 		if (dp->hdcp.ops && dp->hdcp.ops->off)
 			dp->hdcp.ops->off(dp->hdcp.data);
@@ -456,6 +460,7 @@ static void dp_display_hdcp_cb_work(struct work_struct *work)
 		if (sink_status < 1) {
 			DP_DEBUG("Sink not synchronized. Queuing again then exiting\n");
 			queue_delayed_work(dp->wq, &dp->hdcp_cb_work, HZ);
+			__pm_relax(dp->dp_wakelock);
 			return;
 		}
 	}
@@ -470,10 +475,12 @@ static void dp_display_hdcp_cb_work(struct work_struct *work)
 			if (dp->hdcp.ops && dp->hdcp.ops->on &&
 					dp->hdcp.ops->on(dp->hdcp.data)) {
 				dp_display_update_hdcp_status(dp, true);
+				__pm_relax(dp->dp_wakelock);
 				return;
 			}
 		} else {
 			dp_display_update_hdcp_status(dp, true);
+			__pm_relax(dp->dp_wakelock);
 			return;
 		}
 	}
@@ -509,6 +516,7 @@ static void dp_display_hdcp_cb_work(struct work_struct *work)
 		    dp_display_state_is(DP_STATE_ENABLED)) {
 			if (ops && ops->on && ops->on(data)) {
 				dp_display_update_hdcp_status(dp, true);
+				__pm_relax(dp->dp_wakelock);
 				return;
 			}
 			dp_display_hdcp_register_streams(dp);
@@ -526,6 +534,8 @@ static void dp_display_hdcp_cb_work(struct work_struct *work)
 		dp_display_hdcp_register_streams(dp);
 		break;
 	}
+
+	__pm_relax(dp->dp_wakelock);
 }
 
 static void dp_display_notify_hdcp_status_cb(void *ptr,
@@ -3208,6 +3218,11 @@ static int dp_display_probe(struct platform_device *pdev)
 		goto error;
 	}
 
+	dp->dp_wakelock = wakeup_source_register(&pdev->dev, "dp_wakelock");
+	if(!dp->dp_wakelock){
+		DP_ERR("failed to create dp_wakelock!\n");
+		goto error;
+	}
 	return 0;
 error:
 	devm_kfree(&pdev->dev, dp);
@@ -3270,6 +3285,8 @@ static int dp_display_remove(struct platform_device *pdev)
 		return -EINVAL;
 
 	dp = platform_get_drvdata(pdev);
+
+	wakeup_source_unregister(dp->dp_wakelock);
 
 	dp_display_deinit_sub_modules(dp);
 
