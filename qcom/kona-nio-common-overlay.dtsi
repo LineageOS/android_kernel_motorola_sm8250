@@ -168,6 +168,10 @@
 
 &usb0 {
 	extcon = <&pm8150b_pdphy>, <&pm8150b_pdphy>, <&eud>;
+
+	dwc3@a600000 {
+		xhci-hw-lpm-disable;
+	};
 };
 
 &usb2_phy0 {
