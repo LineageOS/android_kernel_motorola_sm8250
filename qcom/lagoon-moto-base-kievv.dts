@@ -15,5 +15,7 @@
 
 /* kiev */
 &firmware {
-        /delete-node/ android;
+        android {
+               /delete-node/ fstab;
+        };
 };
