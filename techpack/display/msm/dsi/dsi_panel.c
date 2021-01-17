@@ -1240,7 +1240,17 @@ void dsi_panel_set_custom_param(struct dsi_panel *panel)
 				apply = true;
 				break;
 			case PARAM_CABC_ID :
+				param_info.value = panel->cabc_state;
+				param_info.param_idx = PARAM_CABC_ID;
+				param_info.param_conn_idx = CONNECTOR_PROP_CABC;
+				apply = true;
+				break;
 			case PARAM_ACL_ID :
+				param_info.value = panel->acl_state;
+				param_info.param_idx = PARAM_ACL_ID;
+				param_info.param_conn_idx = CONNECTOR_PROP_ACL;
+				apply = true;
+				break;
 			default:
 				break;
 		}
