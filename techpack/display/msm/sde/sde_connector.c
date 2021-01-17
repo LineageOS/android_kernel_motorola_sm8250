@@ -17,6 +17,7 @@
 #include "dsi_display.h"
 #include "sde_crtc.h"
 #include "sde_rm.h"
+#include "sde_motUtil.h"
 
 #define BL_NODE_NAME_SIZE 32
 #define HDR10_PLUS_VSIF_TYPE_CODE      0x81
@@ -815,7 +816,8 @@ static void sde_connector_pre_update_fod_hbm(struct sde_connector *c_conn)
 	if (status)
 		sde_encoder_wait_for_event(c_conn->encoder, MSM_ENC_VBLANK);
 
-	dsi_panel_set_fod_hbm(panel, status);
+	if (!get_mot_hbm_status())
+		dsi_panel_set_fod_hbm(panel, status);
 
 	if (!status)
 		sde_encoder_wait_for_event(c_conn->encoder, MSM_ENC_VBLANK);
