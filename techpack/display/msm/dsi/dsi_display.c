@@ -8408,6 +8408,8 @@ int dsi_display_post_enable(struct dsi_display *display)
 		dsi_display_clk_ctrl(display->dsi_clk_handle,
 			DSI_ALL_CLKS, DSI_CLK_OFF);
 
+	dsi_panel_set_custom_param(display->panel);
+
 	mutex_unlock(&display->display_lock);
 	return rc;
 }

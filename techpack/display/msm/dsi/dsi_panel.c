@@ -1223,6 +1223,35 @@ void dsi_panel_reset_param(struct dsi_panel *panel)
 	}
 }
 
+void dsi_panel_set_custom_param(struct dsi_panel *panel)
+{
+	struct panel_param *param;
+	struct msm_param_info param_info;
+	int i = 0;
+	bool apply = false;
+
+	for (i = 0; i < PARAM_ID_NUM; i++) {
+		param = &dsi_panel_param[0][i];
+		switch (i) {
+			case PARAM_HBM_ID :
+				param_info.value = panel->hbm_state;
+				param_info.param_idx = PARAM_HBM_ID;
+				param_info.param_conn_idx = CONNECTOR_PROP_HBM;
+				apply = true;
+				break;
+			case PARAM_CABC_ID :
+			case PARAM_ACL_ID :
+			default:
+				break;
+		}
+		if (apply)
+			if (dsi_panel_set_param(panel, &param_info) < 0)
+				pr_err("Failed to set panel parameter id: %d, value: %d\n",
+					   param_info.param_idx, param_info.value);
+		apply = false;
+	}
+}
+
 static int dsi_panel_bl_register(struct dsi_panel *panel)
 {
 	int rc = 0;

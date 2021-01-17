@@ -1155,6 +1155,48 @@ static ssize_t dsi_display_parse_para_update(struct device *dev,
 
 	return count;
 }
+static ssize_t dsi_display_hbm_get(struct device *dev,
+	struct device_attribute *attr, char *buf)
+{
+	struct dsi_display *display;
+	display = dev_get_drvdata(dev);
+	if (!display) {
+		pr_err("Invalid display\n");
+		return snprintf(buf, PAGE_SIZE, "%d\n", 0);
+	}
+
+	return snprintf(buf, PAGE_SIZE, "%d\n", display->panel->hbm_state);
+}
+
+static ssize_t dsi_display_hbm_set(struct device *dev,
+	struct device_attribute *attr, const char *buf, size_t count)
+{
+	struct dsi_display *display;
+	struct msm_param_info param_info;
+	u16 val = 0;
+
+	display = dev_get_drvdata(dev);
+	if (!display) {
+		pr_err("Invalid display\n");
+		return count;
+	}
+
+	if (kstrtou16(buf, 10, &val) < 0)
+		return count;
+
+	param_info.value = val ? HBM_ON_STATE : HBM_OFF_STATE;
+	param_info.param_idx = PARAM_HBM_ID;
+	param_info.param_conn_idx = CONNECTOR_PROP_HBM;
+	display->panel->hbm_state = param_info.value;
+
+	if (!dsi_panel_initialized(display->panel))
+		return count;
+
+	if (dsi_panel_set_param(display->panel, &param_info) < 0)
+		pr_err("Failed to set panel parameter id: %d\n", param_info.param_idx);
+
+	return count;
+}
 
 ///sys/devices/platform/soc/soc:qcom,dsi-display/
 static DEVICE_ATTR(dsi_display_early_power, 0644,
@@ -1170,6 +1212,9 @@ static DEVICE_ATTR(dsi_display_parse_para, 0644,
 			dsi_display_parse_para_get,
 			dsi_display_parse_para_update);
 
+static DEVICE_ATTR(dsi_display_hbm, 0644,
+			dsi_display_hbm_get,
+			dsi_display_hbm_set);
 
 static struct attribute *dsi_display_mot_ext_fs_attrs[] = {
 	&dev_attr_dsi_display_early_power.attr,
@@ -1182,6 +1227,14 @@ static struct attribute_group dsi_display_mot_ext_fs_attrs_group = {
 	.attrs = dsi_display_mot_ext_fs_attrs,
 };
 
+static struct attribute *dsi_display_mot_ext_fs_hbm_attrs[] = {
+	&dev_attr_dsi_display_hbm.attr,
+	NULL,
+};
+static struct attribute_group dsi_display_mot_ext_fs_hbm_attrs_group = {
+	.attrs = dsi_display_mot_ext_fs_hbm_attrs,
+};
+
 static int dsi_display_sysfs_ext_init(struct dsi_display *display)
 {
 	int rc = 0;
@@ -1189,6 +1242,14 @@ static int dsi_display_sysfs_ext_init(struct dsi_display *display)
 
 	rc = sysfs_create_group(&dev->kobj,
 		&dsi_display_mot_ext_fs_attrs_group);
+	if (rc < 0)
+		pr_err("Failed to create moto ext sysfs nodes: %d\n", rc);
+	if (display->panel->param_cmds[PARAM_HBM_ID].is_supported) {
+		rc = sysfs_create_group(&dev->kobj,
+			&dsi_display_mot_ext_fs_hbm_attrs_group);
+		if (rc < 0)
+			pr_err("Failed to create HBM sysfs nodes: %d\n", rc);
+	}
 
 	return rc;
 }
@@ -1199,6 +1260,9 @@ static int dsi_display_sysfs_ext_deinit(struct dsi_display *display)
 
 	sysfs_remove_group(&dev->kobj,
 		&dsi_display_mot_ext_fs_attrs_group);
+	if (display->panel->param_cmds[PARAM_HBM_ID].is_supported)
+		sysfs_remove_group(&dev->kobj,
+			&dsi_display_mot_ext_fs_hbm_attrs_group);
 
 	return 0;
 }
