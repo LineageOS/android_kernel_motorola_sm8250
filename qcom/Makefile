@@ -40,6 +40,10 @@ dtbo-$(CONFIG_NIO_DTB) += \
 		kona-nio-evt1-overlay.dtbo
 kona-nio-evt1-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
 
+dtbo-$(CONFIG_PSTAR_DTB) += \
+		kona-pstar-evt1-overlay.dtbo
+kona-pstar-evt1-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
+
 dtbo-$(CONFIG_SMITH_DTB) += \
 		lito-smith-evt1-overlay.dtbo \
 		lito-smith-evt2-overlay.dtbo \
