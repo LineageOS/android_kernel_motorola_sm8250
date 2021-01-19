@@ -102,7 +102,7 @@
 		vsn_disp-supply = <&lcdb_ncp_vreg>;
 
 		qcom,mdp = <&mdss_mdp>;
-		qcom,dsi-default-panel = <&mot_tm_nt36672c_670_1080x2520_105hz_dsc_vid>;
+		qcom,dsi-default-panel = <&mot_tm_nt36672c_670_1080x2520_dsc_vid>;
 	};
 
 	sde_dsi1: qcom,dsi-display-secondary {
@@ -169,7 +169,7 @@
 	status = "disabled";
 };
 
-&mot_tm_nt36672c_670_1080x2520_105hz_dsc_vid {
+&mot_tm_nt36672c_670_1080x2520_dsc_vid {
 	qcom,dsi-ctrl-num = <0>;
 	qcom,dsi-phy-num = <0>;
 
