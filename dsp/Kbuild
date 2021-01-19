@@ -87,7 +87,10 @@ ifeq ($(KERNEL_BUILD), 0)
 	endif
 	ifneq (,$(filter nio%, $(TARGET_PRODUCT)))
                 INCS    +=  -include $(AUDIO_ROOT)/config/konanio.h
-        endif
+	endif
+	ifneq (,$(filter pstar%, $(TARGET_PRODUCT)))
+                INCS    +=  -include $(AUDIO_ROOT)/config/konanio.h
+	endif
 endif
 
 

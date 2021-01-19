@@ -135,6 +135,8 @@ endif
 ifdef CONFIG_SND_SOC_KONA
 ifneq (,$(filter nio%, $(TARGET_PRODUCT)))
         MACHINE_OBJS += kona-awinic.o
+else ifneq (,$(filter pstar%, $(TARGET_PRODUCT)))
+        MACHINE_OBJS += kona-awinic.o
 else
 	MACHINE_OBJS += kona.o
 endif
