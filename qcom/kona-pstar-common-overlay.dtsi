@@ -396,76 +396,9 @@
 	};
 };
 
-&tlmm {
-	laser_xsdn_active: laser_xsdn_active {
-		mux {
-			pins = "gpio158";
-			function = "gpio";
-		};
-
-		config {
-			pins = "gpio158";
-			drive-strength = <2>;
-			bias-disable;
-		};
-	};
-
-	laser_xsdn_suspend: laser_xsdn_suspend {
-		mux {
-			pins = "gpio158";
-			function = "gpio";
-		};
-
-		config {
-			pins = "gpio158";
-			drive-strength = <2>;
-			bias-pull-down; /* PULL DOWN */
-		};
-	};
-
-	laser_int_active: laser_int_active {
-		mux {
-			pins = "gpio11";
-			function = "gpio";
-		};
-
-		config {
-			pins = "gpio11";
-			drive-strength = <2>;
-			bias-pull-up; /* PULL UP */
-		};
-	};
-
-	laser_int_suspend: laser_int_suspend {
-		mux {
-			pins = "gpio11";
-			function = "gpio";
-		};
-
-		config {
-			pins = "gpio11";
-			drive-strength = <2>;
-			bias-pull-down; /* PULL DOWN */
-		};
-	};
-};
 
 &qupv3_se16_i2c {
 	status = "okay";
-	qcom,noise-rjct-scl = <3>;
-	qcom,noise-rjct-sda = <3>;
-	stmvl53l1@29 {
-		status = "ok";
-		compatible = "st,stmvl53l1";
-		reg = <0x29>;
-		vdd-vl53l1-supply = <&tof_avdd_ldo>;
-		gpios = <&tlmm 158 0>, <&tlmm 11 0>;
-		pinctrl-names = "laser_default", "laser_suspend";
-		pinctrl-0 = <&laser_xsdn_active &laser_int_active>;
-		pinctrl-1 = <&laser_xsdn_suspend &laser_int_suspend>;
-		st,sensorthreshold = <60 65>;
-		st,xtalkval = <0x9C4 0xFACD 0x0>;
-	};
 };
 
 &spmi_bus {
