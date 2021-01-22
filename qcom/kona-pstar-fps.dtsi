@@ -1,37 +1,7 @@
 #include <dt-bindings/regulator/qcom,rpmh-regulator-levels.h>
 &tlmm {
-	ets {
-		ets_int_active: ets_int_active {
-			/* INTERRUPT */
-			mux {
-				pins = "gpio23";
-				function = "gpio";
-			};
 
-			config {
-				pins = "gpio23";
-				drive-strength = <2>; /* 2 MA */
-				bias-pull-down; /* pull down */
-				input-enable;
-			};
-		};
-		ets_int_suspend: ets_int_suspend {
-			/* INTERRUPT */
-			mux {
-				pins = "gpio23";
-				function = "gpio";
-			};
-
-			config {
-				pins = "gpio23";
-				drive-strength = <2>; /* 2 MA */
-				bias-pull-down; /* pull down */
-				input-enable;
-			};
-		};
-	};
-
-	fpc {
+	fps {
 		rst_active: rst_active {
 			/* RESET */
 			mux {
@@ -93,32 +63,20 @@
 	};
 };
 
-/* Egis VCC L11C 3p3v */
-&pm8150a_l11 {
-	regulator-min-microvolt = <3304000>;
-	qcom,init-voltage = <3304000>;
+/* Goodix3626z9&FPC1542 AVDD L13A 3p0v */
+&L13A {
+	regulator-min-microvolt = <3008000>;
+	qcom,init-voltage = <3008000>;
 	/* qcom,init-mode = <RPMH_REGULATOR_MODE_HPM>;*/
 	regulator-always-on;
 };
 
-/* FPS VDD S4A 1p8v */
+/* legacy FPC VDD S4A 1p8v */
 &pm8150_s4 {
 	regulator-always-on;
 };
 
 &soc {
-	et528: et528 {
-		compatible = "egistec,et516";
-		status = "ok";
-		reg = <0>;
-		interrupt-parent = <&tlmm>;
-		interrupts = <23 0x0>;
-		egistec,gpio_irq = <&tlmm 23 0x2>;
-		egistec,gpio_rst = <&tlmm 119 0x2>;
-		pinctrl-names = "default", "suspend";
-		pinctrl-0 = <&ets_int_active>;
-		pinctrl-1 = <&ets_int_suspend>;
-	};
 
 	fpc: fpc_fpc1020 {
 		compatible = "fpc,fpc1020";
@@ -128,5 +86,18 @@
 		pinctrl-names = "default", "suspend";
 		pinctrl-0 = <&int_active &rst_active>;
 		pinctrl-1 = < &int_suspend &rst_suspend>;
+	};
+
+	goodix_fingerprint{
+		status = "ok";
+		compatible = "goodix,fingerprint";
+		fp-gpio-reset = <&tlmm 119 0x00>;
+		fp-gpio-irq = <&tlmm 23  0x00>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <23 0>;
+		interrupt-controller;
+		pinctrl-names = "default", "suspend";
+		pinctrl-0 = <&int_active &rst_active>;
+		pinctrl-1 = <&int_suspend &rst_suspend>;
 	};
 };
