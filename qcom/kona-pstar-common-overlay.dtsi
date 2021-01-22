@@ -16,7 +16,7 @@
 #include "kona-mot-nio-display.dtsi"
 #include "kona-pstar-sensor-overlay.dtsi"
 #include "kona-nio-battery-thermal.dtsi"
-
+#include "kona-pstar-fps.dtsi"
 /*
  * NIO HW rev EVT1 specific changes go here
  */
