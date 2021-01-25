@@ -32,7 +32,10 @@
 	qcom,cabc-sel = <1>;
 	qcom,ovp = <25000>;
 	status = "ok";
-        qcom,wled-sleep-disable-cabc;
+	mmi,low-bl-force-cabc-disable;
+	mmi,low-bl-threshold = <200>;
+	mmi,low-bl-remap-percent = <80>;
+	mmi,low-bl-delay-ms = <50>;
 
 	/delete-node/ wled_switch;
 };
