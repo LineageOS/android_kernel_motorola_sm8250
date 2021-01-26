@@ -26,6 +26,7 @@
 #include <dsp/q6afe-v2.h>
 #include <dsp/q6core.h>
 #include "device_event.h"
+#include "msm-dai-q6-v2.h"
 #include "msm-pcm-routing-v2.h"
 #include "asoc/msm-cdc-pinctrl.h"
 #include "asoc/wcd-mbhc-v2.h"
@@ -227,6 +228,7 @@ struct msm_asoc_mach_data {
 	u32 tdm_max_slots; /* Max TDM slots used */
 	int (*get_wsa_dev_num)(struct snd_soc_component*);
 	struct afe_cps_hw_intf_cfg cps_config;
+	struct device_node *tdm_rx_dai_p;
 };
 
 struct tdm_port {
@@ -5847,11 +5849,33 @@ static int msm_mclk_event(struct snd_soc_dapm_widget *w,
 {
 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
 	int ret;
+	struct snd_soc_dai_link_component dai_component = {0};
+	struct snd_soc_dai *dai;
+	struct msm_asoc_mach_data *pdata;
+
+	pdata = snd_soc_card_get_drvdata(component->card);
+
 
 	pr_debug("%s: event = %d\n", __func__, event);
 
 	switch (event) {
 	case SND_SOC_DAPM_PRE_PMU:
+		if (pdata && pdata->tdm_rx_dai_p) {
+			dai_component.of_node = pdata->tdm_rx_dai_p;
+			dai = snd_soc_find_dai(&dai_component);
+
+			if (dai) {
+				dev_dbg(component->dev,
+					"Enable bus clk for %s\n", dai->name);
+				ret = msm_dai_q6_tdm_prepare_port(dai);
+
+				if (ret < 0)
+				dev_err(component->dev,
+					"clk enable failed for %s\n",
+					dai->name);
+			}
+		}
+
 		ret = snd_soc_component_set_pll(component, MADERA_FLL1_REFCLK,
 			MADERA_CLK_SRC_AIF1BCLK,
 #ifdef CONFIG_SND_SOC_CS47l35_TDM
@@ -9178,6 +9202,14 @@ static int msm_asoc_machine_probe(struct platform_device *pdev)
 		ret = msm_init_aux_dev(pdev, card);
 		if (ret)
 			goto err;
+	}
+
+	 pdata->tdm_rx_dai_p = of_parse_phandle(pdev->dev.of_node,
+						"qcom,tdm-rx-dai", 0);
+	if (!pdata->tdm_rx_dai_p) {
+		dev_err(&pdev->dev, "%s: property %s not detected in node %s\n",
+			__func__, "qcom,tdm-rx-dai",
+			pdev->dev.of_node->full_name);
 	}
 
 	ret = devm_snd_soc_register_card(&pdev->dev, card);
