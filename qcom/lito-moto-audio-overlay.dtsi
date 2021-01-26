@@ -198,6 +198,7 @@
 		cirrus,prince-devs = <&cs35l41_spk>;
 		cirrus,prince-dev-prefix = "SPK";
 		qcom,sen-mi2s-gpios = <&cdc_sen_tdm_gpios>;
+		qcom,tdm-rx-dai = <&dai_sen_tdm_rx_0>;
 	};
 
 };
