@@ -9799,8 +9799,7 @@ static int msm_dai_q6_tdm_hw_params(struct snd_pcm_substream *substream,
 	return 0;
 }
 
-static int msm_dai_q6_tdm_prepare(struct snd_pcm_substream *substream,
-		struct snd_soc_dai *dai)
+int msm_dai_q6_tdm_prepare_port(struct snd_soc_dai *dai)
 {
 	int rc = 0;
 	struct msm_dai_q6_tdm_dai_data *dai_data =
@@ -9889,6 +9888,12 @@ static int msm_dai_q6_tdm_prepare(struct snd_pcm_substream *substream,
 rtn:
 	mutex_unlock(&tdm_mutex);
 	return rc;
+}
+EXPORT_SYMBOL(msm_dai_q6_tdm_prepare_port);
+
+static int msm_dai_q6_tdm_prepare(struct snd_pcm_substream *substream,
+		struct snd_soc_dai *dai) {
+	return msm_dai_q6_tdm_prepare_port(dai);
 }
 
 static void msm_dai_q6_tdm_shutdown(struct snd_pcm_substream *substream,
