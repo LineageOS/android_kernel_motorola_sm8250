@@ -63,10 +63,10 @@
 	};
 };
 
-/* Goodix3626z9&FPC1542 AVDD L13A 3p0v */
+/* Goodix3626z9&FPC1542 AVDD L13A 3p3v */
 &L13A {
-	regulator-min-microvolt = <3008000>;
-	qcom,init-voltage = <3008000>;
+	regulator-min-microvolt = <3304000>;
+	qcom,init-voltage = <3304000>;
 	/* qcom,init-mode = <RPMH_REGULATOR_MODE_HPM>;*/
 	regulator-always-on;
 };
