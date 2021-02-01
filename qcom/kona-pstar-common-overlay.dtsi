@@ -18,7 +18,7 @@
 #include "kona-nio-battery-thermal.dtsi"
 #include "kona-pstar-fps.dtsi"
 #include "kona-pstar-nfc.dtsi"
-
+#include "camera/kona-camera-sensor-mot-pstar.dtsi"
 /*
  * NIO HW rev EVT1 specific changes go here
  */
