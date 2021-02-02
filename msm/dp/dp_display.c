@@ -2658,14 +2658,13 @@ static int dp_display_init_aux_switch(struct dp_display_private *dp)
 	nb.notifier_call = dp_display_fsa4480_callback;
 	nb.priority = 0;
 
-	/* We don't use the fsa4480 on the 8250 baseline
 	rc = fsa4480_reg_notifier(&nb, dp->aux_switch_node);
 	if (rc) {
 		DP_ERR("failed to register notifier (%d)\n", rc);
 		goto end;
 	}
 
-	fsa4480_unreg_notifier(&nb, dp->aux_switch_node);*/
+	fsa4480_unreg_notifier(&nb, dp->aux_switch_node);
 end:
 	return rc;
 }
