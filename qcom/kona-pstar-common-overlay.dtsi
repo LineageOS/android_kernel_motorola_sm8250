@@ -11,7 +11,7 @@
  */
 
 #include "kona-moto-common-overlay-v2.dtsi"
-#include "kona-nio-touchscreen.dtsi"
+#include "kona-pstar-touchscreen.dtsi"
 #include "kona-nio-audio-overlay.dtsi"
 #include "kona-pstar-sensor-overlay.dtsi"
 #include "kona-mot-pstar-display.dtsi"
@@ -344,6 +344,9 @@
 	};
 };
 
+&qupv3_se16_spi {
+	status = "disabled";
+};
 
 &qupv3_se16_i2c {
 	status = "okay";
