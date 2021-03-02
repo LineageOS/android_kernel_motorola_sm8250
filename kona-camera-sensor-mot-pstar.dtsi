@@ -389,6 +389,22 @@
 		multi-user-support;
 	};
 
+	/* Actuator for camera ID: 3*/
+	actuator_tele: qcom,actuator@3 {
+		cell-index = <3>;
+		reg = <0x3>;
+		compatible = "qcom,actuator";
+		cci-master = <0>;
+		cam_vio-supply = <&pm8150a_l1>;
+		cam_vaf-supply = <&pm8150_l10>;
+		regulator-names = "cam_vio","cam_vaf";
+		rgltr-cntrl-support;
+		rgltr-min-voltage = <1800000 2800000>;
+		rgltr-max-voltage = <1800000 2800000>;
+		rgltr-load-current = <0 0>;
+		multi-user-support;
+	};
+
 	/* EEPROM for camera ID: 1 */
 	eeprom_fm: qcom,eeprom@1 {
 		cell-index = <1>;
@@ -523,16 +539,17 @@
 		sensor-position-roll = <90>;
 		sensor-position-pitch = <0>;
 		sensor-position-yaw = <180>;
+		actuator-src = <&actuator_tele>;
 		cam_vio-supply = <&pm8150a_l1>;
 		cam_clk-supply = <&titan_top_gdsc>;
 		cam_vana-supply = <&cam_front_tele_wide_avdd_ldo>;
 		cam_vdig-supply = <&cam_front_wide_tele_dvdd_ldo>;
-		cam_vaf-supply = <&pm8150a_l7>;
-		regulator-names = "cam_vio", "cam_clk", "cam_vana", "cam_vdig";
+		cam_vaf-supply = <&pm8150_l10>;
+		regulator-names = "cam_vio", "cam_clk", "cam_vana", "cam_vdig","cam_vaf";
 		rgltr-cntrl-support;
-		rgltr-min-voltage = <1800000 0 2800000 1200000>;
-		rgltr-max-voltage = <1800000 0 2800000 1200000>;
-		rgltr-load-current = <105000 0 80000 105000>;
+		rgltr-min-voltage = <1800000 0 2800000 1200000 2800000>;
+		rgltr-max-voltage = <1800000 0 2800000 1200000 2800000>;
+		rgltr-load-current = <105000 0 80000 105000 0>;
 		gpio-no-mux = <0>;
 		pinctrl-names = "cam_default", "cam_suspend";
 		pinctrl-0 = <&cam_sensor_mclk3_active
