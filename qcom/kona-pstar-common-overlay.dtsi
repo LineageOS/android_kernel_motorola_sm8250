@@ -12,7 +12,7 @@
 
 #include "kona-moto-common-overlay-v2.dtsi"
 #include "kona-pstar-touchscreen.dtsi"
-#include "kona-nio-audio-overlay.dtsi"
+#include "kona-pstar-audio-overlay.dtsi"
 #include "kona-pstar-sensor-overlay.dtsi"
 #include "kona-mot-pstar-display.dtsi"
 #include "kona-nio-battery-thermal.dtsi"
