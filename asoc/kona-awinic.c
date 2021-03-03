@@ -7011,7 +7011,11 @@ static struct snd_soc_dai_link msm_tert_mi2s_aw882xx_be_dai_links[] = {
                 .stream_name = "Tertiary MI2S Playback",
                 .cpu_dai_name = "msm-dai-q6-mi2s.2",
                 .platform_name = "msm-pcm-routing",
-		.codec_name = "aw882xx_smartpa.1-0034",
+#ifdef CONFIG_AW882XX_I2C_NO3_BUS
+                .codec_name = "aw882xx_smartpa.3-0034",
+#else
+                .codec_name = "aw882xx_smartpa.1-0034",
+#endif
                 .codec_dai_name = "aw882xx-aif",
                 .no_pcm = 1,
                 .dpcm_playback = 1,
@@ -7026,7 +7030,11 @@ static struct snd_soc_dai_link msm_tert_mi2s_aw882xx_be_dai_links[] = {
                 .stream_name = "Tertiary MI2S Capture",
                 .cpu_dai_name = "msm-dai-q6-mi2s.2",
                 .platform_name = "msm-pcm-routing",
-		.codec_name = "aw882xx_smartpa.1-0034",
+#ifdef CONFIG_AW882XX_I2C_NO3_BUS
+                .codec_name = "aw882xx_smartpa.3-0034",
+#else
+                .codec_name = "aw882xx_smartpa.1-0034",
+#endif
                 .codec_dai_name = "aw882xx-aif",
                 .no_pcm = 1,
                 .dpcm_capture = 1,
