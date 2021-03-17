@@ -1,0 +1,127 @@
+
+qcom,4794299_moto_amperex_lz50_5000mah_averaged_masterslave_sept24th2020 {
+	qcom,profile-revision = <24>;
+	serialnum = "SB18D11084";
+	/* #4794299_moto_Amperex_5000mAh_averaged_MasterSlave_Sept24th2020*/
+	qcom,max-voltage-uv = <4450000>;
+	qcom,fastchg-current-ma = <6000>;
+	qcom,fg-cc-cv-threshold-mv = <4440>;
+	qcom,nom-batt-capacity-mah = <5000>;
+	qcom,batt-id-kohm = <0>;
+	qcom,battery-beta = <4250>;
+	qcom,therm-room-temp = <100000>;
+	qcom,battery-type = "4794299_moto_amperex_lz50_5000mah_averaged_masterslave_sept24th2020";
+	qcom,therm-coefficients = <0x2318 0xd0c 0xdaf7 0xc556 0x848d>;
+	qcom,therm-center-offset = <0x70>;
+	qcom,therm-pull-up = <100>;
+	qcom,rslow-normal-coeffs = <0x25 0x05 0x2e 0x12>;
+	qcom,rslow-low-coeffs = <0x77 0x15 0x23 0xf3>;
+	qcom,checksum = <0x3CC2>;
+	qcom,gui-version = "PM855GUI - 1.0.0.14";
+	qcom,fg-profile-data = [
+		 09 00 57 EA
+		 9E E5 1B EA
+		 B5 E5 00 00
+		 D7 BD 21 8A
+		 FA 87 23 8D
+		 50 8C 53 80
+		 18 00 25 05
+		 2E 12 C5 04
+		 AD 02 CE 07
+		 32 00 84 EB
+		 79 ED C7 D4
+		 0C 12 9B DA
+		 99 C5 01 12
+		 B1 02 B8 D3
+		 60 00 44 00
+		 4C 00 4B 00
+		 39 00 32 00
+		 37 00 44 00
+		 3F 00 43 00
+		 3E 00 60 00
+		 2F 00 3A 00
+		 3E 00 3B 00
+		 38 00 6A 00
+		 4F 64 45 00
+		 45 00 40 08
+		 60 00 53 00
+		 5B 00 64 10
+		 54 10 4D 00
+		 87 20 65 40
+		 5A 58 58 0E
+		 50 00 D8 08
+		 A4 20 03 0C
+		 D3 03 0D FD
+		 7D 1C 20 03
+		 D8 05 5D 2A
+		 88 18 97 4B
+		 17 5C F6 02
+		 70 0F FA 20
+		 FF 05 C1 0B
+		 1D FD FC 1C
+		 2B 03 0D 05
+		 A0 0B C9 17
+		 10 22 EB 45
+		 DD 5A 89 11
+		 4C 1F D3 ED
+		 81 D2 65 D4
+		 E2 1C BB B9
+		 8F 04 24 BA
+		 AC 17 CA 8B
+		 86 84 2D A2
+		 76 A8 09 80
+		 24 E2 F5 04
+		 E0 02 F0 04
+		 00 00 EE D5
+		 5A EA F8 F7
+		 8B EB 9E BD
+		 4B 18 10 E8
+		 C7 D5 83 03
+		 53 06 89 01
+		 CE 07 32 00
+		 80 01 37 02
+		 12 05 36 03
+		 3B 02 66 04
+		 90 02 A6 03
+		 DC 04 59 00
+		 3C 00 43 00
+		 45 64 4A 00
+		 47 00 48 08
+		 4C 00 4A 00
+		 4C 00 43 10
+		 43 10 3C 00
+		 4C 28 51 48
+		 58 60 64 0B
+		 48 00 50 00
+		 5B 08 60 00
+		 4A 00 44 00
+		 3D 10 4B 10
+		 4D 00 60 20
+		 6C 48 4D 58
+		 58 0D 51 00
+		 45 00 2D 08
+		 D8 00 5B 20
+		 15 05 D2 0A
+		 00 0E DB 1C
+		 31 23 DB 45
+		 42 5A 5A 18
+		 8F 02 6A 04
+		 78 03 6E 10
+		 3F 0A 36 20
+		 F1 04 28 03
+		 8E 05 BF 1C
+		 57 03 A5 05
+		 9F 02 87 18
+		 F6 03 C3 05
+		 85 03 68 00
+		 F8 20 0E 04
+		 D4 03 EC 04
+		 E7 1C 40 02
+		 88 05 BA 02
+		 A1 18 59 03
+		 C7 04 24 02
+		 7E 00 95 01
+		 C0 00 FA 00
+		 A6 13 00 00
+	];
+};
