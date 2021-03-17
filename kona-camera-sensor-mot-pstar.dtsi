@@ -433,8 +433,31 @@
 		rgltr-load-current = <0>;
 	};
 
+	/* EEPROM for camera ID: 3 */
+	eeprom_tele: qcom,eeprom@3 {
+		cell-index = <3>;
+		reg = <0x3>;
+		compatible = "qcom,eeprom";
+		cci-master = <0>;
+		cam_vio-supply = <&pm8150a_l1>;
+		regulator-names = "cam_vio";
+		rgltr-cntrl-support;
+		rgltr-min-voltage = <1800000>;
+		rgltr-max-voltage = <1800000>;
+		rgltr-load-current = <0>;
+	};
+
 	led_flash_uw: qcom,camera-flash2 {
 		cell-index = <2>;
+		compatible = "qcom,camera-flash";
+		flash-source = <&pm8150l_flash0 &pm8150l_flash1>;
+		torch-source = <&pm8150l_torch0 &pm8150l_torch1>;
+		switch-source = <&pm8150l_switch2>;
+		status = "ok";
+	};
+
+	led_flash_tele: qcom,camera-flash3 {
+		cell-index = <3>;
 		compatible = "qcom,camera-flash";
 		flash-source = <&pm8150l_flash0 &pm8150l_flash1>;
 		torch-source = <&pm8150l_torch0 &pm8150l_torch1>;
@@ -540,6 +563,8 @@
 		sensor-position-pitch = <0>;
 		sensor-position-yaw = <180>;
 		actuator-src = <&actuator_tele>;
+		led-flash-src = <&led_flash_tele>;
+		eeprom-src = <&eeprom_tele>;
 		cam_vio-supply = <&pm8150a_l1>;
 		cam_clk-supply = <&titan_top_gdsc>;
 		cam_vana-supply = <&cam_front_tele_wide_avdd_ldo>;
