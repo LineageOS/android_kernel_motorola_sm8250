@@ -89,8 +89,8 @@
 		st,irq-gpio = <&tlmm 24 0x2008>;
 		st,regulator_avdd = "pm8150a_l11";
 		st,regulator_dvdd = "pm8150_l14";
-		fts,x-max = <1080>;
-		fts,y-max = <2400>;
+		st,x-max = <1080>;
+		st,y-max = <2400>;
 		panel = <&mot_csot_nt37701_667_1080x2400_dsc_cmd>;
 	};
 };
