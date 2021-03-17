@@ -15,7 +15,7 @@
 #include "kona-pstar-audio-overlay.dtsi"
 #include "kona-pstar-sensor-overlay.dtsi"
 #include "kona-mot-pstar-display.dtsi"
-#include "kona-nio-battery-thermal.dtsi"
+#include "kona-pstar-battery-thermal.dtsi"
 #include "kona-pstar-fps.dtsi"
 #include "kona-pstar-nfc.dtsi"
 #include "camera/kona-camera-sensor-mot-pstar.dtsi"
