@@ -465,6 +465,22 @@
 		status = "ok";
 	};
 
+	/*TELE OIS*/
+	ois_tele: qcom,ois@0 {
+		cell-index = <0>;
+		reg = <0x0>;
+		compatible = "qcom,ois";
+		cci-master = <0>;
+		cam_vio-supply = <&pm8150a_l1>;
+		cam_vaf-supply = <&pm8150_l10>;
+		regulator-names = "cam_vio", "cam_vaf";
+		rgltr-cntrl-support;
+		rgltr-min-voltage = <1800000 2800000>;
+		rgltr-max-voltage = <1800000 2800000>;
+		rgltr-load-current = <14000 15000>;
+		status = "ok";
+	};
+
 	/* Camera ID: 1, front main, OV16A1Q */
 	front_main: qcom,cam-sensor@1 {
 		cell-index = <1>;
@@ -565,6 +581,7 @@
 		actuator-src = <&actuator_tele>;
 		led-flash-src = <&led_flash_tele>;
 		eeprom-src = <&eeprom_tele>;
+		ois-src = <&ois_tele>;
 		cam_vio-supply = <&pm8150a_l1>;
 		cam_clk-supply = <&titan_top_gdsc>;
 		cam_vana-supply = <&cam_front_tele_wide_avdd_ldo>;
