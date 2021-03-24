@@ -3,7 +3,7 @@ qcom,4794299_moto_amperex_lz50_5000mah_averaged_masterslave_sept24th2020 {
 	qcom,profile-revision = <24>;
 	serialnum = "SB18D11084";
 	/* #4794299_moto_Amperex_5000mAh_averaged_MasterSlave_Sept24th2020*/
-	qcom,max-voltage-uv = <4450000>;
+	qcom,max-voltage-uv = <4480000>;
 	qcom,fastchg-current-ma = <6000>;
 	qcom,fg-cc-cv-threshold-mv = <4440>;
 	qcom,nom-batt-capacity-mah = <5000>;
