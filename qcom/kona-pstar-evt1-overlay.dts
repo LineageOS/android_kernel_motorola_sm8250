@@ -22,3 +22,9 @@
 	qcom,board-id = <0 0xA000>;
 };
 
+&qupv3_se13_i2c {
+	st_fts@49 {
+		st,regulator_avdd = "pm8150a_l11";
+		st,regulator_dvdd = "pm8150_l14";
+	};
+};
