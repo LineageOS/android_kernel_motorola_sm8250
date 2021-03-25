@@ -19,20 +19,6 @@
 	model = "pstar";
 	compatible = "qcom,kona-pstar", "qcom,kona-moto", "qcom,kona";
 	qcom,msm-id = <356 0x20001>;
-	qcom,board-id = <0 0xA000>;
-};
-/* EVT1 Goodix3626z9&FPC1542 AVDD L13A 3p3v */
-&L13A {
-	regulator-min-microvolt = <3304000>;
-	regulator-max-microvolt = <3304000>;
-	qcom,init-voltage = <3304000>;
-	qcom,init-mode = <RPMH_REGULATOR_MODE_HPM>;
-	regulator-always-on;
+	qcom,board-id = <0 0xB100>;
 };
 
-&qupv3_se13_i2c {
-	st_fts@49 {
-		st,regulator_avdd = "pm8150a_l11";
-		st,regulator_dvdd = "pm8150_l14";
-	};
-};
