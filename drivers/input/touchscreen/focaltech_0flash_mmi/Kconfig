@@ -57,3 +57,11 @@ config INPUT_FOCALTECH_PANEL_NOTIFICATIONS
 	help
 	  Say Y here to enable panel notification support for Focaltech touch panels.
 	  If unsure, say N.
+
+config INPUT_FOCALTECH_0FLASH_MMI_ENABLE_ESD
+	bool "Moto Focaltech Enable ESD"
+	depends on TOUCHSCREEN_FTS_0FLASH_MMI
+	default n
+	help
+	  Say Y here if you want to have ESD Detection support on Moto Focaltech touch panel.
+	  If unsure, say N.

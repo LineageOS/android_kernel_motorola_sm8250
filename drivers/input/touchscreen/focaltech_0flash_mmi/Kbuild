@@ -50,3 +50,6 @@ endif
 ifneq ($(filter m y,$(CONFIG_INPUT_FOCALTECH_PANEL_NOTIFICATIONS)),)
 	ccflags-y += -DFOCALTECH_CONFIG_PANEL_NOTIFICATIONS
 endif
+ifneq ($(filter m y,$(CONFIG_INPUT_FOCALTECH_0FLASH_MMI_ENABLE_ESD)),)
+	ccflags-y += -DFOCALTECH_ESD_EN
+endif
