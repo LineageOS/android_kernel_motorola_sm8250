@@ -227,6 +227,7 @@ KBUILD_EXTRA_SYMBOLS +=$(OUT)/obj/vendor/qcom/opensource/audio-kernel/soc/Module
 endif
 
 ifeq ($(KERNEL_BUILD), 1)
+	obj-y	+= aw882xx/
 	obj-y	+= wcd934x/
 	obj-y	+= wcd937x/
 	obj-y	+= wcd938x/
