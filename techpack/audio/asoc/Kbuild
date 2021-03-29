@@ -133,7 +133,7 @@ endif
 
 # for KONA sound card driver
 ifdef CONFIG_SND_SOC_KONA
-ifneq (,$(filter nio%, $(TARGET_PRODUCT)))
+ifeq ($(CONFIG_NIO_DTB), y)
         MACHINE_OBJS += kona-awinic.o
 else ifneq (,$(filter pstar%, $(TARGET_PRODUCT)))
         MACHINE_OBJS += kona-awinic.o
