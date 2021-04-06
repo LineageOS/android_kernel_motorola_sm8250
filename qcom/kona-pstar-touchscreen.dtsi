@@ -34,7 +34,20 @@
 			config {
 				pins = "gpio50";
 				drive-strength = <2>;
-				bias-pull-up;
+				bias-disable;
+			};
+		};
+
+		touch_reset_active_output_high: active_output_high {
+			mux {
+				pins = "gpio50";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio50";
+				drive-strength = <2>;
+				bias-disable;
+				output-high;
 			};
 		};
 
@@ -46,8 +59,8 @@
 			config {
 				pins = "gpio50";
 				drive-strength = <2>;
-				bias-disable;
-				//output-low;
+				bias-pull-down;
+				output-low;
 			};
 		};
 	};
@@ -81,11 +94,11 @@
 		compatible = "st,fts";
 		reg = <0x49>;
 		interrupt-parent = <&tlmm>;
-		interrupts = <24 0x2008>;/*
+		interrupts = <24 0x2008>;
 		pinctrl-names = "pmx_ts_active", "pmx_ts_suspend";
-		pinctrl-0 = <&touch_reset_active &touch_int_active>;
+		pinctrl-0 = <&touch_reset_active_output_high &touch_int_active>;
 		pinctrl-1 = <&touch_reset_suspend &touch_int_suspend>;
-		st,reset-gpio = <&tlmm 50 0>;*/
+		st,reset-gpio = <&tlmm 50 0>;
 		st,irq-gpio = <&tlmm 24 0x2008>;
 		st,regulator_avdd = "pm8150_l13";
 		st,regulator_dvdd = "pm8150a_l5";
@@ -94,5 +107,6 @@
 		panel = <&mot_csot_nt37701_667_1080x2400_dsc_cmd_v0
 			 &mot_csot_nt37701_667_1080x2400_dsc_cmd_v1
 			 &mot_visionox_nt37701_667_1080x2400_dsc_cmd_v0>;
+		mmi,power-off-suspend;
 	};
 };
