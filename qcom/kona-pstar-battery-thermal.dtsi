@@ -154,7 +154,6 @@
         qcom,suspend-input-on-debug-batt;
         qcom,usbpd-phandle = <&pm8150b_pdphy>;
         qcom,typec-legacy-rp-icl;
-        qcom,lpd-disable;
         qcom,disable-suspend-on-collapse;
 	qcom,dc-unsupported;
 	qcom,wireless-unsupported;
