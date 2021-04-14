@@ -186,8 +186,19 @@
 };
 
 &soc {
+	dummy_vreg: dummy_vreg {
+		compatible = "regulator-fixed";
+		status = "ok";
+		regulator-name = "dummy_vreg";
+		regulator-always-on;
+	};
+};
+
+&soc {
 	qcom,cnss-qca6390@b0000000 {
 		vdd-wlan-dig-supply = <&pm8150_s6>;
+		wlan-ant-switch-supply = <&dummy_vreg>;
+		qcom,wlan-ant-switch-config = <0 0 0 0 0>;
 	};
 };
 
