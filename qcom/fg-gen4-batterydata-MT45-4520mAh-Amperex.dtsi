@@ -1,0 +1,125 @@
+
+qcom,5172666_lenovo_mt45_4520ma_averaged_masterslave_apr11th2021 {
+	qcom,profile-revision = <24>;
+	serialnum = "SB18D11084";
+	/* #5172666_Lenovo_MT45_4520mA_averaged_MasterSlave_Apr11th2021*/
+	qcom,max-voltage-uv = <4480000>;
+	qcom,nom-batt-capacity-mah = <4500>;
+	qcom,batt-id-kohm = <10>;
+	qcom,battery-beta = <3800>;
+	qcom,therm-room-temp = <100000>;
+	qcom,battery-type = "lenovo_mt45_4520ma_amperex";
+	qcom,therm-coefficients = <0x2319 0xcb5 0xdb70 0xc48e 0x856b>;
+	qcom,therm-center-offset = <0x70>;
+	qcom,therm-pull-up = <100>;
+	qcom,rslow-normal-coeffs = <0xbd 0x15 0xc3 0x0a>;
+	qcom,rslow-low-coeffs = <0xd5 0x15 0x7f 0x0b>;
+	qcom,checksum = <0xB305>;
+	qcom,gui-version = "PM855GUI - 1.0.0.14";
+	qcom,fg-profile-data = [
+		 09 00 83 E3
+		 AB 07 86 F2
+		 2E ED 00 00
+		 A8 BD 98 8A
+		 FC 87 B8 8B
+		 B6 95 32 80
+		 13 00 BD 15
+		 C3 0A C0 04
+		 81 01 CE 07
+		 32 00 94 E3
+		 A7 E4 D4 E2
+		 65 0A 99 EA
+		 BA BA 44 23
+		 71 FB 09 DD
+		 60 00 3D 00
+		 43 00 39 00
+		 31 00 31 00
+		 39 00 3F 00
+		 3D 00 42 00
+		 41 00 60 00
+		 56 00 66 00
+		 8D 00 7A 00
+		 6D 00 CB 00
+		 92 64 76 00
+		 70 00 89 08
+		 60 00 E9 00
+		 FF 00 FF 10
+		 FF 10 FF 00
+		 FF 20 FF 40
+		 FF 50 FF 0F
+		 FF 00 D8 00
+		 8D 1F 3F 0D
+		 1F 03 8C 05
+		 51 1C DC 03
+		 0F 0D 7A 23
+		 41 19 B1 42
+		 58 5D BA 03
+		 5E 10 F0 1F
+		 05 05 30 0B
+		 8B FD E6 1C
+		 D8 F9 2B 04
+		 5F 02 E1 17
+		 C5 23 72 44
+		 4B 52 79 11
+		 6D 1F AC E5
+		 A6 DA 27 E4
+		 DA 1C 13 DB
+		 90 05 3B BB
+		 3B 18 44 8B
+		 19 85 89 A3
+		 80 A8 09 80
+		 99 FA 8F FD
+		 61 FA 0D FD
+		 00 F8 E9 ED
+		 57 EA F8 07
+		 95 F2 A8 D5
+		 78 10 1A 00
+		 FF E5 51 03
+		 C7 04 0B 02
+		 CE 07 32 00
+		 B7 02 7D 02
+		 43 03 B4 02
+		 D1 04 74 03
+		 AA 03 9C 02
+		 8A 05 51 00
+		 3A 00 48 00
+		 4B 64 4E 00
+		 52 00 4B 08
+		 50 00 50 00
+		 54 00 5A 08
+		 3E 10 40 00
+		 55 28 58 48
+		 63 60 6E 0A
+		 50 00 5B 00
+		 5A 08 62 00
+		 4F 00 47 00
+		 4D 08 63 10
+		 60 00 80 20
+		 8C 48 5C 58
+		 77 0E 98 00
+		 C2 F8 E7 08
+		 D8 F8 06 21
+		 1C 04 C0 0B
+		 FC 0C EA 1C
+		 00 23 0B 44
+		 1E 5A 75 18
+		 A4 02 1B 04
+		 F2 03 72 0F
+		 3F 0A 3C 20
+		 DA 04 4E 03
+		 6A 05 D7 1C
+		 DB 02 39 04
+		 24 02 8E 18
+		 DB 03 E3 05
+		 35 03 6C 00
+		 0C 1F 6B 04
+		 4A 02 D3 04
+		 CF 1C 67 02
+		 0E 05 90 03
+		 A3 18 62 03
+		 A5 04 4D 02
+		 66 00 D2 00
+		 C0 00 FA 00
+		 04 12 00 00
+	];
+};
