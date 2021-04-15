@@ -56,7 +56,7 @@
         mot_batterydata: qcom,battery-data {
                 qcom,batt-id-range-pct = <15>;
                 df-serialnum = "SB18D11084";
-		#include "fg-gen4-batterydata-MT45-5000mAh-Amperex.dtsi"
+		#include "fg-gen4-batterydata-MT45-4520mAh-Amperex.dtsi"
         };
 };
 
