@@ -290,6 +290,19 @@
 			output-high;
 		};
 	};
+
+	redriver_disable: redriver_disable {
+		mux {
+			pins = "gpio12";
+				function = "gpio";
+			};
+
+		config {
+			pins = "gpio12";
+			drive-strength = <2>;
+			output-low;
+		};
+	};
 };
 &qupv3_se15_i2c {
 	status = "okay";
@@ -397,6 +410,21 @@
 				0x1 0x3 0x3 0x1
 				/* Parameters for DP */
 				0x3 0x3 0x3 0x3>;
+	};
+
+	redriver_diodes: redriver_diodes@52 {
+		compatible = "diodes,pi2dpx1217";
+		reg = <0x52>;
+		extcon = <&pm8150b_pdphy>;
+		pinctrl-names = "enable_gpio", "disable_gpio";
+		pinctrl-0 = <&redriver_enable>;
+		pinctrl-1 = <&redriver_disable>;
+		/* Parameters for channel rx2,tx2,tx1,rx1 */
+		eq-fg = /bits/ 8 <
+				/* Parameters for USB */
+				0x48 0x48 0x48 0x48
+				/* Parameters for DP */
+				0x48 0x48 0x48 0x48>;
 	};
 };
 
