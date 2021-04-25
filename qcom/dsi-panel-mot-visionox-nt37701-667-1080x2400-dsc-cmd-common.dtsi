@@ -73,9 +73,9 @@ qcom,mdss-dsi-panel-hbm-is-51cmd;
 
 qcom,mdss-dsi-display-timings {
 	timing@0{
-		/* 48 FPS */
+		/* 60 FPS */
 		qcom,mdss-dsi-cmd-mode;
-		qcom,mdss-dsi-panel-framerate = <48>;
+		qcom,mdss-dsi-panel-framerate = <60>;
 		qcom,mdss-dsi-panel-width = <1080>;
 		qcom,mdss-dsi-panel-height = <2400>;
 		qcom,mdss-dsi-h-front-porch = <36>;
@@ -91,18 +91,14 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsi-v-top-border = <0>;
 		qcom,mdss-dsi-v-bottom-border = <0>;
 		qcom,mdss-dsi-panel-jitter = <0x20 0xa>;
-		qcom,mdss-dsi-panel-clockrate = <450000000>;
+		qcom,mdss-dsi-panel-clockrate = <515000000>;
 		qcom,mdss-dsi-timing-switch-command = [
-			15 01 00 00 00 00 02 2F 07
+			15 01 00 00 00 00 02 2F 01
 		];
 		qcom,mdss-dsi-on-command = [
 			39 01 00 00 00 00 06 F0 55 AA 52 08 00
 			15 01 00 00 00 00 02 6F 06
-			39 01 00 00 00 00 04 B5 4E 16 50
-			15 01 00 00 00 00 02 6F 0D
-			15 01 00 00 00 00 02 B5 50
-			15 01 00 00 00 00 02 6F 10
-			39 01 00 00 00 00 06 B5 16 16 16 16 16
+			39 01 00 00 00 00 10 B5 4B 1B 00 00 00 44 2D 00 00 00 1B 1B 1B 1B 1B
 			39 01 00 00 00 00 05 FF AA 55 A5 80
 			15 01 00 00 00 00 02 6F 61
 			15 01 00 00 00 00 02 F3 80
@@ -110,7 +106,7 @@ qcom,mdss-dsi-display-timings {
 			15 01 00 00 00 00 02 90 01
 			39 01 00 00 00 00 13 91 AB 28 00 0C C2 00 03 1C 01 7E 00 0F 08 BB 04 3D 10 F0
 			15 01 00 00 00 00 02 2C 00
-			15 01 00 00 00 00 02 2F 07
+			15 01 00 00 00 00 02 2F 01
 			39 01 00 00 00 00 03 51 00 00
 			15 01 00 00 00 00 02 53 20
 			15 01 00 00 00 00 02 35 00
@@ -137,9 +133,9 @@ qcom,mdss-dsi-display-timings {
 	};
 
 	timing@1{
-		/* 60 FPS */
+		/* 90 FPS */
 		qcom,mdss-dsi-cmd-mode;
-		qcom,mdss-dsi-panel-framerate = <60>;
+		qcom,mdss-dsi-panel-framerate = <90>;
 		qcom,mdss-dsi-panel-width = <1080>;
 		qcom,mdss-dsi-panel-height = <2400>;
 		qcom,mdss-dsi-h-front-porch = <36>;
@@ -155,18 +151,14 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsi-v-top-border = <0>;
 		qcom,mdss-dsi-v-bottom-border = <0>;
 		qcom,mdss-dsi-panel-jitter = <0x20 0xa>;
-		qcom,mdss-dsi-panel-clockrate = <515000000>;
+		qcom,mdss-dsi-panel-clockrate = <750000000>;
 		qcom,mdss-dsi-timing-switch-command = [
-			15 01 00 00 00 00 02 2F 01
+			15 01 00 00 00 00 02 2F 02
 		];
 		qcom,mdss-dsi-on-command = [
 			39 01 00 00 00 00 06 F0 55 AA 52 08 00
 			15 01 00 00 00 00 02 6F 06
-			39 01 00 00 00 00 04 B5 4E 16 50
-			15 01 00 00 00 00 02 6F 0D
-			15 01 00 00 00 00 02 B5 50
-			15 01 00 00 00 00 02 6F 10
-			39 01 00 00 00 00 06 B5 16 16 16 16 16
+			39 01 00 00 00 00 10 B5 4B 1B 00 00 00 44 2D 00 00 00 1B 1B 1B 1B 1B
 			39 01 00 00 00 00 05 FF AA 55 A5 80
 			15 01 00 00 00 00 02 6F 61
 			15 01 00 00 00 00 02 F3 80
@@ -174,7 +166,7 @@ qcom,mdss-dsi-display-timings {
 			15 01 00 00 00 00 02 90 01
 			39 01 00 00 00 00 13 91 AB 28 00 0C C2 00 03 1C 01 7E 00 0F 08 BB 04 3D 10 F0
 			15 01 00 00 00 00 02 2C 00
-			15 01 00 00 00 00 02 2F 01
+			15 01 00 00 00 00 02 2F 02
 			39 01 00 00 00 00 03 51 00 00
 			15 01 00 00 00 00 02 53 20
 			15 01 00 00 00 00 02 35 00
@@ -201,9 +193,9 @@ qcom,mdss-dsi-display-timings {
 	};
 
 	timing@2{
-		/* 90 FPS */
+		/* 120 FPS */
 		qcom,mdss-dsi-cmd-mode;
-		qcom,mdss-dsi-panel-framerate = <90>;
+		qcom,mdss-dsi-panel-framerate = <120>;
 		qcom,mdss-dsi-panel-width = <1080>;
 		qcom,mdss-dsi-panel-height = <2400>;
 		qcom,mdss-dsi-h-front-porch = <36>;
@@ -219,18 +211,14 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsi-v-top-border = <0>;
 		qcom,mdss-dsi-v-bottom-border = <0>;
 		qcom,mdss-dsi-panel-jitter = <0x20 0xa>;
-		qcom,mdss-dsi-panel-clockrate = <750000000>;
+		qcom,mdss-dsi-panel-clockrate = <950000000>;
 		qcom,mdss-dsi-timing-switch-command = [
-			15 01 00 00 00 00 02 2F 02
+			15 01 00 00 00 00 02 2F 03
 		];
 		qcom,mdss-dsi-on-command = [
 			39 01 00 00 00 00 06 F0 55 AA 52 08 00
 			15 01 00 00 00 00 02 6F 06
-			39 01 00 00 00 00 04 B5 4E 16 50
-			15 01 00 00 00 00 02 6F 0D
-			15 01 00 00 00 00 02 B5 50
-			15 01 00 00 00 00 02 6F 10
-			39 01 00 00 00 00 06 B5 16 16 16 16 16
+			39 01 00 00 00 00 10 B5 4B 1B 00 00 00 44 2D 00 00 00 1B 1B 1B 1B 1B
 			39 01 00 00 00 00 05 FF AA 55 A5 80
 			15 01 00 00 00 00 02 6F 61
 			15 01 00 00 00 00 02 F3 80
@@ -238,7 +226,7 @@ qcom,mdss-dsi-display-timings {
 			15 01 00 00 00 00 02 90 01
 			39 01 00 00 00 00 13 91 AB 28 00 0C C2 00 03 1C 01 7E 00 0F 08 BB 04 3D 10 F0
 			15 01 00 00 00 00 02 2C 00
-			15 01 00 00 00 00 02 2F 02
+			15 01 00 00 00 00 02 2F 03
 			39 01 00 00 00 00 03 51 00 00
 			15 01 00 00 00 00 02 53 20
 			15 01 00 00 00 00 02 35 00
@@ -265,9 +253,9 @@ qcom,mdss-dsi-display-timings {
 	};
 
 	timing@3{
-		/* 120 FPS */
+		/* 144 FPS */
 		qcom,mdss-dsi-cmd-mode;
-		qcom,mdss-dsi-panel-framerate = <120>;
+		qcom,mdss-dsi-panel-framerate = <144>;
 		qcom,mdss-dsi-panel-width = <1080>;
 		qcom,mdss-dsi-panel-height = <2400>;
 		qcom,mdss-dsi-h-front-porch = <36>;
@@ -283,18 +271,14 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsi-v-top-border = <0>;
 		qcom,mdss-dsi-v-bottom-border = <0>;
 		qcom,mdss-dsi-panel-jitter = <0x20 0xa>;
-		qcom,mdss-dsi-panel-clockrate = <950000000>;
+		qcom,mdss-dsi-panel-clockrate = <1030000000>;
 		qcom,mdss-dsi-timing-switch-command = [
-			15 01 00 00 00 00 02 2F 03
+			15 01 00 00 00 00 02 2F 04
 		];
 		qcom,mdss-dsi-on-command = [
 			39 01 00 00 00 00 06 F0 55 AA 52 08 00
 			15 01 00 00 00 00 02 6F 06
-			39 01 00 00 00 00 04 B5 4E 16 50
-			15 01 00 00 00 00 02 6F 0D
-			15 01 00 00 00 00 02 B5 50
-			15 01 00 00 00 00 02 6F 10
-			39 01 00 00 00 00 06 B5 16 16 16 16 16
+			39 01 00 00 00 00 10 B5 4B 1B 00 00 00 44 2D 00 00 00 1B 1B 1B 1B 1B
 			39 01 00 00 00 00 05 FF AA 55 A5 80
 			15 01 00 00 00 00 02 6F 61
 			15 01 00 00 00 00 02 F3 80
@@ -302,7 +286,7 @@ qcom,mdss-dsi-display-timings {
 			15 01 00 00 00 00 02 90 01
 			39 01 00 00 00 00 13 91 AB 28 00 0C C2 00 03 1C 01 7E 00 0F 08 BB 04 3D 10 F0
 			15 01 00 00 00 00 02 2C 00
-			15 01 00 00 00 00 02 2F 03
+			15 01 00 00 00 00 02 2F 04
 			39 01 00 00 00 00 03 51 00 00
 			15 01 00 00 00 00 02 53 20
 			15 01 00 00 00 00 02 35 00
@@ -329,9 +313,9 @@ qcom,mdss-dsi-display-timings {
 	};
 
 	timing@4{
-		/* 144 FPS */
+		/* 48 FPS */
 		qcom,mdss-dsi-cmd-mode;
-		qcom,mdss-dsi-panel-framerate = <144>;
+		qcom,mdss-dsi-panel-framerate = <48>;
 		qcom,mdss-dsi-panel-width = <1080>;
 		qcom,mdss-dsi-panel-height = <2400>;
 		qcom,mdss-dsi-h-front-porch = <36>;
@@ -347,18 +331,14 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsi-v-top-border = <0>;
 		qcom,mdss-dsi-v-bottom-border = <0>;
 		qcom,mdss-dsi-panel-jitter = <0x20 0xa>;
-		qcom,mdss-dsi-panel-clockrate = <1030000000>;
+		qcom,mdss-dsi-panel-clockrate = <450000000>;
 		qcom,mdss-dsi-timing-switch-command = [
-			15 01 00 00 00 00 02 2F 04
+			15 01 00 00 00 00 02 2F 07
 		];
 		qcom,mdss-dsi-on-command = [
 			39 01 00 00 00 00 06 F0 55 AA 52 08 00
 			15 01 00 00 00 00 02 6F 06
-			39 01 00 00 00 00 04 B5 4E 16 50
-			15 01 00 00 00 00 02 6F 0D
-			15 01 00 00 00 00 02 B5 50
-			15 01 00 00 00 00 02 6F 10
-			39 01 00 00 00 00 06 B5 16 16 16 16 16
+			39 01 00 00 00 00 10 B5 4B 1B 00 00 00 44 2D 00 00 00 1B 1B 1B 1B 1B
 			39 01 00 00 00 00 05 FF AA 55 A5 80
 			15 01 00 00 00 00 02 6F 61
 			15 01 00 00 00 00 02 F3 80
@@ -366,7 +346,7 @@ qcom,mdss-dsi-display-timings {
 			15 01 00 00 00 00 02 90 01
 			39 01 00 00 00 00 13 91 AB 28 00 0C C2 00 03 1C 01 7E 00 0F 08 BB 04 3D 10 F0
 			15 01 00 00 00 00 02 2C 00
-			15 01 00 00 00 00 02 2F 04
+			15 01 00 00 00 00 02 2F 07
 			39 01 00 00 00 00 03 51 00 00
 			15 01 00 00 00 00 02 53 20
 			15 01 00 00 00 00 02 35 00
