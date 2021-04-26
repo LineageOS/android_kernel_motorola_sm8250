@@ -186,6 +186,11 @@
 	qcom,platform-te-gpio = <&tlmm 66 0>;
 	qcom,platform-reset-gpio = <&tlmm 75 0>;
 
+	qcom,mdss-dsi-bl-min-level = <9>;
+	qcom,mdss-dsi-bl-max-level = <2047>;
+	qcom,mdss-dsi-bl-default-level = <1024>;
+	qcom,mdss-brightness-max-level = <2047>;
+
 	qcom,mdss-dsi-panel-hdr-enabled;
 	qcom,mdss-dsi-panel-hdr-color-primaries = <14500 15500 32000
 	        17000 15500 30000 8000 3000>;
@@ -203,6 +208,11 @@
 &mot_csot_nt37701_667_1080x2400_dsc_cmd_v1 {
 	qcom,platform-te-gpio = <&tlmm 66 0>;
 	qcom,platform-reset-gpio = <&tlmm 75 0>;
+
+	qcom,mdss-dsi-bl-min-level = <9>;
+	qcom,mdss-dsi-bl-max-level = <2047>;
+	qcom,mdss-dsi-bl-default-level = <1024>;
+	qcom,mdss-brightness-max-level = <2047>;
 
 	qcom,mdss-dsi-panel-hdr-enabled;
 	qcom,mdss-dsi-panel-hdr-color-primaries = <14500 15500 32000
@@ -546,6 +556,11 @@
 &mot_visionox_nt37701_667_1080x2400_dsc_cmd_v0 {
 	qcom,platform-te-gpio = <&tlmm 66 0>;
 	qcom,platform-reset-gpio = <&tlmm 75 0>;
+
+	qcom,mdss-dsi-bl-min-level = <1>;
+	qcom,mdss-dsi-bl-max-level = <2047>;
+	qcom,mdss-dsi-bl-default-level = <1024>;
+	qcom,mdss-brightness-max-level = <2047>;
 
 	qcom,mdss-dsi-panel-hdr-enabled;
 	qcom,mdss-dsi-panel-hdr-color-primaries = <14500 15500 32000
