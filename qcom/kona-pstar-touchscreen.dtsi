@@ -104,9 +104,12 @@
 		st,regulator_dvdd = "pm8150a_l5";
 		st,x-max = <1080>;
 		st,y-max = <2400>;
+		/* support report rate switching */
+		st,report_rate_cmd = /bits/ 8 <0xC0 0x05 0x00 0x00 0x32 0x00 0x04 0x05 0x01 0x05>;
 		panel = <&mot_csot_nt37701_667_1080x2400_dsc_cmd_v0
 			 &mot_csot_nt37701_667_1080x2400_dsc_cmd_v1
 			 &mot_visionox_nt37701_667_1080x2400_dsc_cmd_v0>;
 		mmi,power-off-suspend;
+		mmi,usb-charger-detection;
 	};
 };
