@@ -65,6 +65,7 @@
 		Semtech,ref-phases-b = <6>;
 		Semtech,ref-phases-c = <0xff>;
 		Semtech,button-flag = <0x1f>;
+                reinit-on-i2c-failure;
 		Semtech,reg-num = <75>;
 		Semtech,reg-init = <
 			0x8024  0x7F00 		/*PHEN, Disable all Phases*/
