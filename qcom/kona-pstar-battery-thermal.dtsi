@@ -353,7 +353,7 @@
 };
 
 &thermal_zones {
-	usb-therm-usr {
+	conn_therm {
                 polling-delay-passive = <0>;
                 polling-delay = <0>;
                 thermal-governor = "user_space";
