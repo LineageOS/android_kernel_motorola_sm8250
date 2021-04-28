@@ -242,7 +242,7 @@
 			qcom,mdss-dsi-panel-jitter = <0x20 0xa>;
 			//qcom,mdss-dsi-panel-clockrate = <398680000>;
 			qcom,mdss-dsi-timing-switch-command = [
-				15 01 00 00 00 00 02 2F 01
+				15 01 00 00 10 00 02 2F 01
 			];
 			qcom,mdss-dsi-on-command = [
 				39 01 00 00 00 00 06 F0 55 AA 52 08 01
@@ -311,7 +311,7 @@
 			qcom,mdss-dsi-panel-jitter = <0x20 0xa>;
 			//qcom,mdss-dsi-panel-clockrate = <598020000>;
 			qcom,mdss-dsi-timing-switch-command = [
-				15 01 00 00 00 00 02 2F 03
+				15 01 00 00 0B 00 02 2F 03
 			];
 			qcom,mdss-dsi-on-command = [
 				39 01 00 00 00 00 06 F0 55 AA 52 08 01
@@ -380,7 +380,7 @@
 			qcom,mdss-dsi-panel-jitter = <0x20 0xa>;
 			//qcom,mdss-dsi-panel-clockrate = <797360000>;
 			qcom,mdss-dsi-timing-switch-command = [
-				15 01 00 00 00 00 02 2F 02
+				15 01 00 00 08 00 02 2F 02
 			];
 			qcom,mdss-dsi-on-command = [
 				39 01 00 00 00 00 06 F0 55 AA 52 08 01
@@ -448,7 +448,7 @@
 			qcom,mdss-dsi-panel-jitter = <0x20 0xa>;
 			//qcom,mdss-dsi-panel-clockrate = <956830000>;
 			qcom,mdss-dsi-timing-switch-command = [
-				15 01 00 00 00 00 02 2F 04
+				15 01 00 00 06 00 02 2F 04
 			];
 			qcom,mdss-dsi-on-command = [
 				39 01 00 00 00 00 06 F0 55 AA 52 08 01
@@ -517,7 +517,7 @@
 			qcom,mdss-dsi-panel-jitter = <0x20 0xa>;
 			//qcom,mdss-dsi-panel-clockrate = <318940000>;
 			qcom,mdss-dsi-timing-switch-command = [
-				15 01 00 00 00 00 02 2F 08
+				15 01 00 00 14 00 02 2F 08
 			];
 			qcom,mdss-dsi-on-command = [
 				39 01 00 00 00 00 06 F0 55 AA 52 08 01
