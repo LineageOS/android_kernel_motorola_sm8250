@@ -419,6 +419,7 @@
 		pinctrl-names = "enable_gpio", "disable_gpio";
 		pinctrl-0 = <&redriver_enable>;
 		pinctrl-1 = <&redriver_disable>;
+		init-none;
 		/* Parameters for channel rx2,tx2,tx1,rx1 */
 		eq-fg = /bits/ 8 <
 				/* Parameters for USB */
