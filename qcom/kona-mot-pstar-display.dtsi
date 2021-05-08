@@ -247,6 +247,7 @@
 			qcom,mdss-dsi-panel-clockrate = <458250000>;
 			qcom,mdss-dsi-timing-switch-command = [
 				15 01 00 00 10 00 02 2F 01
+				15 01 00 00 00 00 02 8B 00
 			];
 			qcom,mdss-dsi-on-command = [
 				39 01 00 00 00 00 06 F0 55 AA 52 08 00
@@ -274,6 +275,7 @@
 				39 01 00 00 00 00 05 2A 00 00 04 37
 				39 01 00 00 00 00 05 2B 00 00 09 5F
 				15 01 00 00 00 00 02 2F 01
+				15 01 00 00 00 00 02 8B 00
 				05 01 00 00 78 00 01 11
 				05 01 00 00 00 00 01 29];	/* display on */
 			qcom,mdss-dsi-off-command = [
@@ -321,6 +323,7 @@
 			qcom,mdss-dsi-panel-clockrate = <687380000>;
 			qcom,mdss-dsi-timing-switch-command = [
 				15 01 00 00 0B 00 02 2F 03
+				15 01 00 00 00 00 02 8B 00
 			];
 			qcom,mdss-dsi-on-command = [
 				39 01 00 00 00 00 06 F0 55 AA 52 08 00
@@ -348,6 +351,7 @@
 				39 01 00 00 00 00 05 2A 00 00 04 37
 				39 01 00 00 00 00 05 2B 00 00 09 5F
 				15 01 00 00 00 00 02 2F 03
+				15 01 00 00 00 00 02 8B 00
 				05 01 00 00 78 00 01 11
 				05 01 00 00 00 00 01 29];	/* display on */
 			qcom,mdss-dsi-off-command = [
@@ -395,6 +399,7 @@
 			qcom,mdss-dsi-panel-clockrate = <1099800000>;
 			qcom,mdss-dsi-timing-switch-command = [
 				15 01 00 00 08 00 02 2F 02
+				15 01 00 00 00 00 02 8B 00
 			];
 			qcom,mdss-dsi-on-command = [
 				39 01 00 00 00 00 06 F0 55 AA 52 08 00
@@ -422,6 +427,7 @@
 				39 01 00 00 00 00 05 2A 00 00 04 37
 				39 01 00 00 00 00 05 2B 00 00 09 5F
 				15 01 00 00 00 00 02 2F 02
+				15 01 00 00 00 00 02 8B 00
 				05 01 00 00 78 00 01 11
 				05 01 00 00 00 00 01 29];	/* display on */
 			qcom,mdss-dsi-off-command = [
@@ -468,6 +474,7 @@
 			qcom,mdss-dsi-panel-clockrate = <1099800000>;
 			qcom,mdss-dsi-timing-switch-command = [
 				15 01 00 00 06 00 02 2F 04
+				15 01 00 00 00 00 02 8B 10
 			];
 			qcom,mdss-dsi-on-command = [
 				39 01 00 00 00 00 06 F0 55 AA 52 08 00
@@ -495,6 +502,7 @@
 				39 01 00 00 00 00 05 2A 00 00 04 37
 				39 01 00 00 00 00 05 2B 00 00 09 5F
 				15 01 00 00 00 00 02 2F 04
+				15 01 00 00 00 00 02 8B 10
 				05 01 00 00 78 00 01 11
 				05 01 00 00 00 00 01 29];	/* display on */
 			qcom,mdss-dsi-off-command = [
@@ -542,6 +550,7 @@
 			qcom,mdss-dsi-panel-clockrate = <366600000>;
 			qcom,mdss-dsi-timing-switch-command = [
 				15 01 00 00 14 00 02 2F 08
+				15 01 00 00 00 00 02 8B 00
 			];
 			qcom,mdss-dsi-on-command = [
 				39 01 00 00 00 00 06 F0 55 AA 52 08 00
@@ -569,6 +578,7 @@
 				39 01 00 00 00 00 05 2A 00 00 04 37
 				39 01 00 00 00 00 05 2B 00 00 09 5F
 				15 01 00 00 00 00 02 2F 08
+				15 01 00 00 00 00 02 8B 00
 				05 01 00 00 78 00 01 11
 				05 01 00 00 00 00 01 29];	/* display on */
 			qcom,mdss-dsi-off-command = [
