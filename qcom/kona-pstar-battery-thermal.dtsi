@@ -102,6 +102,47 @@
 	};
 };
 
+&soc {
+        mmi_chrg_manager_qc3p {
+                compatible = "mmi,chrg-manager_qc3p";
+                qcom,usbpd-phandle = <&pm8150b_pdphy>;
+                mmi,pps-volt-steps = <20000>;
+                mmi,pps-curr-steps = <100000>;
+                mmi,pd-volt-max = <10000000>;
+                mmi,pd-curr-max = <3000000>;
+                mmi,batt-curr-boost = <300000>;
+                mmi,batt-ovp-lmt = <4580000>;
+                mmi,pl-chrg-vbatt-min = <3600000>;
+                mmi,typec-middle-current = <1500000>;
+                mmi,step-first-current-comp = <0>;
+                mmi,dont-rerun-aicl;
+		mmi,hvdcp-power-max = <20000>;
+                mmi,chrg-temp-zones-num = <5>;
+                mmi,mmi-chrg-temp-zones =
+                                        <0  4200 873  0 0 0 0>,
+                                        <10 4250 2180 4480 873 0 0>,
+                                        <15 4480 2180 0 0 0 0>,
+                                        <45 4250 6000 4350 5200 4480 4000>,
+                                        <60 4200 2180 0 0 0 0>;
+                mmi,thermal-mitigation =
+                                        <6000000>,
+                                        <5000000>,
+                                        <4000000>,
+                                        <3000000>,
+                                        <2000000>;
+                charger_device_0 {
+                        chrg-name = "pmic-sw";
+                        psy-name = "battery";
+                        charging-curr-limited = <500000>;
+                };
+                charger_device_1 {
+                        chrg-name = "cp-master";
+                        psy-name = "bq25960-standalone";
+                        charging-curr-min = <2000000>;
+                };
+        };
+};
+
 &tlmm{
         bq25960_int_default: bq25960_int_default {
                 mux {
