@@ -15,13 +15,16 @@
 
 #include "kona-pstar-common-overlay.dtsi"
 
+#define PSTAR_RADIO_PRC 2
+
 / {
 	model = "pstar";
 	compatible = "qcom,kona-pstar", "qcom,kona-moto", "qcom,kona";
 	qcom,msm-id = <356 0x20001>;
-	qcom,board-id = <0 0xB2B0>;
+	qcom,board-id = <(PSTAR_RADIO_PRC << 8 | 0) 0xB2B0>;
 };
 
 &ufsphy_mem {
-	vdda-phy-always-on;
+    vdda-phy-always-on;
 };
+
