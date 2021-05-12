@@ -2268,11 +2268,23 @@ qcom,panel-supply-entries {
 
 	qcom,panel-supply-entry@1 {
 		reg = <1>;
+		qcom,supply-name = "dvdd";
+		qcom,supply-min-voltage = <1800000>;
+		qcom,supply-max-voltage = <1800000>;
+		qcom,supply-enable-load = <100000>;
+		qcom,supply-disable-load = <0>;
+		qcom,supply-post-on-sleep = <2>;
+		qcom,supply-post-off-sleep = <2>;
+	};
+
+	qcom,panel-supply-entry@2 {
+		reg = <2>;
 		qcom,supply-name = "vci";
 		qcom,supply-min-voltage = <3000000>;
 		qcom,supply-max-voltage = <3000000>;
 		qcom,supply-enable-load = <857000>;
 		qcom,supply-disable-load = <0>;
 		qcom,supply-post-on-sleep = <0>;
+		qcom,supply-post-off-sleep = <2>;
 	};
 };
