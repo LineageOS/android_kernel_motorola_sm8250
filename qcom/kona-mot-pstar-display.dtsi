@@ -2,7 +2,7 @@
 #include "dsi-panel-mot-dummy-qhd-video.dtsi"
 
 &tlmm {
-	disp_vci_en_default: disp_vci_en_default {
+	disp_dvdd_en_default: disp_dvdd_en_default {
 		mux {
 			pins = "gpio68";
 			function = "gpio";
@@ -26,16 +26,16 @@
 		};
 	};
 
-	disp_vci: disp_vci {
+	disp_dvdd: disp_dvdd {
 		compatible = "regulator-fixed";
-		regulator-name = "disp_vci";
-		vin-supply = <&pm8150a_l11>;
+		regulator-name = "disp_dvdd";
+		vin-supply = <&pm8150_s4>;
 		gpio = <&tlmm 68 0>;
 		startup-delay-us = <300>;
 		enable-active-high;
 		regulator-boot-on;
 		pinctrl-names = "default";
-		pinctrl-0 = <&disp_vci_en_default>;
+		pinctrl-0 = <&disp_dvdd_en_default>;
 	};
 
 	sde_dsi: qcom,dsi-display-primary {
@@ -74,7 +74,8 @@
 		qcom,panel-te-source = <0>;
 
 		vddio-supply = <&pm8150_l14>;
-		vci-supply = <&disp_vci>;
+		vci-supply = <&pm8150a_l11>;
+		dvdd-supply = <&disp_dvdd>;
 		qcom,dsi-default-panel = <&mot_csot_nt37701_667_1080x2400_dsc_cmd_v0>;
 
 		qcom,mdp = <&mdss_mdp>;
