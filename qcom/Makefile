@@ -46,7 +46,9 @@ dtbo-$(CONFIG_PSTAR_DTB) += \
 		kona-pstar-prc-dvt2-overlay.dtbo \
 		kona-pstar-row-dvt2-overlay.dtbo \
 		kona-pstar-prc-dvt2b-overlay.dtbo \
-		kona-pstar-row-dvt2b-overlay.dtbo
+		kona-pstar-row-dvt2b-overlay.dtbo \
+		kona-pstar-prc-pvt-overlay.dtbo \
+		kona-pstar-row-pvt-overlay.dtbo
 
 kona-pstar-evt1-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
 kona-pstar-dvt1-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
@@ -54,6 +56,8 @@ kona-pstar-prc-dvt2-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
 kona-pstar-row-dvt2-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
 kona-pstar-prc-dvt2b-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
 kona-pstar-row-dvt2b-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
+kona-pstar-prc-pvt-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
+kona-pstar-row-pvt-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
 
 dtbo-$(CONFIG_SMITH_DTB) += \
 		lito-smith-evt1-overlay.dtbo \
