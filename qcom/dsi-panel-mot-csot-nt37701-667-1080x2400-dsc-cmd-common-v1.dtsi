@@ -143,6 +143,7 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsc-slice-per-pkt = <1>;
 		qcom,mdss-dsc-bit-per-component = <10>;
 		qcom,mdss-dsc-bit-per-pixel = <10>;
+		qcom,mdss-dsc-block-prediction-enable;
 	};
 
 	timing@1 {
