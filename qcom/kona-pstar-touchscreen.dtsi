@@ -111,5 +111,6 @@
 			 &mot_visionox_nt37701_667_1080x2400_dsc_cmd_v0>;
 		mmi,power-off-suspend;
 		mmi,usb-charger-detection;
+		mmi,enable-gestures;
 	};
 };
