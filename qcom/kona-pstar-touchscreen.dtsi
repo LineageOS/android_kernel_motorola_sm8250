@@ -104,13 +104,19 @@
 		st,regulator_dvdd = "pm8150a_l5";
 		st,x-max = <1080>;
 		st,y-max = <2400>;
+		/* support report rate interpolation */
+		st,interpolation_cmd = /bits/ 8 <0xC0 0x05 0x00 0x00 0x32 0x00 0x04 0x05 0x01 0x05>;
 		/* support report rate switching */
-		st,report_rate_cmd = /bits/ 8 <0xC0 0x05 0x00 0x00 0x32 0x00 0x04 0x05 0x01 0x05>;
+		st,report_rate_cmd = /bits/ 8 <0xC0 0x16 0x00>;
+		st,jitter_cmd = /bits/ 8 <0xC0 0x18 0x00 0x00 0x00 0x00 0x00 0x00>;
+		st,linearity_cmd = /bits/ 8 <0xC0 0x19 0x00>;
+		st,first_filter_cmd = /bits/ 8 <0xC0 0x17 0x00 0x00>;
 		panel = <&mot_csot_nt37701_667_1080x2400_dsc_cmd_v0
 			 &mot_csot_nt37701_667_1080x2400_dsc_cmd_v1
 			 &mot_visionox_nt37701_667_1080x2400_dsc_cmd_v0>;
+		mmi,enable-gestures;
 		mmi,power-off-suspend;
 		mmi,usb-charger-detection;
-		mmi,enable-gestures;
+		mmi,refresh-rate-update;
 	};
 };
