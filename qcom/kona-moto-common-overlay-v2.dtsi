@@ -53,7 +53,7 @@
 
 	wdog_cpuctx_mem: wdog_cpuctx_region {
 		no-map;
-		reg = <0x0 0xaef9d800 0x0 (0x6400 * 8)>;
+		reg = <0x0 0xaef9b800 0x0 (0x6800 * 8)>;
 	};
 
 };
