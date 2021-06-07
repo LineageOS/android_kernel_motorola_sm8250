@@ -60,8 +60,23 @@ qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
 
 qcom,mdss-dsi-hbm-on-command = [
 		39 01 00 00 00 00 03 51 0F FF];
+qcom,mdss-dsi-hbm-on-command-state = "dsi_lp_mode";
 qcom,mdss-dsi-hbm-off-command = [
 		39 01 00 00 00 00 03 51 07 FF];
+qcom,mdss-dsi-hbm-off-command-state = "dsi_lp_mode";
+
+qcom,mdss-dsi-color-vbt-command = [
+                15 01 00 00 00 00 02 55 90];
+qcom,mdss-dsi-color-vbt-command-state = "dsi_lp_mode";
+qcom,mdss-dsi-color-std-command = [
+                15 01 00 00 00 00 02 55 90];
+qcom,mdss-dsi-color-std-command-state = "dsi_lp_mode";
+qcom,mdss-dsi-color-game-command = [
+		15 01 00 00 00 00 02 55 80];
+qcom,mdss-dsi-color-game-command-state = "dsi_lp_mode";
+qcom,mdss-dsi-color-none-command = [
+		15 01 00 00 00 00 02 55 90];
+qcom,mdss-dsi-color-none-command-state = "dsi_lp_mode";
 
 //qcom,mdss-dsi-acl-on-command = [
 //		39 01 00 00 00 00 06 F0 55 AA 52 08 00
