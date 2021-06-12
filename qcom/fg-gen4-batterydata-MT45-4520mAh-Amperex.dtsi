@@ -5,6 +5,7 @@ qcom,5172666_lenovo_mt45_4520ma_averaged_masterslave_apr11th2021 {
 	/* #5172666_Lenovo_MT45_4520mA_averaged_MasterSlave_Apr11th2021*/
 	qcom,max-voltage-uv = <4480000>;
 	qcom,nom-batt-capacity-mah = <4500>;
+	qcom,fg-cc-cv-threshold-mv = <4470>;
 	qcom,batt-id-kohm = <10>;
 	qcom,battery-beta = <3800>;
 	qcom,therm-room-temp = <100000>;
