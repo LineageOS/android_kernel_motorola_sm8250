@@ -21,7 +21,7 @@
 #include <linux/mfd/madera/core.h>
 #include <linux/mfd/madera/registers.h>
 
-#include <pinctrl-utils.h>
+#include "../pinctrl-utils.h"
 
 #include "pinctrl-madera.h"
 
