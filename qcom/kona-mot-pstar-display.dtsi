@@ -148,6 +148,12 @@
 	mot_visionox_nt37701_667_1080x2400_dsc_cmd_v0: qcom,mdss_dsi_mot_visionox_nt37701_667_1080x2400_dsc_cmd_v0 {
 		#include "dsi-panel-mot-visionox-nt37701-667-1080x2400-dsc-cmd-common.dtsi"
 	};
+	mot_visionox_nt37701_667_1080x2400_dsc_cmd_v2: qcom,mdss_dsi_mot_visionox_nt37701_667_1080x2400_dsc_cmd_v2 {
+		#include "dsi-panel-mot-visionox-nt37701-667-1080x2400-dsc-cmd-common-v2.dtsi"
+	};
+	mot_visionox_nt37701_667_1080x2400_dsc_cmd_v3: qcom,mdss_dsi_mot_visionox_nt37701_667_1080x2400_dsc_cmd_v3 {
+		#include "dsi-panel-mot-visionox-nt37701-667-1080x2400-dsc-cmd-common-v3.dtsi"
+	};
 	mot_csot_nt37701_667_1080x2400_cud_dsc_cmd: qcom,mdss_dsi_mot_csot_nt37701_667_1080x2400_cud_dsc_cmd {
 		#include "dsi-panel-mot-csot-nt37701-667-1080x2400-cud-dsc-cmd-common.dtsi"
 	};
@@ -320,7 +326,7 @@
 	qcom,platform-te-gpio = <&tlmm 66 0>;
 	qcom,platform-reset-gpio = <&tlmm 75 0>;
 
-	qcom,mdss-dsi-bl-min-level = <1>;
+	qcom,mdss-dsi-bl-min-level = <9>;
 	qcom,mdss-dsi-bl-max-level = <2047>;
 	qcom,mdss-dsi-bl-default-level = <1024>;
 	qcom,mdss-brightness-max-level = <2047>;
@@ -331,6 +337,106 @@
         qcom,mdss-dsi-panel-peak-brightness = <5000000>;
         qcom,mdss-dsi-panel-blackness-level = <100>;
 	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
+	qcom,mdss-dsi-display-timings {
+		timing@0 {
+			qcom,display-topology = <1 1 1>;
+			qcom,default-topology-index = <0>;
+			qcom,mdss-dsi-panel-phy-timings = [00 13 04 04 13 1F 04
+					05 04 02 04 00 10 09];
+		};
+		timing@1 {
+			qcom,display-topology = <1 1 1>;
+			qcom,default-topology-index = <0>;
+			qcom,mdss-dsi-panel-phy-timings = [00 1A 06 06 16 20 07
+					06 07 02 04 00 16 0B];
+		};
+		timing@2 {
+			qcom,display-topology = <1 1 1>;
+			qcom,default-topology-index = <0>;
+			qcom,mdss-dsi-panel-phy-timings = [00 21 08 08 19 16 09
+					08 09 02 04 00 1C 0D];
+		};
+		timing@3 {
+			qcom,display-topology = <1 1 1>;
+			qcom,default-topology-index = <0>;
+			qcom,mdss-dsi-panel-phy-timings = [00 26 0A 0A 1B 19 0A
+					0A 0A 02 04 00 20 0F];
+		};
+		timing@4 {
+			qcom,display-topology = <1 1 1>;
+			qcom,default-topology-index = <0>;
+			qcom,mdss-dsi-panel-phy-timings = [00 10 03 03 11 1E 04
+					04 03 02 04 00 0E 08];
+		};
+	};
+};
+
+&mot_visionox_nt37701_667_1080x2400_dsc_cmd_v2 {
+	qcom,platform-te-gpio = <&tlmm 66 0>;
+	qcom,platform-reset-gpio = <&tlmm 75 0>;
+
+	qcom,mdss-dsi-bl-min-level = <9>;
+	qcom,mdss-dsi-bl-max-level = <2047>;
+	qcom,mdss-dsi-bl-default-level = <1024>;
+	qcom,mdss-brightness-max-level = <2047>;
+
+	qcom,mdss-dsi-panel-hdr-enabled;
+        qcom,mdss-dsi-panel-hdr-color-primaries = <14950 15750 34000
+                16000 13000 35500 7000 2500>;
+        qcom,mdss-dsi-panel-peak-brightness = <5000000>;
+        qcom,mdss-dsi-panel-blackness-level = <100>;
+	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
+
+	qcom,mdss-dsi-display-timings {
+		timing@0 {
+			qcom,display-topology = <1 1 1>;
+			qcom,default-topology-index = <0>;
+			qcom,mdss-dsi-panel-phy-timings = [00 13 04 04 13 1F 04
+					05 04 02 04 00 10 09];
+		};
+		timing@1 {
+			qcom,display-topology = <1 1 1>;
+			qcom,default-topology-index = <0>;
+			qcom,mdss-dsi-panel-phy-timings = [00 1A 06 06 16 20 07
+					06 07 02 04 00 16 0B];
+		};
+		timing@2 {
+			qcom,display-topology = <1 1 1>;
+			qcom,default-topology-index = <0>;
+			qcom,mdss-dsi-panel-phy-timings = [00 21 08 08 19 16 09
+					08 09 02 04 00 1C 0D];
+		};
+		timing@3 {
+			qcom,display-topology = <1 1 1>;
+			qcom,default-topology-index = <0>;
+			qcom,mdss-dsi-panel-phy-timings = [00 26 0A 0A 1B 19 0A
+					0A 0A 02 04 00 20 0F];
+		};
+		timing@4 {
+			qcom,display-topology = <1 1 1>;
+			qcom,default-topology-index = <0>;
+			qcom,mdss-dsi-panel-phy-timings = [00 10 03 03 11 1E 04
+					04 03 02 04 00 0E 08];
+		};
+	};
+};
+
+&mot_visionox_nt37701_667_1080x2400_dsc_cmd_v3 {
+	qcom,platform-te-gpio = <&tlmm 66 0>;
+	qcom,platform-reset-gpio = <&tlmm 75 0>;
+
+	qcom,mdss-dsi-bl-min-level = <9>;
+	qcom,mdss-dsi-bl-max-level = <2047>;
+	qcom,mdss-dsi-bl-default-level = <1024>;
+	qcom,mdss-brightness-max-level = <2047>;
+
+	qcom,mdss-dsi-panel-hdr-enabled;
+        qcom,mdss-dsi-panel-hdr-color-primaries = <14950 15750 34000
+                16000 13000 35500 7000 2500>;
+        qcom,mdss-dsi-panel-peak-brightness = <5000000>;
+        qcom,mdss-dsi-panel-blackness-level = <100>;
+	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
+
 	qcom,mdss-dsi-display-timings {
 		timing@0 {
 			qcom,display-topology = <1 1 1>;
