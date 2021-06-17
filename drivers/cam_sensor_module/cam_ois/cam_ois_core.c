@@ -505,7 +505,7 @@ release_firmware:
 	return rc;
 }
 
-static int cam_ois_write(struct cam_ois_ctrl_t *o_ctrl)
+static int cam_ois_write_dw(struct cam_ois_ctrl_t *o_ctrl)
 {
 	struct cam_sensor_i2c_reg_setting  i2c_reg_setting = {NULL,1,CAMERA_SENSOR_I2C_TYPE_WORD,CAMERA_SENSOR_I2C_TYPE_WORD,0};
 	struct cam_sensor_i2c_reg_array i2c_write_settings = {0x70DA,0x0000,0,0};
@@ -518,17 +518,11 @@ static int cam_ois_write(struct cam_ois_ctrl_t *o_ctrl)
 
 	i2c_reg_setting.reg_setting = &(i2c_write_settings);
 
-	if(!(i2c_reg_setting.reg_setting)){
-		CAM_ERR(CAM_OIS,"Invalid Args");
-		return -EINVAL;
-	}
-
 	rc = camera_io_dev_write(&(o_ctrl->io_master_info),
 			&(i2c_reg_setting));
 	if (rc < 0) {
 		CAM_ERR(CAM_OIS,
 				"Failed in Applying i2c wrt settings");
-		return rc;
 	}
 	return rc;
 }
@@ -1103,6 +1097,7 @@ static int cam_ois_pkt_parse(struct cam_ois_ctrl_t *o_ctrl, void *arg)
 				if (rc < 0) {
 					CAM_ERR(CAM_OIS,
 						"Failed in Applying i2c wrt settings");
+					delete_request(&i2c_read_settings);
 					return rc;
 				}
 			} else if (i2c_list->op_code == CAM_SENSOR_I2C_READ_SEQ) {
@@ -1129,18 +1124,17 @@ static int cam_ois_pkt_parse(struct cam_ois_ctrl_t *o_ctrl, void *arg)
 						CAM_ERR(CAM_SENSOR,
 							"failed: seq read I2C settings: %d",
 							rc);
+						delete_request(&i2c_read_settings);
 						return rc;
 					}
-					if (!rc)
-					{
-						if (read_buff[1] == 0)
-						{
+					if (!rc){
+						if (read_buff[1] == 0){
 							CAM_ERR(CAM_OIS,"Header is zero, break the read");
 							rc = -EINVAL;
 							break;
 						} else if ((read_buff[1] != 0) && (packetCounter == 0)) {
 
-							timestamp     = o_ctrl->prevTimeStamp;		//Logic to fetch the timestamp value, allocate and memcpy it to a buffer
+							timestamp     = o_ctrl->prevTimeStamp;   //Logic to fetch the timestamp value, allocate and memcpy it to a buffer
 							get_monotonic_boottime64(&ts);
 							o_ctrl->prevTimeStamp = (uint64_t)((ts.tv_sec * 1000000000) + ts.tv_nsec);
 
@@ -1155,17 +1149,13 @@ static int cam_ois_pkt_parse(struct cam_ois_ctrl_t *o_ctrl, void *arg)
 							}
 							memcpy((void *)timestampBuf, (void *)&timestamp, sizeof(uint64_t));
 
-							packetCounter = (read_buff[1] + 9)/10; // This is a mathematical ceil function
+							packetCounter = (read_buff[1] + 9)/10;   // This is a mathematical ceil function
 						}
-					} else {
-						CAM_ERR(CAM_OIS,"Read failure rc: %d", rc);
-						break;
 					}
-					rc = cam_ois_write(o_ctrl);		//Write is necessary after read op for reading the next packet
-					usleep_range(1000, 1010);		//The OIS HW needs 1-2ms delay before next packet read after the prev write op
-					if (!rc)
-					{
-						read_buff += i2c_list->i2c_settings.size;	//Increment read_buff size so we can read next OIS packet
+					rc = cam_ois_write_dw(o_ctrl);                   //Write is necessary after read op for reading the next packet
+					usleep_range(1000, 1010);                        //The OIS HW needs 1-2ms delay before next packet read after the prev write op
+					if (!rc){
+						read_buff += i2c_list->i2c_settings.size;    //Increment read_buff size so we can read next OIS packet
 						packetCounter--;
 					} else {
 						CAM_ERR(CAM_OIS,"Write failed rc: %d", rc);
@@ -1179,7 +1169,7 @@ static int cam_ois_pkt_parse(struct cam_ois_ctrl_t *o_ctrl, void *arg)
 					&(o_ctrl->io_master_info),
 					i2c_list->i2c_settings.reg_setting[i].reg_addr,
 					i2c_list->i2c_settings.reg_setting[i].reg_data,
-					0xFFFE,											//Mask to check only the last bit, which represents HALL data ready
+					0xFFFE,                                          //Mask to check only the last bit, which represents HALL data ready
 					i2c_list->i2c_settings.addr_type,
 					i2c_list->i2c_settings.data_type,
 					i2c_list->i2c_settings.reg_setting[i].delay);
@@ -1188,7 +1178,7 @@ static int cam_ois_pkt_parse(struct cam_ois_ctrl_t *o_ctrl, void *arg)
 					CAM_ERR(CAM_OIS,
 						"i2c poll fails rc: %d",rc);
 					rc = -EINVAL;
-					break;
+					break;                                           //break will break out of the list_for_each_entry loop and go to the delete_request
 				}
 			}
 		}
