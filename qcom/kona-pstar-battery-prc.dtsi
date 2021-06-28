@@ -1,3 +1,0 @@
-&pm8150b_charger {
-	mmi,qc3p-support;
-};
