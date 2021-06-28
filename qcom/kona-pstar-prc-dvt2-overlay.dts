@@ -14,7 +14,7 @@
 /plugin/;
 
 #include "kona-pstar-common-overlay.dtsi"
-
+#include "kona-pstar-battery-prc.dtsi"
 #define PSTAR_RADIO_PRC 2
 
 / {
