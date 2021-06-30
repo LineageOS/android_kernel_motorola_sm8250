@@ -77,6 +77,7 @@
 		mmi,step-first-current-comp = <0>;
 		mmi,dont-rerun-aicl;
 		mmi,chrg-temp-zones-num = <5>;
+		mmi,afvc_enable_compensation_uv = <10000>;
 		mmi,mmi-chrg-temp-zones =
 					<0  4200 873  0 0 0 0>,
 					<10 4250 2180 4480 873 0 0>,
@@ -118,6 +119,7 @@
                 mmi,dont-rerun-aicl;
 		mmi,hvdcp-power-max = <20000>;
                 mmi,chrg-temp-zones-num = <5>;
+		mmi,afvc_enable_compensation_uv = <10000>;
                 mmi,mmi-chrg-temp-zones =
                                         <0  4200 873  0 0 0 0>,
                                         <10 4250 2180 4480 873 0 0>,
@@ -201,6 +203,7 @@
 	qcom,dc-unsupported;
 	qcom,wireless-unsupported;
 	qcom,usbeb-unsupported;
+	qcom,afvc_enable;
 	qcom,thermal-mitigation = <4000000 3500000
 				3000000 2500000
 				2000000 1500000
