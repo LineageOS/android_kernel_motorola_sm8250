@@ -115,7 +115,10 @@
 		st,first_filter_cmd = /bits/ 8 <0xC0 0x17 0x00 0x00>;*/
 		panel = <&mot_csot_nt37701_667_1080x2400_dsc_cmd_v0
 			 &mot_csot_nt37701_667_1080x2400_dsc_cmd_v1
-			 &mot_visionox_nt37701_667_1080x2400_dsc_cmd_v0>;
+			 &mot_csot_nt37701_667_1080x2400_dsc_cmd_v2
+			 &mot_visionox_nt37701_667_1080x2400_dsc_cmd_v0
+			 &mot_visionox_nt37701_667_1080x2400_dsc_cmd_v2
+			 &mot_visionox_nt37701_667_1080x2400_dsc_cmd_v3>;
 		mmi,enable-gestures;
 		mmi,power-off-suspend;
 		mmi,usb-charger-detection;
