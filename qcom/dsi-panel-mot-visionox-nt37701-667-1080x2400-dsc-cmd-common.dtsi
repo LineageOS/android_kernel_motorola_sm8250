@@ -215,7 +215,7 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsi-panel-framerate = <60>;
 		qcom,mdss-dsi-panel-width = <1080>;
 		qcom,mdss-dsi-panel-height = <2400>;
-		qcom,mdss-dsi-h-front-porch = <40>;
+		qcom,mdss-dsi-h-front-porch = <32>;
 		qcom,mdss-dsi-h-back-porch = <32>;
 		qcom,mdss-dsi-h-pulse-width = <16>;
 		qcom,mdss-dsi-h-sync-skew = <0>;
@@ -321,7 +321,7 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsc-slice-width = <1080>;
 		qcom,mdss-dsc-slice-per-pkt = <1>;
 		qcom,mdss-dsc-bit-per-component = <10>;
-		qcom,mdss-dsc-bit-per-pixel = <10>;
+		qcom,mdss-dsc-bit-per-pixel = <8>;
 		qcom,mdss-dsc-block-prediction-enable;
 	};
 
@@ -331,7 +331,7 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsi-panel-framerate = <90>;
 		qcom,mdss-dsi-panel-width = <1080>;
 		qcom,mdss-dsi-panel-height = <2400>;
-		qcom,mdss-dsi-h-front-porch = <40>;
+		qcom,mdss-dsi-h-front-porch = <32>;
 		qcom,mdss-dsi-h-back-porch = <32>;
 		qcom,mdss-dsi-h-pulse-width = <16>;
 		qcom,mdss-dsi-h-sync-skew = <0>;
@@ -437,7 +437,7 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsc-slice-width = <1080>;
 		qcom,mdss-dsc-slice-per-pkt = <1>;
 		qcom,mdss-dsc-bit-per-component = <10>;
-		qcom,mdss-dsc-bit-per-pixel = <10>;
+		qcom,mdss-dsc-bit-per-pixel = <8>;
 		qcom,mdss-dsc-block-prediction-enable;
 	};
 
@@ -447,7 +447,7 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsi-panel-framerate = <120>;
 		qcom,mdss-dsi-panel-width = <1080>;
 		qcom,mdss-dsi-panel-height = <2400>;
-		qcom,mdss-dsi-h-front-porch = <40>;
+		qcom,mdss-dsi-h-front-porch = <32>;
 		qcom,mdss-dsi-h-back-porch = <32>;
 		qcom,mdss-dsi-h-pulse-width = <16>;
 		qcom,mdss-dsi-h-sync-skew = <0>;
@@ -553,7 +553,7 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsc-slice-width = <1080>;
 		qcom,mdss-dsc-slice-per-pkt = <1>;
 		qcom,mdss-dsc-bit-per-component = <10>;
-		qcom,mdss-dsc-bit-per-pixel = <10>;
+		qcom,mdss-dsc-bit-per-pixel = <8>;
 		qcom,mdss-dsc-block-prediction-enable;
 	};
 
@@ -563,7 +563,7 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsi-panel-framerate = <144>;
 		qcom,mdss-dsi-panel-width = <1080>;
 		qcom,mdss-dsi-panel-height = <2400>;
-		qcom,mdss-dsi-h-front-porch = <40>;
+		qcom,mdss-dsi-h-front-porch = <32>;
 		qcom,mdss-dsi-h-back-porch = <32>;
 		qcom,mdss-dsi-h-pulse-width = <16>;
 		qcom,mdss-dsi-h-sync-skew = <0>;
@@ -669,7 +669,7 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsc-slice-width = <1080>;
 		qcom,mdss-dsc-slice-per-pkt = <1>;
 		qcom,mdss-dsc-bit-per-component = <10>;
-		qcom,mdss-dsc-bit-per-pixel = <10>;
+		qcom,mdss-dsc-bit-per-pixel = <8>;
 		qcom,mdss-dsc-block-prediction-enable;
 	};
 
@@ -679,7 +679,7 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsi-panel-framerate = <48>;
 		qcom,mdss-dsi-panel-width = <1080>;
 		qcom,mdss-dsi-panel-height = <2400>;
-		qcom,mdss-dsi-h-front-porch = <40>;
+		qcom,mdss-dsi-h-front-porch = <32>;
 		qcom,mdss-dsi-h-back-porch = <32>;
 		qcom,mdss-dsi-h-pulse-width = <16>;
 		qcom,mdss-dsi-h-sync-skew = <0>;
@@ -785,7 +785,7 @@ qcom,mdss-dsi-display-timings {
 		qcom,mdss-dsc-slice-width = <1080>;
 		qcom,mdss-dsc-slice-per-pkt = <1>;
 		qcom,mdss-dsc-bit-per-component = <10>;
-		qcom,mdss-dsc-bit-per-pixel = <10>;
+		qcom,mdss-dsc-bit-per-pixel = <8>;
 		qcom,mdss-dsc-block-prediction-enable;
 	};
 };
