@@ -127,7 +127,7 @@ qcom,mdss-dsi-dc-on-command = [
 		//B
 		15 01 00 00 00 00 02 6F 32
 		39 01 00 00 00 00 1a D9 56 8F 4F 2F 1F 4F 4F 36 36 26 16 50 40 40 20 70 3E 3E 3E 3E 36 41 41 41 41];
-qcom,mdss-dsi-dc-on-command-state = "dsi_lp_mode";
+qcom,mdss-dsi-dc-on-command-state = "dsi_hs_mode";
 
 qcom,mdss-dsi-dc-off-command = [
 		39 01 00 00 00 00 06 F0 55 AA 52 08 00
@@ -182,7 +182,7 @@ qcom,mdss-dsi-dc-off-command = [
 		//B
 		15 00 00 00 00 00 02 6F 32
 		39 01 00 00 00 00 1a D9 FF 8F 4F 2F 1F FF 4F 36 36 26 FF 50 40 40 40 70 3E 3E 3E 3E 76 41 41 41 41];
-qcom,mdss-dsi-dc-off-command-state = "dsi_lp_mode";
+qcom,mdss-dsi-dc-off-command-state = "dsi_hs_mode";
 
 
 
