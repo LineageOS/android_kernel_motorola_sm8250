@@ -204,6 +204,7 @@
 	qcom,wireless-unsupported;
 	qcom,usbeb-unsupported;
 	qcom,afvc_enable;
+	qcom,lpd-disable;
 	qcom,thermal-mitigation = <4000000 3500000
 				3000000 2500000
 				2000000 1500000
