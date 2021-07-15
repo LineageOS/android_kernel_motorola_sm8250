@@ -102,6 +102,10 @@
 
 &wcd937x_codec {
 	status = "okay";
+	qcom,cdc-micbias1-mv = <2800>;
+	qcom,cdc-micbias2-mv = <2800>;
+	qcom,cdc-micbias3-mv = <2800>;
+	qcom,cdc-micbias4-mv = <2800>;
 };
 
 &wcd938x_rst_gpio {
