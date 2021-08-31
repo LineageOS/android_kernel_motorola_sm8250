@@ -6,11 +6,11 @@ qcom,5172666_lenovo_mt45_4520ma_averaged_masterslave_apr11th2021 {
 	qcom,max-voltage-uv = <4480000>;
 	qcom,fastchg-current-ma = <6000>;
 	qcom,nom-batt-capacity-mah = <4500>;
-	qcom,fg-cc-cv-threshold-mv = <4500>;
+	qcom,fg-cc-cv-threshold-mv = <4490>;
 	qcom,batt-id-kohm = <10>;
 	qcom,battery-beta = <3800>;
 	qcom,therm-room-temp = <100000>;
-	qcom,battery-type = "lenovo_mt45_4520ma_amperex";
+	qcom,battery-type = "lenovo_mt45_4520ma_amperex_prc";
 	qcom,therm-coefficients = <0x2319 0xcb5 0xdb70 0xc48e 0x856b>;
 	qcom,therm-center-offset = <0x70>;
 	qcom,therm-pull-up = <100>;
