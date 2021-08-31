@@ -1,3 +1,18 @@
+&vendor {
+        mot_batterydata_prc: qcom,battery-data {
+                qcom,batt-id-range-pct = <15>;
+                df-serialnum = "SB18D11084";
+                #include "fg-gen4-batterydata-MT45-4520mAh-Amperex_prc.dtsi"
+        };
+};
+
 &pm8150b_charger {
 	mmi,qc3p-support;
+	/delete-property/ qcom,battery-data;
+	qcom,battery-data = <&mot_batterydata_prc>;
+};
+
+&pm8150b_fg {
+	/delete-property/ qcom,battery-data;
+        qcom,battery-data = <&mot_batterydata_prc>;
 };
