@@ -740,7 +740,7 @@ void cam_sensor_shutdown(struct cam_sensor_ctrl_t *s_ctrl)
 	s_ctrl->sensor_state = CAM_SENSOR_INIT;
 }
 
-int cam_pmic_workaround() {
+int cam_pmic_workaround(void) {
 	struct cam_sensor_cci_client cci_client;
 	struct cam_cci_ctrl cci_ctrl;
 	struct cam_sensor_i2c_reg_array writeData;
