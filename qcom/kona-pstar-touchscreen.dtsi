@@ -113,6 +113,8 @@
 		/*st,jitter_cmd = /bits/ 8 <0xC0 0x18 0x00 0x00 0x00 0x00 0x00 0x00>;
 		st,linearity_cmd = /bits/ 8 <0xC0 0x19 0x00>;
 		st,first_filter_cmd = /bits/ 8 <0xC0 0x17 0x00 0x00>;*/
+		/* support film sensitivity switching */
+		st,sensitivity_cmd = /bits/ 8 <0xC0 0x20 0x00>;
 		panel = <&mot_csot_nt37701_667_1080x2400_dsc_cmd_v0
 			 &mot_csot_nt37701_667_1080x2400_dsc_cmd_v1
 			 &mot_csot_nt37701_667_1080x2400_dsc_cmd_v2
