@@ -426,7 +426,13 @@ static bool dsi_bridge_mode_fixup(struct drm_bridge *bridge,
 			(!(dsi_mode.dsi_mode_flags & DSI_MODE_FLAG_DYN_CLK)) &&
 			(!crtc_state->active_changed ||
 			 display->is_cont_splash_enabled)) {
-			dsi_mode.dsi_mode_flags |= DSI_MODE_FLAG_DMS;
+			/* Reject DMS for First commit for Video Mode Panel */
+			if((dsi_mode.panel_mode == DSI_OP_VIDEO_MODE) &&
+							display->is_cont_splash_enabled)
+				DSI_ERR("DMS not supported for display type:%d for first frame\n",
+							dsi_mode.panel_mode);
+			else
+				dsi_mode.dsi_mode_flags |= DSI_MODE_FLAG_DMS;
 
 			SDE_EVT32(SDE_EVTLOG_FUNC_CASE2,
 				dsi_mode.timing.h_active,
