@@ -257,6 +257,13 @@
         qcom,hold-soc-while-full;
         qcom,linearize-soc;
         qcom,cl-wt-enable;
+	qcom,cl-ibat-flt-thresh-ma = <300>;
+	qcom,cl-min-delta-batt-soc = <60>;
+	qcom,cl-max-increment = <100>;
+	qcom,cl-max-decrement = <100>;
+	qcom,cl-min-limit = <150>;
+	qcom,cl-max-limit = <10>;
+	qcom,soc-scale-mode-en;
         qcom,fg-force-load-profile;
         /* ESR fast calibration */
         qcom,fg-esr-timer-chg-fast = <0 7>;
