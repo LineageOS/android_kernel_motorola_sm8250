@@ -98,7 +98,7 @@
 	regulator-min-microvolt = <3304000>;
 	qcom,init-voltage = <3304000>;
 	/* qcom,init-mode = <RPMH_REGULATOR_MODE_HPM>;*/
-	regulator-always-on;
+	//regulator-always-on;
 };
 
 /* FPS VDD S4A 1p8v */
@@ -118,6 +118,7 @@
 		pinctrl-names = "default", "suspend";
 		pinctrl-0 = <&ets_int_active>;
 		pinctrl-1 = <&ets_int_suspend>;
+		vcc_3v3_io = <&pm8150a_l11>;
 	};
 
 	fpc: fpc_fpc1020 {
