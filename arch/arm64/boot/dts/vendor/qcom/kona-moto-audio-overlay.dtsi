@@ -23,11 +23,12 @@
 &tdm_quat_rx {
 	qcom,msm-cpudai-tdm-sync-mode = <0>;
 	qcom,msm-cpudai-tdm-invert-sync = <0>;
-	dai_quat_tdm_rx_0: qcom,msm-dai-q6-tdm-quat-rx-0 {
-		qcom,msm-cpudai-tdm-header-start-offset = <0>;
-		qcom,msm-cpudai-tdm-header-width = <2>;
-		qcom,msm-cpudai-tdm-header-num-frame-repeat = <8>;
-	};
+};
+
+&dai_quat_tdm_rx_0 {
+	qcom,msm-cpudai-tdm-header-start-offset = <0>;
+	qcom,msm-cpudai-tdm-header-width = <2>;
+	qcom,msm-cpudai-tdm-header-num-frame-repeat = <8>;
 };
 
 &tdm_quat_tx {
@@ -48,15 +49,15 @@
 	};
 };
 
+&kona_snd {
+	status = "disabled";
+};
+
+&bolero {
+	status = "disabled";
+};
+
 &q6core {
-
-	kona_snd: sound {
-		status = "disabled";
-	};
-
-	bolero: bolero-cdc {
-		status = "disabled";
-	};
 
 	cdc_quat_tdm_gpios: msm_cdc_pinctrl_quat {
 		compatible = "qcom,msm-cdc-pinctrl";
