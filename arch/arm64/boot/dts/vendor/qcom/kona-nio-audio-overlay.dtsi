@@ -2,7 +2,6 @@
 #include <dt-bindings/sound/qcom,bolero-clk-rsc.h>
 #include <dt-bindings/sound/audio-codec-port-types.h>
 #include <dt-bindings/interrupt-controller/arm-gic.h>
-#include "kona-audio.dtsi"
 #include "kona-lpi.dtsi"
 #include "kona-va-bolero.dtsi"
 
