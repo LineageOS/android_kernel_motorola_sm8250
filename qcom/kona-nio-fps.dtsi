@@ -118,7 +118,7 @@
 		pinctrl-names = "default", "suspend";
 		pinctrl-0 = <&ets_int_active>;
 		pinctrl-1 = <&ets_int_suspend>;
-		vcc_3v3_io = <&pm8150a_l11>;
+		vcc_3v3_io-supply = <&pm8150a_l11>;
 	};
 
 	fpc: fpc_fpc1020 {
