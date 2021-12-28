@@ -185,7 +185,6 @@ sound_madera: sound-madera {
 		cirrus,prince-devs = <&cs35l41_rcv &cs35l41_spk>;
 		cirrus,prince-dev-prefix = "RCV", "SPK";
 		qcom,quat-mi2s-gpios = <&cdc_quat_tdm_gpios>;
-		qcom,tdm-rx-dai = <&dai_quat_tdm_rx_0>;
 	};
 
 };
