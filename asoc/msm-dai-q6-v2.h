@@ -101,6 +101,4 @@ struct msm_dai_tdm_pdata {
 	struct msm_dai_tdm_config config;
 };
 
-int msm_dai_q6_tdm_prepare_port(struct snd_soc_dai *dai);
-
 #endif
