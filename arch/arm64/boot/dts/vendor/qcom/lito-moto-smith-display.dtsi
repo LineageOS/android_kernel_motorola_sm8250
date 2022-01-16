@@ -242,6 +242,8 @@
 
 		qcom,mdp = <&mdss_mdp>;
 		qcom,dsi-default-panel = <&mot_boe_620_876x2142_cmd_v0>;
+
+		qcom,platform-mot-ext-feature-enable;
 	};
 
 
