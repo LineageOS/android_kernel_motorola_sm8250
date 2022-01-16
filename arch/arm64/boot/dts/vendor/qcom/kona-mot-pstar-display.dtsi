@@ -79,6 +79,8 @@
 		qcom,dsi-default-panel = <&mot_csot_nt37701_667_1080x2400_dsc_cmd_v0>;
 
 		qcom,mdp = <&mdss_mdp>;
+
+		qcom,platform-mot-ext-feature-enable;
 	};
 
 

@@ -103,6 +103,8 @@
 
 		qcom,mdp = <&mdss_mdp>;
 		qcom,dsi-default-panel = <&mot_tm_nt36672c_670_1080x2520_dsc_vid>;
+
+		qcom,platform-mot-ext-feature-enable;
 	};
 
 	sde_dsi1: qcom,dsi-display-secondary {
