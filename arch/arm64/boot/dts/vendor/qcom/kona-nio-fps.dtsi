@@ -1,0 +1,132 @@
+#include <dt-bindings/regulator/qcom,rpmh-regulator-levels.h>
+&tlmm {
+	ets {
+		ets_int_active: ets_int_active {
+			/* INTERRUPT */
+			mux {
+				pins = "gpio23";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio23";
+				drive-strength = <2>; /* 2 MA */
+				bias-pull-down; /* pull down */
+				input-enable;
+			};
+		};
+		ets_int_suspend: ets_int_suspend {
+			/* INTERRUPT */
+			mux {
+				pins = "gpio23";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio23";
+				drive-strength = <2>; /* 2 MA */
+				bias-pull-down; /* pull down */
+				input-enable;
+			};
+		};
+	};
+
+	fpc {
+		rst_active: rst_active {
+			/* RESET */
+			mux {
+				pins = "gpio119";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio119";
+				drive-strength = <2>; /* 2 MA */
+				bias-disable;
+				output-low;
+			};
+		};
+
+		rst_suspend: rst_suspend{
+			/* RESET */
+			mux {
+				pins = "gpio119";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio119";
+				drive-strength = <2>; /* 2 MA */
+				bias-pull-down; /* pull down */
+				output-high;
+			};
+		};
+
+		int_active: int_active {
+			/* INTERRUPT */
+			mux {
+				pins = "gpio23";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio23";
+				drive-strength = <2>; /* 2 MA */
+				bias-pull-down; /* pull down */
+				input-enable;
+			};
+		};
+
+		int_suspend: int_suspend{
+			/* INTERRUPT */
+			mux {
+				pins = "gpio23";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio23";
+				drive-strength = <2>; /* 2 MA */
+				bias-pull-down; /* pull down */
+				input-enable;
+			};
+		};
+	};
+};
+
+/* Egis VCC L11C 3p3v */
+&pm8150a_l11 {
+	regulator-min-microvolt = <3304000>;
+	qcom,init-voltage = <3304000>;
+	/* qcom,init-mode = <RPMH_REGULATOR_MODE_HPM>;*/
+	regulator-always-on;
+};
+
+/* FPS VDD S4A 1p8v */
+&pm8150_s4 {
+	regulator-always-on;
+};
+
+&soc {
+	et528: et528 {
+		compatible = "egistec,et516";
+		status = "ok";
+		reg = <0>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <23 0x0>;
+		egistec,gpio_irq = <&tlmm 23 0x2>;
+		egistec,gpio_rst = <&tlmm 119 0x2>;
+		pinctrl-names = "default", "suspend";
+		pinctrl-0 = <&ets_int_active>;
+		pinctrl-1 = <&ets_int_suspend>;
+	};
+
+	fpc: fpc_fpc1020 {
+		compatible = "fpc,fpc1020";
+		status = "ok";
+		irq = <&tlmm 23 0>;
+		rst = <&tlmm 119 0>;
+		pinctrl-names = "default", "suspend";
+		pinctrl-0 = <&int_active &rst_active>;
+		pinctrl-1 = < &int_suspend &rst_suspend>;
+	};
+};

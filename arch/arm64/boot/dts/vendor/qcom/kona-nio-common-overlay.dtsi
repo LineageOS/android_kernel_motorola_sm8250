@@ -1,0 +1,511 @@
+/* Copyright (c) 2019, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+#include "kona-moto-common-overlay-v2.dtsi"
+#include "kona-nio-touchscreen.dtsi"
+#include "kona-nio-audio-overlay.dtsi"
+#include "kona-mot-nio-display.dtsi"
+#include "kona-nio-fps.dtsi"
+#include "camera/kona-camera-sensor-mot-nio.dtsi"
+#include "kona-nio-sensor-overlay.dtsi"
+#include "kona-nio-battery-thermal.dtsi"
+
+/*
+ * NIO HW rev EVT1 specific changes go here
+ */
+
+&tlmm{
+	tlmm_gpio_key {
+		gpio_key_active: gpio_key_active {
+			mux {
+				pins = "gpio14";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio14";
+				drive-strength = <2>;
+				bias-pull-up;
+			};
+		};
+	};
+};
+
+&soc {
+	gpio_keys {
+		compatible = "gpio-keys";
+		label = "gpio-keys";
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&key_vol_up_default &gpio_key_active>;
+
+		vol_up {
+			label = "volume_up";
+			gpios = <&pm8150_gpios 6 GPIO_ACTIVE_LOW>;
+			linux,input-type = <1>;
+			linux,code = <KEY_VOLUMEUP>;
+			gpio-key,wakeup;
+			debounce-interval = <15>;
+			linux,can-disable;
+		};
+
+		assist_key{
+			label = "assist_key";
+			gpios = <&tlmm 14 0x1>;
+			linux,input-type = <1>;
+			linux,code = <KEY_SEARCH>;
+			debounce-interval = <15>;
+			linux,can-disable;
+			gpio-key,wakeup;
+		};
+	};
+
+	 qcom,tz_gpio {
+		compatible = "qcom,tz_gpio";
+		tlmm-tz = <28>,
+			<29>,
+			<30>,
+			<31>,
+			<40>,
+			<41>,
+			<42>,
+			<43>;
+	};
+
+};
+
+&sdhc_2 {
+	vdd-supply = <&pm8150a_l9>;
+	qcom,vdd-voltage-level = <2950000 2960000>;
+	qcom,vdd-current-level = <200 800000>;
+
+	vdd-io-supply = <&pm8150a_l6>;
+	qcom,vdd-io-voltage-level = <1808000 2960000>;
+	qcom,vdd-io-current-level = <200 22000>;
+
+	pinctrl-names = "active", "sleep";
+	pinctrl-0 = <&sdc2_clk_on  &sdc2_cmd_on &sdc2_data_on &storage_cd>;
+	pinctrl-1 = <&sdc2_clk_off &sdc2_cmd_off &sdc2_data_off &storage_cd>;
+
+	cd-gpios = <&tlmm 77 GPIO_ACTIVE_HIGH>;
+
+	status = "ok";
+};
+
+
+&qupv3_se12_2uart {
+	status = "ok";
+};
+
+&qupv3_se6_4uart {
+	status = "ok";
+};
+
+
+&qupv3_se1_i2c {
+	status = "ok";
+	qcom,clk-freq-out = <1000000>;
+	#address-cells = <1>;
+	#size-cells = <0>;
+	nq@28 {
+		compatible = "qcom,nq-nci";
+		reg = <0x28>;
+		qcom,nq-irq = <&tlmm 111 0x00>;
+		qcom,nq-ven = <&tlmm 6 0x00>;
+		qcom,nq-firm = <&tlmm 110 0x00>;
+		qcom,nq-clkreq = <&tlmm 7 0x00>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <111 0>;
+		interrupt-names = "nfc_irq";
+		pinctrl-names = "nfc_active", "nfc_suspend";
+		pinctrl-0 = <&nfc_int_active &nfc_enable_active
+				&nfc_clk_req_active>;
+		pinctrl-1 = <&nfc_int_suspend &nfc_enable_suspend
+				&nfc_clk_req_suspend>;
+	};
+};
+
+&ufsphy_mem {
+	compatible = "qcom,ufs-phy-qmp-v4";
+
+	vdda-phy-supply = <&pm8150_l5>;
+	vdda-phy-always-on;
+	vdda-pll-supply = <&pm8150_l9>;
+	vdda-phy-max-microamp = <89900>;
+	vdda-pll-max-microamp = <18800>;
+
+	status = "ok";
+};
+
+&ufshc_mem {
+	vdd-hba-supply = <&ufs_phy_gdsc>;
+	vdd-hba-fixed-regulator;
+	vcc-supply = <&pm8150_l17>;
+	vcc-voltage-level = <2504000 2950000>;
+	vcc-low-voltage-sup;
+	vccq-supply = <&pm8150_l6>;
+	vccq2-supply = <&pm8150_s4>;
+	vcc-max-microamp = <800000>;
+	vccq-max-microamp = <800000>;
+	vccq2-max-microamp = <800000>;
+
+	qcom,vddp-ref-clk-supply = <&pm8150_l6>;
+	qcom,vddp-ref-clk-max-microamp = <100>;
+	qcom,vccq-parent-supply = <&pm8150a_s8>;
+	qcom,vccq-parent-max-microamp = <210000>;
+
+	status = "ok";
+};
+
+&usb0 {
+	extcon = <&pm8150b_pdphy>, <&pm8150b_pdphy>, <&eud>;
+
+	dwc3@a600000 {
+		xhci-hw-lpm-disable;
+	};
+};
+
+&usb2_phy0 {
+	qcom,param-override-seq = <0xE1 0x6C
+				   0xE3 0x70>;
+};
+
+&usb_qmp_dp_phy {
+	extcon = <&pm8150b_pdphy>;
+};
+
+&sde_dp {
+	extcon = <&pm8150b_pdphy>;
+};
+
+&usb1 {
+	status = "disabled";
+};
+
+&pm8150b_pdphy{
+	qcom,default-sink-caps = <5000 3000>, /* 5V @ 3A */
+				 <9000 3000>; /* 9V @ 3A */
+};
+
+
+&pcie1 {
+	status = "disabled";
+};
+
+&vendor {
+	bluetooth: bt_qca6390 {
+		compatible = "qca,qca6390";
+		pinctrl-names = "default";
+		pinctrl-0 = <&bt_en_sleep>;
+		qca,bt-reset-gpio = <&tlmm 21 0>; /* BT_EN */
+		qca,bt-sw-ctrl-gpio = <&tlmm 124 0>; /* SW_CTRL */
+		qca,bt-vdd-aon-supply = <&pm8150_s6>;
+		qca,bt-vdd-dig-supply = <&pm8150_s6>;
+		qca,bt-vdd-rfa1-supply = <&pm8150_s5>;
+		qca,bt-vdd-rfa2-supply = <&pm8150a_s8>;
+
+		qca,bt-vdd-aon-voltage-level = <950000 950000>;
+		qca,bt-vdd-dig-voltage-level = <950000 952000>;
+		qca,bt-vdd-rfa1-voltage-level = <1900000 1900000>;
+		qca,bt-vdd-rfa2-voltage-level = <1350000 1350000>;
+
+	};
+
+
+};
+
+&soc {
+	qcom,cnss-qca6390@b0000000 {
+		vdd-wlan-dig-supply = <&pm8150_s6>;
+	};
+};
+
+&soc_trip {
+	temperature = <5>;
+};
+
+&tlmm {
+	haptic_irq_default: haptic_irq_default {
+		mux {
+			pins = "gpio136";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio136";
+			drive-strength = <2>; /* 2 MA */
+			bias-pull-up;
+		};
+	};
+
+	haptic_rst_default: haptic_rst_default {
+		mux {
+			pins = "gpio141";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio141";
+			drive-strength = <2>; /* 2 MA */
+			bias-disable;
+			output-low;
+		};
+	};
+};
+
+&tlmm{
+	cam_pmic_en_default: cam-pmic-en-default {
+		mux {
+			pins = "gpio100";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio100";
+			drive-strength = <2>;
+			bias-pull-down;
+		};
+	};
+};
+
+&tlmm {
+	redriver_enable: redriver_enable {
+		mux {
+			pins = "gpio12";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio12";
+			drive-strength = <2>;
+			bias-pull-up;
+			output-high;
+		};
+	};
+
+	redriver_disable: redriver_disable {
+		mux {
+			pins = "gpio12";
+				function = "gpio";
+			};
+
+		config {
+			pins = "gpio12";
+			drive-strength = <2>;
+			output-low;
+		};
+	};
+};
+&qupv3_se15_i2c {
+	status = "okay";
+
+	cam_pmic: wl2864c@29{
+		compatible = "semi,wl2864c";
+		reg = <0x29>;
+
+		semi,cs-gpios = <&tlmm 100 0>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&cam_pmic_en_default>;
+
+		vin1-supply = <&pm8150a_s8>;
+		vin2-supply = <&pm8150a_bob>;
+
+		regulators {
+			cam_main_dvdd_ldo: ldo1 {
+				regulator-name = "ldo1";
+				regulator-min-microvolt = <600000>;
+				regulator-max-microvolt = <3787500>;
+			};
+
+			cam_uw_fm_fuw_dvdd_ldo: ldo2 {
+				regulator-name = "ldo2";
+				regulator-min-microvolt = <600000>;
+				regulator-max-microvolt = <3787500>;
+			};
+
+			cam_main_avdd_ldo: ldo3 {
+				regulator-name = "ldo3";
+				regulator-min-microvolt = <1200000>;
+				regulator-max-microvolt = <4387500>;
+			};
+
+			cam_uw_d_fm_fuw_avdd_ldo: ldo4 {
+				regulator-name = "ldo4";
+				regulator-min-microvolt = <1200000>;
+				regulator-max-microvolt = <4387500>;
+			};
+
+			cam_main_uw_afvdd_ldo: ldo5 {
+				regulator-name = "ldo5";
+				regulator-min-microvolt = <1200000>;
+				regulator-max-microvolt = <4387500>;
+			};
+
+			tof_avdd_ldo: ldo6 {
+				regulator-name = "ldo6";
+				regulator-min-microvolt = <2800000>;
+				regulator-max-microvolt = <2800000>;
+			};
+
+			cam_iovdd_ldo: ldo7 {
+				regulator-name = "ldo7";
+				regulator-min-microvolt = <1200000>;
+				regulator-max-microvolt = <4387500>;
+			};
+		};
+	};
+
+	aw8695_haptic@5A {
+		compatible = "awinic,aw8695_haptic";
+		reg = <0x5A>;
+		reset-gpio = <&tlmm 141 0>;
+		irq-gpio = <&tlmm 136 0>;
+		vib_f0_pre = < 2350 >;
+		vib_f0_cali_percen = < 7 >;
+		vib_cont_drv_lvl = < 110 >;
+		vib_cont_drv_lvl_ov = < 120 >;
+		vib_cont_td = < 0x006C >;
+		vib_cont_zc_thr = < 0x0FF1 >;
+		vib_cont_num_brk = < 3 >;
+		haptic-context-gpio = <&tlmm 60 0>;
+		long-gain-normal = <0x80>;
+		long-gain-reduced = <0x50>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&haptic_irq_default &haptic_rst_default>;
+		status = "okay";
+	};
+
+	redriver: redriver@1a {
+		compatible = "onnn,redriver";
+		reg = <0x1a>;
+		extcon = <&pm8150b_pdphy>, <&pm8150b_pdphy>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&redriver_enable>;
+		eq = /bits/ 8 <
+				/* Parameters for USB */
+				0x4 0x4 0x4 0x4
+				/* Parameters for DP */
+				0x6 0x4 0x4 0x6>;
+		flat-gain = /bits/ 8 <
+				/* Parameters for USB */
+				0x3 0x1 0x1 0x3
+				/* Parameters for DP */
+				0x2 0x1 0x1 0x2>;
+		output-comp = /bits/ 8 <
+				/* Parameters for USB */
+				0x3 0x3 0x3 0x3
+				/* Parameters for DP */
+				0x3 0x3 0x3 0x3>;
+		loss-match = /bits/ 8 <
+				/* Parameters for USB */
+				0x1 0x3 0x3 0x1
+				/* Parameters for DP */
+				0x3 0x3 0x3 0x3>;
+	};
+
+	redriver_diodes: redriver_diodes@52 {
+		compatible = "diodes,pi2dpx1217";
+		reg = <0x52>;
+		extcon = <&pm8150b_pdphy>;
+		pinctrl-names = "enable_gpio", "disable_gpio";
+		pinctrl-0 = <&redriver_enable>;
+		pinctrl-1 = <&redriver_disable>;
+		/* Parameters for channel rx2,tx2,tx1,rx1 */
+		eq-fg = /bits/ 8 <
+				/* Parameters for USB */
+				0x48 0x48 0x48 0x48
+				/* Parameters for DP */
+				0x48 0x48 0x48 0x48>;
+	};
+};
+
+&tlmm {
+	laser_xsdn_active: laser_xsdn_active {
+		mux {
+			pins = "gpio158";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio158";
+			drive-strength = <2>;
+			bias-disable;
+		};
+	};
+
+	laser_xsdn_suspend: laser_xsdn_suspend {
+		mux {
+			pins = "gpio158";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio158";
+			drive-strength = <2>;
+			bias-pull-down; /* PULL DOWN */
+		};
+	};
+
+	laser_int_active: laser_int_active {
+		mux {
+			pins = "gpio11";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio11";
+			drive-strength = <2>;
+			bias-pull-up; /* PULL UP */
+		};
+	};
+
+	laser_int_suspend: laser_int_suspend {
+		mux {
+			pins = "gpio11";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio11";
+			drive-strength = <2>;
+			bias-pull-down; /* PULL DOWN */
+		};
+	};
+};
+
+&qupv3_se16_i2c {
+	status = "okay";
+	qcom,noise-rjct-scl = <3>;
+	qcom,noise-rjct-sda = <3>;
+	stmvl53l1@29 {
+		status = "ok";
+		compatible = "st,stmvl53l1";
+		reg = <0x29>;
+		vdd-vl53l1-supply = <&tof_avdd_ldo>;
+		gpios = <&tlmm 158 0>, <&tlmm 11 0>;
+		pinctrl-names = "laser_default", "laser_suspend";
+		pinctrl-0 = <&laser_xsdn_active &laser_int_active>;
+		pinctrl-1 = <&laser_xsdn_suspend &laser_int_suspend>;
+		st,sensorthreshold = <60 65>;
+		st,xtalkval = <0x9C4 0xFACD 0x0>;
+	};
+};
+
+&spmi_bus {
+	qcom,pm8009@a {
+		status = "disabled";
+	};
+
+	qcom,pm8009@b {
+		status = "disabled";
+	};
+};

@@ -1,0 +1,411 @@
+/* Copyright (c) 2019, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+#include "kona-moto-common-overlay-v2.dtsi"
+#include "kona-pstar-touchscreen.dtsi"
+#include "kona-pstar-audio-overlay.dtsi"
+#include "kona-pstar-sensor-overlay.dtsi"
+#include "kona-mot-pstar-display.dtsi"
+#include "kona-pstar-battery-thermal.dtsi"
+#include "kona-pstar-fps.dtsi"
+#include "kona-pstar-nfc.dtsi"
+#include "camera/kona-camera-sensor-mot-pstar.dtsi"
+/*
+ * NIO HW rev EVT1 specific changes go here
+ */
+
+&tlmm{
+	tlmm_gpio_key {
+		gpio_key_active: gpio_key_active {
+			mux {
+				pins = "gpio14";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio14";
+				drive-strength = <2>;
+				bias-pull-up;
+			};
+		};
+	};
+};
+
+&soc {
+	gpio_keys {
+		compatible = "gpio-keys";
+		label = "gpio-keys";
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&key_vol_up_default &gpio_key_active>;
+
+		vol_up {
+			label = "volume_up";
+			gpios = <&pm8150_gpios 6 GPIO_ACTIVE_LOW>;
+			linux,input-type = <1>;
+			linux,code = <KEY_VOLUMEUP>;
+			gpio-key,wakeup;
+			debounce-interval = <15>;
+			linux,can-disable;
+		};
+
+		assist_key{
+			label = "assist_key";
+			gpios = <&tlmm 14 0x1>;
+			linux,input-type = <1>;
+			linux,code = <KEY_SEARCH>;
+			debounce-interval = <15>;
+			linux,can-disable;
+			gpio-key,wakeup;
+		};
+	};
+
+	 qcom,tz_gpio {
+		compatible = "qcom,tz_gpio";
+		tlmm-tz = <28>,
+			<29>,
+			<30>,
+			<31>,
+			<40>,
+			<41>,
+			<42>,
+			<43>;
+	};
+
+};
+
+&sdhc_2 {
+	status = "disabled";
+};
+
+
+&qupv3_se12_2uart {
+	status = "ok";
+};
+
+&qupv3_se6_4uart {
+	status = "ok";
+};
+
+&ufsphy_mem {
+	compatible = "qcom,ufs-phy-qmp-v4";
+
+	vdda-phy-supply = <&pm8150_l5>;
+	vdda-pll-supply = <&pm8150_l9>;
+	vdda-phy-max-microamp = <89900>;
+	vdda-pll-max-microamp = <18800>;
+
+	status = "ok";
+};
+
+&ufshc_mem {
+	vdd-hba-supply = <&ufs_phy_gdsc>;
+	vdd-hba-fixed-regulator;
+	vcc-supply = <&pm8150_l17>;
+	vcc-voltage-level = <2504000 2950000>;
+	vcc-low-voltage-sup;
+	vccq-supply = <&pm8150_l6>;
+	vccq2-supply = <&pm8150_s4>;
+	vcc-max-microamp = <800000>;
+	vccq-max-microamp = <800000>;
+	vccq2-max-microamp = <800000>;
+
+	qcom,vddp-ref-clk-supply = <&pm8150_l6>;
+	qcom,vddp-ref-clk-max-microamp = <100>;
+	qcom,vccq-parent-supply = <&pm8150a_s8>;
+	qcom,vccq-parent-max-microamp = <210000>;
+
+	status = "ok";
+};
+
+&usb0 {
+	extcon = <&pm8150b_pdphy>, <&pm8150b_pdphy>, <&eud>;
+
+	dwc3@a600000 {
+		xhci-hw-lpm-disable;
+	};
+};
+
+&usb2_phy0 {
+	qcom,param-override-seq = <0xE1 0x6C
+				   0x08 0x70>;
+};
+
+&usb_qmp_dp_phy {
+	extcon = <&pm8150b_pdphy>;
+};
+
+&sde_dp {
+	extcon = <&pm8150b_pdphy>;
+};
+
+&usb1 {
+	status = "disabled";
+};
+
+&pm8150b_pdphy{
+	qcom,default-sink-caps = <5000 3000>, /* 5V @ 3A */
+				 <9000 3000>; /* 9V @ 3A */
+};
+
+
+&pcie1 {
+	status = "disabled";
+};
+
+&vendor {
+	bluetooth: bt_qca6390 {
+		compatible = "qca,qca6390";
+		pinctrl-names = "default";
+		pinctrl-0 = <&bt_en_sleep>;
+		qca,bt-reset-gpio = <&tlmm 21 0>; /* BT_EN */
+		qca,bt-sw-ctrl-gpio = <&tlmm 124 0>; /* SW_CTRL */
+		qca,bt-vdd-aon-supply = <&pm8150_s6>;
+		qca,bt-vdd-dig-supply = <&pm8150_s6>;
+		qca,bt-vdd-rfa1-supply = <&pm8150_s5>;
+		qca,bt-vdd-rfa2-supply = <&pm8150a_s8>;
+
+		qca,bt-vdd-aon-voltage-level = <950000 950000>;
+		qca,bt-vdd-dig-voltage-level = <950000 952000>;
+		qca,bt-vdd-rfa1-voltage-level = <1900000 1900000>;
+		qca,bt-vdd-rfa2-voltage-level = <1350000 1350000>;
+
+	};
+
+
+};
+
+&soc {
+	dummy_vreg: dummy_vreg {
+		compatible = "regulator-fixed";
+		status = "ok";
+		regulator-name = "dummy_vreg";
+		regulator-always-on;
+	};
+};
+
+&soc {
+	qcom,cnss-qca6390@b0000000 {
+		vdd-wlan-dig-supply = <&pm8150_s6>;
+		wlan-ant-switch-supply = <&dummy_vreg>;
+		qcom,wlan-ant-switch-config = <0 0 0 0 0>;
+	};
+};
+
+&soc_trip {
+	temperature = <5>;
+};
+
+&tlmm {
+	haptic_irq_default: haptic_irq_default {
+		mux {
+			pins = "gpio136";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio136";
+			drive-strength = <2>; /* 2 MA */
+			bias-pull-up;
+		};
+	};
+
+	haptic_rst_default: haptic_rst_default {
+		mux {
+			pins = "gpio141";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio141";
+			drive-strength = <2>; /* 2 MA */
+			bias-disable;
+			output-low;
+		};
+	};
+};
+
+&tlmm{
+	cam_pmic_en_default: cam-pmic-en-default {
+		mux {
+			pins = "gpio100";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio100";
+			drive-strength = <2>;
+			bias-pull-down;
+		};
+	};
+};
+
+&tlmm {
+	redriver_enable: redriver_enable {
+		mux {
+			pins = "gpio12";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio12";
+			drive-strength = <2>;
+			bias-pull-up;
+			output-high;
+		};
+	};
+};
+&qupv3_se15_i2c {
+	status = "okay";
+
+	cam_pmic: wl2866d@28{
+		compatible = "semi,wl2866d";
+		reg = <0x28>;
+
+		semi,cs-gpios = <&tlmm 100 0>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&cam_pmic_en_default>;
+
+		vin1-supply = <&pm8150a_s8>;
+		vin2-supply = <&pm8150a_bob>;
+
+		regulators {
+			cam_main_dvdd_ldo: ldo1 {
+				regulator-name = "ldo1";
+				regulator-min-microvolt = <600000>;
+				regulator-max-microvolt = <1800000>;
+			};
+
+			cam_front_wide_tele_dvdd_ldo: ldo2 {
+				regulator-name = "ldo2";
+				regulator-min-microvolt = <600000>;
+				regulator-max-microvolt = <1800000>;
+			};
+
+			cam_main_avdd_ldo: ldo3 {
+				regulator-name = "ldo3";
+				regulator-min-microvolt = <1200000>;
+				regulator-max-microvolt = <4300000>;
+			};
+
+			cam_front_tele_wide_avdd_ldo: ldo4 {
+				regulator-name = "ldo4";
+				regulator-min-microvolt = <1200000>;
+				regulator-max-microvolt = <4300000>;
+			};
+		};
+	};
+
+	aw8695_haptic@5A {
+		compatible = "awinic,aw8695_haptic";
+		reg = <0x5A>;
+		reset-gpio = <&tlmm 141 0>;
+		irq-gpio = <&tlmm 136 0>;
+		vib_f0_pre = < 2350 >;
+		vib_f0_cali_percen = < 7 >;
+		vib_cont_drv_lvl = < 110 >;
+		vib_cont_drv_lvl_ov = < 120 >;
+		vib_cont_td = < 0x006C >;
+		vib_cont_zc_thr = < 0x0FF1 >;
+		vib_cont_num_brk = < 3 >;
+		haptic-context-gpio = <&tlmm 60 0>;
+		long-gain-normal = <0x80>;
+		long-gain-reduced = <0x50>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&haptic_irq_default &haptic_rst_default>;
+		status = "okay";
+	};
+
+	redriver: redriver@1a {
+		compatible = "onnn,redriver";
+		reg = <0x1a>;
+		extcon = <&pm8150b_pdphy>, <&pm8150b_pdphy>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&redriver_enable>;
+		eq = /bits/ 8 <
+				/* Parameters for USB */
+				0x4 0x4 0x4 0x4
+				/* Parameters for DP */
+				0x6 0x4 0x4 0x6>;
+		flat-gain = /bits/ 8 <
+				/* Parameters for USB */
+				0x3 0x1 0x1 0x3
+				/* Parameters for DP */
+				0x2 0x1 0x1 0x2>;
+		output-comp = /bits/ 8 <
+				/* Parameters for USB */
+				0x3 0x3 0x3 0x3
+				/* Parameters for DP */
+				0x3 0x3 0x3 0x3>;
+		loss-match = /bits/ 8 <
+				/* Parameters for USB */
+				0x1 0x3 0x3 0x1
+				/* Parameters for DP */
+				0x3 0x3 0x3 0x3>;
+	};
+
+	redriver_ps: redriver_ps@30 {
+		compatible = "parade,ps5169-redriver";
+		reg = <0x30>;
+		extcon = <&pm8150b_pdphy>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&redriver_enable>;
+		config-seq =
+			/* <reg_offset, value, delay_us> */
+			<0x9d 0x80 10000
+			0x9d 0x00 0
+			0x40 0x80 0
+			0x9f 0x02 0
+			0x8d 0x01 0
+			0x90 0x01 0
+			0x51 0x87 0
+			0x50 0x20 0
+			0x54 0x11 0
+			0x5d 0x66 0
+			0x52 0x20 0
+			0x55 0x00 0
+			0x56 0x00 0
+			0x57 0x00 0
+			0x58 0x00 0
+			0x59 0x00 0
+			0x5a 0x00 0
+			0x5b 0x00 0
+			0x5e 0x06 0
+			0x5f 0x00 0
+			0x60 0x00 0
+			0x61 0x03 0
+			0x65 0x40 0
+			0x66 0x00 0
+			0x67 0x03 0
+			0x75 0x0c 0
+			0x77 0x00 0
+			0x78 0x7c 0>;
+	};
+};
+
+&qupv3_se16_spi {
+	status = "disabled";
+};
+
+&qupv3_se16_i2c {
+	status = "okay";
+};
+
+&spmi_bus {
+	qcom,pm8009@a {
+		status = "disabled";
+	};
+
+	qcom,pm8009@b {
+		status = "disabled";
+	};
+};

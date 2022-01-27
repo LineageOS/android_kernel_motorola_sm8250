@@ -1,0 +1,115 @@
+&tlmm {
+	touch_int_mux {
+		touch_int_active: active {
+			mux {
+				pins = "gpio24";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio24";
+				drive-strength = <2>;
+				bias-pull-up;
+			};
+		};
+
+		touch_int_suspend: default {
+			mux {
+				pins = "gpio24";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio24";
+				drive-strength = <2>;
+				bias-disable;
+			};
+		};
+	};
+
+	touch_reset_mux {
+		touch_reset_active: active {
+			mux {
+				pins = "gpio50";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio50";
+				drive-strength = <2>;
+				bias-disable;
+			};
+		};
+
+		touch_reset_active_output_high: active_output_high {
+			mux {
+				pins = "gpio50";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio50";
+				drive-strength = <2>;
+				bias-disable;
+				output-high;
+			};
+		};
+
+		touch_reset_suspend: default {
+			mux {
+				pins = "gpio50";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio50";
+				drive-strength = <2>;
+				bias-pull-down;
+				output-low;
+			};
+		};
+	};
+
+	ts_release_mux {
+		ts_release: ts_release {
+			mux {
+				pins = "gpio24", "gpio50";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio24", "gpio50";
+				drive-strength = <2>;
+				bias-disable;
+			};
+		};
+	};
+};
+
+&qupv3_se13_spi {
+	status = "disabled";
+};
+
+&qupv3_se13_i2c {
+	status = "ok";
+
+	st_fts@49 {
+		status = "ok";
+		mmi,status = "/chosen","mmi,panel_name","contains","nt37701";
+		compatible = "st,fts";
+		reg = <0x49>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <24 0x2008>;
+		pinctrl-names = "pmx_ts_active", "pmx_ts_suspend";
+		pinctrl-0 = <&touch_reset_active_output_high &touch_int_active>;
+		pinctrl-1 = <&touch_reset_suspend &touch_int_suspend>;
+		st,reset-gpio = <&tlmm 50 0>;
+		st,irq-gpio = <&tlmm 24 0x2008>;
+		st,regulator_avdd = "pm8150_l13";
+		st,regulator_dvdd = "pm8150a_l5";
+		st,x-max = <1080>;
+		st,y-max = <2400>;
+		/* support report rate switching */
+		st,report_rate_cmd = /bits/ 8 <0xC0 0x05 0x00 0x00 0x32 0x00 0x04 0x05 0x01 0x05>;
+		panel = <&mot_csot_nt37701_667_1080x2400_dsc_cmd_v0
+			 &mot_csot_nt37701_667_1080x2400_dsc_cmd_v1
+			 &mot_visionox_nt37701_667_1080x2400_dsc_cmd_v0>;
+		mmi,power-off-suspend;
+		mmi,usb-charger-detection;
+	};
+};
