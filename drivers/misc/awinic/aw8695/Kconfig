@@ -1,0 +1,22 @@
+#
+# AW8695 Driver
+#
+
+config AW8695_HAPTIC
+	tristate "Awinic AW8695 haptic driver"
+	depends on I2C && INPUT_AWINIC_HAPTIC
+	help
+	  Say Y here if you have Awinic AW8695 haptic controller
+	  chip in your system.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called aw8695.
+
+config AW8965_VIBRATOR_SHORT_WAV_ENABLE
+	bool "Awinic AW8695 haptic short wave"
+	depends on AW8695_HAPTIC
+	help
+	  Say Y here if you want to have short wave support for AW8695.
+	  If unsure, say N.
