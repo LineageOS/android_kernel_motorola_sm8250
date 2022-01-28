@@ -1,0 +1,22 @@
+config INPUT_TOUCHSCREEN_MMI
+	tristate "Moto touchscreen gestures"
+	default n
+	help
+	 Say Y here if you wish to include support for Moto touchscreen gestures.
+	 If unsure, say N.
+
+config TOUCHCLASS_MMI_DEBUG_INFO
+	bool "Moto touchscreen gestures debug info"
+	depends on INPUT_TOUCHSCREEN_MMI
+	default n
+	help
+	 Say Y here if you wish to include support for Moto touchscreen gestures debugging info.
+	 If unsure, say N.
+
+config TOUCHCLASS_MMI_GESTURE_POISON_EVENT
+	bool "Moto gestures event poison"
+	depends on INPUT_TOUCHSCREEN_MMI
+	default n
+	help
+	 Say Y here if you wish to include support for Moto gestures event poison.
+	 If unsure, say N.

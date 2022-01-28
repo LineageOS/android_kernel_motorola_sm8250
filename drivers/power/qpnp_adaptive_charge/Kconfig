@@ -1,0 +1,9 @@
+config QPNP_ADAPTIVE_CHARGE
+        tristate "QPNP ADAPTIVE CHARGE"
+        default n
+        help
+         Say Y here if you have a qpnp adaptive charge compatible
+         device connected.
+
+         This driver can also be built as a module.  If so, the module
+         will be called qpnp_adaptive_charge.
