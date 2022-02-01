@@ -117,12 +117,7 @@ extern const uint16_t touch_key_array[TOUCH_KEY_NUM];
 #define NVT_TOUCH_EXT_PROC 1
 #define NVT_TOUCH_MP 1
 #define MT_PROTOCOL_B 1
-#ifdef NVT_SENSOR_EN
-#define WAKEUP_GESTURE 1
-#else
-#define WAKEUP_GESTURE 0
-#endif
-#if WAKEUP_GESTURE
+#ifdef WAKEUP_GESTURE
 extern const uint16_t gesture_key_array[];
 #define DATA_PROTOCOL           30
 #endif
@@ -206,15 +201,17 @@ struct nvt_ts_data {
 #ifdef CONFIG_SPI_MT65XX
     struct mtk_chip_config spi_ctrl;
 #endif
-#ifdef NVT_SENSOR_EN
+#ifdef WAKEUP_GESTURE
 	bool wakeable;
 	bool gesture_enabled;
 	DECLARE_BITMAP(gesture_bits, DATA_PROTOCOL);
+#endif
 #ifdef NOVATECH_PEN_NOTIFIER
 	bool fw_ready_flag;
 	int nvt_pen_detect_flag;
 	struct notifier_block pen_notif;
 #endif
+#ifdef NVT_SENSOR_EN
 	struct nvt_sensor_platform_data *sensor_pdata;
 #endif
 #ifdef PALM_GESTURE

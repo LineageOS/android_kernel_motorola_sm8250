@@ -181,7 +181,7 @@ const uint16_t touch_key_array[TOUCH_KEY_NUM] = {
 };
 #endif
 
-#if WAKEUP_GESTURE
+#ifdef WAKEUP_GESTURE
 enum custom_gesture_keycode {
 	KEY_SINGLE_CLICK = 250,
 };
@@ -981,7 +981,7 @@ static void nvt_flash_proc_deinit(void)
 }
 #endif
 
-#if WAKEUP_GESTURE
+#ifdef WAKEUP_GESTURE
 #define GESTURE_WORD_C          12
 #define GESTURE_WORD_W          13
 #define GESTURE_WORD_V          14
@@ -1117,11 +1117,11 @@ void nvt_ts_wakeup_gesture_report(uint8_t gesture_id, uint8_t *data)
 	}
 
 	if (keycode > 0) {
-#ifdef NVT_SENSOR_EN
 		if (!(ts->wakeable && should_enable_gesture())) {
 			NVT_LOG("Gesture got but wakeable not set. Skip this gesture.");
 			return;
 		}
+#ifdef NVT_SENSOR_EN
 		if (ts->report_gesture_key) {
 			input_report_key(ts->sensor_pdata->input_sensor_dev, keycode, 1);
 			input_sync(ts->sensor_pdata->input_sensor_dev);
@@ -1659,7 +1659,7 @@ static irqreturn_t nvt_ts_work_func(int irq, void *data)
 	int32_t i = 0;
 	int32_t finger_cnt = 0;
 
-#if WAKEUP_GESTURE
+#ifdef WAKEUP_GESTURE
 	if (bTouchIsAwake == 0) {
 		pm_wakeup_event(&ts->input_dev->dev, 5000);
 	}
@@ -1728,7 +1728,7 @@ static irqreturn_t nvt_ts_work_func(int irq, void *data)
    }
 #endif /* POINT_DATA_CHECKSUM */
 
-#if WAKEUP_GESTURE
+#ifdef WAKEUP_GESTURE
 	if (bTouchIsAwake == 0) {
 		input_id = (uint8_t)(point_data[1] >> 3);
 		if (input_id == GESTURE_SINGLE_CLICK &&
@@ -2181,7 +2181,7 @@ static ssize_t nvt_edge_reject_show(struct device *dev,
 }
 #endif
 
-#if WAKEUP_GESTURE
+#ifdef WAKEUP_GESTURE
 #define TS_ENABLE_FOPS(name, type)                                             \
 	static ssize_t nvt_##name##_show(                                      \
 		struct device *dev, struct device_attribute *attr, char *buf)  \
@@ -2218,7 +2218,7 @@ static struct device_attribute touchscreen_attributes[] = {
 #ifdef EDGE_SUPPRESSION
 	__ATTR(rotate, S_IRUGO | S_IWUSR | S_IWGRP, nvt_edge_reject_show, nvt_edge_reject_store),
 #endif
-#if WAKEUP_GESTURE
+#ifdef WAKEUP_GESTURE
 	__ATTR(double_click, S_IRUSR | S_IRGRP | S_IWUSR | S_IWGRP,
 	       nvt_double_click_show, nvt_double_click_store),
 	__ATTR(single_click, S_IRUSR | S_IRGRP | S_IWUSR | S_IWGRP,
@@ -2356,7 +2356,7 @@ return:
 static int32_t nvt_ts_probe(struct spi_device *client)
 {
 	int32_t ret = 0;
-#if ((TOUCH_KEY_NUM > 0) || WAKEUP_GESTURE)
+#if ((TOUCH_KEY_NUM > 0) || defined(WAKEUP_GESTURE))
 	int32_t retry = 0;
 #endif
 #ifdef NVT_SENSOR_EN
@@ -2523,7 +2523,7 @@ static int32_t nvt_ts_probe(struct spi_device *client)
 	}
 #endif
 
-#if WAKEUP_GESTURE
+#ifdef WAKEUP_GESTURE
 	for (retry = 0; retry < (sizeof(gesture_key_array) / sizeof(gesture_key_array[0])); retry++) {
 		input_set_capability(ts->input_dev, EV_KEY, gesture_key_array[retry]);
 	}
@@ -2564,7 +2564,7 @@ static int32_t nvt_ts_probe(struct spi_device *client)
 		}
 	}
 
-#if WAKEUP_GESTURE
+#ifdef WAKEUP_GESTURE
 	device_init_wakeup(&ts->input_dev->dev, 1);
 #endif
 #ifdef NVT_SENSOR_EN
@@ -2832,7 +2832,7 @@ err_create_nvt_esd_check_wq_failed:
 	}
 err_create_nvt_fwu_wq_failed:
 #endif
-#if WAKEUP_GESTURE
+#ifdef WAKEUP_GESTURE
 	device_init_wakeup(&ts->input_dev->dev, 0);
 #endif
 err_register_charger_notify_failed:
@@ -2968,7 +2968,7 @@ static int32_t nvt_ts_remove(struct spi_device *client)
 #endif
 
 #ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
-#if WAKEUP_GESTURE
+#ifdef WAKEUP_GESTURE
 	device_init_wakeup(&ts->input_dev->dev, 0);
 #if defined(NVT_CONFIG_PANEL_NOTIFICATIONS) || defined(NVT_SET_TOUCH_STATE)
 	touch_set_state(TOUCH_DEEP_SLEEP_STATE, TOUCH_PANEL_IDX_PRIMARY);
@@ -3059,7 +3059,7 @@ static void nvt_ts_shutdown(struct spi_device *client)
 	}
 #endif
 
-#if WAKEUP_GESTURE
+#ifdef WAKEUP_GESTURE
 	device_init_wakeup(&ts->input_dev->dev, 0);
 #endif
 }
@@ -3083,14 +3083,10 @@ int32_t nvt_ts_suspend(struct device *dev)
 		return 0;
 	}
 
-#if !WAKEUP_GESTURE
-	nvt_irq_enable(false);
-#else
-#ifdef NVT_SENSOR_EN
+#ifdef WAKEUP_GESTURE
 	if (!should_enable_gesture())
-		nvt_irq_enable(false);
 #endif
-#endif
+	nvt_irq_enable(false);
 
 #if NVT_TOUCH_ESD_PROTECT
 	NVT_LOG("cancel delayed work sync\n");
@@ -3104,10 +3100,8 @@ int32_t nvt_ts_suspend(struct device *dev)
 
 	bTouchIsAwake = 0;
 
-#if WAKEUP_GESTURE
-#ifdef NVT_SENSOR_EN
+#ifdef WAKEUP_GESTURE
 	if (should_enable_gesture()) {
-#endif
 		//---write command to enter "wakeup gesture mode"---
 		buf[0] = EVENT_MAP_HOST_CMD;
 		buf[1] = 0x13;
@@ -3118,7 +3112,6 @@ int32_t nvt_ts_suspend(struct device *dev)
 		ts->wakeable = true;
 
 		NVT_LOG("Enabled touch wakeup gesture\n");
-#ifdef NVT_SENSOR_EN
 	} else {
 		//---write command to enter "deep sleep mode"---
 		buf[0] = EVENT_MAP_HOST_CMD;
@@ -3127,7 +3120,6 @@ int32_t nvt_ts_suspend(struct device *dev)
 		ts->gesture_enabled = false;
 		ts->wakeable = false;
 	}
-#endif
 #else // WAKEUP_GESTURE
 	//---write command to enter "deep sleep mode"---
 	buf[0] = EVENT_MAP_HOST_CMD;
@@ -3187,14 +3179,10 @@ int32_t nvt_ts_resume(struct device *dev)
 #endif
 	queue_delayed_work(nvt_fwu_wq, &ts->nvt_fwu_work, msecs_to_jiffies(0));
 
-#if !WAKEUP_GESTURE
-	nvt_irq_enable(true);
-#else
-#ifdef NVT_SENSOR_EN
+#ifdef WAKEUP_GESTURE
 	if (!ts->gesture_enabled)
-		nvt_irq_enable(true);
 #endif
-#endif
+	nvt_irq_enable(true);
 
 #if NVT_TOUCH_ESD_PROTECT
 	nvt_esd_check_enable(false);
@@ -3206,14 +3194,12 @@ int32_t nvt_ts_resume(struct device *dev)
 		queue_work(ts->charger_detection->nvt_charger_notify_wq, &ts->charger_detection->charger_notify_work);
 	}
 
-#if WAKEUP_GESTURE
-#ifdef NVT_SENSOR_EN
+#ifdef WAKEUP_GESTURE
 	if (ts->wakeable) {
 		disable_irq_wake(ts->client->irq);
 		ts->gesture_enabled = false;
 		ts->wakeable = false;
 	}
-#endif
 #endif
 
 	bTouchIsAwake = 1;
@@ -3259,7 +3245,7 @@ static int nvt_drm_notifier_callback(struct notifier_block *self, unsigned long 
 		if (*blank == MSM_DRM_BLANK_POWERDOWN) {
 			NVT_LOG("event=%lu, *blank=%d\n", event, *blank);
 			nvt_ts_suspend(&ts->client->dev);
-#if defined(NVT_SENSOR_EN) && defined(NVT_SET_TOUCH_STATE)
+#if defined(WAKEUP_GESTURE) && defined(NVT_SET_TOUCH_STATE)
 			if (should_enable_gesture()) {
 				NVT_LOG("double tap gesture suspend\n");
 				touch_set_state(TOUCH_LOW_POWER_STATE, TOUCH_PANEL_IDX_PRIMARY);
@@ -3299,7 +3285,7 @@ static int nvt_panel_notifier_callback(struct notifier_block *self, unsigned lon
 	case PANEL_EVENT_PRE_DISPLAY_OFF:
 			NVT_LOG("event=%lu\n", event);
 			nvt_ts_suspend(&ts->client->dev);
-#ifdef NVT_SENSOR_EN
+#ifdef WAKEUP_GESTURE
 			if (should_enable_gesture()) {
 				NVT_LOG("double tap gesture suspend\n");
 				touch_set_state(TOUCH_LOW_POWER_STATE, TOUCH_PANEL_IDX_PRIMARY);
@@ -3340,7 +3326,7 @@ static int nvt_drm_notifier_callback(struct notifier_block *self, unsigned long 
 			if (*blank == MSM_DRM_BLANK_POWERDOWN) {
 				NVT_LOG("event=%lu, *blank=%d\n", event, *blank);
 				nvt_ts_suspend(&ts->client->dev);
-#ifdef NVT_SENSOR_EN
+#ifdef WAKEUP_GESTURE
 				if (should_enable_gesture()) {
 					NVT_LOG("double tap gesture suspend\n");
 					return 1;

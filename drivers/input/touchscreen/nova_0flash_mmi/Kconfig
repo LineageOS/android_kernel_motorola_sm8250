@@ -12,12 +12,20 @@ menuconfig TOUCHSCREEN_NT36xxx_HOSTDL_SPI_MMI
 
 if TOUCHSCREEN_NT36xxx_HOSTDL_SPI_MMI
 
-config INPUT_NOVA_0FLASH_MMI_ENABLE_DOUBLE_TAP
-	bool "Moto Novatek NT36xxx Double tap"
-	depends on SENSORS_CLASS
+config INPUT_NOVA_0FLASH_MMI_ENABLE_WAKEUP_GESTURE
+	bool "Moto Novatek NT36xxx wakeup gestures"
 	default n
 	help
-	  Say Y here if you want to have Double tap support on Moto Novatek NT36xxx.
+	  Say Y here if you want to have wakeup gesture support on Moto Novatek NT36xxx.
+
+	  If unsure, say N.
+
+config INPUT_NOVA_0FLASH_MMI_ENABLE_SENSORS_CLASS
+	bool "Moto Novatek NT36xxx sensors class"
+	depends on SENSORS_CLASS && INPUT_NOVA_0FLASH_MMI_ENABLE_WAKEUP_GESTURE
+	default n
+	help
+	  Say Y here if you want to have sensors class support on Moto Novatek NT36xxx.
 
 	  If unsure, say N.
 
