@@ -124,6 +124,7 @@ extern const uint16_t touch_key_array[TOUCH_KEY_NUM];
 #endif
 #if WAKEUP_GESTURE
 extern const uint16_t gesture_key_array[];
+#define DATA_PROTOCOL           30
 #endif
 #define BOOT_UPDATE_FIRMWARE 1
 #define BOOT_UPDATE_FIRMWARE_NAME "novatek_ts_fw.bin"
@@ -213,8 +214,8 @@ struct nvt_ts_data {
 #endif
 #ifdef NVT_SENSOR_EN
 	bool wakeable;
-	bool should_enable_gesture;
 	bool gesture_enabled;
+	DECLARE_BITMAP(gesture_bits, DATA_PROTOCOL);
 #ifdef NOVATECH_PEN_NOTIFIER
 	bool fw_ready_flag;
 	int nvt_pen_detect_flag;
