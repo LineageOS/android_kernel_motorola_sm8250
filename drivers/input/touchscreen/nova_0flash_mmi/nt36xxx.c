@@ -2130,7 +2130,6 @@ static int nvt_sensor_set_enable(struct sensors_classdev *sensors_cdev,
 		unsigned int enable)
 {
 	NVT_LOG("Gesture set enable %d!", enable);
-	mutex_lock(&ts->state_mutex);
 	if (enable == 1) {
 		ts->should_enable_gesture = true;
 	} else if (enable == 0) {
@@ -2138,7 +2137,6 @@ static int nvt_sensor_set_enable(struct sensors_classdev *sensors_cdev,
 	} else {
 		NVT_LOG("unknown enable symbol\n");
 	}
-	mutex_unlock(&ts->state_mutex);
 	return 0;
 }
 
@@ -2862,12 +2860,6 @@ static int32_t nvt_ts_probe(struct spi_device *client)
 	mutex_init(&ts->lock);
 	mutex_init(&ts->xbuf_lock);
 
-#ifdef NVT_SENSOR_EN
-	mutex_init(&ts->state_mutex);
-	//unknown screen state
-	ts->screen_state = SCREEN_UNKNOWN;
-#endif
-
 	//---eng reset before TP_RESX high
 	nvt_eng_reset();
 
@@ -3565,14 +3557,7 @@ int32_t nvt_ts_suspend(struct device *dev)
 {
 	uint8_t buf[4] = {0};
 
-#ifdef NVT_SENSOR_EN
-	mutex_lock(&ts->state_mutex);
-#endif
-
 	if (!ts->bTouchIsAwake) {
-#ifdef NVT_SENSOR_EN
-		mutex_unlock(&ts->state_mutex);
-#endif
 		NVT_LOG("Touch is already suspend\n");
 		return 0;
 	}
@@ -3635,10 +3620,6 @@ int32_t nvt_ts_suspend(struct device *dev)
 	msleep(50);
 
 	NVT_LOG("end\n");
-#ifdef NVT_SENSOR_EN
-	ts->screen_state = SCREEN_OFF;
-	mutex_unlock(&ts->state_mutex);
-#endif
 
 	return 0;
 }
@@ -3652,14 +3633,7 @@ return:
 *******************************************************/
 int32_t nvt_ts_resume(struct device *dev)
 {
-
-#ifdef NVT_SENSOR_EN
-	mutex_lock(&ts->state_mutex);
-#endif
 	if (ts->bTouchIsAwake) {
-#ifdef NVT_SENSOR_EN
-		mutex_unlock(&ts->state_mutex);
-#endif
 		NVT_LOG("Touch is already resume\n");
 		return 0;
 	}
@@ -3733,10 +3707,6 @@ int32_t nvt_ts_resume(struct device *dev)
 
 	NVT_LOG("end\n");
 
-#ifdef NVT_SENSOR_EN
-	ts->screen_state = SCREEN_ON;
-	mutex_unlock(&ts->state_mutex);
-#endif
 	return 0;
 }
 
