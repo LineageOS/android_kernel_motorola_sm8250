@@ -1192,6 +1192,7 @@
 		mmi,fg-psy-name = "fg_main_battery";
 		design-capacity = <1255>;
 		mmi,batt-profile-name = "LS30_ATL_1255MAH";
+		mmi,temp-source = <1>;
 	};
 };
 
@@ -1223,5 +1224,6 @@
 		mmi,fg-psy-name = "fg_flip_battery";
 		design-capacity = <1545>;
 		mmi,batt-profile-name = "LS40_ATL_1545MAH";
+		mmi,temp-source = <1>;
 	};
 };
