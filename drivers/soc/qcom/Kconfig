@@ -91,6 +91,22 @@ config KYOTO_DTB
 	Only include KYOTO specific DTBs to limit the number that
 	get built during kernel compilation.
 
+config SAVANNAH_DTB
+	depends on ARCH_QCOM
+	default n
+	bool "SAVANNAH DTBs"
+	help
+	Only include SAVANNAH specific DTBs to limit the number that
+	get built during kernel compilation.
+
+config BURTON_DTB
+	depends on ARCH_QCOM
+	default n
+	bool "BURTON DTBs"
+	help
+	Only include BURTON specific DTBs to limit the number that
+	get built during kernel compilation.
+
 config QCOM_COMMAND_DB
 	tristate "Qualcomm Command DB"
 	depends on ARCH_QCOM || COMPILE_TEST
