@@ -783,6 +783,46 @@ struct sde_connector_dyn_hdr_metadata *sde_connector_get_dyn_hdr_meta(
 	return &c_state->dyn_hdr_meta;
 }
 
+static bool sde_connector_fod_dim_layer_status(struct sde_connector *c_conn)
+{
+	if (!c_conn->encoder || !c_conn->encoder->crtc ||
+	    !c_conn->encoder->crtc->state)
+		return false;
+
+	return !!to_sde_crtc_state(c_conn->encoder->crtc->state)->fod_dim_layer;
+}
+
+struct dsi_panel *sde_connector_panel(struct sde_connector *c_conn)
+{
+	struct dsi_display *display = (struct dsi_display *)c_conn->display;
+
+	return display ? display->panel : NULL;
+}
+
+static void sde_connector_pre_update_fod_hbm(struct sde_connector *c_conn)
+{
+	struct dsi_panel *panel;
+	bool status;
+
+	panel = sde_connector_panel(c_conn);
+	if (!panel)
+		return;
+
+	status = sde_connector_fod_dim_layer_status(c_conn);
+	if (status == dsi_panel_get_fod_ui(panel))
+		return;
+
+	if (status)
+		sde_encoder_wait_for_event(c_conn->encoder, MSM_ENC_VBLANK);
+
+	dsi_panel_set_fod_hbm(panel, status);
+
+	if (!status)
+		sde_encoder_wait_for_event(c_conn->encoder, MSM_ENC_VBLANK);
+
+	dsi_panel_set_fod_ui(panel, status);
+}
+
 int sde_connector_pre_kickoff(struct drm_connector *connector)
 {
 	struct sde_connector *c_conn;
@@ -827,6 +867,9 @@ int sde_connector_pre_kickoff(struct drm_connector *connector)
 	params.hdr_meta = &c_state->hdr_meta;
 
 	SDE_EVT32_VERBOSE(connector->base.id);
+
+	if (c_conn->connector_type == DRM_MODE_CONNECTOR_DSI)
+		sde_connector_pre_update_fod_hbm(c_conn);
 
 	rc = c_conn->ops.pre_kickoff(connector, c_conn->display, &params);
 
