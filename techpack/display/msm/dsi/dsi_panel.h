@@ -356,6 +356,8 @@ struct dsi_panel {
 
 	struct brightness_alpha_pair *fod_dim_lut;
 	unsigned int fod_dim_lut_len;
+	u8 fod_dim_alpha;
+	bool fod_hbm_enabled;
 };
 
 bool dsi_display_all_displays_dead(void);
@@ -492,5 +494,7 @@ int dsi_panel_get_elvss_data(struct dsi_panel *panel);
 int dsi_panel_get_elvss_data_1(struct dsi_panel *panel);
 int dsi_panel_set_elvss_dim_off(struct dsi_panel *panel, u8 val);
 int dsi_panel_parse_elvss_config(struct dsi_panel *panel, u8 elv_vl);
+
+int dsi_panel_set_fod_hbm(struct dsi_panel *panel, bool status);
 
 #endif /* _DSI_PANEL_H_ */
