@@ -3073,16 +3073,6 @@ static int32_t nvt_ts_probe(struct spi_device *client)
 		goto err_register_fb_notif_failed;
 	}
 #endif
-
-#ifdef NVT_CONFIG_PANEL_NOTIFICATIONS
-	ts->panel_notif.notifier_call = nvt_panel_notifier_callback;
-	ret = register_panel_notifier(&ts->panel_notif);
-	if(ret) {
-		NVT_ERR("register panel_notifier failed. ret=%d\n", ret);
-		goto err_register_fb_notif_failed;
-	}
-#endif
-
 #elif defined(CONFIG_HAS_EARLYSUSPEND)
 	ts->early_suspend.level = EARLY_SUSPEND_LEVEL_BLANK_SCREEN + 1;
 	ts->early_suspend.suspend = nvt_ts_early_suspend;
@@ -3093,6 +3083,16 @@ static int32_t nvt_ts_probe(struct spi_device *client)
 		goto err_register_early_suspend_failed;
 	}
 #endif
+
+#ifdef NVT_CONFIG_PANEL_NOTIFICATIONS
+	ts->panel_notif.notifier_call = nvt_panel_notifier_callback;
+	ret = register_panel_notifier(&ts->panel_notif);
+	if(ret) {
+		NVT_ERR("register panel_notifier failed. ret=%d\n", ret);
+		goto err_register_panel_notif_failed;
+	}
+#endif
+
 #endif //end version code >= 5.4.0
 #endif //end touchscreen_mmi
 
@@ -3127,6 +3127,11 @@ err_create_touchscreen_class_failed:
 err_register_drm_notif_failed:
 #endif
 #else //vension code < 5.4.0
+#ifdef NVT_CONFIG_PANEL_NOTIFICATIONS
+	if (unregister_panel_notifier(&ts->panel_notif))
+		NVT_ERR("Error occurred while unregistering panel_notifier.\n");
+err_register_panel_notif_failed:
+#endif
 #if defined(CONFIG_FB)
 #ifdef _MSM_DRM_NOTIFY_H_
 	if (msm_drm_unregister_client(&ts->drm_notif))
