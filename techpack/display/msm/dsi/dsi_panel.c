@@ -1263,6 +1263,12 @@ void dsi_panel_set_custom_param(struct dsi_panel *panel)
 				param_info.param_conn_idx = CONNECTOR_PROP_ACL;
 				apply = true;
 				break;
+			case PARAM_DC_ID :
+				param_info.value = panel->dc_state;
+				param_info.param_idx = PARAM_DC_ID;
+				param_info.param_conn_idx = CONNECTOR_PROP_DC;
+				apply = true;
+				break;
 			default:
 				break;
 		}
