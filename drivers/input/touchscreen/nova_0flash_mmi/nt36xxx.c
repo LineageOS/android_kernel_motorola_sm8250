@@ -202,6 +202,13 @@ const uint16_t gesture_key_array[] = {
 	KEY_POWER,  //GESTURE_SLIDE_RIGHT
 	KEY_SINGLE_CLICK,     //GESTURE_SINGLE_CLICK
 };
+
+/* Double tap detection resources */
+#define DT2W_FEATHER        150
+#define DT2W_TIME         500
+static s64 tap_time_pre = 0;
+static bool touch_nr = false;
+static uint32_t x_pre = 0, y_pre = 0;
 #endif
 
 #ifdef CONFIG_MTK_SPI
@@ -236,12 +243,6 @@ const struct mtk_chip_config spi_ctrdata = {
 #endif
 
 static uint8_t bTouchIsAwake = 0;
-
-/* Double tap detection resources */
-#define DT2W_FEATHER        150
-#define DT2W_TIME         500
-static unsigned long long tap_time_pre = 0;
-static int touch_nr = 0, x_pre = 0, y_pre = 0;
 
 /*******************************************************
 Description:
@@ -1585,52 +1586,43 @@ static int32_t nvt_ts_point_data_checksum(uint8_t *buf, uint8_t length)
 #endif
 
 /* Doubletap2wake */
-
-static void doubletap2wake_reset(void) {
-	touch_nr = 0;
+#ifdef WAKEUP_GESTURE
+static void doubletap2wake_reset(void)
+{
+	touch_nr = false;
 	tap_time_pre = 0;
 	x_pre = 0;
 	y_pre = 0;
 }
 
-static unsigned int calc_feather(int coord, int prev_coord) {
-	int calc_coord = 0;
-	calc_coord = coord-prev_coord;
-	if (calc_coord < 0)
-		calc_coord = calc_coord * (-1);
-	return calc_coord;
+static inline uint32_t calc_feather(uint32_t coord, uint32_t prev_coord)
+{
+	return coord >= prev_coord ? coord - prev_coord : prev_coord - coord;
 }
 
-static void new_touch(int x, int y) {
-	tap_time_pre = ktime_to_ms(ktime_get());
+static void new_touch(s64 now, uint32_t x, uint32_t y)
+{
+	tap_time_pre = now;
 	x_pre = x;
 	y_pre = y;
-	touch_nr++;
+	touch_nr = true;
 }
 
-static bool detect_doubletap2wake(int x, int y)
+static bool detect_doubletap2wake(uint32_t x, uint32_t y)
 {
-	if (touch_nr == 0) {
-		new_touch(x, y);
-	} else if (touch_nr == 1) {
-		if ((calc_feather(x, x_pre) < DT2W_FEATHER) &&
-			(calc_feather(y, y_pre) < DT2W_FEATHER) &&
-			((ktime_to_ms(ktime_get())-tap_time_pre) < DT2W_TIME))
-			touch_nr++;
-		else {
-			doubletap2wake_reset();
-			new_touch(x, y);
-		}
-	} else {
-		doubletap2wake_reset();
-		new_touch(x, y);
-	}
-	if ((touch_nr > 1)) {
+	s64 now = ktime_to_ms(ktime_get());
+
+	if (touch_nr && calc_feather(x, x_pre) < DT2W_FEATHER &&
+	    calc_feather(y, y_pre) < DT2W_FEATHER &&
+	    now - tap_time_pre < DT2W_TIME) {
 		doubletap2wake_reset();
 		return true;
 	}
+
+	new_touch(now, x, y);
 	return false;
 }
+#endif
 
 /*******************************************************
 Description:
