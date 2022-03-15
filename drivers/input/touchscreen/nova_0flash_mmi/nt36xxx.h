@@ -218,6 +218,8 @@ struct nvt_ts_data {
 	bool gesture_enabled;
 	bool wakeable;
 	DECLARE_BITMAP(gesture_bits, DATA_PROTOCOL);
+	struct timer_list gt_timer;
+	atomic_t gesture_id;
 #endif
 #ifdef NOVATECH_PEN_NOTIFIER
 	bool fw_ready_flag;
