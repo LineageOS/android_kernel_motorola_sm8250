@@ -1032,14 +1032,12 @@ Description:
 return:
 	n.a.
 *******************************************************/
-void nvt_ts_wakeup_gesture_report(uint8_t gesture_id, uint8_t *data)
+static void nvt_ts_wakeup_gesture_report(uint8_t gesture_id, uint8_t *data)
 {
-	uint32_t keycode = 0;
 	uint8_t func_type = data[2];
 	uint8_t func_id = data[3];
-#ifdef NVT_SENSOR_EN
-	static int report_cnt = 0;
-#endif
+	unsigned long flags;
+	unsigned long timeout = 1;
 
 	/* support fw specifal data protocol */
 	if ((gesture_id == DATA_PROTOCOL) && (func_type == FUNCPAGE_GESTURE)) {
@@ -1055,6 +1053,34 @@ void nvt_ts_wakeup_gesture_report(uint8_t gesture_id, uint8_t *data)
 		NVT_LOG("gesture_id = %d not enabled, skip.\n", gesture_id);
 		return;
 	}
+
+	// Delay single click for double click detection to complete
+	if (gesture_id == GESTURE_SINGLE_CLICK &&
+	    is_gesture_enabled(GESTURE_DOUBLE_CLICK)) {
+		timeout = msecs_to_jiffies(DT2W_TIME);
+		NVT_LOG("Delay single click as double click is enabled\n");
+	}
+
+	spin_lock_irqsave(&ts->gt_data.lock, flags);
+	ts->gt_data.gesture_id = gesture_id;
+	spin_unlock_irqrestore(&ts->gt_data.lock, flags);
+
+	mod_timer(&ts->gt_data.timer, jiffies + timeout);
+}
+
+static void nvt_ts_wakeup_gesture_report_timer(struct timer_list *t)
+{
+	struct nvt_ts_gesture_data *gt_data = from_timer(gt_data, t, timer);
+	uint32_t keycode = 0;
+	uint8_t gesture_id;
+#ifdef NVT_SENSOR_EN
+	static int report_cnt = 0;
+#endif
+	unsigned long flags;
+
+	spin_lock_irqsave(&gt_data->lock, flags);
+	gesture_id = gt_data->gesture_id;
+	spin_unlock_irqrestore(&gt_data->lock, flags);
 
 	switch (gesture_id) {
 		case GESTURE_WORD_C:
@@ -2558,6 +2584,8 @@ static int32_t nvt_ts_probe(struct spi_device *client)
 
 #ifdef WAKEUP_GESTURE
 	device_init_wakeup(&ts->input_dev->dev, 1);
+	spin_lock_init(&ts->gt_data.lock);
+	timer_setup(&ts->gt_data.timer, nvt_ts_wakeup_gesture_report_timer, 0);
 #endif
 #ifdef NVT_SENSOR_EN
 	if (!initialized_sensor) {
@@ -2831,6 +2859,7 @@ err_create_nvt_fwu_wq_failed:
 #endif
 #ifdef WAKEUP_GESTURE
 	device_init_wakeup(&ts->input_dev->dev, 0);
+	del_timer_sync(&ts->gt_data.timer);
 #endif
 err_register_charger_notify_failed:
 	if (ts->charger_detection) {
@@ -2967,6 +2996,7 @@ static int32_t nvt_ts_remove(struct spi_device *client)
 #ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
 #ifdef WAKEUP_GESTURE
 	device_init_wakeup(&ts->input_dev->dev, 0);
+	del_timer_sync(&ts->gt_data.timer);
 #if defined(NVT_CONFIG_PANEL_NOTIFICATIONS) || defined(NVT_SET_TOUCH_STATE)
 	touch_set_state(TOUCH_DEEP_SLEEP_STATE, TOUCH_PANEL_IDX_PRIMARY);
 #endif
@@ -3058,6 +3088,7 @@ static void nvt_ts_shutdown(struct spi_device *client)
 
 #ifdef WAKEUP_GESTURE
 	device_init_wakeup(&ts->input_dev->dev, 0);
+	del_timer_sync(&ts->gt_data.timer);
 #endif
 }
 
