@@ -17,7 +17,7 @@ endif
 ifeq ($(CONFIG_ARCH_SDM660), y)
 include $(srctree)/techpack/audio/config/sdm660auto.conf
 endif
-ifeq ($(CONFIG_NIO_DTB), y)
+ifeq ($(filter-out $(CONFIG_NIO_DTB) $(CONFIG_PSTAR_DTB), y),)
 include $(srctree)/techpack/audio/config/konanio.conf
 export $(shell sed 's/=.*//' $(srctree)/techpack/audio/config/konanio.conf)
 endif
@@ -53,7 +53,7 @@ ifeq ($(CONFIG_ARCH_SDM660), y)
 LINUXINCLUDE    += \
                 -include $(srctree)/techpack/audio/config/sdm660autoconf.h
 endif
-ifeq ($(CONFIG_NIO_DTB), y)
+ifeq ($(filter-out $(CONFIG_NIO_DTB) $(CONFIG_PSTAR_DTB), y),)
 LINUXINCLUDE    += \
                 -include $(srctree)/techpack/audio/config/konanio.h
 endif
