@@ -21,6 +21,10 @@ ifeq ($(CONFIG_NIO_DTB), y)
 include $(srctree)/techpack/audio/config/konanio.conf
 export $(shell sed 's/=.*//' $(srctree)/techpack/audio/config/konanio.conf)
 endif
+ifeq ($(CONFIG_PSTAR_DTB), y)
+include $(srctree)/techpack/audio/config/konapstar.conf
+export $(shell sed 's/=.*//' $(srctree)/techpack/audio/config/konapstar.conf)
+endif
 
 # Use USERINCLUDE when you must reference the UAPI directories only.
 USERINCLUDE     += \
@@ -56,6 +60,10 @@ endif
 ifeq ($(CONFIG_NIO_DTB), y)
 LINUXINCLUDE    += \
                 -include $(srctree)/techpack/audio/config/konanio.h
+endif
+ifeq ($(CONFIG_PSTAR_DTB), y)
+LINUXINCLUDE    += \
+                -include $(srctree)/techpack/audio/config/konapstar.h
 endif
 
 obj-y += soc/
