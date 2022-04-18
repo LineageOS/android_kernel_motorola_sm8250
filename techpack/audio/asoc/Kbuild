@@ -135,7 +135,7 @@ endif
 ifdef CONFIG_SND_SOC_KONA
 ifeq ($(CONFIG_NIO_DTB), y)
         MACHINE_OBJS += kona-awinic.o
-else ifneq (,$(filter pstar%, $(TARGET_PRODUCT)))
+else ifeq ($(CONFIG_PSTAR_DTB), y)
         MACHINE_OBJS += kona-awinic.o
 else
 	MACHINE_OBJS += kona.o
@@ -245,7 +245,7 @@ ifeq ($(call cc-option-yn, -Wheader-guard),y)
 EXTRA_CFLAGS += -Wheader-guard
 endif
 
-ifneq (,$(filter pstar%, $(TARGET_PRODUCT)))
+ifeq ($(CONFIG_PSTAR_DTB), y)
 EXTRA_CFLAGS += -DCONFIG_AW882XX_I2C_NO3_BUS
 endif
 

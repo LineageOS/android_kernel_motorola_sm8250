@@ -88,8 +88,8 @@ ifeq ($(KERNEL_BUILD), 0)
 	ifeq ($(CONFIG_NIO_DTB), y)
                 INCS    +=  -include $(AUDIO_ROOT)/config/konanio.h
 	endif
-	ifneq (,$(filter pstar%, $(TARGET_PRODUCT)))
-                INCS    +=  -include $(AUDIO_ROOT)/config/konanio.h
+	ifeq ($(CONFIG_PSTAR_DTB), y)
+                INCS    +=  -include $(AUDIO_ROOT)/config/konapstar.h
 	endif
 endif
 
