@@ -4227,9 +4227,61 @@ static ssize_t sysfs_fod_ui_read(struct device *dev,
 	return snprintf(buf, PAGE_SIZE, "%u\n", status);
 }
 
+struct dsi_cmd_desc *get_hbm_cmds(struct device *dev, enum hbm_state state)
+{
+	struct dsi_display *display = dev_get_drvdata(dev);
+	struct dsi_panel *panel = display->panel;
+
+	return panel->param_cmds[PARAM_HBM_ID].val_map[state].cmds->cmds;
+}
+
+static ssize_t sysfs_hbm_on_delay_read(struct device *dev,
+	struct device_attribute *attr, char *buf)
+{
+	struct dsi_cmd_desc *cmds = get_hbm_cmds(dev, HBM_ON_STATE);
+
+	return snprintf(buf, PAGE_SIZE, "%u\n", cmds->post_wait_ms);
+}
+
+static ssize_t sysfs_hbm_on_delay_write(struct device *dev,
+	struct device_attribute *attr, const char *buf, size_t count)
+{
+	struct dsi_cmd_desc *cmds = get_hbm_cmds(dev, HBM_ON_STATE);
+
+	sscanf(buf, "%u", &cmds->post_wait_ms);
+
+	return count;
+}
+
+static ssize_t sysfs_hbm_off_delay_read(struct device *dev,
+	struct device_attribute *attr, char *buf)
+{
+	struct dsi_cmd_desc *cmds = get_hbm_cmds(dev, HBM_OFF_STATE);
+
+	return snprintf(buf, PAGE_SIZE, "%u\n", cmds->post_wait_ms);
+}
+
+static ssize_t sysfs_hbm_off_delay_write(struct device *dev,
+	struct device_attribute *attr, const char *buf, size_t count)
+{
+	struct dsi_cmd_desc *cmds = get_hbm_cmds(dev, HBM_OFF_STATE);
+
+	sscanf(buf, "%u", &cmds->post_wait_ms);
+
+	return count;
+}
+
 static DEVICE_ATTR(fod_ui, 0444, sysfs_fod_ui_read, NULL);
+static DEVICE_ATTR(hbm_on_delay, 0644,
+		   sysfs_hbm_on_delay_read,
+		   sysfs_hbm_on_delay_write);
+static DEVICE_ATTR(hbm_off_delay, 0644,
+		   sysfs_hbm_off_delay_read,
+		   sysfs_hbm_off_delay_write);
 
 static struct attribute *panel_attrs[] = {
+	&dev_attr_hbm_on_delay.attr,
+	&dev_attr_hbm_off_delay.attr,
 	&dev_attr_fod_ui.attr,
 	NULL,
 };
