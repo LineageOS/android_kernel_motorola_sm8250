@@ -1202,6 +1202,11 @@ void dsi_panel_set_fod_ui(struct dsi_panel *panel, bool status)
 	sysfs_notify(&panel->parent->kobj, NULL, "fod_ui");
 }
 
+bool dsi_panel_get_force_fod_ui(struct dsi_panel *panel)
+{
+	return panel->force_fod_ui;
+}
+
 static int dsi_panel_set_acl(struct dsi_panel *panel,
                         struct msm_param_info *param_info)
 {
@@ -4227,6 +4232,26 @@ static ssize_t sysfs_fod_ui_read(struct device *dev,
 	return snprintf(buf, PAGE_SIZE, "%u\n", status);
 }
 
+static ssize_t sysfs_force_fod_ui_read(struct device *dev,
+	struct device_attribute *attr, char *buf)
+{
+	struct dsi_display *display = dev_get_drvdata(dev);
+	struct dsi_panel *panel = display->panel;
+
+	return snprintf(buf, PAGE_SIZE, "%u\n", panel->force_fod_ui);
+}
+
+ssize_t sysfs_force_fod_ui_write(struct device *dev,
+	struct device_attribute *attr, const char *buf, size_t count)
+{
+	struct dsi_display *display = dev_get_drvdata(dev);
+	struct dsi_panel *panel = display->panel;
+
+	kstrtobool(buf, &panel->force_fod_ui);
+
+	return count;
+}
+
 struct dsi_cmd_desc *get_hbm_cmds(struct device *dev, enum hbm_state state)
 {
 	struct dsi_display *display = dev_get_drvdata(dev);
@@ -4272,6 +4297,9 @@ static ssize_t sysfs_hbm_off_delay_write(struct device *dev,
 }
 
 static DEVICE_ATTR(fod_ui, 0444, sysfs_fod_ui_read, NULL);
+static DEVICE_ATTR(force_fod_ui, 0644,
+		   sysfs_force_fod_ui_read,
+		   sysfs_force_fod_ui_write);
 static DEVICE_ATTR(hbm_on_delay, 0644,
 		   sysfs_hbm_on_delay_read,
 		   sysfs_hbm_on_delay_write);
@@ -4283,6 +4311,7 @@ static struct attribute *panel_attrs[] = {
 	&dev_attr_hbm_on_delay.attr,
 	&dev_attr_hbm_off_delay.attr,
 	&dev_attr_fod_ui.attr,
+	&dev_attr_force_fod_ui.attr,
 	NULL,
 };
 
