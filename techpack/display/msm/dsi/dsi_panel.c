@@ -1043,6 +1043,11 @@ static int dsi_panel_send_param_cmd(struct dsi_panel *panel,
 
 	mutex_lock(&panel->panel_lock);
 
+	if (!panel->panel_initialized) {
+		rc = -ENODEV;
+		goto end;
+	}
+
 	if (param_info->value >= panel_param->val_max)
 		param_info->value = panel_param->val_max - 1;
 
