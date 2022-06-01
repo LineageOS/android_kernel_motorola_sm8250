@@ -1002,7 +1002,8 @@ int dsi_panel_set_backlight(struct dsi_panel *panel, u32 bl_lvl)
 
 	bl->real_bl_level = bl_lvl;
 
-	panel->fod_dim_alpha = dsi_panel_get_fod_dim_alpha(panel);
+	if (!panel->force_fod_dim_alpha)
+		panel->fod_dim_alpha = dsi_panel_get_fod_dim_alpha(panel);
 
 	return rc;
 }
@@ -4252,6 +4253,38 @@ ssize_t sysfs_force_fod_ui_write(struct device *dev,
 	return count;
 }
 
+static ssize_t sysfs_fod_dim_alpha_read(struct device *dev,
+	struct device_attribute *attr, char *buf)
+{
+	struct dsi_display *display = dev_get_drvdata(dev);
+	struct dsi_panel *panel = display->panel;
+
+	return snprintf(buf, PAGE_SIZE, "%u\n", panel->fod_dim_alpha);
+}
+
+ssize_t sysfs_fod_dim_alpha_write(struct device *dev,
+	struct device_attribute *attr, const char *buf, size_t count)
+{
+	struct dsi_display *display = dev_get_drvdata(dev);
+	struct dsi_panel *panel = display->panel;
+	int value;
+
+	sscanf(buf, "%d", &value);
+
+	if (value > 255)
+		return -EINVAL;
+
+	panel->force_fod_dim_alpha = value >= 0;
+
+	if (!panel->force_fod_dim_alpha)
+		goto exit;
+
+	panel->fod_dim_alpha = value;
+
+exit:
+	return count;
+}
+
 struct dsi_cmd_desc *get_hbm_cmds(struct device *dev, enum hbm_state state)
 {
 	struct dsi_display *display = dev_get_drvdata(dev);
@@ -4300,6 +4333,9 @@ static DEVICE_ATTR(fod_ui, 0444, sysfs_fod_ui_read, NULL);
 static DEVICE_ATTR(force_fod_ui, 0644,
 		   sysfs_force_fod_ui_read,
 		   sysfs_force_fod_ui_write);
+static DEVICE_ATTR(fod_dim_alpha, 0644,
+		   sysfs_fod_dim_alpha_read,
+		   sysfs_fod_dim_alpha_write);
 static DEVICE_ATTR(hbm_on_delay, 0644,
 		   sysfs_hbm_on_delay_read,
 		   sysfs_hbm_on_delay_write);
@@ -4311,6 +4347,7 @@ static struct attribute *panel_attrs[] = {
 	&dev_attr_hbm_on_delay.attr,
 	&dev_attr_hbm_off_delay.attr,
 	&dev_attr_fod_ui.attr,
+	&dev_attr_fod_dim_alpha.attr,
 	&dev_attr_force_fod_ui.attr,
 	NULL,
 };
