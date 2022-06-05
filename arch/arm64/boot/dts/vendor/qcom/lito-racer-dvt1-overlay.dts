@@ -1,0 +1,147 @@
+/* Copyright (c) 2019, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include "lito-racer-common-overlay.dtsi"
+
+/ {
+	model = "Racer";
+	compatible = "qcom,lito-racer", "qcom,lito-moto", "qcom,lito";
+	qcom,msm-id = <400 0x10000>, <440 0x10000>;
+	qcom,board-id = <0x47 0xB100>;
+};
+
+/*
+ * Charleston HW rev DVT1 specific changes go here
+ */
+
+/* gpio70 --> gpio33 */
+&marley_irq_default {
+	mux {
+		pins = "gpio33";
+	};
+	config {
+		pins = "gpio33";
+	};
+};
+
+&prince_irq_default {
+	mux {
+		pins = "gpio56";
+	};
+	config {
+		pins = "gpio56";
+		bias-disable;
+	};
+};
+
+/* gpio71 --> gpio90 */
+&prince_reset_default {
+	mux {
+		pins = "gpio90";
+	};
+	config {
+		pins = "gpio90";
+	};
+};
+
+&prince_rcv_irq_default {
+	mux {
+		pins = "gpio57";
+	};
+	config {
+		pins = "gpio57";
+		bias-disable;
+	};
+};
+
+&tlmm {
+	sec_mi2s_sleep: sec_mi2s_sleep {
+		mux {
+			pins = "gpio70", "gpio71", "gpio72", "gpio74";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio70", "gpio71", "gpio72", "gpio74";
+			drive-strength = <2>;   /* 2 mA */
+			bias-pull-down;         /* PULL DOWN */
+			input-enable;
+		};
+	};
+
+	sec_mi2s_active: sec_mi2s_active {
+		mux {
+			pins = "gpio70", "gpio71", "gpio72", "gpio74";
+			function = "sec_mi2s";
+		};
+
+		config {
+			pins = "gpio70", "gpio71", "gpio72", "gpio74";
+			drive-strength = <8>;   /* 8 mA */
+			bias-disable;           /* NO PULL */
+		};
+	};
+};
+
+&cs35l41_spk {
+	interrupts = <56 IRQ_TYPE_LEVEL_HIGH>;
+	reset-gpios = <&tlmm 90 0>;
+	cirrus,gpio-config2 {
+		cirrus,gpio-src-select = <0x5>;
+	};
+};
+
+&cs35l41_rcv {
+	interrupts = <57 IRQ_TYPE_LEVEL_HIGH>;
+	cirrus,gpio-config2 {
+		cirrus,gpio-src-select = <0x5>;
+	};
+};
+
+&cs47l35 {
+	interrupts = <33 IRQ_TYPE_LEVEL_LOW>;
+};
+
+&cs47l35_defaults {
+	aif3 {
+		groups = "aif3";
+		function = "aif3";
+		bias-bus-hold;
+	};
+
+	/delete-node/ gpio2;
+	gpio7 { /* SSC CDC Wake */
+		groups = "gpio7";
+		function = "io";
+	};
+};
+
+&dai_mi2s1 {
+	qcom,msm-mi2s-rx-lines = <2>;
+	qcom,msm-mi2s-tx-lines = <1>;
+};
+
+&q6core {
+	cdc_sec_mi2s_gpios: cdc_sec_mi2s_gpios {
+		compatible = "qcom,msm-cdc-pinctrl";
+		pinctrl-names = "aud_active", "aud_sleep";
+		pinctrl-0 = <&sec_mi2s_active>;
+		pinctrl-1 = <&sec_mi2s_sleep>;
+	};
+
+	sound-madera {
+		qcom,sec-mi2s-gpios = <&cdc_sec_mi2s_gpios>;
+	};
+};

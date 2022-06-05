@@ -1,0 +1,184 @@
+/* Copyright (c) 2019, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+#include "lagoon-moto-common-overlay-base.dtsi"
+#include "lagoon-moto-common-overlay.dtsi"
+#include "lagoon-moto-kyoto-display.dtsi"
+#include "lagoon-moto-kyoto-nfc.dtsi"
+#include "camera/lagoon-camera-sensor-mot-kyoto-overlay.dtsi"
+#include "lagoon-kyoto-audio-overlay.dtsi"
+#include "lagoon-kyoto-touchscreen.dtsi"
+#include "lagoon-kyoto-sensor-overlay.dtsi"
+#include "lagoon-kyoto-thermal.dtsi"
+#include "lagoon-kiev-fmr-overlay.dtsi"
+#include "lagoon-moto-kyoto-charger.dtsi"
+#include "lagoon-moto-kyoto-fps-overlay.dtsi"
+
+&soc {
+	qcom,tz_gpio {
+		compatible = "qcom,tz_gpio";
+		tlmm-tz = <13>,
+			<14>,
+			<15>,
+			<16>,
+			<45>,
+			<46>,
+			<56>,
+			<57>;
+	};
+};
+
+&soc {
+	gpio_keys {
+		pinctrl-0 = <&key_vol_up_default &google_key_default>;
+
+		google_key {
+			label = "google_key";
+			gpios = <&tlmm 11 GPIO_ACTIVE_LOW>;
+			linux,input-type = <1>;
+			linux,code = <KEY_SEARCH>;
+			gpio-key,wakeup;
+			debounce-interval = <15>;
+			linux,can-disable;
+		};
+	};
+};
+
+&tlmm{
+	google_key_default: google_key_default {
+		mux {
+			pins = "gpio11";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio11";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+	};
+};
+
+&usb_qmp_dp_phy {
+	status = "disabled";
+};
+
+&usb0 {
+	dwc3@a600000 {
+		usb-phy = <&qusb_phy0>, <&usb_nop_phy>;
+		maximum-speed = "high-speed";
+	};
+};
+
+&sde_dp {
+	status = "disabled";
+};
+
+&tlmm{
+	cam_pmic_en_default: cam_pmic_en_default {
+		mux {
+			pins = "gpio38";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio38";
+			drive-strength = <2>;
+			bias-pull-down;
+		};
+	};
+};
+
+&qupv3_se10_i2c {
+	status = "ok";
+
+	cam_pmic: wl2864c@29{
+		compatible = "semi,wl2864c";
+		reg = <0x29>;
+
+		semi,cs-gpios = <&tlmm 38 0>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&cam_pmic_en_default>;
+
+		vin1-supply = <&S8E>;
+		vin2-supply = <&BOB>;
+
+		regulators {
+			cam_main_dvdd_ldo: ldo1 {
+				regulator-name = "ldo1";
+				regulator-min-microvolt = <600000>;
+				regulator-max-microvolt = <3787500>;
+			};
+
+			cam_wide_front_dvdd_ldo: ldo2 {
+				regulator-name = "ldo2";
+				regulator-min-microvolt = <600000>;
+				regulator-max-microvolt = <3787500>;
+			};
+
+			cam_main_front_avdd_ldo: ldo3 {
+				regulator-name = "ldo3";
+				regulator-min-microvolt = <1200000>;
+				regulator-max-microvolt = <4387500>;
+			};
+
+			cam_wide_macro_avdd_ldo: ldo4 {
+				regulator-name = "ldo4";
+				regulator-min-microvolt = <1200000>;
+				regulator-max-microvolt = <4387500>;
+			};
+
+			cam_afvdd_ldo: ldo5 {
+				regulator-name = "ldo5";
+				regulator-min-microvolt = <1200000>;
+				regulator-max-microvolt = <4387500>;
+			};
+
+			vddois_ldo: ldo6 {
+				regulator-name = "ldo6";
+				regulator-min-microvolt = <1200000>;
+				regulator-max-microvolt = <4387500>;
+			};
+
+			cam_iovdd_ldo: ldo7 {
+				regulator-name = "ldo7";
+				regulator-min-microvolt = <1200000>;
+				regulator-max-microvolt = <4387500>;
+			};
+		};
+	};
+};
+
+&pm8008_8 {
+	status = "disabled";
+};
+
+&pm8008_9 {
+	status = "disabled";
+};
+
+&pm6150l_rgb_led {
+	red {
+		label = "charging";
+	};
+	green {
+		status = "disabled";
+	};
+	blue {
+		status = "disabled";
+	};
+};
+
+&ufshc_mem {
+       spm-level = <3>;
+};

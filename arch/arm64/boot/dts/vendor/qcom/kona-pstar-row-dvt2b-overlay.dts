@@ -1,0 +1,66 @@
+/* Copyright (c) 2021, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include "kona-pstar-common-overlay.dtsi"
+
+#define PSTAR_RADIO_ROW 1
+
+/ {
+	model = "pstar";
+	compatible = "qcom,kona-pstar", "qcom,kona-moto", "qcom,kona";
+	qcom,msm-id = <356 0x20001>;
+	qcom,board-id = <(PSTAR_RADIO_ROW << 8 | 0) 0xB2B0>;
+};
+
+&ufsphy_mem {
+    vdda-phy-always-on;
+};
+
+&cam_pmic {
+	/delete-property/ semi,cs-gpios;
+	/delete-property/ pinctrl-names;
+	/delete-property/ pinctrl-0;
+};
+
+
+&soc {
+	camera_telewide_dvdd: gpio-regulator@0 {
+		compatible = "regulator-fixed";
+		reg = <0x00 0x00>;
+		regulator-name = "camera_telewide_dvdd";
+		regulator-min-microvolt = <1200000>;
+		regulator-max-microvolt = <1200000>;
+		regulator-enable-ramp-delay = <135>;
+		enable-active-high;
+		gpio = <&tlmm 100 0>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&cam_pmic_en_default>;
+		vin-supply = <&pm8150a_s8>;
+	};
+};
+
+&front_main {
+	rgltr-min-voltage = <1800000 2800000 1104000 0>;
+	rgltr-max-voltage = <1800000 2800000 1104000 0>;
+	rgltr-load-current = <19800 53000 105000 0>;
+};
+
+&rear_uw {
+	cam_vdig-supply = <&camera_telewide_dvdd>;
+};
+
+&rear_tele {
+	cam_vdig-supply = <&camera_telewide_dvdd>;
+};
