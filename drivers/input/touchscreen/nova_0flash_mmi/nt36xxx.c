@@ -185,11 +185,15 @@ const uint16_t touch_key_array[TOUCH_KEY_NUM] = {
 #endif
 
 #if WAKEUP_GESTURE
+enum custom_gesture_keycode {
+	KEY_SINGLE_CLICK = 250,
+};
+
 const uint16_t gesture_key_array[] = {
 	KEY_POWER,  //GESTURE_WORD_C
 	KEY_POWER,  //GESTURE_WORD_W
 	KEY_POWER,  //GESTURE_WORD_V
-	KEY_POWER,  //GESTURE_DOUBLE_CLICK
+	KEY_WAKEUP, //GESTURE_DOUBLE_CLICK
 	KEY_POWER,  //GESTURE_WORD_Z
 	KEY_POWER,  //GESTURE_WORD_M
 	KEY_POWER,  //GESTURE_WORD_O
@@ -199,7 +203,12 @@ const uint16_t gesture_key_array[] = {
 	KEY_POWER,  //GESTURE_SLIDE_DOWN
 	KEY_POWER,  //GESTURE_SLIDE_LEFT
 	KEY_POWER,  //GESTURE_SLIDE_RIGHT
+	KEY_SINGLE_CLICK,     //GESTURE_SINGLE_CLICK
 };
+
+/* Double tap detection resources */
+#define DT2W_TIME         500
+static s64 tap_time_pre = 0;
 #endif
 
 #ifdef CONFIG_MTK_SPI
@@ -975,7 +984,7 @@ static void nvt_flash_proc_deinit(void)
 #define GESTURE_WORD_C          12
 #define GESTURE_WORD_W          13
 #define GESTURE_WORD_V          14
-#define GESTURE_DOUBLE_CLICK    15
+#define GESTURE_SINGLE_CLICK    15
 #define GESTURE_WORD_Z          16
 #define GESTURE_WORD_M          17
 #define GESTURE_WORD_O          18
@@ -986,10 +995,33 @@ static void nvt_flash_proc_deinit(void)
 #define GESTURE_SLIDE_LEFT      23
 #define GESTURE_SLIDE_RIGHT     24
 /* customized gesture id */
-#define DATA_PROTOCOL           30
+#define GESTURE_DOUBLE_CLICK    25
 
 /* function page definition */
 #define FUNCPAGE_GESTURE         1
+
+static inline bool is_gesture_enabled(uint8_t gesture_id)
+{
+	return test_bit(gesture_id, ts->gesture_bits);
+}
+
+static inline void toggle_gesture(uint8_t gesture_id, bool on)
+{
+	if (on)
+		set_bit(gesture_id, ts->gesture_bits);
+	else
+		clear_bit(gesture_id, ts->gesture_bits);
+}
+
+static inline bool should_enable_gesture()
+{
+	return !bitmap_empty(ts->gesture_bits, DATA_PROTOCOL);
+}
+
+static inline void clear_gestures()
+{
+	bitmap_zero(ts->gesture_bits, DATA_PROTOCOL);
+}
 
 /*******************************************************
 Description:
@@ -1006,6 +1038,7 @@ void nvt_ts_wakeup_gesture_report(uint8_t gesture_id, uint8_t *data)
 #ifdef NVT_SENSOR_EN
 	static int report_cnt = 0;
 #endif
+	s64 now = ktime_to_ms(ktime_get());
 
 	/* support fw specifal data protocol */
 	if ((gesture_id == DATA_PROTOCOL) && (func_type == FUNCPAGE_GESTURE)) {
@@ -1015,7 +1048,20 @@ void nvt_ts_wakeup_gesture_report(uint8_t gesture_id, uint8_t *data)
 		return;
 	}
 
+	if (gesture_id == GESTURE_SINGLE_CLICK) {
+		if (now - tap_time_pre < DT2W_TIME) {
+			gesture_id = GESTURE_DOUBLE_CLICK;
+		} else {
+			tap_time_pre = now;
+		}
+	}
+
 	NVT_LOG("gesture_id = %d\n", gesture_id);
+
+	if (!is_gesture_enabled(gesture_id)) {
+		NVT_DBG("gesture_id = %d not enabled, skip.\n", gesture_id);
+		return;
+	}
 
 	switch (gesture_id) {
 		case GESTURE_WORD_C:
@@ -1070,6 +1116,10 @@ void nvt_ts_wakeup_gesture_report(uint8_t gesture_id, uint8_t *data)
 			NVT_DBG("Gesture : Slide RIGHT.\n");
 			keycode = gesture_key_array[12];
 			break;
+		case GESTURE_SINGLE_CLICK:
+			NVT_DBG("Gesture : Single Click.\n");
+			keycode = gesture_key_array[13];
+			break;
 		default:
 			break;
 	}
@@ -1090,14 +1140,14 @@ void nvt_ts_wakeup_gesture_report(uint8_t gesture_id, uint8_t *data)
 				PM_WAKEUP_EVENT(gesture_wakelock, 5000);
 		}
 #elif NVT_SENSOR_EN
-		if (!(ts->wakeable && ts->should_enable_gesture)) {
+		if (!(ts->wakeable && should_enable_gesture())) {
 			NVT_LOG("Gesture got but wakeable not set. Skip this gesture.");
 			return;
 		}
 		if (ts->report_gesture_key) {
-			input_report_key(ts->sensor_pdata->input_sensor_dev, KEY_F1, 1);
+			input_report_key(ts->sensor_pdata->input_sensor_dev, keycode, 1);
 			input_sync(ts->sensor_pdata->input_sensor_dev);
-			input_report_key(ts->sensor_pdata->input_sensor_dev, KEY_F1, 0);
+			input_report_key(ts->sensor_pdata->input_sensor_dev, keycode, 0);
 			input_sync(ts->sensor_pdata->input_sensor_dev);
 			++report_cnt;
 		} else {
@@ -1893,9 +1943,9 @@ static int nvt_sensor_set_enable(struct sensors_classdev *sensors_cdev,
 	NVT_LOG("Gesture set enable %d!", enable);
 	mutex_lock(&ts->state_mutex);
 	if (enable == 1) {
-		ts->should_enable_gesture = true;
+		toggle_gesture(GESTURE_DOUBLE_CLICK, true);
 	} else if (enable == 0) {
-		ts->should_enable_gesture = false;
+		toggle_gesture(GESTURE_DOUBLE_CLICK, false);
 	} else {
 		NVT_LOG("unknown enable symbol\n");
 	}
@@ -1926,7 +1976,8 @@ static int nvt_sensor_init(struct nvt_ts_data *data)
 
 	if (data->report_gesture_key) {
 		__set_bit(EV_KEY, sensor_input_dev->evbit);
-		__set_bit(KEY_F1, sensor_input_dev->keybit);
+		__set_bit(KEY_SINGLE_CLICK, sensor_input_dev->keybit);
+		__set_bit(KEY_WAKEUP, sensor_input_dev->keybit);
 	} else {
 		__set_bit(EV_ABS, sensor_input_dev->evbit);
 		input_set_abs_params(sensor_input_dev, ABS_DISTANCE,
@@ -1973,7 +2024,6 @@ int nvt_sensor_remove(struct nvt_ts_data *data)
 		data->sensor_pdata);
 	data->sensor_pdata = NULL;
 	data->wakeable = false;
-	data->should_enable_gesture = false;
 	if (!nvt_boot_firmware_name) {
 		kfree(nvt_boot_firmware_name);
 		nvt_boot_firmware_name = NULL;
@@ -2103,6 +2153,33 @@ static ssize_t nvt_edge_reject_show(struct device *dev,
 }
 #endif
 
+#if WAKEUP_GESTURE
+#define TS_ENABLE_FOPS(name, type)                                             \
+	static ssize_t nvt_##name##_show(                                      \
+		struct device *dev, struct device_attribute *attr, char *buf)  \
+	{                                                                      \
+		return snprintf(buf, PAGE_SIZE, "%d\n",                        \
+				is_gesture_enabled(type));                     \
+	}                                                                      \
+                                                                               \
+	static ssize_t nvt_##name##_store(struct device *dev,                  \
+					  struct device_attribute *attr,       \
+					  const char *buf, size_t count)       \
+	{                                                                      \
+		int rc, val;                                                   \
+                                                                               \
+		rc = kstrtoint(buf, 10, &val);                                 \
+		if (rc)                                                        \
+			return -EINVAL;                                        \
+                                                                               \
+		toggle_gesture(type, !!val);                                   \
+		return count;                                                  \
+	}
+
+TS_ENABLE_FOPS(double_click, GESTURE_DOUBLE_CLICK)
+TS_ENABLE_FOPS(single_click, GESTURE_SINGLE_CLICK)
+#endif
+
 static struct device_attribute touchscreen_attributes[] = {
 	__ATTR_RO(path),
 	__ATTR_RO(vendor),
@@ -2112,6 +2189,12 @@ static struct device_attribute touchscreen_attributes[] = {
 #endif
 #ifdef EDGE_SUPPRESSION
 	__ATTR(rotate, S_IRUGO | S_IWUSR | S_IWGRP, nvt_edge_reject_show, nvt_edge_reject_store),
+#endif
+#if WAKEUP_GESTURE
+	__ATTR(double_click, S_IRUSR | S_IRGRP | S_IWUSR | S_IWGRP,
+	       nvt_double_click_show, nvt_double_click_store),
+	__ATTR(single_click, S_IRUSR | S_IRGRP | S_IWUSR | S_IWGRP,
+	       nvt_single_click_show, nvt_single_click_store),
 #endif
 	__ATTR_NULL
 };
@@ -2193,6 +2276,9 @@ int32_t nvt_fw_class_init(bool create)
 		device_unregister(ts_class_dev);
 		class_unregister(touchscreen_class);
 	}
+#if WAKEUP_GESTURE
+	clear_gestures();
+#endif
 
 	return ret;
 
@@ -3011,7 +3097,7 @@ int32_t nvt_ts_suspend(struct device *dev)
 	nvt_irq_enable(false);
 #else
 #ifdef NVT_SENSOR_EN
-	if (!ts->should_enable_gesture)
+	if (!should_enable_gesture())
 		nvt_irq_enable(false);
 #endif
 #endif
@@ -3030,7 +3116,7 @@ int32_t nvt_ts_suspend(struct device *dev)
 
 #if WAKEUP_GESTURE
 #ifdef NVT_SENSOR_EN
-	if (ts->should_enable_gesture) {
+	if (should_enable_gesture()) {
 #endif
 		//---write command to enter "wakeup gesture mode"---
 		buf[0] = EVENT_MAP_HOST_CMD;
@@ -3181,7 +3267,7 @@ static int nvt_drm_notifier_callback(struct notifier_block *self, unsigned long 
 			NVT_LOG("event=%lu, *blank=%d\n", event, *blank);
 			nvt_ts_suspend(&ts->client->dev);
 #if defined(NVT_SENSOR_EN) && defined(NVT_SET_TOUCH_STATE)
-			if (ts->should_enable_gesture) {
+			if (should_enable_gesture()) {
 				NVT_LOG("double tap gesture suspend\n");
 				touch_set_state(TOUCH_LOW_POWER_STATE, TOUCH_PANEL_IDX_PRIMARY);
 			} else {
@@ -3221,7 +3307,7 @@ static int nvt_panel_notifier_callback(struct notifier_block *self, unsigned lon
 			NVT_LOG("event=%lu\n", event);
 			nvt_ts_suspend(&ts->client->dev);
 #ifdef NVT_SENSOR_EN
-			if (ts->should_enable_gesture) {
+			if (should_enable_gesture()) {
 				NVT_LOG("double tap gesture suspend\n");
 				touch_set_state(TOUCH_LOW_POWER_STATE, TOUCH_PANEL_IDX_PRIMARY);
 			} else {
@@ -3262,7 +3348,7 @@ static int nvt_drm_notifier_callback(struct notifier_block *self, unsigned long 
 				NVT_LOG("event=%lu, *blank=%d\n", event, *blank);
 				nvt_ts_suspend(&ts->client->dev);
 #ifdef NVT_SENSOR_EN
-				if (ts->should_enable_gesture) {
+				if (should_enable_gesture()) {
 					NVT_LOG("double tap gesture suspend\n");
 					return 1;
 				}
