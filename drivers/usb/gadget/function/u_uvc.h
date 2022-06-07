@@ -24,7 +24,6 @@ struct f_uvc_opts {
 	unsigned int					streaming_interval;
 	unsigned int					streaming_maxpacket;
 	unsigned int					streaming_maxburst;
-	unsigned int					streaming_txfifo_hint;
 
 	/*
 	 * Control descriptors array pointers for full-/high-speed and
