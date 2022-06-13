@@ -1081,10 +1081,6 @@ static int dsi_panel_send_param_cmd(struct dsi_panel *panel,
 
         param_map = panel_param->val_map;
 
-	DSI_INFO("%s: param_name=%s; val_max =%d, default_value=%d, value=%d\n",
-	        __func__, panel_param->param_name, panel_param->val_max,
-		panel_param->default_value, panel_param->value);
-
 	mutex_lock(&panel->panel_lock);
 
 	if (!panel->panel_initialized) {
@@ -1133,8 +1129,6 @@ static int dsi_panel_send_param_cmd(struct dsi_panel *panel,
 		        cmds++;
 		}
 		panel_param->value = param_info->value;
-		DSI_INFO("(%d) is setting new value %d\n",
-			param_info->param_idx, param_info->value);
 		rc = len;
 	}
 
@@ -1150,17 +1144,13 @@ static int dsi_panel_set_hbm(struct dsi_panel *panel,
         char name[30], val[30];
 	char *envp[3];
 
-	pr_info("Set HBM to (%d)\n", param_info->value);
-
 	snprintf(name, 30, "name=%s", "HBM");
 	snprintf(val, 30, "status=%d", param_info->value);
-	pr_info("[%s] [%s]\n", name, val);
 	envp[0] = name;
 	envp[1] = val;
 	envp[2] = NULL;
 	kobject_uevent_env(&panel->parent->kobj, KOBJ_CHANGE, envp);
 
-	pr_info("Set HBM to (%d)\n", param_info->value);
 	rc = dsi_panel_send_param_cmd(panel, param_info);
 	if (rc < 0) {
 		DSI_ERR("%s: failed to send param cmds. ret=%d\n", __func__, rc);
