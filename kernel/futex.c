@@ -1026,8 +1026,8 @@ void exit_pi_state_list(struct task_struct *curr)
  *	FUTEX_OWNER_DIED bit. See [4]
  *
  * [10] There is no transient state which leaves owner and user space
- * 	TID out of sync. Except one error case where the kernel is denied
- * 	write access to the user address, see fixup_pi_state_owner().
+ *	TID out of sync. Except one error case where the kernel is denied
+ *	write access to the user address, see fixup_pi_state_owner().
  *
  *
  * Serialization and lifetime rules:
