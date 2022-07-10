@@ -701,8 +701,10 @@ static int fts_mmi_panel_state(struct device *dev,
 	pr_info("panel state change: %d->%d\n", from, to);
 	switch (to) {
 	case TS_MMI_PM_GESTURE:
-		/* support single tap gesture */
+		/* support single/double tap gesture */
 		fromIDtoMask(GEST_ID_SIGTAP, mask, GESTURE_MASK_SIZE);
+		updateGestureMask(mask, GESTURE_MASK_SIZE, 1);
+		fromIDtoMask(GEST_ID_DBLTAP, mask, GESTURE_MASK_SIZE);
 		updateGestureMask(mask, GESTURE_MASK_SIZE, 1);
 		ts->gesture_enabled = 1;
 	case TS_MMI_PM_DEEPSLEEP:

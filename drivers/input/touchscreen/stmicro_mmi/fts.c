@@ -115,6 +115,7 @@ extern u16 gesture_coordinates_x[GESTURE_MAX_COORDS_PAIRS_REPORT];
 extern u16 gesture_coordinates_y[GESTURE_MAX_COORDS_PAIRS_REPORT];
 extern int gesture_coords_reported;
 extern struct mutex gestureMask_mutex;
+#define KEY_SINGLE_CLICK 250
 #endif
 
 #ifdef PHONE_KEY
@@ -1932,6 +1933,74 @@ END:
 	return count;
 }
 
+#ifdef GESTURE_MODE
+static inline bool is_gesture_enabled(struct fts_ts_info *ts, uint8_t gesture_id)
+{
+	return test_bit(gesture_id, ts->gesture_bits);
+}
+
+static inline void toggle_gesture(struct fts_ts_info *ts, uint8_t gesture_id, bool on)
+{
+	if (on)
+		set_bit(gesture_id, ts->gesture_bits);
+	else
+		clear_bit(gesture_id, ts->gesture_bits);
+}
+
+static inline bool should_enable_gesture(struct fts_ts_info *ts)
+{
+	return !bitmap_empty(ts->gesture_bits, GESTURE_TOTAL);
+}
+
+static inline void clear_gestures(struct fts_ts_info *ts)
+{
+	bitmap_zero(ts->gesture_bits, GESTURE_TOTAL);
+}
+
+struct fts_gesture_attribute {
+	struct device_attribute attr;
+	uint8_t gesture_id;
+};
+
+static ssize_t fts_gesture_show(struct device *dev,
+				struct device_attribute *attr, char *buf)
+{
+	struct fts_ts_info *info = dev_get_drvdata(dev);
+	struct fts_gesture_attribute *gesture_attr =
+		container_of(attr, struct fts_gesture_attribute, attr);
+
+	return snprintf(buf, PAGE_SIZE, "%d\n",
+			is_gesture_enabled(info, gesture_attr->gesture_id));
+}
+
+static ssize_t fts_gesture_store(struct device *dev,
+				 struct device_attribute *attr, const char *buf,
+				 size_t count)
+{
+	int rc, val;
+	struct fts_ts_info *info = dev_get_drvdata(dev);
+	struct fts_gesture_attribute *gesture_attr =
+		container_of(attr, struct fts_gesture_attribute, attr);
+
+	rc = kstrtoint(buf, 10, &val);
+	if (rc)
+		return -EINVAL;
+
+	toggle_gesture(info, gesture_attr->gesture_id, !!val);
+	return count;
+}
+
+#define FTS_GESTURE_ATTR(_name, _gesture_id)                                   \
+	struct fts_gesture_attribute fts_gesture_attr_##_name = {              \
+		__ATTR(_name, (S_IRUSR | S_IRGRP | S_IWUSR | S_IWGRP),         \
+		       fts_gesture_show, fts_gesture_store),                   \
+		_gesture_id                                                    \
+	}
+
+static FTS_GESTURE_ATTR(double_click, GEST_ID_DBLTAP);
+static FTS_GESTURE_ATTR(single_click, GEST_ID_SIGTAP);
+#endif
+
 static DEVICE_ATTR(fwupdate, (S_IRUGO | S_IWUSR | S_IWGRP), fts_fwupdate_show,
 		   fts_fwupdate_store);
 static DEVICE_ATTR(appid, (S_IRUGO), fts_appid_show, NULL);
@@ -2011,6 +2080,8 @@ static struct attribute *fts_attr_group[] = {
 #ifdef GESTURE_MODE
 	&dev_attr_gesture_mask.attr,
 	&dev_attr_gesture_coordinates.attr,
+	&fts_gesture_attr_double_click.attr.attr,
+	&fts_gesture_attr_single_click.attr.attr,
 #endif
 	NULL,
 };
@@ -2596,7 +2667,10 @@ static void fts_gesture_event_handler(struct fts_ts_info *info, unsigned
 		 event[5],
 		 event[6], event[7]);
 
-
+	if (!is_gesture_enabled(info, event[2])) {
+		logError(0, "gesture_id = %d not enabled, skip.\n", event[2]);
+		return;
+	}
 
 	if (event[0] == EVT_ID_USER_REPORT && event[1] ==
 	    EVT_TYPE_USER_GESTURE) {
@@ -2702,24 +2776,8 @@ static void fts_gesture_event_handler(struct fts_ts_info *info, unsigned
 			break;
 
 		case GEST_ID_SIGTAP:
-#if defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
-			if (info->imports && info->imports->report_gesture) {
-				int ret = 0;
-				struct gesture_event_data mmi_event;
-
-				logError(1, "%s %s: invoke imported report gesture function\n", tag, __func__);
-				/* extract X and Y coordinates */
-				mmi_event.evcode = 1;
-				mmi_event.evdata.x = (event[4] << 8) | event[3];
-				mmi_event.evdata.y = (event[6] << 8) | event[5];
-				/* call class method */
-				ret = info->imports->report_gesture(&mmi_event);
-				if (!ret)
-					PM_WAKEUP_EVENT(info->wakesrc, 3000);
-
-				goto gesture_done;
-			}
-#endif
+			value = KEY_SINGLE_CLICK;
+			logError(0, "%s %s: single tap !\n", tag, __func__);
 			break;
 
 		default:
@@ -4311,6 +4369,8 @@ static int fts_probe(struct spi_device *client)
 
 	input_set_capability(info->input_dev, EV_KEY, KEY_LEFTBRACE);
 	input_set_capability(info->input_dev, EV_KEY, KEY_RIGHTBRACE);
+
+	input_set_capability(info->input_dev, EV_KEY, KEY_SINGLE_CLICK);
 #endif
 
 #ifdef PHONE_KEY
@@ -4346,7 +4406,11 @@ static int fts_probe(struct spi_device *client)
 	/* init feature switches (by default all the features are disable,
 	  * if one feature want to be enabled from the start,
 	  * set the corresponding value to 1)*/
-	info->gesture_enabled = 0;
+	fromIDtoMask(GEST_ID_SIGTAP, mask, GESTURE_MASK_SIZE);
+	updateGestureMask(mask, GESTURE_MASK_SIZE, 1);
+	fromIDtoMask(GEST_ID_DBLTAP, mask, GESTURE_MASK_SIZE);
+	updateGestureMask(mask, GESTURE_MASK_SIZE, 1);
+	info->gesture_enabled = 1;
 	info->glove_enabled = 0;
 	info->charger_enabled = 0;
 	info->cover_enabled = 0;
@@ -4501,6 +4565,9 @@ static int fts_remove(struct spi_device *client)
 
 	fts_mmi_init(info, false);
 
+#ifdef GESTURE_MODE
+	clear_gestures(info);
+#endif
 	/* free all */
 	kfree(info);
 
