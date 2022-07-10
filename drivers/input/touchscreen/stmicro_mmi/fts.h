@@ -220,6 +220,8 @@
 #define PINCTRL_STATE_SUSPEND   "pmx_ts_suspend"
 #define PINCTRL_STATE_RELEASE   "pmx_ts_release"
 
+#define GESTURE_TOTAL 20
+
 /**
   * Struct which contains information about the HW platform and set up
   */
@@ -380,6 +382,8 @@ struct fts_ts_info {
 	u8 first_filter_val[4];
 	u8 linearity_val[3];
 	u8 edge_val[4];
+
+	DECLARE_BITMAP(gesture_bits, GESTURE_TOTAL);
 };
 
 
