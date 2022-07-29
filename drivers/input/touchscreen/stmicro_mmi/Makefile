@@ -1,10 +1,14 @@
-KERNEL_SRC ?= /lib/modules/$(shell uname -r)/build
+stmicro_mmi-objs := fts.o fts_proc.o fts_mmi_class.o
+stmicro_mmi-objs += fts_lib/ftsCompensation.o
+stmicro_mmi-objs += fts_lib/ftsCore.o
+stmicro_mmi-objs += fts_lib/ftsError.o
+stmicro_mmi-objs += fts_lib/ftsFlash.o
+stmicro_mmi-objs += fts_lib/ftsFrame.o
+stmicro_mmi-objs += fts_lib/ftsGesture.o
+stmicro_mmi-objs += fts_lib/ftsIO.o
+stmicro_mmi-objs += fts_lib/ftsTest.o
+stmicro_mmi-objs += fts_lib/ftsTime.o
+stmicro_mmi-objs += fts_lib/ftsTool.o
+ccflags-y += -DCONFIG_INPUT_TOUCHSCREEN_MMI
 
-all:
-	$(MAKE) -C $(KERNEL_SRC) M=$(shell pwd) modules $(KBUILD_OPTIONS)
-
-modules_install:
-	$(MAKE) INSTALL_MOD_STRIP=1 -C $(KERNEL_SRC) M=$(shell pwd) modules_install
-
-clean:
-	$(MAKE) -C $(KERNEL_SRC) M=$(PWD) clean
+obj-$(CONFIG_TOUCHSCREEN_FTS_TS) := stmicro_mmi.o
