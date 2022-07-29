@@ -11,3 +11,7 @@ config TOUCHSCREEN_FTS_TS
 
           To compile this driver as a module, choose M here: the
           module will be called stmicro_mmi.
+
+config ST_LIMIT_USE_SUPPLIER
+        bool ""
+        depends on TOUCHSCREEN_FTS_TS
