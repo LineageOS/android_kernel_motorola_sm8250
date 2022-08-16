@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c45b4956_f8c92363",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10258
+      },
+      "writtenOn": "2022-08-16T10:28:13Z",
+      "side": 1,
+      "message": "squash with https://review.lineageos.org/c/LineageOS/android_kernel_motorola_sm8250/+/334627/1",
+      "revId": "5976ba8f2bb2c71e18bbf8522bfd5cb0f914f4c0",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
