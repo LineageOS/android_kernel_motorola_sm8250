@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ea1fd40a_c69263e9",
+        "filename": "drivers/input/touchscreen/stmicro_mmi/fts.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 10258
+      },
+      "writtenOn": "2022-08-16T10:36:43Z",
+      "side": 1,
+      "message": "this is not sufficient. GEST_ID_SIGTAP is 25 and exceeds 20: https://github.com/LineageOS/android_kernel_motorola_sm8250/blob/5b7b26e6bd95622c4b340aa27ca2aa6d9bf09048/drivers/input/touchscreen/stmicro_mmi/fts_lib/ftsSoftware.h#L198\n\nGEST_ID_SIGTAP + 1 should be a safe size",
+      "range": {
+        "startLine": 223,
+        "startChar": 22,
+        "endLine": 223,
+        "endChar": 24
+      },
+      "revId": "b8dcd923c6e9401075b2f156e78870108d84063b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
