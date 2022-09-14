@@ -421,3 +421,113 @@ int sde_debugfs_mot_util_init(struct sde_kms *sde_kms,
 	mutex_init(&motUtil_data.lock);
 	return 0;
 }
+
+static int _sde_sysfs_motUtil_kms_prop_test(struct device *dev, size_t count,
+					    char *buf)
+{
+	struct dsi_display *display;
+	struct sde_kms *sde_kms;
+
+	display = dev_get_drvdata(dev);
+	if (!display) {
+		SDE_ERROR("Invalid display\n");
+		return -ENODEV;
+	}
+
+	sde_kms = to_sde_kms(
+		((struct msm_drm_private *)display->drm_dev->dev_private)->kms);
+
+	return _sde_debugfs_motUtil_kms_prop_test(sde_kms, count, buf);
+}
+
+struct mot_kmsprop_attribute {
+	struct device_attribute attr;
+	u32 param_idx;
+	enum sde_motUtil_kmsPropTest_ConnPropType conn_type;
+};
+
+static ssize_t dsi_display_mot_kmsprop_show(struct device *dev,
+					    struct device_attribute *attr,
+					    char *buf)
+{
+	struct mot_kmsprop_attribute *kmsprop_attr =
+		container_of(attr, struct mot_kmsprop_attribute, attr);
+	char input[] = { MOTUTIL_KMS_PROP_TEST, MOTUTIL_MAIN_DISP,
+			 KMSPROPTEST_GETPROP, kmsprop_attr->conn_type };
+	int rc, val;
+
+	mutex_lock(&motUtil_data.lock);
+	rc = _sde_sysfs_motUtil_kms_prop_test(dev, ARRAY_SIZE(input), input);
+	val = motUtil_data.val;
+	mutex_unlock(&motUtil_data.lock);
+
+	if (rc < 0)
+		return rc;
+
+	return snprintf(buf, PAGE_SIZE, "%d\n", val);
+}
+
+static ssize_t dsi_display_mot_kmsprop_store(struct device *dev,
+					     struct device_attribute *attr,
+					     const char *buf, size_t count)
+{
+	struct mot_kmsprop_attribute *kmsprop_attr =
+		container_of(attr, struct mot_kmsprop_attribute, attr);
+	char input[] = { MOTUTIL_KMS_PROP_TEST, MOTUTIL_MAIN_DISP,
+			 KMSPROPTEST_SETPROP, kmsprop_attr->conn_type, 0 };
+	int rc, val;
+
+	rc = kstrtoint(buf, 10, &val);
+	if (rc < 0)
+		return -EINVAL;
+	input[KMSPROPTEST_NEW_VAL] = val;
+
+	mutex_lock(&motUtil_data.lock);
+	rc = _sde_sysfs_motUtil_kms_prop_test(dev, ARRAY_SIZE(input), input);
+	mutex_unlock(&motUtil_data.lock);
+
+	if (rc < 0)
+		return rc;
+
+	return count;
+}
+
+#define KMS_PROP_ATTR(_name, _param_idx, _conn_type)                           \
+	{                                                                      \
+		__ATTR(_name, 0660, dsi_display_mot_kmsprop_show,              \
+		       dsi_display_mot_kmsprop_store),                         \
+			_param_idx, _conn_type                                 \
+	}
+
+static struct mot_kmsprop_attribute kmsprop_attrs[] = {
+	KMS_PROP_ATTR(hbm, PARAM_HBM_ID, KMSPROPTEST_TYPE_HBM),
+	KMS_PROP_ATTR(acl, PARAM_ACL_ID, KMSPROPTEST_TYPE_ACL),
+	KMS_PROP_ATTR(cabc, PARAM_CABC_ID, KMSPROPTEST_TYPE_CABC),
+	KMS_PROP_ATTR(dc, PARAM_DC_ID, KMSPROPTEST_TYPE_DC),
+	KMS_PROP_ATTR(color, PARAM_COLOR_ID, KMSPROPTEST_TYPE_COLOR),
+};
+
+void sde_sysfs_mot_kms_prop_util_init(struct dsi_display *display)
+{
+	struct device *dev = &display->pdev->dev;
+	int rc, i;
+
+	for (i = 0; i < ARRAY_SIZE(kmsprop_attrs); ++i) {
+		if (!dsi_panel_param_is_supported(kmsprop_attrs[i].param_idx))
+			continue;
+		rc = sysfs_create_file(&dev->kobj, &kmsprop_attrs[i].attr.attr);
+		if (rc)
+			DRM_ERROR("Failed to create sysfs for param id=%d\n",
+				  kmsprop_attrs[i].param_idx);
+	}
+}
+
+void sde_sysfs_mot_kms_prop_util_deinit(struct dsi_display *display)
+{
+	struct device *dev = &display->pdev->dev;
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(kmsprop_attrs); ++i) {
+		sysfs_remove_file(&dev->kobj, &kmsprop_attrs[i].attr.attr);
+	}
+}

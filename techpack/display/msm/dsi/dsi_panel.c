@@ -874,7 +874,7 @@ error:
 	return rc;
 }
 
-static bool dsi_panel_param_is_supported(u32 param_idx)
+bool dsi_panel_param_is_supported(u32 param_idx)
 {
 
 	struct panel_param *param = NULL;
