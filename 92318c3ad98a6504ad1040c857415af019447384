@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b98e5e26_3b7c50ba",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10258
+      },
+      "writtenOn": "2022-09-14T07:35:41Z",
+      "side": 1,
+      "message": "what\u0027s the problem being addressed? is it a thing on our particular device? how to reproduce?",
+      "revId": "92318c3ad98a6504ad1040c857415af019447384",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
