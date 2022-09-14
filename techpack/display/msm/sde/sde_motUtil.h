@@ -149,4 +149,8 @@ struct motUtil {
 int sde_debugfs_mot_util_init(struct sde_kms *sde_kms,
 			struct dentry *parent);
 
+struct dsi_display;
+void sde_sysfs_mot_kms_prop_util_init(struct dsi_display *display);
+void sde_sysfs_mot_kms_prop_util_deinit(struct dsi_display *display);
+
 #endif /* __MOTUTIL_H__ */

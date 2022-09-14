@@ -421,3 +421,117 @@ int sde_debugfs_mot_util_init(struct sde_kms *sde_kms,
 	mutex_init(&motUtil_data.lock);
 	return 0;
 }
+
+static int _sde_sysfs_motUtil_kms_prop_test(struct device *dev, size_t count,
+					    char *buf)
+{
+	struct dsi_display *display;
+	struct msm_drm_private *priv;
+	struct sde_kms *sde_kms;
+
+	display = dev_get_drvdata(dev);
+	if (!display) {
+		SDE_ERROR("Invalid display\n");
+		return -ENODEV;
+	}
+
+	priv = display->drm_dev->dev_private;
+	sde_kms = to_sde_kms(priv->kms);
+
+	return _sde_debugfs_motUtil_kms_prop_test(sde_kms, count, buf);
+}
+
+#define DSI_ENABLE_FOPS(name, type)                                            \
+	static ssize_t dsi_display_##name##_show(                              \
+		struct device *dev, struct device_attribute *attr, char *buf)  \
+	{                                                                      \
+		int rc, val;                                                   \
+		char input[] = { MOTUTIL_KMS_PROP_TEST, MOTUTIL_MAIN_DISP,     \
+				 KMSPROPTEST_GETPROP,                          \
+				 KMSPROPTEST_TYPE_##type };                    \
+                                                                               \
+		mutex_lock(&motUtil_data.lock);                                \
+		rc = _sde_sysfs_motUtil_kms_prop_test(dev, ARRAY_SIZE(input),  \
+						      input);                  \
+		val = motUtil_data.val;                                        \
+		mutex_unlock(&motUtil_data.lock);                              \
+                                                                               \
+		if (rc < 0)                                                    \
+			return rc;                                             \
+                                                                               \
+		return snprintf(buf, PAGE_SIZE, "%d\n", val);                  \
+	}                                                                      \
+                                                                               \
+	static ssize_t dsi_display_##name##_store(                             \
+		struct device *dev, struct device_attribute *attr,             \
+		const char *buf, size_t count)                                 \
+	{                                                                      \
+		int rc, val;                                                   \
+		char input[] = { MOTUTIL_KMS_PROP_TEST, MOTUTIL_MAIN_DISP,     \
+				 KMSPROPTEST_SETPROP, KMSPROPTEST_TYPE_##type, \
+				 0 };                                          \
+                                                                               \
+		rc = kstrtoint(buf, 10, &val);                                 \
+		if (rc < 0)                                                    \
+			return -EINVAL;                                        \
+		input[KMSPROPTEST_NEW_VAL] = val;                              \
+                                                                               \
+		mutex_lock(&motUtil_data.lock);                                \
+		rc = _sde_sysfs_motUtil_kms_prop_test(dev, ARRAY_SIZE(input),  \
+						      input);                  \
+		mutex_unlock(&motUtil_data.lock);                              \
+                                                                               \
+		if (rc < 0)                                                    \
+			return rc;                                             \
+                                                                               \
+		return count;                                                  \
+	}                                                                      \
+                                                                               \
+	static DEVICE_ATTR(name, 0644, dsi_display_##name##_show,              \
+			   dsi_display_##name##_store);
+
+DSI_ENABLE_FOPS(hbm, HBM)
+DSI_ENABLE_FOPS(acl, ACL)
+DSI_ENABLE_FOPS(cabc, CABC)
+DSI_ENABLE_FOPS(dc, DC)
+DSI_ENABLE_FOPS(color, COLOR)
+
+struct mot_kms_prop_file {
+	struct attribute *attr;
+	u32 param_idx;
+};
+
+static struct mot_kms_prop_file kms_prop_files[] = {
+	{ &dev_attr_hbm.attr, PARAM_HBM_ID },
+	{ &dev_attr_acl.attr, PARAM_ACL_ID },
+	{ &dev_attr_cabc.attr, PARAM_CABC_ID },
+	{ &dev_attr_dc.attr, PARAM_DC_ID },
+	{ &dev_attr_color.attr, PARAM_COLOR_ID },
+};
+
+void sde_sysfs_mot_kms_prop_util_init(struct dsi_display *display)
+{
+	struct device *dev = &display->pdev->dev;
+	struct mot_kms_prop_file file;
+	int rc, i;
+
+	for (i = 0; i < ARRAY_SIZE(kms_prop_files); ++i) {
+		file = kms_prop_files[i];
+		if (!file.attr || !dsi_panel_param_is_supported(file.param_idx))
+			continue;
+		rc = sysfs_create_file(&dev->kobj, file.attr);
+		if (rc)
+			DRM_ERROR("Failed to create sysfs for param id=%d\n",
+				  file.param_idx);
+	}
+}
+
+void sde_sysfs_mot_kms_prop_util_deinit(struct dsi_display *display)
+{
+	struct device *dev = &display->pdev->dev;
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(kms_prop_files); ++i) {
+		sysfs_remove_file(&dev->kobj, kms_prop_files[i].attr);
+	}
+}
