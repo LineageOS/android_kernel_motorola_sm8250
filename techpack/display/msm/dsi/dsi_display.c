@@ -5921,6 +5921,9 @@ int dsi_display_dev_probe(struct platform_device *pdev)
 	if ( display->is_dsi_mot_ext_enabled && index == DSI_PRIMARY ) {
 		dsi_display_ext_init(display);
 	}
+	if (index == DSI_PRIMARY) {
+		sde_sysfs_mot_kms_prop_util_init(display);
+	}
 	pr_info("dsi_display_dev_probe: display(%p), name: %s, is_dsi_mot_early_power_enabled=%d, is_dsi_mot_ext_enabled=%d\n",
 		display, (display->name==NULL)?"Null":display->name, display->is_dsi_mot_early_power_enabled, display->is_dsi_mot_ext_enabled);
 
@@ -5958,6 +5961,10 @@ int dsi_display_dev_remove(struct platform_device *pdev)
 				continue;
 			ctrl->ctrl->dma_cmd_workq = NULL;
 		}
+	}
+
+	if (display->display_idx == 0) {
+		sde_sysfs_mot_kms_prop_util_deinit(display);
 	}
 
 	(void)_dsi_display_dev_deinit(display);
