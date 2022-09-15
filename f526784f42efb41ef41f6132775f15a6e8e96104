@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "213b0674_f0874bbb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10258
+      },
+      "writtenOn": "2022-09-15T11:16:11Z",
+      "side": 1,
+      "message": "I have a simpler impl that wraps existing motutils, plz test if the chain works https://review.lineageos.org/c/LineageOS/android_kernel_motorola_sm8250/+/338940/1",
+      "revId": "f526784f42efb41ef41f6132775f15a6e8e96104",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
