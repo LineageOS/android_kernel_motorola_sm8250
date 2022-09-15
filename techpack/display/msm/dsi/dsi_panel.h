@@ -478,8 +478,6 @@ bool dsi_panel_param_is_supported(u32 param_idx);
 int dsi_panel_set_param(struct dsi_panel *panel,
 			struct msm_param_info *param_info);
 
-void dsi_panel_reset_param(struct dsi_panel *panel);
-
 int dsi_panel_get_elvss_data(struct dsi_panel *panel);
 int dsi_panel_get_elvss_data_1(struct dsi_panel *panel);
 int dsi_panel_set_elvss_dim_off(struct dsi_panel *panel, u8 val);
