@@ -6299,7 +6299,7 @@ static struct synaptics_dsx_patch *synaptics_dsx_init_patch(const char *name)
 	return patch_set;
 }
 
-#if !defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 static void synaptics_dsx_queued_resume(struct work_struct *w)
 {
 	struct synaptics_rmi4_data *rmi4_data =
@@ -6499,7 +6499,7 @@ static int synaptics_rmi4_hw_init(struct synaptics_rmi4_data *rmi4_data)
 		goto err_query_device;
 	}
 
-#if !defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	INIT_WORK(&rmi4_data->resume_work, synaptics_dsx_queued_resume);
 #endif
 	for (attr_count = 0; attr_count < ARRAY_SIZE(attrs); attr_count++) {
@@ -6540,7 +6540,7 @@ static int synaptics_rmi4_hw_init(struct synaptics_rmi4_data *rmi4_data)
 		}
 	}
 #endif
-#if !defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	synaptics_dsx_sysfs_touchscreen(rmi4_data, true);
 #endif
 	synaptics_dsx_pm_qos(rmi4_data, PM_ADD, false);
@@ -6900,7 +6900,7 @@ static int synaptics_rmi4_remove(struct i2c_client *client)
 	}
 
 	device_remove_file(&rmi4_data->i2c_client->dev, &dev_attr_poweron);
-#if !defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	synaptics_dsx_sysfs_touchscreen(rmi4_data, false);
 #endif
 	synaptics_rmi4_cleanup(rmi4_data);

@@ -31,7 +31,7 @@
 #endif
 
 #include "goodix_ts_core.h"
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #include "goodix_ts_mmi.h"
 #endif
 
@@ -802,7 +802,7 @@ static const struct attribute_group sysfs_group = {
 };
 
 
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 /****/
 static ssize_t path_show(struct device *dev, struct device_attribute *pAttr, char *pBuf)
 {
@@ -992,7 +992,7 @@ static int goodix_ts_sysfs_init(struct goodix_ts_core *core_data)
 		return ret;
 	}
 
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	ret = goodix_ts_sysfs_class(core_data->ts_dev, true);
 	if (ret) {
 		sysfs_remove_group(&core_data->pdev->dev.kobj, &sysfs_group);
@@ -1007,7 +1007,7 @@ static int goodix_ts_sysfs_init(struct goodix_ts_core *core_data)
 
 static void goodix_ts_sysfs_exit(struct goodix_ts_core *core_data)
 {
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	goodix_ts_sysfs_class(core_data->ts_dev, false);
 #endif
 	sysfs_remove_bin_file(&core_data->pdev->dev.kobj,
@@ -2199,7 +2199,7 @@ static int goodix_ts_probe(struct platform_device *pdev)
 	core_data->ts_notifier.notifier_call = goodix_generic_noti_callback;
 	goodix_ts_register_notifier(&core_data->ts_notifier);
 
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	ts_info("%s:goodix_ts_mmi_dev_register",__func__);
 	r = goodix_ts_mmi_dev_register(pdev);
 	if (r) {
@@ -2225,7 +2225,7 @@ static int goodix_ts_remove(struct platform_device *pdev)
 {
 	struct goodix_ts_core *core_data = platform_get_drvdata(pdev);
 
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	goodix_ts_mmi_dev_unregister(pdev);
 #endif
 	core_data->initialized = 0;

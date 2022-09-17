@@ -937,7 +937,7 @@ static void sec_ts_read_event(struct sec_ts_data *ts)
 						gs->left_event_5_0 | (gs->reserved_2 << 6));
 			switch (gs->stype) {
 			case SEC_TS_GESTURE_CODE_VENDOR:
-#if defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 				if (ts->imports && ts->imports->report_gesture) {
 					struct gesture_event_data event;
 
@@ -966,7 +966,7 @@ static void sec_ts_read_event(struct sec_ts_data *ts)
 				break;
 			}
 
-#if !defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 			input_sync(ts->input_dev);
 			input_report_key(ts->input_dev, KEY_BLACK_UI_GESTURE, 0);
 #endif
@@ -1726,7 +1726,7 @@ int sec_ts_integrity_check(struct sec_ts_data *ts)
 		return -EIO;
 	}
 
-#if defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	if (ts->plat_data->poweron_calibration) {
 #else
 	if (ts->force_calibration) {

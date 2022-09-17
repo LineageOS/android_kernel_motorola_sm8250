@@ -63,7 +63,7 @@
 #include <linux/dma-mapping.h>
 #include <linux/mmi_wake_lock.h>
 #include "focaltech_common.h"
-#if defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #include <linux/touchscreen_mmi.h>
 #endif
 #ifdef FTS_USB_DETECT_EN
@@ -250,7 +250,7 @@ struct fts_ts_data {
 #endif
 #endif
 
-#if defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
     struct ts_mmi_class_methods *imports;
 #endif
 };

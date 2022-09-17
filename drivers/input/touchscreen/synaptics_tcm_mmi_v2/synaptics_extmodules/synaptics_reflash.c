@@ -311,7 +311,7 @@ static struct bin_attribute bin_attrs[] = {
 	},
 };
 
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 static int syna_ts_set_fwname(const char* fw_name) {
 	if (fw_name != NULL) {
 		strlcpy(reflash_hcd->fw_name, fw_name,
@@ -2444,7 +2444,7 @@ static int reflash_init(struct syna_tcm_hcd *tcm_hcd)
 	reflash_hcd->tcm_hcd = tcm_hcd;
 
 	reflash_hcd->force_update = FORCE_REFLASH;
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	tcm_hcd->set_fw_name = syna_ts_set_fwname;
 	tcm_hcd->do_fw_update = syna_ts_do_reflash;
 #endif
