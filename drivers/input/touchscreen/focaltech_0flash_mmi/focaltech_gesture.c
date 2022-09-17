@@ -298,7 +298,7 @@ static void fts_gesture_report(struct input_dev *input_dev, int gesture_id)
     if (gesture != -1) {
         FTS_DEBUG("Gesture Code=%d", gesture);
 #ifdef FOCALTECH_SENSOR_EN
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
         if (!(fts_data->wakeable && fts_data->should_enable_gesture)) {
             FTS_INFO("Gesture got but wakeable not set. Skip this gesture.");
             return;
@@ -353,7 +353,7 @@ static void fts_gesture_report(struct input_dev *input_dev, int gesture_id)
 }
 
 #ifdef FOCALTECH_SENSOR_EN
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 static int fts_sensor_set_enable(struct sensors_classdev *sensors_cdev,
     unsigned int enable)
 {
@@ -657,7 +657,7 @@ int fts_gesture_init(struct fts_ts_data *ts_data)
             return -ENOMEM;
         }
 #endif
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
         if (!fts_sensor_init(ts_data))
 #endif
             initialized_sensor = true;

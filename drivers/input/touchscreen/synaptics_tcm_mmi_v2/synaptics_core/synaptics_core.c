@@ -40,7 +40,7 @@
 #include <linux/regulator/consumer.h>
 #include "synaptics_core.h"
 
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 extern int syna_ts_mmi_dev_register(struct syna_tcm_hcd *tcm_hcd);
 extern void syna_ts_mmi_dev_unregister(struct syna_tcm_hcd *tcm_hcd);
 #endif
@@ -3443,7 +3443,7 @@ int syna_tcm_suspend(struct device *dev)
 }
 #endif
 
-#if defined (CONFIG_FB) || defined (CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if defined (CONFIG_FB) || IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 int syna_tcm_early_suspend(struct device *dev)
 {
 	int retval;
@@ -3493,7 +3493,7 @@ int syna_tcm_early_suspend(struct device *dev)
 }
 #endif
 
-#if defined (CONFIG_FB) || !defined (CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if defined (CONFIG_FB) || !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 static int syna_tcm_fb_notifier_cb(struct notifier_block *nb,
 		unsigned long action, void *data)
 {
@@ -3944,7 +3944,7 @@ prepare_modules:
 	mod_pool.queue_work = true;
 	queue_work(mod_pool.workqueue, &mod_pool.work);
 
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	syna_ts_mmi_dev_register(tcm_hcd);
 #endif
 
@@ -4031,7 +4031,7 @@ static int syna_tcm_remove(struct platform_device *pdev)
 	struct syna_tcm_hcd *tcm_hcd = platform_get_drvdata(pdev);
 	const struct syna_tcm_board_data *bdata = tcm_hcd->hw_if->bdata;
 
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	syna_ts_mmi_dev_unregister(tcm_hcd);
 #endif
 	touch_remove(tcm_hcd);
