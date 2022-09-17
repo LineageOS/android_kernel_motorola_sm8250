@@ -1,3 +1,6 @@
+ifeq ($(CONFIG_ARCH_KONA), y)
+LINUXINCLUDE    += -include $(srctree)/techpack/display/config/konadispconf.h
+endif
 ccflags-$(CONFIG_TOUCHCLASS_MMI_GESTURE_POISON_EVENT) += -DTS_MMI_TOUCH_GESTURE_POISON_EVENT
 ccflags-$(CONFIG_TOUCHCLASS_MMI_MULTIWAY_UPDATE_FW) += -DTS_MMI_TOUCH_MULTIWAY_UPDATE_FW
 
