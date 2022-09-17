@@ -1337,7 +1337,7 @@ static int goodix_request_handler(struct goodix_ts_device *dev)
 	break;
 	case REQUEST_RELOADFW:
 		ts_info("HW request reload fw");
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 		if (core_data && core_data->do_fw_update) {
 			r = core_data->do_fw_update(UPDATE_MODE_FORCE|UPDATE_MODE_SRC_REQUEST);
 			if (r) {

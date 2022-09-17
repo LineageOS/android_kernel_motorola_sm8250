@@ -57,7 +57,7 @@
 #endif
 #include "focaltech_core.h"
 
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 extern int fts_mmi_dev_register(struct fts_ts_data *ts_data);
 extern void fts_mmi_dev_unregister(struct fts_ts_data *ts_data);
 #endif
@@ -115,7 +115,7 @@ static struct sensors_classdev __maybe_unused palm_sensors_touch_cdev = {
 #ifdef FOCALTECH_PEN_NOTIFIER
 static int fts_mcu_pen_detect_set(uint8_t pen_detect);
 #endif
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 static int fts_ts_suspend(struct device *dev);
 static int fts_ts_resume(struct device *dev);
 #endif
@@ -482,7 +482,7 @@ static int fts_input_report_b(struct fts_ts_data *data)
         input_mt_slot(data->input_dev, events[i].id);
 
         if (EVENT_DOWN(events[i].flag)) {
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
             if ( FTS_TOUCH_DOWN == events[i].flag && data->imports
                     && data->imports->report_touch_event) {
                 struct touch_event_data touch_event;
@@ -528,7 +528,7 @@ static int fts_input_report_b(struct fts_ts_data *data)
             }
         } else {
             uppoint++;
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
             if (data->imports && data->imports->report_touch_event) {
                 struct touch_event_data touch_event;
                 memset(&touch_event, 0, sizeof(touch_event));
@@ -1686,7 +1686,7 @@ static int fts_parse_dt(struct device *dev, struct fts_ts_platform_data *pdata)
     return 0;
 }
 
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #if defined(CONFIG_FB) || defined(CONFIG_DRM)
 static void fts_resume_work(struct work_struct *work)
 {
@@ -1726,7 +1726,7 @@ static int pen_notifier_callback(struct notifier_block *self,
 }
 #endif
 
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #ifdef CONFIG_DRM
 #if FTS_CONFIG_DRM_PANEL
 struct drm_panel *active_panel;
@@ -1999,7 +1999,7 @@ static void fts_ts_late_resume(struct early_suspend *handler)
 #endif
 #endif
 
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #if FTS_USB_DETECT_EN
 static int fts_charger_notifier_callback(struct notifier_block *nb,
 								unsigned long val, void *v) {
@@ -2201,7 +2201,7 @@ static int fts_ts_probe_entry(struct fts_ts_data *ts_data)
     }
 #endif
 
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #ifdef CONFIG_DRM
     if (ts_data->ts_workqueue) {
         INIT_WORK(&ts_data->resume_work, fts_resume_work);
@@ -2245,7 +2245,7 @@ static int fts_ts_probe_entry(struct fts_ts_data *ts_data)
 #endif
 #endif
 
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #if FTS_USB_DETECT_EN
 	ts_data->usb_connected = 0x00;
 	ts_data->charger_notif.notifier_call = fts_charger_notifier_callback;
@@ -2257,14 +2257,14 @@ static int fts_ts_probe_entry(struct fts_ts_data *ts_data)
 #endif
 #endif
 
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
     fts_mmi_dev_register(ts_data);
 #endif
 
     FTS_FUNC_EXIT();
     return 0;
 
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #if FTS_USB_DETECT_EN
 err_register_charger_notify_failed:
 if (ts_data->charger_notif.notifier_call)
@@ -2302,11 +2302,11 @@ static int fts_ts_remove_entry(struct fts_ts_data *ts_data)
 {
     FTS_FUNC_ENTER();
 
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
     fts_mmi_dev_unregister(ts_data);
 #endif
 
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #if FTS_USB_DETECT_EN
 	if (ts_data->charger_notif.notifier_call)
 		power_supply_unreg_notifier(&ts_data->charger_notif);
@@ -2356,7 +2356,7 @@ static int fts_ts_remove_entry(struct fts_ts_data *ts_data)
     if (pen_detection_unregister_client(&ts_data->pen_notif))
         FTS_ERROR("Error occurred while unregistering pen_notifier.\n");
 #endif
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #ifdef CONFIG_DRM
 #if FTS_CONFIG_DRM_PANEL
     if (active_panel) {
@@ -2396,7 +2396,7 @@ static int fts_ts_remove_entry(struct fts_ts_data *ts_data)
     return 0;
 }
 
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 static int _fts_ts_suspend(struct device *dev)
 {
     int ret = 0;
