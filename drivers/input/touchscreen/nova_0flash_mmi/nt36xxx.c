@@ -27,7 +27,7 @@
 #include <linux/power_supply.h>
 #include <linux/version.h>
 
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #if ((LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0)) || defined(NVT_CONFIG_DRM_PANEL))
 #if defined(CONFIG_DRM)
 #include <linux/msm_drm_notify.h>
@@ -65,11 +65,11 @@ enum touch_state {
 #include <linux/jiffies.h>
 #endif /* #if NVT_TOUCH_ESD_PROTECT */
 
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 extern int nvt_mmi_init(struct nvt_ts_data *ts_data, bool enable);
 #endif
 
-#if defined (NVT_SENSOR_EN) || defined (CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if defined (NVT_SENSOR_EN) || IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #ifdef CONFIG_HAS_WAKELOCK
 static struct wake_lock gesture_wakelock;
 #else
@@ -121,7 +121,7 @@ extern void nvt_mp_proc_deinit(void);
 
 struct nvt_ts_data *ts;
 
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 
 #define MAX_ATTRS_ENTRIES 10
 #define UI_FEATURE_ENABLE   1
@@ -198,7 +198,7 @@ extern void Boot_Update_Firmware(struct work_struct *work);
 int nvt_mcu_pen_detect_set(uint8_t pen_detect);
 #endif
 
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #if ((LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0)) || defined(NVT_CONFIG_DRM_PANEL))
 #if defined(CONFIG_DRM)
 static int nvt_drm_notifier_callback(struct notifier_block *self, unsigned long event, void *data);
@@ -1200,7 +1200,7 @@ static void nvt_ts_wakeup_gesture_report_timer(struct timer_list *t)
 	}
 
 	if (keycode > 0) {
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 		if (ts->imports && ts->imports->report_gesture) {
 			struct gesture_event_data event;
 			int ret = 0;
@@ -1290,7 +1290,7 @@ static int nvt_get_dt_def_coords(struct device *dev, char *name)
 	return rc;
 }
 
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #if ((LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0)) || defined(NVT_CONFIG_DRM_PANEL))
 #if defined(CONFIG_DRM)
 static int nova_check_dt(struct device_node *np)
@@ -1342,7 +1342,7 @@ static int32_t nvt_parse_dt(struct device *dev)
 {
 	struct device_node *np = dev->of_node;
 	int32_t ret = 0;
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #if ((LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0)) || defined(NVT_CONFIG_DRM_PANEL))
 	int num_of_panel_supplier;
 	int j;
@@ -1366,7 +1366,7 @@ static int32_t nvt_parse_dt(struct device *dev)
 	}
 
 #if ((LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0)) || defined(NVT_CONFIG_DRM_PANEL)) &&\
-	(!defined CONFIG_INPUT_TOUCHSCREEN_MMI)
+	!IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	num_of_panel_supplier = of_property_count_strings(np, "novatek,panel-supplier");
 	NVT_LOG("%s: get novatek,panel-supplier count=%d", __func__, num_of_panel_supplier);
 	if (active_panel_name && num_of_panel_supplier > 1) {
@@ -1409,7 +1409,7 @@ static int32_t nvt_parse_dt(struct device *dev)
 		snprintf(nvt_mp_firmware_name, NVT_FILE_NAME_LENGTH, "%s_novatek_ts_mp.bin",
 			ts->panel_supplier);
 
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 		//Support FW name with panel & IC info
 #if ((LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0)) || defined(NVT_CONFIG_DRM_PANEL))
 		if (active_panel_name) {
@@ -2156,7 +2156,7 @@ int nvt_sensor_remove(struct nvt_ts_data *data)
 #include <linux/major.h>
 #include <linux/kdev_t.h>
 
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 /* Attribute: path (RO) */
 static ssize_t path_show(struct device *dev,
 	struct device_attribute *attr, char *buf)
@@ -2718,7 +2718,7 @@ static int32_t nvt_ts_probe(struct spi_device *client)
 #ifdef NVT_SENSOR_EN
 	static bool initialized_sensor;
 #endif
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #if ((LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0)) || defined(NVT_CONFIG_DRM_PANEL))
 	struct device_node *dp = client->dev.of_node;
 
@@ -3005,7 +3005,7 @@ static int32_t nvt_ts_probe(struct spi_device *client)
 		goto err_create_nvt_fwu_wq_failed;
 	}
 	INIT_DELAYED_WORK(&ts->nvt_fwu_work, Boot_Update_Firmware);
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	// please make sure boot update start after display reset(RESX) sequence
 	queue_delayed_work(nvt_fwu_wq, &ts->nvt_fwu_work, msecs_to_jiffies(7000));
 #endif
@@ -3062,7 +3062,7 @@ static int32_t nvt_ts_probe(struct spi_device *client)
     }
 #endif
 
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #if ((LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0)) || defined(NVT_CONFIG_DRM_PANEL))
 #if defined(CONFIG_DRM)
 	ts->drm_notif.notifier_call = nvt_drm_notifier_callback;
@@ -3113,7 +3113,7 @@ static int32_t nvt_ts_probe(struct spi_device *client)
 #endif //end version code >= 5.4.0
 #endif //end touchscreen_mmi
 
-#if defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	ret = nvt_mmi_init(ts, true);
 #else
 	ret = nvt_fw_class_init(true);
@@ -3131,10 +3131,10 @@ static int32_t nvt_ts_probe(struct spi_device *client)
 	return 0;
 
 err_create_touchscreen_class_failed:
-#if defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	nvt_mmi_init(ts, false);
 #endif
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #if ((LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0)) || defined(NVT_CONFIG_DRM_PANEL))
 #if defined(CONFIG_DRM)
 	if (active_panel) {
@@ -3263,13 +3263,13 @@ static int32_t nvt_ts_remove(struct spi_device *client)
 {
 	NVT_LOG("Removing driver...\n");
 
-#if defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	nvt_mmi_init(ts, false);
 #else
 	nvt_fw_class_init(false);
 #endif
 
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #if ((LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0)) || defined(NVT_CONFIG_DRM_PANEL))
 #if defined(CONFIG_DRM)
 	if (active_panel) {
@@ -3334,7 +3334,7 @@ static int32_t nvt_ts_remove(struct spi_device *client)
 	}
 #endif
 
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #if WAKEUP_GESTURE
 	device_init_wakeup(&ts->input_dev->dev, 0);
 	del_timer_sync(&ts->gt_timer);
@@ -3373,7 +3373,7 @@ static void nvt_ts_shutdown(struct spi_device *client)
 
 	nvt_irq_enable(false);
 
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #if ((LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0)) || defined(NVT_CONFIG_DRM_PANEL))
 #if defined(CONFIG_DRM)
 	if (active_panel) {
@@ -3586,7 +3586,7 @@ int32_t nvt_ts_resume(struct device *dev)
 
 	mutex_unlock(&ts->lock);
 
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	/* restore data */
 	if (ts->interpolation_ctrl) {
 		nvt_cmd_write(ts->interpolation_cmd[0], ts->interpolation_cmd[1], 0, 2);
@@ -3615,7 +3615,7 @@ int32_t nvt_ts_resume(struct device *dev)
 	return 0;
 }
 
-#ifndef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #if ((LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0)) || defined(NVT_CONFIG_DRM_PANEL))
 #if defined(CONFIG_DRM)
 #ifdef LCM_FAST_LIGHTUP

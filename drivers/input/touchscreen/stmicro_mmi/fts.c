@@ -1505,7 +1505,7 @@ static ssize_t stm_fts_cmd_show(struct device *dev,
 			goto END;
 		}
 
-#if !defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 		res = fb_unregister_client(&info->notifier);
 		if (res < 0) {
 			logError(1, "%s ERROR: unregister notifier failed!\n",
@@ -1757,7 +1757,7 @@ static ssize_t stm_fts_cmd_show(struct device *dev,
 	}
 
 
-#if !defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	if (fb_register_client(&info->notifier) < 0)
 		logError(1, "%s ERROR: register notifier failed!\n", tag);
 #endif
@@ -3073,7 +3073,7 @@ int fts_fw_update(struct fts_ts_info *info)
 	return error;
 }
 
-#if !defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #ifndef FW_UPDATE_ON_PROBE
 /**
   *	Function called by the delayed workthread executed after the probe in
@@ -3396,7 +3396,7 @@ int fts_chip_powercycle(struct fts_ts_info *info)
 int fts_init_sensing(struct fts_ts_info *info)
 {
 	int error = 0;
-#if !defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	error |= fb_register_client(&info->notifier);	/* register the
 							 * suspend/resume
 							 * function */
@@ -3713,7 +3713,7 @@ static void inline fts_suspend_work(struct work_struct *work)
 	fts_suspend_func(container_of(work, struct fts_ts_info, suspend_work));
 }
 
-#if !defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 /** @}*/
 
 /**
@@ -4134,7 +4134,7 @@ err_pinctrl_get:
 
 static int fts_mmi_set_limit_name(struct fts_ts_info *ts)
 {
-#if defined(CONFIG_INPUT_TOUCHSCREEN_MMI) && defined(CONFIG_ST_LIMIT_USE_SUPPLIER)
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI) && defined(CONFIG_ST_LIMIT_USE_SUPPLIER)
 	int ret;
 	const char* supplier = NULL;
 	if (ts->imports && ts->imports->get_supplier) {
@@ -4417,7 +4417,7 @@ static int fts_probe(struct spi_device *client)
 	info->grip_enabled = 0;
 
 	info->resume_bit = 1;
-#if !defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	info->notifier = fts_noti_block;
 #endif
 	logError(1, "%s Init Core Lib:\n", tag);
@@ -4432,7 +4432,7 @@ static int fts_probe(struct spi_device *client)
 		goto ProbeErrorExit_6;
 	}
 
-#if !defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #if defined(FW_UPDATE_ON_PROBE) && defined(FW_H_FILE)
 	logError(1, "%s FW Update and Sensing Initialization:\n", tag);
 	error = fts_fw_update(info);
@@ -4470,7 +4470,7 @@ static int fts_probe(struct spi_device *client)
 	if (error < OK)
 		logError(1, "%s Error: can not create /proc file!\n", tag);
 
-#if !defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #ifdef FW_UPDATE_ON_PROBE
 	queue_delayed_work(info->fwu_workqueue, &info->fwu_work,
 			   msecs_to_jiffies(EXP_FN_WORK_DELAY_MS));
@@ -4487,7 +4487,7 @@ static int fts_probe(struct spi_device *client)
 ProbeErrorExit_7:
 	fts_mmi_init(info, false);
 
-#if !defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #ifdef FW_UPDATE_ON_PROBE
 	fb_unregister_client(&info->notifier);
 #endif
@@ -4544,7 +4544,7 @@ static int fts_remove(struct spi_device *client)
 	/* remove interrupt and event handlers */
 	fts_interrupt_uninstall(info);
 
-#if !defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	fb_unregister_client(&info->notifier);
 #endif
 	/* unregister the device */
@@ -4555,7 +4555,7 @@ static int fts_remove(struct spi_device *client)
 	/* Remove the work thread */
 	destroy_workqueue(info->event_wq);
 	PM_WAKEUP_UNREGISTER(info->wakesrc);
-#if !defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #ifndef FW_UPDATE_ON_PROBE
 	destroy_workqueue(info->fwu_workqueue);
 #endif

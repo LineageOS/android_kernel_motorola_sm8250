@@ -53,7 +53,7 @@
 #include "focaltech_core.h"
 #include <linux/mmi_device.h>
 
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 extern int fts_mmi_dev_register(struct fts_ts_data *ts_data);
 extern void fts_mmi_dev_unregister(struct fts_ts_data *ts_data);
 #endif
@@ -1890,7 +1890,7 @@ static int fts_ts_probe_entry(struct fts_ts_data *ts_data)
 #endif
 #endif
 
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
     fts_mmi_dev_register(ts_data);
 #endif
 
@@ -1927,7 +1927,7 @@ static int fts_ts_remove_entry(struct fts_ts_data *ts_data)
 {
     FTS_FUNC_ENTER();
 
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
     fts_mmi_dev_unregister(ts_data);
 #endif
 

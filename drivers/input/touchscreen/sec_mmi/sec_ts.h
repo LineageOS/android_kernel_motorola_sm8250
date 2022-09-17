@@ -38,7 +38,7 @@
 #include <linux/workqueue.h>
 #include <linux/mmi_kernel_common.h>
 
-#if defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #include <linux/touchscreen_mmi.h>
 #endif
 
@@ -759,7 +759,7 @@ struct sec_ts_data {
 	bool fw_invalid;
 	bool irq_enabled;
 
-#if defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	struct ts_mmi_class_methods *imports;
 #endif
 };

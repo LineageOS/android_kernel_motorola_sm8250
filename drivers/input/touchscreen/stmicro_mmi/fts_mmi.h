@@ -7,7 +7,7 @@
 
 struct fts_ts_info;
 
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 int fts_mmi_init(struct fts_ts_info *info, bool enable);
 #else
 static int inline fts_mmi_init(struct fts_ts_info *info, bool enable)

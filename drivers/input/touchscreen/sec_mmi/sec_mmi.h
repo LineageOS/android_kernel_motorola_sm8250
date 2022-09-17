@@ -68,7 +68,7 @@ struct sec_mmi_data {
 
 int sec_mmi_data_init(struct sec_ts_data *ts, bool enable);
 
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 int sec_mmi_sysfs_notify(struct sec_ts_data *ts, unsigned char state);
 #else
 #define DEV_MMI (&data->i2c_client->dev)
