@@ -11,5 +11,5 @@ stmicro_mmi-objs += fts_lib/ftsTest.o
 stmicro_mmi-objs += fts_lib/ftsTime.o
 stmicro_mmi-objs += fts_lib/ftsTool.o
 
-stmicro_mmi-objs-$(CONFIG_INPUT_TOUCHSCREEN_MMI) += fts_mmi_class.o
+stmicro_mmi-$(CONFIG_INPUT_TOUCHSCREEN_MMI) += fts_mmi_class.o
 ccflags-$(CONFIG_TOUCHCLASS_MMI_MULTIWAY_UPDATE_FW) += -DTS_MMI_TOUCH_MULTIWAY_UPDATE_FW
