@@ -413,7 +413,7 @@ struct goodix_ts_esd {
 	atomic_t esd_on;
 };
 
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 struct goodix_ts_mmi {
 	struct notifier_block mmi_notifier;
 	int update_status;
@@ -475,7 +475,7 @@ struct goodix_ts_core {
 	int (*do_fw_update)(int mode);
 
 	int (*set_fw_name)(char* fw_name);
-#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	struct goodix_ts_mmi ts_mmi_info;
 #endif
 };

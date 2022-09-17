@@ -51,7 +51,7 @@
 #include <linux/notifier.h>
 #endif
 
-#if defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #include <linux/touchscreen_mmi.h>
 #endif
 
@@ -537,7 +537,7 @@ struct syna_tcm_hcd {
 	void (*report_touch)(void);
 	void (*update_watchdog)(struct syna_tcm_hcd *tcm_hcd, bool en);
 
-#if defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	int (*do_fw_update)(void);
 	int (*set_fw_name)(const char* fw_name);
 	struct ts_mmi_class_methods *imports;
