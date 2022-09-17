@@ -16,6 +16,23 @@
       "message": "This is very unfortunate. The root cause is \"#ifdef CONFIG_INPUT_TOUCHSCREEN_MMI \" by default is only valid for \u003dy, while we use \u003dm.\n\nThe proper fix is to replace it with #if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)",
       "revId": "8b0fa2322f2fe090afb5a4566690e41f2bf56762",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "611d6005_d1331f6b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10258
+      },
+      "writtenOn": "2022-09-17T04:25:37Z",
+      "side": 1,
+      "message": "plz test this instead https://review.lineageos.org/c/LineageOS/android_kernel_motorola_sm8250/+/339216",
+      "revId": "8b0fa2322f2fe090afb5a4566690e41f2bf56762",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
