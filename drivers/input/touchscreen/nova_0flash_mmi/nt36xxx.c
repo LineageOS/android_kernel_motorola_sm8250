@@ -2170,30 +2170,44 @@ static ssize_t nvt_edge_reject_show(struct device *dev,
 #endif
 
 #if WAKEUP_GESTURE
-#define TS_ENABLE_FOPS(name, type)                                             \
-	static ssize_t nvt_##name##_show(                                      \
-		struct device *dev, struct device_attribute *attr, char *buf)  \
-	{                                                                      \
-		return snprintf(buf, PAGE_SIZE, "%d\n",                        \
-				is_gesture_enabled(type));                     \
-	}                                                                      \
-                                                                               \
-	static ssize_t nvt_##name##_store(struct device *dev,                  \
-					  struct device_attribute *attr,       \
-					  const char *buf, size_t count)       \
-	{                                                                      \
-		int rc, val;                                                   \
-                                                                               \
-		rc = kstrtoint(buf, 10, &val);                                 \
-		if (rc)                                                        \
-			return -EINVAL;                                        \
-                                                                               \
-		toggle_gesture(type, !!val);                                   \
-		return count;                                                  \
-	}
+static int nvt_gesture_name_to_id(const char *name)
+{
+	if (strcmp(name, "double_click") == 0)
+		return GESTURE_DOUBLE_CLICK;
+	if (strcmp(name, "single_click") == 0)
+		return GESTURE_SINGLE_CLICK;
 
-TS_ENABLE_FOPS(double_click, GESTURE_DOUBLE_CLICK)
-TS_ENABLE_FOPS(single_click, GESTURE_SINGLE_CLICK)
+	NVT_ERR("Unknown gesture name: %s", name);
+	return -EINVAL;
+}
+
+static ssize_t nvt_gesture_show(struct device *dev,
+				struct device_attribute *attr, char *buf)
+{
+	int gesture_id = nvt_gesture_name_to_id(attr->attr.name);
+	if (gesture_id < 0)
+		return gesture_id;
+
+	return snprintf(buf, PAGE_SIZE, "%d\n", is_gesture_enabled(gesture_id));
+}
+
+static ssize_t nvt_gesture_store(struct device *dev,
+				 struct device_attribute *attr, const char *buf,
+				 size_t count)
+{
+	int rc, val;
+
+	rc = kstrtoint(buf, 10, &val);
+	if (rc)
+		return -EINVAL;
+
+	rc = nvt_gesture_name_to_id(attr->attr.name);
+	if (rc < 0)
+		return rc;
+
+	toggle_gesture(rc, !!val);
+	return count;
+}
 #endif
 
 static struct device_attribute touchscreen_attributes[] = {
@@ -2208,9 +2222,9 @@ static struct device_attribute touchscreen_attributes[] = {
 #endif
 #if WAKEUP_GESTURE
 	__ATTR(double_click, S_IRUSR | S_IRGRP | S_IWUSR | S_IWGRP,
-	       nvt_double_click_show, nvt_double_click_store),
+	       nvt_gesture_show, nvt_gesture_store),
 	__ATTR(single_click, S_IRUSR | S_IRGRP | S_IWUSR | S_IWGRP,
-	       nvt_single_click_show, nvt_single_click_store),
+	       nvt_gesture_show, nvt_gesture_store),
 #endif
 	__ATTR_NULL
 };
