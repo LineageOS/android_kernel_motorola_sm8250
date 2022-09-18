@@ -1957,32 +1957,48 @@ static inline void clear_gestures(struct fts_ts_info *ts)
 	bitmap_zero(ts->gesture_bits, GESTURE_TOTAL);
 }
 
-#define TS_ENABLE_FOPS(name, type)                                             \
-	static ssize_t fts_##name##_show(                                      \
-		struct device *dev, struct device_attribute *attr, char *buf)  \
-	{                                                                      \
-		struct fts_ts_info *info = dev_get_drvdata(dev);               \
-                                                                               \
-		return snprintf(buf, PAGE_SIZE, "%d\n",                        \
-				is_gesture_enabled(info, type));               \
-	}                                                                      \
-                                                                               \
-	static ssize_t fts_##name##_store(struct device *dev,                  \
-					  struct device_attribute *attr,       \
-					  const char *buf, size_t count)       \
-	{                                                                      \
-		int rc, val;                                                   \
-                struct fts_ts_info *info = dev_get_drvdata(dev);               \
-		rc = kstrtoint(buf, 10, &val);                                 \
-		if (rc)                                                        \
-			return -EINVAL;                                        \
-                                                                               \
-		toggle_gesture(info, type, !!val);                             \
-		return count;                                                  \
+struct fts_gesture_attribute {
+	struct device_attribute attr;
+	uint8_t gesture_id;
+};
+
+static ssize_t fts_gesture_show(struct device *dev,
+				struct device_attribute *attr, char *buf)
+{
+	struct fts_ts_info *info = dev_get_drvdata(dev);
+	struct fts_gesture_attribute *gesture_attr =
+		container_of(attr, struct fts_gesture_attribute, attr);
+
+	return snprintf(buf, PAGE_SIZE, "%d\n",
+			is_gesture_enabled(info, gesture_attr->gesture_id));
+}
+
+static ssize_t fts_gesture_store(struct device *dev,
+				 struct device_attribute *attr, const char *buf,
+				 size_t count)
+{
+	int rc, val;
+	struct fts_ts_info *info = dev_get_drvdata(dev);
+	struct fts_gesture_attribute *gesture_attr =
+		container_of(attr, struct fts_gesture_attribute, attr);
+
+	rc = kstrtoint(buf, 10, &val);
+	if (rc)
+		return -EINVAL;
+
+	toggle_gesture(info, gesture_attr->gesture_id, !!val);
+	return count;
+}
+
+#define FTS_GESTURE_ATTR(_name, _gesture_id)                                   \
+	struct fts_gesture_attribute fts_gesture_attr_##_name = {              \
+		__ATTR(_name, (S_IRUSR | S_IRGRP | S_IWUSR | S_IWGRP),         \
+		       fts_gesture_show, fts_gesture_store),                   \
+		_gesture_id                                                    \
 	}
 
-TS_ENABLE_FOPS(double_click, GEST_ID_DBLTAP)
-TS_ENABLE_FOPS(single_click, GEST_ID_SIGTAP)
+static FTS_GESTURE_ATTR(double_click, GEST_ID_DBLTAP);
+static FTS_GESTURE_ATTR(single_click, GEST_ID_SIGTAP);
 #endif
 
 static DEVICE_ATTR(fwupdate, (S_IRUGO | S_IWUSR | S_IWGRP), fts_fwupdate_show,
@@ -2030,11 +2046,6 @@ static DEVICE_ATTR(gesture_mask, (S_IRUGO | S_IWUSR | S_IWGRP),
 		   fts_gesture_mask_show, fts_gesture_mask_store);
 static DEVICE_ATTR(gesture_coordinates, (S_IRUGO | S_IWUSR | S_IWGRP),
 		   fts_gesture_coordinates_show, NULL);
-static DEVICE_ATTR(double_click, (S_IRUSR | S_IRGRP | S_IWUSR | S_IWGRP),
-		   fts_double_click_show, fts_double_click_store);
-static DEVICE_ATTR(single_click, (S_IRUSR | S_IRGRP | S_IWUSR | S_IWGRP),
-		   fts_single_click_show, fts_single_click_store);
-
 #endif
 
 /*  /sys/devices/soc.0/f9928000.i2c/i2c-6/6-0049 */
@@ -2069,8 +2080,8 @@ static struct attribute *fts_attr_group[] = {
 #ifdef GESTURE_MODE
 	&dev_attr_gesture_mask.attr,
 	&dev_attr_gesture_coordinates.attr,
-	&dev_attr_double_click.attr,
-	&dev_attr_single_click.attr,
+	&fts_gesture_attr_double_click.attr.attr,
+	&fts_gesture_attr_single_click.attr.attr,
 #endif
 	NULL,
 };
