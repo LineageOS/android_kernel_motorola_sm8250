@@ -32,6 +32,7 @@
 
 
 &reserved_memory{
+/*
 	ramoops_mem {
 		compatible = "ramoops";
 		no-map;
@@ -40,6 +41,7 @@
 		pmsg-size = <0x40000>;
 		record-size = <0x3f800>;
 	};
+*/
 
 	tzlog_dump_mem: tzlog_dump_mem_region {
 		no-map;
