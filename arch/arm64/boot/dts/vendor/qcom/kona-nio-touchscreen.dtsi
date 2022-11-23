@@ -1,0 +1,120 @@
+&tlmm {
+	touch_int_mux {
+		touch_int_active: active {
+			mux {
+				pins = "gpio24";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio24";
+				drive-strength = <2>;
+				bias-pull-up;
+			};
+		};
+
+		touch_int_suspend: default {
+			mux {
+				pins = "gpio24";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio24";
+				drive-strength = <2>;
+				bias-disable;
+			};
+		};
+	};
+
+	touch_reset_mux {
+		touch_reset_active: active {
+			mux {
+				pins = "gpio50";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio50";
+				drive-strength = <2>;
+				bias-disable;
+			};
+		};
+
+		touch_reset_suspend: default {
+			mux {
+				pins = "gpio50";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio50";
+				drive-strength = <2>;
+				bias-pull-down;
+				output-low;
+			};
+		};
+	};
+
+	ts_release_mux {
+		ts_release: ts_release {
+			mux {
+				pins = "gpio24", "gpio50";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio24", "gpio50";
+				drive-strength = <2>;
+				bias-disable;
+			};
+		};
+	};
+};
+
+&qupv3_se13_spi_pins {
+	qupv3_se13_spi_sleep: qupv3_se13_spi_sleep {
+		mux {
+			pins = "gpio36", "gpio37", "gpio38";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio36", "gpio37", "gpio38";
+			drive-strength = <6>;
+			bias-disable;
+		};
+	};
+
+
+	qupv3_se13_spi_cs_sleep: qupv3_se13_spi_cs_sleep {
+		mux {
+			pins = "gpio39";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio39";
+			drive-strength = <6>;
+			bias-pull-up;
+		};
+	};
+};
+
+&qupv3_se13_i2c {
+	status = "disabled";
+};
+
+&qupv3_se13_spi {
+	status = "ok";
+	pinctrl-1 = <&qupv3_se13_spi_sleep &qupv3_se13_spi_cs_sleep>;
+	novatek@0 {
+		compatible = "novatek,NVT-ts-spi";
+		reg = <0x0>;
+		spi-max-frequency = <9600000>;  /* 4800000,9600000,15000000,19200000 */
+		novatek,reset-gpio = <&tlmm 50 0x00>;
+		novatek,irq-gpio = <&tlmm 24 0x2001>;
+		novatek,def-max-resolution = <1080 2520>;
+		novatek,swrst-n8-addr = <0x03F0FE>;
+		novatek,spi-rd-fast-addr = <0x03F310>;
+		novatek,report_gesture_key;
+		novatek,usb_charger;
+		status = "/chosen", "mmi,panel_name", "tianma_nt36672c_1080x2520_670_dsc_vid";
+	};
+};

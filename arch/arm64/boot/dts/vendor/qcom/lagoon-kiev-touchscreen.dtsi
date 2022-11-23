@@ -1,0 +1,29 @@
+&qupv3_se0_i2c {
+	status = "disabled";
+};
+
+&qupv3_se0_spi {
+	status = "ok";
+	focaltech@0 {
+		status = "/chosen","mmi,panel_name","contains","tm_ft8756_666","csot_ft8756_666";
+		compatible = "focaltech,fts";
+		reg = <0x0>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <22 0x02>;
+		spi-max-frequency=<20000000>;
+		focaltech,reset-gpio = <&tlmm 21 0x01>;
+		focaltech,irq-gpio = <&tlmm 22 0x02>;
+		focaltech,max-touch-number = <10>;
+		focaltech,display-coords =  <0 0 1080 2400>;
+		focaltech,notify_to_panel;
+		pinctrl-names = "ts_mmi_on_state", "ts_mmi_off_state";
+		pinctrl-0 = <&ts_active>;
+		pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
+		/* touchscreen_mmi class entries*/
+		mmi,enable-gestures;
+		mmi,usb-charger-detection;
+		mmi,class-entry-name = "ft8756";
+	};
+};
+
+

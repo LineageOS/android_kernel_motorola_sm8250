@@ -1,0 +1,109 @@
+/* Copyright (c) 2019-2020, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include "lito-smith-common-overlay.dtsi"
+
+/ {
+	model = "Smith";
+	compatible = "qcom,lito-smith", "qcom,lito-moto", "qcom,lito";
+	qcom,msm-id = <400 0x10000>;
+	qcom,board-id = <0 0xA200>;
+};
+
+/*
+ * Smith HW rev EVT2 specific changes go here
+ */
+
+&tlmm {
+	cam_flash_inhibit: cam_flash_inhibit {
+		/* INHIBIT */
+		mux {
+			pins = "gpio100";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio100";
+			drive-strength = <2>; /* 2 MA */
+			output-low;
+		};
+	};
+};
+
+&led_flash_rear {
+	pinctrl-names = "cam_default", "cam_suspend";
+	pinctrl-0 = <&cam_flash_inhibit>;
+	pinctrl-1 = <&cam_flash_inhibit>;
+};
+
+&q6core {
+	sound-madera {
+		qcom,model = "kona-madera-princeb0-card";
+	};
+};
+
+&cam_cci0 {
+	/delete-node/ qcom,ois@0;
+};
+
+&rear_sensor {
+	/delete-property/ ois-src;
+};
+
+&cli_sensor {
+	/delete-property/ ois-src;
+};
+
+&prince_irq_default {
+	mux {
+		pins = "gpio85";
+	};
+	config {
+		pins = "gpio85";
+	};
+};
+
+&usb_aud_det_default {
+	mux {
+		pins = "gpio86";
+	};
+	config {
+		pins = "gpio86";
+	};
+};
+
+&cs35l41_spk {
+	interrupts = <85 IRQ_TYPE_LEVEL_LOW>;
+};
+
+&acc_headset {
+	cirrus,hsdet-gpios = <&tlmm 86 GPIO_ACTIVE_LOW>;
+};
+
+&pm7250b_vadc {
+	/delete-node/ pa_therm3;
+};
+
+&pm7250b_adc_tm {
+	io-channels = <&pm7250b_vadc ADC_AMUX_THM1_PU2>;
+
+	/delete-node/ pa_therm3@53;
+};
+
+&thermal_zones {
+	pa-therm3-usr {
+		status = "disabled";
+	};
+};
