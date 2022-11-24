@@ -404,7 +404,7 @@ int cnss_pci_check_link_status(struct cnss_pci_data *pci_priv)
 	if (pci_priv->pci_link_state == PCI_LINK_DOWN) {
 		cnss_pr_dbg("%ps: PCIe link is in suspend state\n",
 			    (void *)_RET_IP_);
-		return -EIO;
+		return -EACCES;
 	}
 
 	if (pci_priv->pci_link_down_ind) {
@@ -426,15 +426,25 @@ int cnss_pci_check_link_status(struct cnss_pci_data *pci_priv)
 static void cnss_pci_select_window(struct cnss_pci_data *pci_priv, u32 offset)
 {
 	u32 window = (offset >> WINDOW_SHIFT) & WINDOW_VALUE_MASK;
+	u32 window_enable = WINDOW_ENABLE_BIT | window;
+	u32 val;
 
-	writel_relaxed(WINDOW_ENABLE_BIT | window,
-		       QCA6390_PCIE_REMAP_BAR_CTRL_OFFSET +
-		       pci_priv->bar);
+	writel_relaxed(window_enable, pci_priv->bar +
+		       QCA6390_PCIE_REMAP_BAR_CTRL_OFFSET);
 
 	if (window != pci_priv->remap_window) {
 		pci_priv->remap_window = window;
 		cnss_pr_dbg("Config PCIe remap window register to 0x%x\n",
-			    WINDOW_ENABLE_BIT | window);
+			    window_enable);
+	}
+
+	/* Read it back to make sure the write has taken effect */
+	val = readl_relaxed(pci_priv->bar + QCA6390_PCIE_REMAP_BAR_CTRL_OFFSET);
+	if (val != window_enable) {
+		cnss_pr_err("Failed to config window register to 0x%x, current value: 0x%x\n",
+			    window_enable, val);
+		if (!cnss_pci_check_link_status(pci_priv))
+			CNSS_ASSERT(0);
 	}
 }
 
@@ -2199,7 +2209,8 @@ static int cnss_qca6290_shutdown(struct cnss_pci_data *pci_priv)
 	if ((test_bit(CNSS_DRIVER_LOADING, &plat_priv->driver_state) ||
 	     test_bit(CNSS_DRIVER_UNLOADING, &plat_priv->driver_state) ||
 	     test_bit(CNSS_DRIVER_IDLE_RESTART, &plat_priv->driver_state) ||
-	     test_bit(CNSS_DRIVER_IDLE_SHUTDOWN, &plat_priv->driver_state)) &&
+	     test_bit(CNSS_DRIVER_IDLE_SHUTDOWN, &plat_priv->driver_state) ||
+	     test_bit(CNSS_COLD_BOOT_CAL, &plat_priv->driver_state)) &&
 	    test_bit(CNSS_DEV_ERR_NOTIFY, &plat_priv->driver_state)) {
 		del_timer(&pci_priv->dev_rddm_timer);
 		cnss_pci_collect_dump(pci_priv);
@@ -2428,7 +2439,6 @@ int cnss_wlan_register_driver(struct cnss_wlan_driver *driver_ops)
 		cnss_pr_err("Timeout (%ums) waiting for calibration to complete\n",
 			    timeout);
 		if (!test_bit(CNSS_IN_REBOOT, &plat_priv->driver_state)) {
-			cnss_pci_dump_bl_sram_mem(pci_priv);
 			WARN_ON(1);
 		}
 
@@ -4388,13 +4398,33 @@ void cnss_pci_collect_dump_info(struct cnss_pci_data *pci_priv, bool in_panic)
 		return;
 	}
 
-	if (cnss_pci_check_link_status(pci_priv))
+	if (!cnss_is_device_powered_on(plat_priv)) {
+		cnss_pr_dbg("Device is already powered off, skip\n");
 		return;
+	}
+
+	if (!in_panic) {
+		mutex_lock(&pci_priv->bus_lock);
+		ret = cnss_pci_check_link_status(pci_priv);
+		if (ret) {
+			if (ret != -EACCES) {
+				mutex_unlock(&pci_priv->bus_lock);
+				return;
+			}
+			if (cnss_pci_resume_bus(pci_priv)) {
+				mutex_unlock(&pci_priv->bus_lock);
+				return;
+			}
+		}
+		mutex_unlock(&pci_priv->bus_lock);
+	} else {
+		if (cnss_pci_check_link_status(pci_priv))
+			return;
+	}
 
 	cnss_pci_dump_misc_reg(pci_priv);
 	cnss_pci_dump_shadow_reg(pci_priv);
 	cnss_pci_dump_qdss_reg(pci_priv);
-	cnss_pci_dump_bl_sram_mem(pci_priv);
 
 	ret = mhi_download_rddm_img(pci_priv->mhi_ctrl, in_panic);
 	if (ret) {

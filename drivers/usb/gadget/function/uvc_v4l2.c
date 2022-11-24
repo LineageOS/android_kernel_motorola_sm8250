@@ -251,7 +251,10 @@ uvc_v4l2_subscribe_event(struct v4l2_fh *fh,
 		uvc_function_connect(uvc);
 	}
 
-	return 0;
+	if (!ret && sub->type == UVC_EVENT_UNBIND)
+		uvc->wait_for_close = true;
+
+	return ret;
 }
 
 static void uvc_v4l2_disable(struct uvc_device *uvc)
