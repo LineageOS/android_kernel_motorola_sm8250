@@ -35,10 +35,10 @@
 	ramoops_mem {
 		compatible = "ramoops";
 		no-map;
-		reg = <0x0 0xaf000000 0x0 0xc0000>;
+		reg = <0x0 0xaf000000 0x0 0x48000>;
 		console-size = <0x40000>;
-		pmsg-size = <0x40000>;
-		record-size = <0x3f800>;
+		pmsg-size = <0x8000>;
+		record-size = <0x8000>;
 	};
 
 	tzlog_dump_mem: tzlog_dump_mem_region {
