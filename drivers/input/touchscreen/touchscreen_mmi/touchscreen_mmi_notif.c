@@ -47,8 +47,6 @@ static int ts_mmi_panel_off(struct ts_mmi_dev *touch_cdev) {
 	if (atomic_cmpxchg(&touch_cdev->touch_stopped, 0, 1) == 1)
 		return 0;
 
-	atomic_set(&touch_cdev->resume_should_stop, 1);
-
 	TRY_TO_CALL(pre_suspend);
 	if (touch_cdev->pdata.gestures_enabled || touch_cdev->pdata.cli_gestures_enabled ||
 		touch_cdev->pdata.support_liquid_detection) {
@@ -104,7 +102,6 @@ static int ts_mmi_panel_off(struct ts_mmi_dev *touch_cdev) {
 }
 
 static int inline ts_mmi_panel_on(struct ts_mmi_dev *touch_cdev) {
-	atomic_set(&touch_cdev->resume_should_stop, 0);
 	kfifo_put(&touch_cdev->cmd_pipe, TS_MMI_DO_RESUME);
 	/* schedule_delayed_work returns true if work has been scheduled */
 	/* and false otherwise, thus return 0 on success to comply POSIX */
@@ -345,11 +342,6 @@ static void ts_mmi_worker_func(struct work_struct *w)
 	while (kfifo_get(&touch_cdev->cmd_pipe, &cmd)) {
 		switch (cmd) {
 		case TS_MMI_DO_RESUME:
-			ret = atomic_read(&touch_cdev->resume_should_stop);
-			if (ret) {
-				dev_info(DEV_MMI, "%s: resume cancelled\n", __func__);
-				break;
-			}
 			ts_mmi_queued_resume(touch_cdev);
 				break;
 
