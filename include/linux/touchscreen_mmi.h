@@ -493,7 +493,6 @@ struct ts_mmi_dev {
 	atomic_t		touch_stopped;
 	enum ts_mmi_pm_mode	pm_mode;
 
-	atomic_t		resume_should_stop;
 	struct delayed_work	work;
 	struct kfifo		cmd_pipe;
 
