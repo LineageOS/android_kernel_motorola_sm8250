@@ -306,7 +306,10 @@ enum ts_mmi_panel_event {
 };
 
 enum ts_mmi_work {
+	TS_MMI_DO_POWER_ON,
 	TS_MMI_DO_RESUME,
+	TS_MMI_DO_SLEEP,
+	TS_MMI_DO_POWER_OFF,
 	TS_MMI_DO_PS,
 	TS_MMI_DO_REFRESH_RATE,
 	TS_MMI_DO_FPS,
