@@ -339,51 +339,72 @@ static ssize_t gesture_show(struct device *dev,
 
 	return scnprintf(buf, PAGE_SIZE, "%02x\n", touch_cdev->pdata.supported_gesture_type);
 }
+
+static bool _gesture_set(struct ts_mmi_dev *touch_cdev,
+			 unsigned long bit, bool val)
+{
+	bool current_val = touch_cdev->gesture_mode_type & bit;
+
+	if (current_val == val)
+		return false;
+
+	if (val)
+		touch_cdev->gesture_mode_type |= bit;
+	else
+		touch_cdev->gesture_mode_type &= ~bit;
+
+	return val;
+}
+
+static void gesture_sync(struct ts_mmi_dev *touch_cdev)
+{
+	kfifo_put(&touch_cdev->cmd_pipe, TS_MMI_SET_GESTURES);
+	schedule_delayed_work(&touch_cdev->work, 0);
+}
+
+static void gesture_set(struct ts_mmi_dev *touch_cdev,
+			unsigned long bit, bool enable)
+{
+	bool sync;
+
+	mutex_lock(&touch_cdev->extif_mutex);
+	sync = _gesture_set(touch_cdev, bit, enable);
+	mutex_unlock(&touch_cdev->extif_mutex);
+
+	if (sync)
+		gesture_sync(touch_cdev);
+}
+
 static ssize_t gesture_store(struct device *dev,
 			struct device_attribute *attr, const char *buf, size_t size)
 {
 	struct ts_mmi_dev *touch_cdev = dev_get_drvdata(dev);
 	unsigned int value = 0;
+	unsigned long bit;
 	int err = 0;
 
-	mutex_lock(&touch_cdev->extif_mutex);
 	err = sscanf(buf, "%d", &value);
 	if (err < 0) {
 		dev_err(dev, "forcereflash: Failed to convert value\n");
 		mutex_unlock(&touch_cdev->extif_mutex);
 		return -EINVAL;
 	}
-	switch (value) {
-		case 0x10:
-			dev_info(dev, "%s: zero tap disable\n", __func__);
-			touch_cdev->gesture_mode_type &= 0xFE;
+
+	switch (value >> 4) {
+		case 0x1:
+			bit = TS_MMI_GESTURE_ZERO;
 			break;
-		case 0x11:
-			dev_info(dev, "%s: zero tap enable\n", __func__);
-			touch_cdev->gesture_mode_type |= 0x01;
+		case 0x2:
+			bit = TS_MMI_GESTURE_SINGLE;
 			break;
-		case 0x20:
-			dev_info(dev, "%s: single tap disable\n", __func__);
-			touch_cdev->gesture_mode_type &= 0xFD;
-			break;
-		case 0x21:
-			dev_info(dev, "%s: single tap enable\n", __func__);
-			touch_cdev->gesture_mode_type |= 0x02;
-			break;
-		case 0x30:
-			dev_info(dev, "%s: double tap disable\n", __func__);
-			touch_cdev->gesture_mode_type &= 0xFB;
-			break;
-		case 0x31:
-			dev_info(dev, "%s: double tap enable\n", __func__);
-			touch_cdev->gesture_mode_type |= 0x04;
+		case 0x3:
+			bit = TS_MMI_GESTURE_DOUBLE;
 			break;
 		default:
-			dev_info(dev, "%s: unsupport gesture mode type\n", __func__);
-			;
+			return size;
 	}
-	mutex_unlock(&touch_cdev->extif_mutex);
-	dev_info(dev, "%s: gesture_mode_type = 0x%02x \n", __func__, touch_cdev->gesture_mode_type);
+
+	gesture_set(touch_cdev, bit, value & 0x1);
 
 	return size;
 }
