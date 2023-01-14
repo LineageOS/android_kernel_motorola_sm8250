@@ -296,6 +296,12 @@ enum ts_mmi_pm_mode {
 	TS_MMI_PM_GESTURE_SWITCH,
 };
 
+enum ts_mmi_gesture_bit {
+	TS_MMI_GESTURE_ZERO = BIT(0),
+	TS_MMI_GESTURE_SINGLE = BIT(1),
+	TS_MMI_GESTURE_DOUBLE = BIT(2),
+};
+
 enum ts_mmi_panel_event {
 	TS_MMI_EVENT_PRE_DISPLAY_OFF,
 	TS_MMI_EVENT_PRE_DISPLAY_ON,
@@ -315,6 +321,7 @@ enum ts_mmi_work {
 	TS_MMI_DO_FPS,
 	TS_MMI_TASK_INIT,
 	TS_MMI_DO_LIQUID_DETECTION,
+	TS_MMI_SET_GESTURES,
 };
 
 #define TS_MMI_RESET_SOFT	0
