@@ -369,6 +369,8 @@ static void ts_mmi_queued_resume(struct ts_mmi_dev *touch_cdev)
 	dev_info(DEV_MMI, "%s: done\n", __func__);
 }
 
+static inline int ts_mmi_ps_get_state(struct power_supply *psy, bool *present);
+
 static void ts_mmi_worker_func(struct work_struct *w)
 {
 	struct delayed_work *dw =
@@ -398,9 +400,31 @@ static void ts_mmi_worker_func(struct work_struct *w)
 			ts_mmi_queued_power_off(touch_cdev);
 			break;
 
-		case TS_MMI_DO_PS:
+		case TS_MMI_DO_PS: {
+			struct power_supply *psy;
+			bool present;
+
+			psy = power_supply_get_by_name("usb");
+			if (!psy)
+				break;
+
+			ret = ts_mmi_ps_get_state(psy, &present);
+
+			power_supply_put(psy);
+
+			if (ret)
+				break;
+
+			if (touch_cdev->ps_is_present_set &&
+			    touch_cdev->ps_is_present == present)
+				break;
+
+			touch_cdev->ps_is_present = present;
+			touch_cdev->ps_is_present_set = true;
+
 			TRY_TO_CALL(charger_mode, (int)touch_cdev->ps_is_present);
 				break;
+		}
 
 		case TS_MMI_DO_REFRESH_RATE:
 			TRY_TO_CALL(refresh_rate, (int)touch_cdev->refresh_rate);
@@ -512,31 +536,14 @@ static int ts_mmi_charger_cb(struct notifier_block *self,
 	struct ts_mmi_dev *touch_cdev = container_of(
 					self, struct ts_mmi_dev, ps_notif);
 	struct power_supply *psy = ptr;
-	int ret;
-	bool present;
 
 	if (!((event == PSY_EVENT_PROP_CHANGED) && psy &&
 			psy->desc->get_property && psy->desc->name &&
 			!strncmp(psy->desc->name, "usb", sizeof("usb"))))
 		return 0;
 
-	ret = ts_mmi_ps_get_state(psy, &present);
-	if (ret) {
-		dev_err(DEV_MMI, "%s: failed to get usb status: %d\n",
-				__func__, ret);
-		return ret;
-	}
-
-	dev_dbg(DEV_MMI, "%s: event=%lu, usb status: cur=%d, prev=%d\n",
-				__func__, event, present, touch_cdev->ps_is_present);
-
-	if (touch_cdev->ps_is_present != present) {
-		touch_cdev->ps_is_present = present;
-		if (is_touch_active) {
-			kfifo_put(&touch_cdev->cmd_pipe, TS_MMI_DO_PS);
-			schedule_delayed_work(&touch_cdev->work, 0);
-		}
-	}
+	kfifo_put(&touch_cdev->cmd_pipe, TS_MMI_DO_PS);
+	schedule_delayed_work(&touch_cdev->work, 0);
 
 	return 0;
 }
@@ -647,25 +654,13 @@ int ts_mmi_notifiers_register(struct ts_mmi_dev *touch_cdev)
 		goto FIFO_ALLOC_FAILED;
 
 	if (touch_cdev->pdata.usb_detection) {
-		struct power_supply *psy = NULL;
-		bool present;
 		touch_cdev->ps_notif.notifier_call = ts_mmi_charger_cb;
 		ret = power_supply_reg_notifier(&touch_cdev->ps_notif);
 		if (ret)
 			goto PS_NOTIF_REGISTER_FAILED;
 
-		psy = power_supply_get_by_name("usb");
-		if (psy) {
-			ret = ts_mmi_ps_get_state(psy, &present);
-			if (!ret) {
-				touch_cdev->ps_is_present = present;
-				kfifo_put(&touch_cdev->cmd_pipe, TS_MMI_DO_PS);
-				schedule_delayed_work(&touch_cdev->work, 0);
-			}
-			power_supply_put(psy);
-			dev_info(DEV_MMI, "%s: USB initial status=%d\n",
-				__func__, touch_cdev->ps_is_present);
-		}
+		kfifo_put(&touch_cdev->cmd_pipe, TS_MMI_DO_PS);
+		schedule_delayed_work(&touch_cdev->work, 0);
 	}
 
 	/*

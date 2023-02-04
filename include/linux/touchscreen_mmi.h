@@ -511,6 +511,7 @@ struct ts_mmi_dev {
 
 	struct work_struct	ps_notify_work;
 	struct notifier_block	ps_notif;
+	bool			ps_is_present_set;
 	bool			ps_is_present;
 
 	struct notifier_block	fps_notif;
