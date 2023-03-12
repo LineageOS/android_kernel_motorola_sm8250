@@ -3649,7 +3649,7 @@ static int nvt_drm_notifier_callback(struct notifier_block *self, unsigned long 
 		if (*blank == MSM_DRM_BLANK_POWERDOWN) {
 			NVT_LOG("event=%lu, *blank=%d\n", event, *blank);
 			nvt_ts_suspend(&ts->client->dev);
-#if WAKEUP_GESTURE && defined(NVT_SET_TOUCH_STATE)
+#if WAKEUP_GESTURE && (defined(NVT_SET_TOUCH_STATE) || defined(NVT_CONFIG_PANEL_NOTIFICATIONS))
 			if (should_enable_gesture()) {
 				NVT_LOG("double tap gesture suspend\n");
 				touch_set_state(TOUCH_LOW_POWER_STATE, TOUCH_PANEL_IDX_PRIMARY);

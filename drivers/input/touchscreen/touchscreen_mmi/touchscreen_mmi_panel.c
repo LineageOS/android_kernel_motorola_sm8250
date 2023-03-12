@@ -110,6 +110,11 @@ int ts_mmi_parse_dt(struct ts_mmi_dev *touch_cdev,
 		ppdata->pill_region_ctrl = true;
 	}
 
+	if (of_property_read_bool(of_node, "mmi,active-region-control")) {
+		dev_info(DEV_TS, "%s: using active region\n", __func__);
+		ppdata->active_region_ctrl = true;
+	}
+
 	if (of_property_read_bool(of_node, "mmi,hold-distance-control")) {
 		dev_info(DEV_TS, "%s: using hold distance\n", __func__);
 		ppdata->hold_distance_ctrl = true;
@@ -140,7 +145,16 @@ int ts_mmi_parse_dt(struct ts_mmi_dev *touch_cdev,
 		ppdata->max_x = coords[0] - 1;
 		ppdata->max_y = coords[1] - 1;
 	}
+	if (of_property_read_bool(of_node, "mmi,fod_detection")) {
+		dev_info(DEV_TS, "%s: using fod detection\n", __func__);
+		ppdata->fod_detection = true;
+	}
 
+	if (!of_property_read_u32_array(of_node, "mmi,fod_coords", coords, 2)) {
+		ppdata->fod_x = coords[0];
+		ppdata->fod_y = coords[1];
+		dev_info(DEV_TS, "%s: get fod_coords property x:%d y:%d\n", __func__,ppdata->fod_x,ppdata->fod_y);
+	}
 	chosen = of_find_node_by_name(NULL, "chosen");
 	if (chosen) {
 		struct device_node *child;
@@ -236,9 +250,8 @@ done:
 }
 
 #if defined(CONFIG_DRM_PANEL_NOTIFICATIONS) || defined (CONFIG_DRM_PANEL_EVENT_NOTIFICATIONS)
-struct drm_panel *active_panel;
 
-static int ts_mmi_check_dt(struct device_node *np)
+static int ts_mmi_check_dt(struct ts_mmi_dev *touch_cdev, struct device_node *np)
 {
 
 	int i = 0;
@@ -248,7 +261,7 @@ static int ts_mmi_check_dt(struct device_node *np)
 
 	count = of_count_phandle_with_args(np, "panel", NULL);
 	if (count <= 0) {
-		pr_err("%s: find drm_panel count(%d) fail", __func__, count);
+		dev_err(DEV_TS, "%s: find drm_panel count(%d) fail", __func__, count);
 		return -ENODEV;
 	}
 
@@ -257,12 +270,12 @@ static int ts_mmi_check_dt(struct device_node *np)
 		panel = of_drm_find_panel(node);
 		of_node_put(node);
 		if (!IS_ERR(panel)) {
-			pr_info("%s: find drm_panel successfully", __func__);
-			active_panel = panel;
+			dev_info(DEV_TS, "%s: find drm_panel successfully", __func__);
+			touch_cdev->active_panel = panel;
 			return 0;
 		}
 	}
-	pr_err("%s: No find drm_panel", __func__);
+	dev_err(DEV_TS, "%s: No find drm_panel", __func__);
 	return -ENODEV;
 }
 
@@ -311,13 +324,13 @@ out:
 	return ret;
 }
 
-int ts_mmi_check_drm_panel(struct device_node *of_node)
+int ts_mmi_check_drm_panel(struct ts_mmi_dev* touch_cdev, struct device_node *of_node)
 {
 	int ret;
 
-	ret = ts_mmi_check_dt(of_node);
+	ret = ts_mmi_check_dt(touch_cdev, of_node);
 	if (ret) {
-		pr_err( "%s: parse drm-panel fail\n", __func__);
+		dev_err(DEV_TS, "%s: parse drm-panel fail\n", __func__);
 		if (!ts_mmi_check_default_tp(of_node, "qcom,mmi-touch-active"))
 			ret = -EPROBE_DEFER;
 		else

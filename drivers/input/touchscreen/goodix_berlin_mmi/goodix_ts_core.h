@@ -27,6 +27,9 @@
 #ifdef CONFIG_GTP_ENABLE_PM_QOS
 #include <linux/pm_qos.h>
 #endif
+#ifdef CONFIG_GTP_LAST_TIME
+#include <linux/ktime.h>
+#endif
 
 #define GOODIX_CORE_DRIVER_NAME			"goodix_ts"
 #define GOODIX_PEN_DRIVER_NAME			"goodix_ts,pen"
@@ -537,6 +540,11 @@ struct goodix_ts_core {
 	bool need_update_cfg;
 #ifdef CONFIG_GTP_FOD
 	unsigned char gesture_type;
+	int zerotap_data[1];
+	int fod_enable;
+#endif
+#ifdef CONFIG_GTP_LAST_TIME
+	ktime_t last_event_time;
 #endif
 	atomic_t pm_resume;
 	wait_queue_head_t pm_wq;
@@ -699,5 +707,12 @@ void goodix_ts_release_connects(struct goodix_ts_core *core_data);
 
 int goodix_ts_power_on(struct goodix_ts_core *cd);
 int goodix_ts_power_off(struct goodix_ts_core *cd);
+
+#ifdef CONFIG_GTP_DDA_STYLUS
+void goodix_stylus_dda_init(void);
+void goodix_stylus_dda_exit(void);
+int goodix_stylus_dda_register_cdevice(void);
+void goodix_dda_process_pen_report(struct goodix_pen_data *pen_data);
+#endif
 
 #endif

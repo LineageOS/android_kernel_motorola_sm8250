@@ -49,6 +49,12 @@ enum mmi_charger_ext_iio_channels {
 	CP_INPUT_VOLTAGE_NOW,
 	CP_STATUS1,
 	CP_CLEAR_ERROR,
+	/*cp_slave*/
+	CP_SLAVE_ENABLE,
+	CP_SLAVE_INPUT_CURRENT_NOW,
+	CP_SLAVE_INPUT_VOLTAGE_NOW,
+	CP_SLAVE_STATUS1,
+	CP_SLAVE_CLEAR_ERROR,
 	/*mmi-smb5charger-iio*/
 	MMI_CP_ENABLE_STATUS,
 	MMI_USB_TERMINATION_ENABLED,
@@ -73,13 +79,19 @@ static const char * const mmi_charger_ext_iio_chan_name[] = {
 	[SMB5_QC3P_POWER] = "usb_qc3p_power",
 #endif
 	/*cp*/
-	[CP_ENABLE] = "bq2597x_cp_enabled",
-	[CP_INPUT_CURRENT_NOW] = "bq2597x_input_current_now",
-	[CP_INPUT_VOLTAGE_NOW] = "bq2597x_input_voltage_settled",
-	[CP_STATUS1] = "bq2597x_cp_status1",
-	[CP_CLEAR_ERROR] = "bq2597x_cp_clear_error",
+	[CP_ENABLE] = "cp_enabled",
+	[CP_INPUT_CURRENT_NOW] = "cp_input_current_now",
+	[CP_INPUT_VOLTAGE_NOW] = "cp_input_voltage_settled",
+	[CP_STATUS1] = "cp_status1",
+	[CP_CLEAR_ERROR] = "cp_clear_error",
+	/*cp_slave*/
+	[CP_SLAVE_ENABLE] = "cp_slave_enabled",
+	[CP_SLAVE_INPUT_CURRENT_NOW] = "cp_slave_input_current_now",
+	[CP_SLAVE_INPUT_VOLTAGE_NOW] = "cp_slave_input_voltage_settled",
+	[CP_SLAVE_STATUS1] = "cp_slave_status1",
+	[CP_SLAVE_CLEAR_ERROR] = "cp_slave_clear_error",
 	/*mmi-smb5charger-iio*/
-	[MMI_CP_ENABLE_STATUS] = "bq2597x_cp_enabled",
+	[MMI_CP_ENABLE_STATUS] = "mmi_cp_enabled_status",
 };
 
 int mmi_charger_read_iio_chan(struct mmi_charger_manager *chip,

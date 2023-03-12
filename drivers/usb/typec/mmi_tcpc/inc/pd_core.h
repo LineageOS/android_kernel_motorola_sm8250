@@ -671,6 +671,7 @@
 #define USB_VID_RICHTEK		0x29cf  /* demo uvdm */
 #define USB_VID_DIRECTCHARGE	0x29cf  /* direct charge */
 #define USB_VID_MQP		0x1748
+#define USB_VID_MMI_ADAPTER  0x22b8
 
 /* PD counter definitions */
 #define PD_MESSAGE_ID_COUNT	7
@@ -854,11 +855,20 @@ struct pd_port {
 	struct tcpc_device *tcpc;
 	struct mutex pd_lock;
 
+	/* miss msg */
+	bool miss_msg;
+	uint8_t rx_cap;
+
+#ifdef CONFIG_SUPPORT_MMI_ADAPTER
+	uint8_t mmi_adapter_state;
+#endif /* CONFIG_SUPPORT_MMI_ADAPTER */
+
 	/* PD */
 	bool msg_output_lock;
 
 	uint8_t state_machine;
 	uint8_t pd_connect_state;
+	uint8_t pd_vdm_verify_state;
 
 	uint8_t pe_pd_state;
 	uint8_t pe_vdm_state;
@@ -1224,6 +1234,7 @@ void pd_lock_msg_output(struct pd_port *pd_port);
 void pd_unlock_msg_output(struct pd_port *pd_port);
 
 int pd_update_connect_state(struct pd_port *pd_port, uint8_t state);
+int pd_update_vdm_verify_state(struct pd_port *pd_port, uint8_t state);
 
 /* ---- PD notify TCPC Policy Engine State Changed ---- */
 
@@ -1612,6 +1623,9 @@ enum {	/* pd_traffic_control */
 
 #define PD30_SINK_TX_OK		TYPEC_CC_RP_3_0
 #define PD30_SINK_TX_NG		TYPEC_CC_RP_1_5
+
+void pd_add_miss_msg(struct pd_port *pd_port,struct pd_event *pd_event,
+				uint8_t msg);
 
 void pd_set_sink_tx(struct pd_port *pd_port, uint8_t cc);
 void pd_sync_sop_spec_revision(struct pd_port *pd_port);

@@ -107,11 +107,12 @@ enum print_reason {
 	PR_MOTO         = BIT(7),
 };
 
-static int __debug_mask = 0xFF;
+static int __debug_mask = 0;
 module_param_named(
 	debug_mask, __debug_mask, int, S_IRUSR | S_IWUSR
 );
 
+#define FG_HEARTBEAT_RATE 60000
 #define	MONITOR_ALARM_CHECK_NS	5000000000
 #define	INVALID_REG_ADDR	0xFF
 #define BQFS_UPDATE_KEY		0x8F91
@@ -226,7 +227,7 @@ static const struct fg_batt_profile bqfs_image[] = {
 #endif
 
 #ifdef ATL_NM40_712MAH_BATTERY_PROFILE
-	{.batt_type_str = "NM40_ATL_712MAH", .bqfs_image = li_alt_flip_bqfs_image, .array_size = ARRAY_SIZE(li_alt_flip_bqfs_image), .chem_id = 0x2766, .dm_ver = 5},
+	{.batt_type_str = "NM40_ATL_712MAH", .bqfs_image = li_alt_flip_bqfs_image, .array_size = ARRAY_SIZE(li_alt_flip_bqfs_image), .chem_id = 0x5725, .dm_ver = 0},
 #endif
 
 };
@@ -323,6 +324,7 @@ struct bq_fg_chip {
 	const char *batt_profile_name;
 	const char *batt_name;
 	u32 temp_source;
+	int ibat_polority;
 
 	/* debug */
 	int	skip_reads;
@@ -1024,19 +1026,25 @@ static int fg_read_fw_version(struct bq_fg_chip *bq)
 	return version;
 }
 
-
+#define BPD_TEMP_THRE (-300)
+static int fg_read_temperature(struct bq_fg_chip *bq);
 static int fg_read_status(struct bq_fg_chip *bq)
 {
 	int ret;
 	u16 flags;
+	int batt_temp;
 
 	ret = fg_read_word(bq, bq->regs[BQ_FG_REG_FLAGS], &flags);
 	if (ret < 0) {
 		return ret;
 	}
 
+	batt_temp = fg_read_temperature(bq) - 2730;
 	mutex_lock(&bq->data_lock);
-	bq->batt_present	= !!(flags & FG_FLAGS_BAT_DET);
+	if (batt_temp > BPD_TEMP_THRE)
+		bq->batt_present	= !!(flags & FG_FLAGS_BAT_DET);
+	else
+		bq->batt_present	= false;
 	bq->batt_ot			= !!(flags & FG_FLAGS_OT);
 	bq->batt_ut			= !!(flags & FG_FLAGS_UT);
 	bq->batt_fc			= !!(flags & FG_FLAGS_FC);
@@ -1348,7 +1356,7 @@ static int fg_get_property(struct power_supply *psy,
 	case POWER_SUPPLY_PROP_CURRENT_NOW:
 		mutex_lock(&bq->data_lock);
 		fg_read_current(bq, &bq->batt_curr);
-		val->intval = -bq->batt_curr * 1000;
+		val->intval = -bq->batt_curr * 1000 * bq->ibat_polority;
 		mutex_unlock(&bq->data_lock);
 		break;
 
@@ -2354,16 +2362,28 @@ static int bq_parse_dt(struct bq_fg_chip *bq)
 	bq->name = bq->batt_name;
 
 	rc = of_property_read_string(node, "mmi,batt-profile-name", &bq->batt_profile_name);
-	if (rc)
+	if (rc) {
+		mmi_fg_err(bq, "battery profile name is not specified in dts\n");
 		bq->batt_profile_name = NULL;
+		return rc;
+	}
 
 	rc = of_property_read_u32(node,	"design-capacity", &bq->batt_dc_conf);
-	if (rc < 0)
-		bq->batt_dc_conf = 0;;
+	if (rc < 0) {
+		bq->batt_dc_conf = 0;
+		rc = 0;
+	}
 
 	rc = of_property_read_u32(node,	"mmi,temp-source", &bq->temp_source);
-	if (rc < 0)
+	if (rc < 0) {
 		bq->temp_source = TEMP_SOURCE_EXTERNAL;
+		rc = 0;
+	}
+
+	if (of_property_read_bool(node, "mmi,ibat-invert-polority"))
+		bq->ibat_polority = -1;
+	else
+		bq->ibat_polority = 1;
 
 	return rc;
 }
@@ -2405,7 +2425,7 @@ static void bq_heartbeat_work(struct work_struct *work)
 	debug_fg_dump_registers(chip);
 	queue_delayed_work(chip->heartbeat_wq,
 			&chip->heartbeat_work,
-			msecs_to_jiffies(1000));
+			msecs_to_jiffies(FG_HEARTBEAT_RATE));
 }
 
 static int bq_fg_probe(struct i2c_client *client,

@@ -33,6 +33,14 @@ ifeq ($(TOUCHSCREEN_FOD),true)
 	KBUILD_OPTIONS += CONFIG_GTP_FOD=y
 endif
 
+ifeq ($(TOUCHSCREEN_LAST_TIME),true)
+	KBUILD_OPTIONS += CONFIG_GTP_LAST_TIME=y
+endif
+
+ifeq ($(GTP_ENABLE_DDA_STYLUS),true)
+	KBUILD_OPTIONS += CONFIG_GTP_DDA_STYLUS=y
+endif
+
 include $(CLEAR_VARS)
 LOCAL_MODULE := goodix_brl_mmi.ko
 LOCAL_MODULE_TAGS := optional
