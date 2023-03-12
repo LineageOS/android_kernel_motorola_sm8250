@@ -26,6 +26,11 @@
 #define EXT_VIB_PLAY_MS			5000
 #define EXT_VIB_MAX_PLAY_MS		15000
 
+#ifdef CONFIG_VIBRATOR_NOISE_CAMERA
+extern int mot_actuator_on_vibrate_start(void);
+extern int mot_actuator_on_vibrate_stop(void);
+#endif
+
 struct vib_ldo_chip {
 	struct led_classdev	cdev;
 	struct mutex		lock;
@@ -66,6 +71,9 @@ static void ext_vib_work(struct work_struct *work)
 				pr_warn("vib in dis short and long, play ms=%lld, dis_longms=%d\n",chip->vib_play_ms, chip->dis_long_ms);
 				if (chip->vib_play_ms > chip->dis_long_ms) {
 					ret = gpio_direction_output(chip->vcc_2v6_Pin, chip->state);
+#ifdef CONFIG_VIBRATOR_NOISE_CAMERA
+					mot_actuator_on_vibrate_start();
+#endif
 				}
 				else {
 					ret = gpio_direction_output(chip->vcc_3v0_Pin, chip->state);
@@ -90,6 +98,13 @@ static void ext_vib_work(struct work_struct *work)
 		if (chip->pwr_by_gpio) {
 			gpio_direction_output(chip->vcc_2v6_Pin, chip->state);
 			gpio_direction_output(chip->vcc_3v0_Pin, chip->state);
+#ifdef CONFIG_VIBRATOR_NOISE_CAMERA
+			if (chip->dis_short_long) {
+				if (chip->vib_play_ms > chip->dis_long_ms) {
+					mot_actuator_on_vibrate_stop();
+				}
+			}
+#endif
 		}
 		else if (regulator_en_flag) {
 			regulator_en_flag = false;

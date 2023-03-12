@@ -27,6 +27,7 @@
 #include <linux/regulator/of_regulator.h>
 #include <linux/regulator/machine.h>
 #include <linux/mmi_discrete_charger_class.h>
+#include <linux/mmi_discrete_power_supply.h>
 #include <linux/seq_file.h>
 #include <uapi/linux/sched/types.h>
 #include <linux/kthread.h>
@@ -44,18 +45,11 @@
 static struct bq2589x *g_bq;
 static DEFINE_MUTEX(bq2589x_i2c_lock);
 #ifdef CONFIG_MMI_QC3P_TURBO_CHARGER
-static bool g_qc3p_detected = false;
 bool qc3p_update_policy(struct bq2589x *chip);
 #endif
 #define MMI_HVDCP2_VOLTAGE_STANDARD		8000000
 #define MMI_HVDCP3_VOLTAGE_STANDARD		7500000
 #define MMI_HVDCP_DETECT_ICL_LIMIT		500
-
-enum {
-	MMI_POWER_SUPPLY_DP_DM_UNKNOWN = 0,
-	MMI_POWER_SUPPLY_DP_DM_DP_PULSE = 1,
-	MMI_POWER_SUPPLY_DP_DM_DM_PULSE = 2,
-};
 
 struct bq2589x_iio {
 	struct iio_channel	*usbin_v_chan;
@@ -101,10 +95,12 @@ struct bq2589x_config {
 	bool	enable_term;
 	bool	enable_ico;
 	bool	use_absolute_vindpm;
+	bool	disable_ilim;
 
 	int	charge_voltage;
 	int	charge_current;
 	int	term_current;
+	int	vindpm;
 };
 
 struct bq2589x_state {
@@ -140,6 +136,8 @@ struct bq2589x {
 	int		vbat_volt;
 	int		rsoc;
 	int		chg_en_gpio;
+	int		wls_en_gpio;
+	bool	ignore_request_dpdm;
 
 	const char *chg_dev_name;
 
@@ -175,8 +173,14 @@ struct bq2589x {
 	bool			mmi_is_qc3_authen;
 	u32			input_current_cache;
 	int			pulse_cnt;
+
+	/*mmi qc3p*/
+	bool			mmi_qc3p_rerun_done;
+	bool			mmi_qc3p_wa;
+	int			mmi_qc3p_power;
+
 	struct bq2589x_iio		iio;
-#ifdef CONFIG_MMI_QC3P_TURBO_CHARGER
+#ifdef CONFIG_MMI_QC3P_WT6670_DETECTED
 	struct iio_channel	**ext_iio_chans;
 #endif
 };
@@ -194,6 +198,8 @@ struct pe_ctrl {
 	int vbat_min_volt;  /* to tune up voltage only when vbat > this threshold */
 };
 static struct pe_ctrl pe;
+
+extern bool mmi_is_factory_mode(void);
 
 static int bq2589x_read_byte(struct bq2589x *bq, u8 *data, u8 reg)
 {
@@ -287,22 +293,44 @@ static int bq2589x_set_otg_current(struct bq2589x *bq, int curr)
 {
 	u8 temp;
 
-	if (curr >= 2400)
-		temp = BQ2589X_BOOST_LIM_2400MA;
-	else if (curr >= 2100)
-		temp = BQ2589X_BOOST_LIM_2100MA;
-	else if (curr >= 1800)
-		temp = BQ2589X_BOOST_LIM_1800MA;
-	else if (curr >= 1600)
-		temp = BQ2589X_BOOST_LIM_1600MA;
-	else if (curr >= 1300)
-		temp = BQ2589X_BOOST_LIM_1300MA;
-	else if (curr >= 1100)
-		temp = BQ2589X_BOOST_LIM_1100MA;
-	else if (curr >= 700)
-		temp = BQ2589X_BOOST_LIM_700MA;
-	else
-		temp = BQ2589X_BOOST_LIM_500MA;
+	if (bq->part_no == SC89890H) {
+		if (curr < 600)
+			temp = SC89890H_BOOST_LIM_500MA;
+		else if (curr < 900)
+			temp = SC89890H_BOOST_LIM_750MA;
+		else if (curr < 1300)
+			temp = SC89890H_BOOST_LIM_1200MA;
+		else if (curr < 1500)
+			temp = SC89890H_BOOST_LIM_1400MA;
+		else if (curr < 1700)
+			temp = SC89890H_BOOST_LIM_1650MA;
+		else if (curr < 1900)
+			temp = SC89890H_BOOST_LIM_1875MA;
+		else if (curr < 2200)
+			temp = SC89890H_BOOST_LIM_2150MA;
+		else if (curr < 2500)
+			temp = SC89890H_BOOST_LIM_2450MA;
+		else
+			temp = SC89890H_BOOST_LIM_1400MA;
+    } else {
+		if (curr >= 2400)
+			temp = BQ2589X_BOOST_LIM_2400MA;
+		else if (curr >= 2100)
+			temp = BQ2589X_BOOST_LIM_2100MA;
+		else if (curr >= 1800)
+			temp = BQ2589X_BOOST_LIM_1800MA;
+		else if (curr >= 1600)
+			temp = BQ2589X_BOOST_LIM_1600MA;
+		else if (curr >= 1300)
+			temp = BQ2589X_BOOST_LIM_1300MA;
+		else if (curr >= 1100)
+			temp = BQ2589X_BOOST_LIM_1100MA;
+		else if (curr >= 700)
+			temp = BQ2589X_BOOST_LIM_700MA;
+		else
+			temp = BQ2589X_BOOST_LIM_500MA;
+	}
+
 
 	return bq2589x_update_bits(bq, BQ2589X_REG_0A, BQ2589X_BOOST_LIM_MASK, temp << BQ2589X_BOOST_LIM_SHIFT);
 }
@@ -555,6 +583,11 @@ void bq2589x_set_otg(struct bq2589x *bq, int enable)
 	int ret;
 
 	if (enable) {
+		/*disable wls output*/
+		if (gpio_is_valid(bq->wls_en_gpio)) {
+			gpio_direction_output(bq->wls_en_gpio, 1);
+		}
+
 		ret = bq2589x_enable_otg(bq);
 		if (ret < 0) {
 			dev_err(bq->dev, "%s:Failed to enable otg-%d\n", __func__, ret);
@@ -564,6 +597,11 @@ void bq2589x_set_otg(struct bq2589x *bq, int enable)
 		ret = bq2589x_disable_otg(bq);
 		if (ret < 0)
 			dev_err(bq->dev, "%s:Failed to disable otg-%d\n", __func__, ret);
+
+		/*resume wls output*/
+		if (gpio_is_valid(bq->wls_en_gpio)) {
+			gpio_direction_output(bq->wls_en_gpio, 0);
+		}
 	}
 }
 
@@ -589,8 +627,25 @@ int bq2589x_reset_watchdog_timer(struct bq2589x *bq)
 int bq2589x_force_dpdm(struct bq2589x *bq)
 {
 	int ret;
-	u8 val = BQ2589X_FORCE_DPDM << BQ2589X_FORCE_DPDM_SHIFT;
+	u8 val = 0;
 
+	if (bq->part_no == SC89890H) {
+		val = 0x2 << BQ2589X_DP_VSEL_SHIFT;
+		bq2589x_update_bits(bq, BQ2589X_REG_01, BQ2589X_DP_VSEL_MASK, val);
+		val = 0x1 << BQ2589X_DM_VSEL_SHIFT;
+		bq2589x_update_bits(bq, BQ2589X_REG_01, BQ2589X_DM_VSEL_MASK, val);
+
+		msleep(30);
+
+		val = 0x1 << BQ2589X_DP_VSEL_SHIFT;
+		bq2589x_update_bits(bq, BQ2589X_REG_01, BQ2589X_DP_VSEL_MASK, val);
+		val = 0x1 << BQ2589X_DM_VSEL_SHIFT;
+		bq2589x_update_bits(bq, BQ2589X_REG_01, BQ2589X_DM_VSEL_MASK, val);
+
+		msleep(30);
+	}
+
+	val = BQ2589X_FORCE_DPDM << BQ2589X_FORCE_DPDM_SHIFT;
 	ret = bq2589x_update_bits(bq, BQ2589X_REG_02, BQ2589X_FORCE_DPDM_MASK, val);
 	if (ret)
 		return ret;
@@ -647,7 +702,6 @@ int bq2589x_get_hiz_mode(struct bq2589x *bq, u8 *state)
 	return 0;
 }
 
-#ifdef CONFIG_MMI_QC3P_TURBO_CHARGER
 int bq2589x_is_enabled_charging(struct charger_device *chg_dev, bool *en)
 {
 	u8 val;
@@ -661,7 +715,6 @@ int bq2589x_is_enabled_charging(struct charger_device *chg_dev, bool *en)
 
 	return 0;
 }
-#endif
 
 int bq2589x_pumpx_enable(struct bq2589x *bq, int enable)
 {
@@ -899,36 +952,6 @@ static int bq2589x_get_vindpm_volt(struct bq2589x *bq)
 	}
 }
 
-static int bq2589x_loop_compensation(struct bq2589x *bq)
-{
-	int ret;
-
-	ret = bq2589x_write_byte(bq, 0x7E, 0x48);
-	ret |= bq2589x_write_byte(bq, 0x7E, 0x54);
-	ret |= bq2589x_write_byte(bq, 0x7E, 0x53);
-	ret |= bq2589x_write_byte(bq, 0x7E, 0x39);
-	ret |= bq2589x_write_byte(bq, 0x90, 0x62);
-	ret |= bq2589x_write_byte(bq, 0x7D, 0x48);
-	ret |= bq2589x_write_byte(bq, 0x7D, 0x54);
-	ret |= bq2589x_write_byte(bq, 0x7D, 0x53);
-	ret |= bq2589x_write_byte(bq, 0x7D, 0x38);
-	ret |= bq2589x_write_byte(bq, 0x82, 0xE4);
-	ret |= bq2589x_write_byte(bq, 0x85, 0x00);
-	ret |= bq2589x_enable_term(bq, false);
-	ret |= bq2589x_update_bits(bq, BQ2589X_REG_00, BQ2589X_ENILIM_MASK,
-			BQ2589X_ENILIM_DISABLE << BQ2589X_ENILIM_SHIFT);
-	ret |= bq2589x_write_byte(bq, 0x7E, 0x48);
-	ret |= bq2589x_write_byte(bq, 0x7E, 0x54);
-	ret |= bq2589x_write_byte(bq, 0x7E, 0x53);
-	ret |= bq2589x_write_byte(bq, 0x7E, 0x39);
-	ret |= bq2589x_write_byte(bq, 0x7D, 0x48);
-	ret |= bq2589x_write_byte(bq, 0x7D, 0x54);
-	ret |= bq2589x_write_byte(bq, 0x7D, 0x53);
-	ret |= bq2589x_write_byte(bq, 0x7D, 0x38);
-
-	return ret;
-}
-
 static int bq2589x_sync_state(struct bq2589x *bq, struct bq2589x_state *state)
 {
 	u8 chrg_stat, volt_stat, fault;
@@ -995,6 +1018,11 @@ static int bq2589x_init_device(struct bq2589x *bq)
 	int ret;
 
 	/*common initialization*/
+        if (bq->part_no == SC89890H) {
+                bq2589x_update_bits(bq, BQ2589X_REG_00, BQ2589X_ENILIM_MASK,
+                        BQ2589X_ENILIM_DISABLE << BQ2589X_ENILIM_SHIFT);
+        }
+
 	bq2589x_disable_watchdog_timer(bq);
 
 	/*disable maxcharge en to allow qc2.0 detection*/
@@ -1043,12 +1071,13 @@ static int bq2589x_init_device(struct bq2589x *bq)
 	}
 
      /*common initialization*/
-	if (bq->part_no == SC89890H) {
-		ret = bq2589x_loop_compensation(bq);
+	if (bq->cfg.disable_ilim) {
+		ret = bq2589x_update_bits(bq, BQ2589X_REG_00, BQ2589X_ENILIM_MASK,
+			BQ2589X_ENILIM_DISABLE << BQ2589X_ENILIM_SHIFT);
 		if (ret < 0) {
-			dev_err(bq->dev, "%s:Failed to initialize all loop compensation:%d\n", __func__, ret);
+			dev_err(bq->dev, "%s:Failed to operate EN_LIM for ENLIM_DISABLE:%d\n", __func__, ret);
 		} else {
-			dev_err(bq->dev, "%s:sucess to initialize all loop compensation:%d\n", __func__, ret);
+			dev_err(bq->dev, "%s:Success to operate EN_LIM for ENLIM_DISABLE:%d\n", __func__, ret);
 		}
 	}
 
@@ -1391,6 +1420,18 @@ static int bq2589x_parse_dt(struct device *dev, struct bq2589x *bq)
 		gpio_direction_output(bq->chg_en_gpio,0);//default enable charge
 	}
 
+	/*wls outout en control*/
+	bq->wls_en_gpio = of_get_named_gpio(bq->dev->of_node, "mmi,wls-en-gpio", 0);
+	if (gpio_is_valid(bq->wls_en_gpio)) {
+		ret = gpio_request(bq->wls_en_gpio, "mmi wls en pin");
+		if (ret) {
+			dev_err(bq->dev, "%s: %d gpio(wls en) request failed\n", __func__, bq->wls_en_gpio);
+			return ret;
+		}
+
+		gpio_direction_output(bq->wls_en_gpio, 0);//default enable wls charge
+	}
+
 	ret = of_property_read_u32(np, "ti,bq2589x,vbus-volt-high-level", &pe.high_volt_level);
 	if (ret)
 		return ret;
@@ -1406,6 +1447,7 @@ static int bq2589x_parse_dt(struct device *dev, struct bq2589x *bq)
 	bq->cfg.enable_auto_dpdm = of_property_read_bool(np, "ti,bq2589x,enable-auto-dpdm");
 	bq->cfg.enable_term = of_property_read_bool(np, "ti,bq2589x,enable-termination");
 	bq->cfg.enable_ico = of_property_read_bool(np, "ti,bq2589x,enable-ico");
+	bq->cfg.disable_ilim = of_property_read_bool(np, "ti,bq2589x,disable-ilim");
 	bq->cfg.use_absolute_vindpm = of_property_read_bool(np, "ti,bq2589x,use-absolute-vindpm");
 
 	ret = of_property_read_u32(np, "ti,bq2589x,charge-voltage",&bq->cfg.charge_voltage);
@@ -1419,6 +1461,10 @@ static int bq2589x_parse_dt(struct device *dev, struct bq2589x *bq)
 	ret = of_property_read_u32(np, "ti,bq2589x,term-current",&bq->cfg.term_current);
 	if (ret)
 		return ret;
+
+	ret = of_property_read_u32(np, "ti,bq2589x,vindpm",&bq->cfg.vindpm);
+	if (ret)
+		bq->cfg.vindpm = 4600;
 
 	bq->mmi_qc3_support = of_property_read_bool(np, "mmi,qc3-support");
 
@@ -1478,6 +1524,10 @@ static bq2589x_reuqest_dpdm(struct bq2589x *bq, bool enable)
 {
 	int ret = 0;
 
+	if(mmi_is_factory_mode() && bq->ignore_request_dpdm) {
+		dev_err(bq->dev, "%s ignore_request_dpdm\n", __func__);
+		return ret;
+	}
 	mutex_lock(&bq->regulator_lock);
 	/* fetch the DPDM regulator */
 	if (!bq->dpdm_reg && of_get_property(bq->dev->of_node, "dpdm-supply", NULL)) {
@@ -1564,6 +1614,7 @@ static int bq2589x_rerun_apsd_if_required(struct bq2589x *bq)
 
 	bq2589x_force_dpdm(bq);
 
+	bq->pulse_cnt = 0;
 	bq->typec_apsd_rerun_done = true;
 
 	dev_info(bq->dev,"rerun apsd done\n");
@@ -1602,7 +1653,7 @@ static void bq2589x_adjust_absolute_vindpm(struct bq2589x *bq)
 
 }
 
-#ifndef CONFIG_MMI_QC3P_TURBO_CHARGER
+#ifndef CONFIG_MMI_QC3P_WT6670_DETECTED
 static int mmi_adjust_qc20_hvdcp_5v(struct bq2589x *bq)
 {
 	int ret;
@@ -1736,7 +1787,13 @@ static int mmi_qc30_step_down_vbus(struct bq2589x *bq)
 	return ret;
 }
 
-#ifndef CONFIG_MMI_QC3P_TURBO_CHARGER
+#ifndef CONFIG_MMI_QC3P_WT6670_DETECTED
+#define QC3P_AUTHEN_LOW_THR_MV 5500000
+#define QC3P_AUTHEN_HIGH_THR_MV 6500000
+#define QC3P_AUTHEN_NONE_THR_MV 9200000
+#define QC3P_AUTHEN_45W_THR_MV 8200000
+#define QC3P_AUTHEN_27W_THR_MV 7200000
+#define QC3P_AUTHEN_18W_THR_MV 6200000
 static int mmi_detected_qc30_hvdcp(struct bq2589x *bq, int *charger_type)
 {
 	int ret = 0;
@@ -1780,14 +1837,130 @@ static int mmi_detected_qc30_hvdcp(struct bq2589x *bq, int *charger_type)
 			dev_err(bq->dev, "%s qc30 step down vbus error\n", __func__);
 	}
 
+#ifndef CONFIG_MMI_QC3P_TURBO_CHARGER
 	mmi_get_usb_voltage_now(bq, &vbus_voltage);
 	dev_info(bq->dev, "%s vbus voltage now = %d after detected qc30\n", __func__,vbus_voltage);
+#endif
+
+	return ret;
+}
+
+#ifdef CONFIG_MMI_QC3P_TURBO_CHARGER
+static int bq2589x_detected_qc3p_hvdcp(struct bq2589x *bq, int *charger_type)
+{
+	int ret = 0;
+	int dp_val, dm_val;
+	int i=0, vbus_voltage;
+
+	mdelay(100);//need tunning
+
+	mmi_get_usb_voltage_now(bq, &vbus_voltage);
+
+	if (vbus_voltage < QC3P_AUTHEN_LOW_THR_MV
+		|| vbus_voltage > QC3P_AUTHEN_HIGH_THR_MV) {
+		bq->mmi_qc3p_power = MMI_POWER_SUPPLY_QC3P_NONE;
+		/*do qc3p rerun*/
+		dev_err(bq->dev, "qc3p voltage is invalid, rerun qc3p detect\n");
+		if (!bq->mmi_qc3p_rerun_done) {
+			bq->mmi_qc3p_rerun_done = true;
+			bq->mmi_qc3p_wa = true;
+			dp_val = 0x0<<BQ2589X_DP_VSEL_SHIFT;
+			ret = bq2589x_update_bits(bq, BQ2589X_REG_01,
+						  BQ2589X_DP_VSEL_MASK, dp_val); //dp HIZ
+			if (ret)
+				return ret;
+
+			dm_val = 0x0<<BQ2589X_DM_VSEL_SHIFT;
+			ret = bq2589x_update_bits(bq, BQ2589X_REG_01,
+						  BQ2589X_DM_VSEL_MASK, dm_val); //dm HIZ
+			if (ret)
+				return ret;
+
+			msleep(30);//need tunning
+
+			bq2589x_rerun_apsd_if_required(bq);
+		}
+
+		return 0;
+	}
+
+	for (i = 0;i < 3; i++) {
+		ret = mmi_qc30_step_up_vbus(bq);
+		if (ret)
+			dev_err(bq->dev, "%s qc3p step up vbus error\n", __func__);
+
+		ret = mmi_qc30_step_down_vbus(bq);
+		if (ret)
+			dev_err(bq->dev, "%s qc3p step down vbus error\n", __func__);
+
+	}
+
+	mdelay(30);//need tuning
+
+	mmi_get_usb_voltage_now(bq, &vbus_voltage);
+
+	for (i = 0; i < 2; i++) {
+		ret = mmi_qc30_step_up_vbus(bq);
+		if (ret)
+			dev_err(bq->dev, "%s qc3p step up vbus error\n", __func__);
+	}
+
+	for (i = 0; i < 2; i++) {
+		ret = mmi_qc30_step_down_vbus(bq);
+		if (ret)
+			dev_err(bq->dev, "%s qc3p step down vbus error\n", __func__);
+	}
+
+	msleep(30);
+
+	dev_info(bq->dev, "%s vbus voltage now = %d after detected qc3p\n", __func__,vbus_voltage);
+
+	if (vbus_voltage > QC3P_AUTHEN_NONE_THR_MV)
+		bq->mmi_qc3p_power = MMI_POWER_SUPPLY_QC3P_NONE;
+	else if (vbus_voltage > QC3P_AUTHEN_45W_THR_MV)
+		bq->mmi_qc3p_power = MMI_POWER_SUPPLY_QC3P_45W;
+	else if (vbus_voltage > QC3P_AUTHEN_27W_THR_MV)
+		bq->mmi_qc3p_power = MMI_POWER_SUPPLY_QC3P_27W;
+	else if (vbus_voltage > QC3P_AUTHEN_18W_THR_MV)
+		bq->mmi_qc3p_power = MMI_POWER_SUPPLY_QC3P_18W;
+	else
+		bq->mmi_qc3p_power = MMI_POWER_SUPPLY_QC3P_NONE;
+
+	if (bq->mmi_qc3p_power != MMI_POWER_SUPPLY_QC3P_NONE) {
+		*charger_type = POWER_SUPPLY_TYPE_USB_HVDCP_3P5;
+		dev_info(bq->dev, "%s detected qc3p, qc3p power = %d\n",
+					__func__,bq->mmi_qc3p_power);
+	} else {
+		dev_err(bq->dev, "qc3p power is invalid, rerun qc3p detect\n");
+		//do rerun qc3p
+		if (!bq->mmi_qc3p_rerun_done) {
+			bq->mmi_qc3p_rerun_done = true;
+			bq->mmi_qc3p_wa = true;
+			dp_val = 0x0<<BQ2589X_DP_VSEL_SHIFT;
+			ret = bq2589x_update_bits(bq, BQ2589X_REG_01,
+						  BQ2589X_DP_VSEL_MASK, dp_val); //dp HIZ
+			if (ret)
+				return ret;
+
+			dm_val = 0x0<<BQ2589X_DM_VSEL_SHIFT;
+			ret = bq2589x_update_bits(bq, BQ2589X_REG_01,
+						  BQ2589X_DM_VSEL_MASK, dm_val); //dm HIZ
+			if (ret)
+				return ret;
+
+			msleep(30);//need tunning
+
+			bq2589x_rerun_apsd_if_required(bq);
+		}
+
+	}
 
 	return ret;
 }
 #endif
+#endif
 
-#ifdef CONFIG_MMI_QC3P_TURBO_CHARGER
+#ifdef CONFIG_MMI_QC3P_WT6670_DETECTED
 bool is_chan_valid(struct bq2589x *chip,
 		enum mmi_qc3p_ext_iio_channels chan)
 {
@@ -1909,7 +2082,6 @@ bool qc3p_update_policy(struct bq2589x *chip )
 }
 #endif
 
-#ifdef CONFIG_MMI_QC3P_TURBO_CHARGER
 static int bq2589x_enable_termination(struct charger_device *chg_dev, bool enable)
 {
 	struct bq2589x *bq = dev_get_drvdata(&chg_dev->dev);
@@ -1927,7 +2099,6 @@ static int bq2589x_enable_termination(struct charger_device *chg_dev, bool enabl
 	return ret;
 }
 EXPORT_SYMBOL_GPL(bq2589x_enable_termination);
-#endif
 
 static int mmi_hvdcp_detect_kthread(void *param)
 {
@@ -1950,7 +2121,7 @@ static int mmi_hvdcp_detect_kthread(void *param)
 		bq->mmi_is_qc3_authen = true;
 		bq2589x_set_input_current_limit(bq, MMI_HVDCP_DETECT_ICL_LIMIT);
 
-#ifndef CONFIG_MMI_QC3P_TURBO_CHARGER
+#ifndef CONFIG_MMI_QC3P_WT6670_DETECTED
 		//do qc2.0 detected
 		ret = mmi_detected_qc20_hvdcp(bq, &charger_type);
 		if (ret) {
@@ -1966,6 +2137,17 @@ static int mmi_hvdcp_detect_kthread(void *param)
 		if (ret) {
 			dev_err(bq->dev, "Cann't detected qc30 hvdcp\n");
 		}
+
+#ifdef CONFIG_MMI_QC3P_TURBO_CHARGER
+		//do qc3p detected
+		if (charger_type == POWER_SUPPLY_TYPE_USB_HVDCP_3) {
+			ret = bq2589x_detected_qc3p_hvdcp(bq, &charger_type);
+			if (ret) {
+				dev_err(bq->dev, "Cann't detected qc3p hvdcp\n");
+				goto out;
+			}
+		}
+#endif
 #else
 			bq2589x_enable_termination(bq->chg_dev, true);
 			qc3p_start_detection(bq);
@@ -1986,7 +2168,6 @@ static int mmi_hvdcp_detect_kthread(void *param)
 					dev_err(bq->dev, "QC3P 27W have been detected !\n");
 					charger_type = POWER_SUPPLY_TYPE_USB_HVDCP_3P5;
 					qc3p_update_policy(bq);
-					g_qc3p_detected = true;
 					break;
 				default:
 					dev_info(bq->dev, "No HDVCP detected\n");
@@ -2005,6 +2186,7 @@ static int mmi_hvdcp_detect_kthread(void *param)
 	out:
 		bq2589x_set_input_current_limit(bq, bq->input_current_cache);
 		bq->mmi_is_qc3_authen = false;
+		charger_type = POWER_SUPPLY_TYPE_UNKNOWN;
 		up(&bq->sem_dpdm);
 		dev_info(bq->dev, "mmi_hvdcp_detect_kthread end\n");
 	}while(!kthread_should_stop());
@@ -2042,6 +2224,15 @@ static void bq2589x_adapter_in_func(struct bq2589x *bq)
 		return;
 	}
 
+#ifdef CONFIG_MMI_QC3P_TURBO_CHARGER
+	if (true == bq->mmi_qc3p_wa) {
+		if (bq->vbus_type != BQ2589X_VBUS_USB_DCP) {
+			pr_err("BQ2589x charger type fix to DCP to workaroud BC1.2 rerun fail \n");
+			bq->vbus_type = BQ2589X_VBUS_USB_DCP;
+		}
+	}
+#endif
+
 	switch (bq->vbus_type) {
 		case BQ2589X_VBUS_MAXC:
 			dev_info(bq->dev, "%s:HVDCP adapter plugged in\n", __func__);
@@ -2056,9 +2247,6 @@ static void bq2589x_adapter_in_func(struct bq2589x *bq)
 		case BQ2589X_VBUS_USB_DCP:
 			dev_info(bq->dev, "%s:DCP adapter plugged in\n", __func__);
 			bq->real_charger_type = POWER_SUPPLY_TYPE_USB_DCP;
-#ifdef CONFIG_MMI_QC3P_TURBO_CHARGER
-			if(g_qc3p_detected == false)
-#endif
 			mmi_start_hvdcp_detect(bq);
 			schedule_delayed_work(&bq->check_pe_tuneup_work, 0);
 			break;
@@ -2084,11 +2272,11 @@ static void bq2589x_adapter_in_func(struct bq2589x *bq)
 		if (ret < 0)
 			dev_err(bq->dev,"%s:force vindpm failed:%d\n",__func__,ret);
 
-		ret = bq2589x_set_input_volt_limit(bq, 4600);
+		ret = bq2589x_set_input_volt_limit(bq, bq->cfg.vindpm);
 		if (ret < 0)
-			dev_err(bq->dev,"%s:reset vindpm threshold to 4600 failed:%d\n",__func__,ret);
+			dev_err(bq->dev,"%s:reset vindpm threshold to %d failed:%d\n",__func__,bq->cfg.vindpm,ret);
 		else
-			dev_info(bq->dev,"%s:reset vindpm threshold to 4600 successfully\n",__func__);
+			dev_info(bq->dev,"%s:reset vindpm threshold to %d successfully\n",__func__,bq->cfg.vindpm);
 	}
 
 	schedule_delayed_work(&bq->monitor_work, 0);
@@ -2103,24 +2291,28 @@ static void bq2589x_adapter_out_func(struct bq2589x *bq)
 {
 	int ret;
 
-	ret = bq2589x_set_input_volt_limit(bq, 4600);
+	ret = bq2589x_set_input_volt_limit(bq, bq->cfg.vindpm);
 	if (ret < 0)
-		dev_err(bq->dev,"%s:reset vindpm threshold to 4600 failed:%d\n",__func__,ret);
+		dev_err(bq->dev,"%s:reset vindpm threshold to %d failed:%d\n",__func__,bq->cfg.vindpm,ret);
 	else
-		dev_info(bq->dev,"%s:reset vindpm threshold to 4600 successfully\n",__func__);
+		dev_info(bq->dev,"%s:reset vindpm threshold to %d successfully\n",__func__,bq->cfg.vindpm);
 
 	cancel_delayed_work_sync(&bq->monitor_work);
 
 #ifdef CONFIG_MMI_QC3P_TURBO_CHARGER
 	bq2589x_enable_termination(bq->chg_dev, true);
-	g_qc3p_detected = false;
+#ifdef CONFIG_MMI_QC3P_WT6670_DETECTED
 	qc3p_update_policy(bq);
 #endif
+#endif
 	bq->pulse_cnt = 0;
+	bq->mmi_qc3p_wa = false;
+	bq->mmi_qc3p_rerun_done = false;
 	bq->typec_apsd_rerun_done = false;
 	bq->chg_dev->noti.apsd_done = false;
 	bq->chg_dev->noti.hvdcp_done = false;
 	bq->real_charger_type = POWER_SUPPLY_TYPE_UNKNOWN;
+	bq->mmi_qc3p_power = MMI_POWER_SUPPLY_QC3P_NONE;
 	bq2589x_reuqest_dpdm(bq, false);
 	charger_dev_notify(bq->chg_dev);
 }
@@ -2392,6 +2584,15 @@ static irqreturn_t bq2589x_charger_interrupt(int irq, void *data)
 	return IRQ_HANDLED;
 }
 
+static int mmi_get_qc3p_power(struct charger_device *chg_dev, int *qc3p_power)
+{
+	struct bq2589x *bq = dev_get_drvdata(&chg_dev->dev);
+
+	*qc3p_power = bq->mmi_qc3p_power;
+
+	return 0;
+}
+
 static int mmi_get_pulse_cnt(struct charger_device *chg_dev, int *count)
 {
 	struct bq2589x *bq = dev_get_drvdata(&chg_dev->dev);
@@ -2405,6 +2606,8 @@ static int mmi_set_dp_dm(struct charger_device *chg_dev, int val)
 {
 	int rc = 0;
 	struct bq2589x *bq = dev_get_drvdata(&chg_dev->dev);
+
+	down(&bq->sem_dpdm);
 
 	switch(val) {
 	case MMI_POWER_SUPPLY_DP_DM_DP_PULSE:
@@ -2425,9 +2628,19 @@ static int mmi_set_dp_dm(struct charger_device *chg_dev, int val)
 		dev_dbg(bq->dev, "DP_DM_DM_PULSE rc=%d cnt=%d\n",
 				rc, bq->pulse_cnt);
 		break;
+	case MMI_POWER_SUPPLY_IGNORE_REQUEST_DPDM:
+		bq->ignore_request_dpdm = true;
+		dev_err(bq->dev, "MMI_POWER_SUPPLY_IGNORE_REQUEST_DPDM\n");
+		break;
+	case MMI_POWER_SUPPLY_DONOT_IGNORE_REQUEST_DPDM:
+		bq->ignore_request_dpdm = false;
+		dev_err(bq->dev, "MMI_POWER_SUPPLY_DONOT_IGNORE_REQUEST_DPDM\n");
+		break;
 	default:
 		break;
 	}
+
+	up(&bq->sem_dpdm);
 
 	return rc;
 }
@@ -2482,15 +2695,35 @@ static int bq2589x_set_otg_enable(struct charger_device *chg_dev, bool enable)
 {
 	struct bq2589x *bq = dev_get_drvdata(&chg_dev->dev);
 	u8 val;
+	int ret = 0;
 
-	if (enable)
+	if (enable) {
+		/*disable wls output*/
+		if (gpio_is_valid(bq->wls_en_gpio)) {
+			gpio_direction_output(bq->wls_en_gpio, 1);
+		}
+
+	        if (bq->part_no == SC89890H) {
+                        ret = bq2589x_disable_charger(bq);
+                }
 		val = BQ2589X_OTG_ENABLE << BQ2589X_OTG_CONFIG_SHIFT;
-	else
+		ret = bq2589x_update_bits(bq, BQ2589X_REG_03, BQ2589X_OTG_CONFIG_MASK, val);
+	}
+	else {
 		val = BQ2589X_OTG_DISABLE << BQ2589X_OTG_CONFIG_SHIFT;
+		if (bq->part_no == SC89890H) {
+                        ret = bq2589x_enable_charger(bq);
+                }
+		ret = bq2589x_update_bits(bq, BQ2589X_REG_03, BQ2589X_OTG_CONFIG_MASK, val);
 
+		/*resume wls output*/
+		if (gpio_is_valid(bq->wls_en_gpio)) {
+			gpio_direction_output(bq->wls_en_gpio, 0);
+		}
+	}
 	dev_info(bq->dev, "%s: %s otg\n", __func__, enable ? "enable" : "disable");
 
-	return bq2589x_update_bits(bq, BQ2589X_REG_03, BQ2589X_OTG_CONFIG_MASK, val);
+	return ret;
 }
 
 static int bq2589x_set_boost_current_limit(struct charger_device *chg_dev, u32 uA)
@@ -2614,10 +2847,9 @@ static struct charger_ops bq2589x_chg_ops = {
 	.is_charge_halted = bq2589x_is_charging_halted,
 
 	.dump_registers = bq2589x_dump_registers,
-#ifdef CONFIG_MMI_QC3P_TURBO_CHARGER
 	.is_enabled_charging = bq2589x_is_enabled_charging,
 	.enable_termination = bq2589x_enable_termination,
-#endif
+	.get_qc3p_power = mmi_get_qc3p_power,
 };
 
 static int bq2589x_charger_probe(struct i2c_client *client,
@@ -2636,6 +2868,8 @@ static int bq2589x_charger_probe(struct i2c_client *client,
 	bq->dev = dev;
 	bq->client = client;
 	i2c_set_clientdata(client, bq);
+
+	bq->ignore_request_dpdm = false;
 
 	ret = bq2589x_detect_device(bq);
 	if (!ret && bq->part_no == BQ25890) {
@@ -2732,7 +2966,8 @@ static int bq2589x_charger_probe(struct i2c_client *client,
 	ret = bq2589x_set_recharge_volt(bq, 100);//100mv
 	if (ret)
 		goto err_0;
-
+#endif
+#ifdef CONFIG_MMI_QC3P_WT6670_DETECTED
 	ret = mmi_init_iio_psy(bq, dev);
 	if (ret) {
 		dev_err(dev,

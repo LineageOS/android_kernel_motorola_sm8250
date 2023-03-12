@@ -1014,7 +1014,7 @@ static unsigned int goodix_pen_btn_code[] = {BTN_STYLUS, BTN_STYLUS2};
 static void goodix_parse_pen(struct goodix_pen_data *pen_data,
 	u8 *buf, int touch_num)
 {
-	unsigned int id = 0;
+	//unsigned int id = 0;
 	u8 cur_key_map = 0;
 	u8 *coor_data;
 	int16_t x_angle, y_angle;
@@ -1026,7 +1026,7 @@ static void goodix_parse_pen(struct goodix_pen_data *pen_data,
 		pen_data->coords.status = TS_TOUCH;
 		coor_data = &buf[IRQ_EVENT_HEAD_LEN];
 
-		id = (coor_data[0] >> 4) & 0x0F;
+		//id = (coor_data[0] >> 4) & 0x0F;
 		pen_data->coords.x = le16_to_cpup((__le16 *)(coor_data + 2));
 		pen_data->coords.y = le16_to_cpup((__le16 *)(coor_data + 4));
 		pen_data->coords.p = le16_to_cpup((__le16 *)(coor_data + 6));
@@ -1199,11 +1199,11 @@ static int brl_event_handler(struct goodix_ts_core *cd,
 	}
 
 	event_status = pre_buf[0];
-	if (event_status & GOODIX_TOUCH_EVENT)
+	if (event_status & GOODIX_TOUCH_EVENT) {
 		return goodix_touch_handler(cd, ts_event,
 					    pre_buf, pre_read_len);
 
-	if (event_status & GOODIX_REQUEST_EVENT) {
+	} else if (event_status & GOODIX_REQUEST_EVENT) {
 		ts_event->event_type = EVENT_REQUEST;
 		if (pre_buf[2] == BRL_REQUEST_CODE_CONFIG)
 			ts_event->request_code = REQUEST_TYPE_CONFIG;
@@ -1211,14 +1211,16 @@ static int brl_event_handler(struct goodix_ts_core *cd,
 			ts_event->request_code = REQUEST_TYPE_RESET;
 		else
 			ts_debug("unsupported request code 0x%x", pre_buf[2]);
-	}
-	if (event_status & GOODIX_GESTURE_EVENT) {
+	} else if (event_status & GOODIX_GESTURE_EVENT) {
 		ts_event->event_type = EVENT_GESTURE;
 		ts_event->gesture_type = pre_buf[4];
 #ifdef CONFIG_GTP_FOD
 		memcpy(ts_event->gesture_data, &pre_buf[8],
 				GOODIX_GESTURE_DATA_LEN);
 #endif
+	} else {
+		ts_info("Unsupported event status");
+		return -EINVAL;
 	}
 	return 0;
 }

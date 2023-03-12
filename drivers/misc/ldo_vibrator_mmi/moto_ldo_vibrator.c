@@ -21,6 +21,11 @@
 #define MOTO_VIB_PLAY_MS		5000
 #define MOTO_VIB_MAX_PLAY_MS		15000
 
+#ifdef CONFIG_VIBRATOR_NOISE_CAMERA
+extern int mot_actuator_on_vibrate_start(void);
+extern int mot_actuator_on_vibrate_stop(void);
+#endif
+
 struct vib_ldo_chip {
 	struct led_classdev	cdev;
 	struct mutex		lock;
@@ -37,6 +42,10 @@ struct vib_ldo_chip {
 static inline int moto_vib_ldo_enable(struct vib_ldo_chip *chip, bool enable)
 {
 	int ret;
+
+#ifdef CONFIG_VIBRATOR_NOISE_CAMERA
+	static int mot_actuator_started = 0;
+#endif
 
 	if (chip->vib_enabled == enable)
 		return 0;
@@ -55,6 +64,18 @@ static inline int moto_vib_ldo_enable(struct vib_ldo_chip *chip, bool enable)
 			pr_err(" %s : ldo en gpio disable failed \n", __func__);
 		chip->vib_enabled = false;
 	}
+
+#ifdef CONFIG_VIBRATOR_NOISE_CAMERA
+	if ((chip->vib_play_ms > 70) && (enable)) {
+		mot_actuator_on_vibrate_start();
+		mot_actuator_started = 1;
+	}
+	if(!(enable) && (mot_actuator_started == 1 )) {
+		mot_actuator_on_vibrate_stop();
+		mot_actuator_started = 0;
+	}
+	pr_debug("moto_vib_ldo_enable camera done\n");
+#endif
 
 	return ret;
 }

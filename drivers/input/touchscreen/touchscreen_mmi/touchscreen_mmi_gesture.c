@@ -212,6 +212,7 @@ static int ts_mmi_gesture_handler(struct gesture_event_data *gev)
 {
 	int key_code;
 	bool need2report = true;
+	struct ts_mmi_dev *touch_cdev = sensor_pdata->touch_cdev;
 
 	switch (gev->evcode) {
 	case 1:
@@ -220,10 +221,18 @@ static int ts_mmi_gesture_handler(struct gesture_event_data *gev)
 			break;
 	case 2:
 		key_code = KEY_F2;
+		if(gev->evdata.x == 0)
+			gev->evdata.x = touch_cdev->pdata.fod_x ;
+		if(gev->evdata.y== 0)
+			gev->evdata.y = touch_cdev->pdata.fod_y;
 		input_report_abs(sensor_pdata->input_sensor_dev, ABS_X, gev->evdata.x);
 		input_report_abs(sensor_pdata->input_sensor_dev, ABS_Y, gev->evdata.y);
 		pr_info("%s: zero tap; x=%x, y=%x\n", __func__, gev->evdata.x, gev->evdata.y);
-			break;
+		break;
+	case 3:
+		key_code = KEY_F3;
+		pr_info("%s: zero tap up\n", __func__);
+		break;
 	default:
 		need2report = false;
 		pr_info("%s: unknown id=%x\n", __func__, gev->evcode);
@@ -483,6 +492,7 @@ int ts_mmi_gesture_init(struct ts_mmi_dev *touch_cdev)
 	__set_bit(EV_KEY, sensor_input_dev->evbit);
 	__set_bit(KEY_F1, sensor_input_dev->keybit);
 	__set_bit(KEY_F2, sensor_input_dev->keybit);
+	__set_bit(KEY_F3, sensor_input_dev->keybit);
 	__set_bit(EV_ABS, sensor_input_dev->evbit);
 	__set_bit(EV_SYN, sensor_input_dev->evbit);
 	/* TODO: fill in real screen resolution */
