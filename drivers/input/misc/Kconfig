@@ -896,6 +896,7 @@ config INPUT_MMI_KEY_SWAP
 
 source "drivers/input/misc/ets_fps_mmi/Kconfig"
 source "drivers/input/misc/fpc_fps_mmi/Kconfig"
+source "drivers/input/misc/goodix_fod_mmi/Kconfig"
 source "drivers/input/misc/qpnp_power_on_mmi/Kconfig"
 source "drivers/input/misc/vl53L1/Kconfig"
 endif
