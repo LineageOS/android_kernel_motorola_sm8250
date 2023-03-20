@@ -195,7 +195,12 @@ struct aw9610x {
         uint32_t aw_ref_channel;
 	const char *aw_ch_name[12];
 
+	int32_t vcc_3v0_Pin;
+	int32_t pwr_by_gpio;
 	uint32_t sar_num;
+#ifdef  CONFIG_USE_HARDWARE_VERSION
+        uint32_t hw_version;
+#endif
 	int32_t irq_gpio;
 	int32_t to_irq;
 	uint32_t irq_status;

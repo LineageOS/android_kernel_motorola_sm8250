@@ -154,7 +154,7 @@ static u16 wt6670f_get_vbus_voltage(void)
 
 	pr_err(">>>>>>wt6670f get vbus voltage = %04x  %02x  %02x\n", tmp,
 			data[0], data[1]);
-	return (u16)(tmp * 18.98);
+        return (u16)(tmp * 1898 / 100);
 }
 
 static u16 wt6670f_get_id(u8 reg)
@@ -532,6 +532,17 @@ int moto_tcmd_wt6670f_get_firmware_version(void)
 }
 EXPORT_SYMBOL_GPL(moto_tcmd_wt6670f_get_firmware_version);
 
+static void clear_irq_signal(void)
+{
+	int ret = 0;
+	u16 data = 0;
+
+	if(QC3P_Z350 == g_qc3p_id){
+		ret = wt6670f_read_word(_wt, 0x11, &data);
+		pr_err("%s: data:%x, ret:%d\n", __func__, data, ret);
+	}
+}
+
 static irqreturn_t wt6670f_intr_handler(int irq, void *data)
 {
 	m_chg_type = 0xff;
@@ -596,6 +607,12 @@ static int wt6670_iio_write_raw(struct iio_dev *indio_dev,
 		wt6670f_set_volt_count(val1);
 		pr_info("wt6670 set volt count:%d\n",val1);
 		break;
+	case PSY_IIO_START_BC12_DETECTION:
+		clear_irq_signal();
+		wt6670f_reset_chg_type();
+		wt6670f_start_detection();
+		pr_info("wt6670 start bc1.2 detection\n");
+		break;
 	default:
 		pr_err("Unsupported wt6670 IIO chan %d\n", chan->channel);
 		rc = -EINVAL;
@@ -625,6 +642,12 @@ static int wt6670_iio_read_raw(struct iio_dev *indio_dev,
 		pr_info("wt6670 get charger type for qc3p power:%d\n",result);
 		if(result == WT6670_CHG_TYPE_QC3P_18W || result == WT6670_CHG_TYPE_QC3P_27W)
 			*val1 = result;
+		break;
+	case PSY_IIO_BC12_CHG_TYPE:
+		wt6670f_get_protocol();
+		result = wt6670f_get_charger_type();
+		pr_info("wt6670 get bc1.2 charger type:%d\n", result);
+		*val1 = result;
 		break;
 	case PSY_IIO_QC3P_REAL_TYPE:
 		wt6670f_get_protocol();
@@ -663,6 +686,16 @@ static int wt6670_iio_read_raw(struct iio_dev *indio_dev,
 			pr_info("could not get device id for used\n");
 		}
 
+		*val1 = result;
+		break;
+	case PSY_IIO_DETECTION_BC12_READY:
+		result = wt6670f_is_charger_ready();
+		pr_info("wt6670 get bc1.2 ready status:%d\n", result);
+		*val1 = result;
+		break;
+	case PSY_IIO_READ_USBIN_VOLTAGE:
+		result = wt6670f_get_vbus_voltage();
+		pr_info("wt6670 get vbus voltage:%d\n", result);
 		*val1 = result;
 		break;
 	default:

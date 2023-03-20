@@ -15,6 +15,7 @@
 #include "goodix_ts_core.h"
 #include <linux/delay.h>
 #include <linux/input/mt.h>
+#include "goodix_ts_config.h"
 
 #define GET_GOODIX_DATA(dev) { \
 	pdev = dev_get_drvdata(dev); \
@@ -43,6 +44,10 @@ static ssize_t goodix_ts_stylus_mode_show(struct device *dev,
 		struct device_attribute *attr, char *buf);
 static ssize_t goodix_ts_sensitivity_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t size);
+#ifdef CONFIG_GTP_LAST_TIME
+static ssize_t goodix_ts_timestamp_show(struct device *dev,
+		struct device_attribute *attr, char *buf);
+#endif
 
 static DEVICE_ATTR(edge, (S_IRUGO | S_IWUSR | S_IWGRP),
 	goodix_ts_edge_show, goodix_ts_edge_store);
@@ -52,6 +57,9 @@ static DEVICE_ATTR(stylus_mode, (S_IRUGO | S_IWUSR | S_IWGRP),
 	goodix_ts_stylus_mode_show, goodix_ts_stylus_mode_store);
 static DEVICE_ATTR(sensitivity, (S_IRUGO | S_IWUSR | S_IWGRP),
 	NULL, goodix_ts_sensitivity_store);
+#ifdef CONFIG_GTP_LAST_TIME
+static DEVICE_ATTR(timestamp, S_IRUGO, goodix_ts_timestamp_show, NULL);
+#endif
 
 /* hal settings */
 #define ROTATE_0   0
@@ -97,6 +105,10 @@ static int goodix_ts_mmi_extend_attribute_group(struct device *dev, struct attri
 
 	if (core_data->board_data.sensitivity_ctrl)
 		ADD_ATTR(sensitivity);
+
+#ifdef CONFIG_GTP_LAST_TIME
+	ADD_ATTR(timestamp);
+#endif
 
 	if (idx) {
 		ext_attributes[idx] = NULL;
@@ -377,26 +389,16 @@ static ssize_t goodix_ts_stylus_mode_show(struct device *dev,
 	return scnprintf(buf, PAGE_SIZE, "0x%02x", core_data->set_mode.stylus_mode);
 }
 
-#define DSI_REFRESH_RATE_144			144
 static int goodix_ts_mmi_set_report_rate(struct goodix_ts_core *core_data)
 {
 	int ret = 0;
 	int mode = 0;
 
-	if (core_data->get_mode.interpolation == 0x00) {
-		mode = REPORT_RATE_DEFAULT;
-		goto ts_send_cmd;
+	mode = goodix_ts_mmi_get_report_rate(core_data);
+	if (mode == -1) {
+		return -EINVAL;
 	}
 
-	if (core_data->board_data.report_rate_ctrl) {
-		if (core_data->refresh_rate == DSI_REFRESH_RATE_144)
-			mode = REPORT_RATE_576HZ;
-		else
-			mode = REPORT_RATE_480HZ;
-	} else
-		mode = REPORT_RATE_720HZ;
-
-ts_send_cmd:
 	core_data->get_mode.report_rate_mode = mode;
 	if (core_data->set_mode.report_rate_mode == mode) {
 		ts_debug("The value = %d is same, so not to write", mode);
@@ -408,20 +410,36 @@ ts_send_cmd:
 		return 0;
 	}
 
-	ret = goodix_ts_send_cmd(core_data, INTERPOLATION_SWITCH_CMD, 5,
-						core_data->get_mode.report_rate_mode, 0x00);
+	//if now on high report rate and need switch to low report rate
+	if ((((core_data->set_mode.report_rate_mode >> 8) & 0xFF) == REPORT_RATE_CMD_HIGH) &&
+		(((mode >> 8) & 0xFF) == REPORT_RATE_CMD_LOW)) {
+		ts_info("exit high report rate");
+		ret = goodix_ts_send_cmd(core_data, EXIT_HIGH_REPORT_RATE_CMD >> 8, 5,
+							EXIT_HIGH_REPORT_RATE_CMD & 0xFF, 0x00);
+		if (ret < 0) {
+			ts_err("failed to exit high report rate");
+			return -EINVAL;
+		}
+		msleep(20);
+	}
+
+	//send switch command
+	ret = goodix_ts_send_cmd(core_data, mode >> 8, 5,
+						mode & 0xFF, 0x00);
 	if (ret < 0) {
 		ts_err("failed to set report rate, mode = %d", mode);
 		return -EINVAL;
 	}
+	msleep(20);
 
 	core_data->set_mode.report_rate_mode = mode;
-	msleep(20);
-	ts_info("Success to set %s\n", mode == 0x00 ? "Default" :
-				(mode == 0x01 ? "REPORT_RATE_720HZ" :
-				(mode == 0x02 ? "REPORT_RATE_480HZ" :
-				(mode == 0x03 ? "REPORT_RATE_576HZ" :
-				"Unsupported"))));
+
+	ts_info("Success to set %s\n", mode == REPORT_RATE_CMD_240HZ ? "REPORT_RATE_240HZ" :
+				(mode == REPORT_RATE_CMD_360HZ ? "REPORT_RATE_360HZ" :
+				(mode == REPORT_RATE_CMD_480HZ ? "REPORT_RATE_480HZ" :
+				(mode == REPORT_RATE_CMD_576HZ ? "REPORT_RATE_576HZ" :
+				(mode == REPORT_RATE_CMD_720HZ ? "REPORT_RATE_720HZ" :
+				"Unsupported")))));
 
 	return ret;
 }
@@ -576,6 +594,29 @@ static ssize_t goodix_ts_edge_show(struct device *dev,
 	return scnprintf(buf, PAGE_SIZE, "0x%02x 0x%02x",
 		core_data->set_mode.edge_mode[1], core_data->set_mode.edge_mode[0]);
 }
+
+#ifdef CONFIG_GTP_LAST_TIME
+static ssize_t goodix_ts_timestamp_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	struct platform_device *pdev;
+	struct goodix_ts_core *core_data;
+	ktime_t last_ktime;
+	struct timespec64 last_ts;
+
+	dev = MMI_DEV_TO_TS_DEV(dev);
+	GET_GOODIX_DATA(dev);
+
+	mutex_lock(&core_data->mode_lock);
+	last_ktime = core_data->last_event_time;
+	core_data->last_event_time = 0;
+	mutex_unlock(&core_data->mode_lock);
+
+	last_ts = ktime_to_timespec64(last_ktime);
+
+	return scnprintf(buf, PAGE_SIZE, "%lld.%ld\n", last_ts.tv_sec, last_ts.tv_nsec);
+}
+#endif
 
 static int goodix_ts_mmi_methods_get_vendor(struct device *dev, void *cdata) {
 	return scnprintf(TO_CHARP(cdata), TS_MMI_MAX_VENDOR_LEN, "%s", "goodix");
@@ -781,12 +822,14 @@ static int goodix_ts_mmi_charger_mode(struct device *dev, int mode)
 
 	hw_ops = core_data->hw_ops;
 
+	mutex_lock(&core_data->mode_lock);
 	ret = goodix_ts_send_cmd(core_data, CHARGER_MODE_CMD, 5, mode, 0x00);
 	if (ret < 0) {
 		ts_err("Failed to set charger mode\n");
 	}
 	msleep(20);
 	ts_err("Success to %s charger mode\n", mode ? "Enable" : "Disable");
+	mutex_unlock(&core_data->mode_lock);
 
 	return 0;
 }
@@ -877,18 +920,21 @@ static int goodix_ts_mmi_post_resume(struct device *dev) {
 	}
 
 	if (core_data->board_data.interpolation_ctrl && core_data->get_mode.interpolation) {
-		ret = goodix_ts_send_cmd(core_data, INTERPOLATION_SWITCH_CMD, 5,
-						core_data->get_mode.report_rate_mode, 0x00);
+		//send switch command
+		ret = goodix_ts_send_cmd(core_data, (core_data->get_mode.report_rate_mode) >> 8, 5,
+						(core_data->get_mode.report_rate_mode) & 0xFF, 0x00);
 		if (!ret) {
 			core_data->set_mode.interpolation = core_data->get_mode.interpolation;
 			core_data->set_mode.report_rate_mode = core_data->get_mode.report_rate_mode;
 			msleep(20);
+
 			ts_info("Success to %s interpolation mode\n",
-					core_data->get_mode.report_rate_mode == 0x00 ? "Default" :
-					(core_data->get_mode.report_rate_mode == 0x01 ? "REPORT_RATE_720HZ" :
-					(core_data->get_mode.report_rate_mode == 0x02 ? "REPORT_RATE_480HZ" :
-					(core_data->get_mode.report_rate_mode == 0x03 ? "REPORT_RATE_576HZ" :
-					"Unsupported"))));
+				core_data->get_mode.report_rate_mode == REPORT_RATE_CMD_240HZ ? "REPORT_RATE_240HZ" :
+				(core_data->get_mode.report_rate_mode == REPORT_RATE_CMD_360HZ ? "REPORT_RATE_360HZ" :
+				(core_data->get_mode.report_rate_mode == REPORT_RATE_CMD_480HZ ? "REPORT_RATE_480HZ" :
+				(core_data->get_mode.report_rate_mode == REPORT_RATE_CMD_576HZ ? "REPORT_RATE_576HZ" :
+				(core_data->get_mode.report_rate_mode == REPORT_RATE_CMD_720HZ ? "REPORT_RATE_720HZ" :
+				"Unsupported")))));
 		}
 	}
 
@@ -925,10 +971,10 @@ static int goodix_ts_mmi_post_resume(struct device *dev) {
 	}
 	mutex_unlock(&core_data->mode_lock);
 #ifdef CONFIG_GTP_FOD
-	if(core_data->ts_event.gesture_data[0]) {
-		ts_info("FOD is down during PM active");
+	if(core_data->zerotap_data[0]) {
+		ts_info("FOD is down during PM resume  fod_enable=%d",core_data->fod_enable);
 	}
-	core_data->ts_event.gesture_data[0] = 0;
+	core_data->zerotap_data[0] = 0;
 #endif
 	return 0;
 }
@@ -976,6 +1022,43 @@ static int goodix_ts_mmi_post_suspend(struct device *dev) {
 	ts_info("Suspend end");
 	return 0;
 }
+#ifdef CONFIG_GTP_FOD
+static int goodix_ts_mmi_update_fps_mode(struct device *dev, int mode) {
+	struct goodix_ts_core *core_data;
+	struct platform_device *pdev;
+
+	GET_GOODIX_DATA(dev);
+
+	core_data->fod_enable = (mode >0) ? 0x01 : 0x00;
+	ts_info("  update_fps_mode %s:%d\n", (mode > 0) ? "enable" : "disable", mode);
+	return 0;
+}
+#endif
+
+static int rdArray[4];
+
+static int goodix_ts_mmi_active_region(struct device *dev, int *reg_data)
+{
+	struct goodix_ts_core *core_data;
+	struct platform_device *pdev;
+
+	GET_GOODIX_DATA(dev);
+
+	memcpy(rdArray, reg_data, sizeof(rdArray));
+	ts_info("set active region: %d %d %d %d\n", rdArray[0], rdArray[1], rdArray[2], rdArray[3]);
+	return 0;
+}
+
+static int goodix_ts_mmi_methods_get_active_region(struct device *dev, void *uidata)
+{
+	struct goodix_ts_core *core_data;
+	struct platform_device *pdev;
+
+	GET_GOODIX_DATA(dev);
+
+	memcpy((int *)uidata, rdArray, sizeof(rdArray));
+        return 0;
+}
 
 static struct ts_mmi_methods goodix_ts_mmi_methods = {
 	.get_vendor = goodix_ts_mmi_methods_get_vendor,
@@ -987,12 +1070,14 @@ static struct ts_mmi_methods goodix_ts_mmi_methods = {
 	.get_drv_irq = goodix_ts_mmi_methods_get_drv_irq,
 	.get_poweron = goodix_ts_mmi_methods_get_poweron,
 	.get_flashprog = goodix_ts_mmi_methods_get_flashprog,
+	.get_active_region = goodix_ts_mmi_methods_get_active_region,
 	/* SET methods */
 	.reset =  goodix_ts_mmi_methods_reset,
 	.drv_irq = goodix_ts_mmi_methods_drv_irq,
 	.power = goodix_ts_mmi_methods_power,
 	.charger_mode = goodix_ts_mmi_charger_mode,
 	.refresh_rate = goodix_ts_mmi_refresh_rate,
+	.active_region = goodix_ts_mmi_active_region,
 	/* Firmware */
 	.firmware_update = goodix_ts_firmware_update,
 	/* vendor specific attribute group */
@@ -1003,6 +1088,9 @@ static struct ts_mmi_methods goodix_ts_mmi_methods = {
 	.post_resume = goodix_ts_mmi_post_resume,
 	.pre_suspend = goodix_ts_mmi_pre_suspend,
 	.post_suspend = goodix_ts_mmi_post_suspend,
+#ifdef CONFIG_GTP_FOD
+	.update_fod_mode = goodix_ts_mmi_update_fps_mode,
+#endif
 };
 
 int goodix_ts_mmi_dev_register(struct platform_device *pdev) {
@@ -1037,5 +1125,5 @@ void goodix_ts_mmi_dev_unregister(struct platform_device *pdev) {
 	if (!core_data)
 		ts_err("Failed to get driver data");
 	mutex_destroy(&core_data->mode_lock);
-	ts_mmi_dev_unregister(&pdev->dev);
+	ts_mmi_dev_unregister(core_data->bus->dev);
 }
