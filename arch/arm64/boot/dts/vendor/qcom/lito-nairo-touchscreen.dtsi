@@ -139,6 +139,7 @@
 		novatek,def-build-id = <0x0301>;
 		novatek,def-config-id = <0x601D>;
 		novatek,report_gesture_key;
+		novatek,gesture-wait-pm;
 		novatek,usb_charger;
 		status = "/chosen", "mmi,panel_name", "tianma_nt36672c_1080x2520_670_dsc_vid";
 	};
