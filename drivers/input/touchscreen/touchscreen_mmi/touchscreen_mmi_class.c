@@ -371,7 +371,7 @@ static void gesture_set(struct ts_mmi_dev *touch_cdev,
 	sync = _gesture_set(touch_cdev, bit, enable);
 	mutex_unlock(&touch_cdev->extif_mutex);
 
-	if (sync)
+	if (sync && !touch_cdev->double_tap_pressed)
 		gesture_sync(touch_cdev);
 }
 
