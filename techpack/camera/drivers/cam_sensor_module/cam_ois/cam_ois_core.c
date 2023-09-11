@@ -290,7 +290,10 @@ static int cam_ois_slaveInfo_pkt_parser(struct cam_ois_ctrl_t *o_ctrl,
 		o_ctrl->ois_fw_inc_addr = ois_info->ois_fw_inc_addr;
 		o_ctrl->ois_fw_addr_type = ois_info->ois_fw_addr_type;
 		o_ctrl->ois_fw_data_type = ois_info->ois_fw_data_type;
-		memcpy(o_ctrl->ois_name, ois_info->ois_name, OIS_NAME_LEN);
+		if (ois_info->ois_name[0] != '\n' && ois_info->ois_name[0] < 32)
+			memcpy(o_ctrl->ois_name, &ois_info->ois_name[1], OIS_NAME_LEN - 1);
+		else
+			memcpy(o_ctrl->ois_name, ois_info->ois_name, OIS_NAME_LEN);
 		o_ctrl->ois_name[OIS_NAME_LEN - 1] = '\0';
 		o_ctrl->io_master_info.cci_client->retries = 3;
 		o_ctrl->io_master_info.cci_client->id_map = 0;
