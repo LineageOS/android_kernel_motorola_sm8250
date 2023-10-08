@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
  * Copyright (c) 2017-2020, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
  */
 
 #include <linux/module.h>
@@ -227,7 +228,7 @@ static int cam_ois_apply_settings(struct cam_ois_ctrl_t *o_ctrl,
 		&(i2c_set->list_head), list) {
 		if (i2c_list->op_code ==  CAM_SENSOR_I2C_WRITE_RANDOM) {
 			rc = camera_io_dev_write(&(o_ctrl->io_master_info),
-				&(i2c_list->i2c_settings));
+				&(i2c_list->i2c_settings), false);
 			if (rc < 0) {
 				CAM_ERR(CAM_OIS,
 					"Failed in Applying i2c wrt settings");
@@ -402,10 +403,10 @@ static int cam_ois_fw_prog_download(struct cam_ois_ctrl_t *o_ctrl)
 		i2c_reg_setting.size = packet_idx;
 		if (o_ctrl->ois_fw_inc_addr == 1) {
 			rc = camera_io_dev_write_continuous(&(o_ctrl->io_master_info),
-				&i2c_reg_setting, 0);
+				&i2c_reg_setting, 0, false);
 		} else {
 			rc = camera_io_dev_write_continuous(&(o_ctrl->io_master_info),
-				&i2c_reg_setting, 1);
+				&i2c_reg_setting, 1, false);
 		}
 		if (rc < 0) {
 			CAM_ERR(CAM_OIS, "OIS FW download failed %d", rc);
@@ -493,7 +494,7 @@ static int cam_ois_fw_coeff_download(struct cam_ois_ctrl_t *o_ctrl)
 		}
 		i2c_reg_setting.size = packet_idx;
 		rc = camera_io_dev_write_continuous(&(o_ctrl->io_master_info),
-			&i2c_reg_setting, 1);
+			&i2c_reg_setting, 1, false);
 		if (rc < 0) {
 			CAM_ERR(CAM_OIS, "OIS FW download failed %d", rc);
 			goto release_firmware;
@@ -523,7 +524,7 @@ static int cam_ois_write_dw(struct cam_ois_ctrl_t *o_ctrl)
 	i2c_reg_setting.reg_setting = &(i2c_write_settings);
 
 	rc = camera_io_dev_write(&(o_ctrl->io_master_info),
-			&(i2c_reg_setting));
+			&(i2c_reg_setting), false);
 	if (rc < 0) {
 		CAM_ERR(CAM_OIS,
 				"Failed in Applying i2c wrt settings");
@@ -727,6 +728,7 @@ static int cam_ois_pkt_parse(struct cam_ois_ctrl_t *o_ctrl, void *arg)
 			}
 			break;
 			}
+			cam_mem_put_cpu_buf(cmd_desc[i].mem_handle);
 		}
 		if (o_ctrl->cam_ois_state != CAM_OIS_CONFIG) {
 			rc = cam_ois_power_up(o_ctrl);
@@ -1097,7 +1099,7 @@ static int cam_ois_pkt_parse(struct cam_ois_ctrl_t *o_ctrl, void *arg)
 			&(i2c_read_settings.list_head), list) {
 			if (i2c_list->op_code ==  CAM_SENSOR_I2C_WRITE_RANDOM) {
 				rc = camera_io_dev_write(&(o_ctrl->io_master_info),
-					&(i2c_list->i2c_settings));
+					&(i2c_list->i2c_settings), false);
 				if (rc < 0) {
 					CAM_ERR(CAM_OIS,
 						"Failed in Applying i2c wrt settings");
@@ -1199,6 +1201,8 @@ static int cam_ois_pkt_parse(struct cam_ois_ctrl_t *o_ctrl, void *arg)
 			(csl_packet->header.op_code & 0xFFFFFF));
 		return -EINVAL;
 	}
+	cam_mem_put_cpu_buf(dev_config.packet_handle);
+
 	if (!rc)
 		return rc;
 pwr_dwn:
