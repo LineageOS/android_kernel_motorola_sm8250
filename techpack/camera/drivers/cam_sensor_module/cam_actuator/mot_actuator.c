@@ -394,7 +394,7 @@ static int32_t mot_actuator_apply_settings(struct camera_io_master *io_master_in
 	  CCI access for a while after PD. Add lock to avoid access actuator while PD operation.*/
 	int32_t ret = 0;
 	mot_actuator_lock();
-	ret = camera_io_dev_write(io_master_info, write_setting);
+	ret = camera_io_dev_write(io_master_info, write_setting, false);
 	mot_actuator_unlock();
 	return ret;
 }
