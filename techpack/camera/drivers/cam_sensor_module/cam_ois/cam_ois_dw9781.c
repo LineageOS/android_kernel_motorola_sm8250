@@ -56,7 +56,7 @@ static int32_t dw9781_cci_write(struct camera_io_master * io_master_info, uint16
 	wr_setting.reg_setting = &reg_setting;
 	wr_setting.size = 1;
 	wr_setting.delay = 0;
-	rc = camera_io_dev_write(io_master_info, &wr_setting);
+	rc = camera_io_dev_write(io_master_info, &wr_setting, false);
 	return rc;
 }
 
