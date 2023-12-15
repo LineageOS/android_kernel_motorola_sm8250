@@ -1,3 +1,148 @@
+# Only include Motorola DTBs
+ifeq ($(CONFIG_MMI_DEVICE_DTBS),y)
+ifneq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
+$(error Moto DT w/o overlay is undefined!!!)
+endif
+
+# Motorola Device Trees
+dtbo-$(CONFIG_ARCH_KONA) += \
+		kona-savannah-evt1-overlay.dtbo \
+		kona-savannah-evt2-overlay.dtbo \
+		kona-burton-evt1-overlay.dtbo \
+		kona-burton-dvt1-overlay.dtbo \
+		kona-burton-dvt1c-overlay.dtbo \
+                kona-burton-dvt2a-overlay.dtbo \
+                kona-burton-dvt2b-overlay.dtbo \
+		kona-burton-pvt-overlay.dtbo \
+		kona-burton_npi-evt1-overlay.dtbo \
+		kona-burton_npi-dvt1-overlay.dtbo \
+		kona-burton_npi-dvt1c-overlay.dtbo \
+		kona-burton_npi-dvt2a-overlay.dtbo \
+		kona-burton_npi-dvt2b-overlay.dtbo \
+		kona-burton_npi-pvt-overlay.dtbo
+
+kona-savannah-evt1-overlay.dtbo-base := kona-moto-base.dtb
+kona-savannah-evt2-overlay.dtbo-base := kona-moto-base-v2.dtb
+kona-burton-evt1-overlay.dtbo-base   := kona-moto-base-v2.dtb
+kona-burton-dvt1-overlay.dtbo-base   := kona-moto-base-v2.dtb
+kona-burton-dvt1c-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
+kona-burton-dvt2a-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
+kona-burton-dvt2b-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
+kona-burton-pvt-overlay.dtbo-base := kona-moto-base-v2.1.dtb
+kona-burton_npi-evt1-overlay.dtbo-base  := kona-moto-base-v2.dtb
+kona-burton_npi-dvt1-overlay.dtbo-base  := kona-moto-base-v2.dtb
+kona-burton_npi-dvt1c-overlay.dtbo-base := kona-moto-base-v2.1.dtb
+kona-burton_npi-dvt2a-overlay.dtbo-base := kona-moto-base-v2.1.dtb
+kona-burton_npi-dvt2b-overlay.dtbo-base := kona-moto-base-v2.1.dtb
+kona-burton_npi-pvt-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
+
+dtbo-$(CONFIG_NIO_DTB) += \
+		kona-nio-evt1-overlay.dtbo
+kona-nio-evt1-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
+
+dtbo-$(CONFIG_PSTAR_DTB) += \
+		kona-pstar-evt1-overlay.dtbo \
+		kona-pstar-dvt1-overlay.dtbo \
+		kona-pstar-prc-dvt2-overlay.dtbo \
+		kona-pstar-row-dvt2-overlay.dtbo \
+		kona-pstar-prc-dvt2b-overlay.dtbo \
+		kona-pstar-row-dvt2b-overlay.dtbo \
+		kona-pstar-prc-pvt-overlay.dtbo \
+		kona-pstar-india-pvt-overlay.dtbo \
+		kona-pstar-row-pvt-overlay.dtbo
+
+kona-pstar-evt1-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
+kona-pstar-dvt1-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
+kona-pstar-prc-dvt2-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
+kona-pstar-row-dvt2-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
+kona-pstar-prc-dvt2b-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
+kona-pstar-row-dvt2b-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
+kona-pstar-prc-pvt-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
+kona-pstar-row-pvt-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
+kona-pstar-india-pvt-overlay.dtbo-base   := kona-moto-base-v2.1.dtb
+
+dtbo-$(CONFIG_SMITH_DTB) += \
+		lito-smith-evt1-overlay.dtbo \
+		lito-smith-evt2-overlay.dtbo \
+		lito-smith-dvt1a-overlay.dtbo \
+                lito-smith-dvt1a2-overlay.dtbo \
+		lito-smith-dvt1b-overlay.dtbo \
+		lito-smith-dvt1c-overlay.dtbo \
+		lito-smith-dvt2-overlay.dtbo \
+		lito-smith-pvt-overlay.dtbo
+
+lito-smith-evt1-overlay.dtbo-base := lito-moto-base.dtb
+lito-smith-evt2-overlay.dtbo-base := lito-moto-base.dtb
+lito-smith-dvt1a-overlay.dtbo-base := lito-moto-base.dtb
+lito-smith-dvt1a2-overlay.dtbo-base := lito-moto-base-v2.dtb
+lito-smith-dvt1b-overlay.dtbo-base := lito-moto-base-v2.dtb
+lito-smith-dvt1c-overlay.dtbo-base := lito-moto-base-v2.dtb
+lito-smith-dvt2-overlay.dtbo-base := lito-moto-base-v2.dtb
+lito-smith-pvt-overlay.dtbo-base := lito-moto-base-v2.dtb
+
+dtbo-$(CONFIG_RACER_DTB) += \
+		lito-racer-evt1-overlay.dtbo \
+		lito-racer-evt2-overlay.dtbo \
+		lito-racer-dvt1-overlay.dtbo
+
+lito-racer-evt1-overlay.dtbo-base := lito-moto-base.dtb
+lito-racer-evt2-overlay.dtbo-base := lito-moto-base.dtb
+lito-racer-dvt1-overlay.dtbo-base := lito-moto-base.dtb
+
+dtbo-$(CONFIG_NAIRO_DTB) += \
+		lito-nairo-evt1-overlay.dtbo \
+		lito-nairo-evt2-overlay.dtbo \
+		lito-nairo-evt3-overlay.dtbo \
+		lito-nairo-evt3-cap-overlay.dtbo \
+		lito-nairo-dvt1-overlay.dtbo \
+		lito-nairo-dvt1-cap-overlay.dtbo \
+		lito-nairo-dvt1a-overlay.dtbo \
+		lito-nairo-dvt1a-cap-overlay.dtbo \
+		lito-nairo-dvt2-overlay.dtbo \
+		lito-nairo-dvt2-cap-overlay.dtbo \
+		lito-nairo-pvt-overlay.dtbo \
+		lito-nairo-pvt-cap-overlay.dtbo
+
+lito-nairo-evt1-overlay.dtbo-base := lito-moto-base.dtb
+lito-nairo-evt2-overlay.dtbo-base := lito-moto-base.dtb
+lito-nairo-evt3-overlay.dtbo-base := lito-moto-base.dtb
+lito-nairo-evt3-cap-overlay.dtbo-base := lito-moto-base.dtb
+lito-nairo-dvt1-overlay.dtbo-base := lito-moto-base.dtb
+lito-nairo-dvt1-cap-overlay.dtbo-base := lito-moto-base.dtb
+lito-nairo-dvt1a-overlay.dtbo-base := lito-moto-base.dtb
+lito-nairo-dvt1a-cap-overlay.dtbo-base := lito-moto-base.dtb
+lito-nairo-dvt2-overlay.dtbo-base := lito-moto-base.dtb
+lito-nairo-dvt2-cap-overlay.dtbo-base := lito-moto-base.dtb
+lito-nairo-pvt-overlay.dtbo-base := lito-moto-base.dtb
+lito-nairo-pvt-cap-overlay.dtbo-base := lito-moto-base.dtb
+
+dtbo-$(CONFIG_KIEV_DTB) += \
+		lagoon-kiev-evt1-overlay.dtbo \
+		lagoon-kiev-jp-evt1-overlay.dtbo
+
+lagoon-kiev-evt1-overlay.dtbo-base := lagoon-moto-base-kiev.dtb
+lagoon-kiev-jp-evt1-overlay.dtbo-base := lagoon-moto-base-kiev.dtb
+
+dtbo-$(CONFIG_BERLIN_DTB) += \
+		lagoon-berlin-evt1-overlay.dtbo
+
+lagoon-berlin-evt1-overlay.dtbo-base := lagoon-moto-base-berlin.dtb
+
+dtbo-$(CONFIG_BERLNA_DTB) += \
+		lagoon-berlna-evt1-overlay.dtbo
+
+lagoon-berlna-evt1-overlay.dtbo-base := lagoon-moto-base-berlna.dtb
+
+dtbo-$(CONFIG_KIEVV_DTB) += \
+                lagoon-kievv-evt1-overlay.dtbo
+
+lagoon-kievv-evt1-overlay.dtbo-base := lagoon-moto-base-kievv.dtb
+
+dtbo-$(CONFIG_KYOTO_DTB) += lagoon-kyoto-evt1-overlay.dtbo
+
+lagoon-kyoto-evt1-overlay.dtbo-base := lagoon-moto-base-kyoto.dtb
+
+else
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
         dtbo-$(CONFIG_ARCH_KONA) += \
                 kona-cdp-overlay.dtbo \
@@ -68,7 +213,10 @@ dtb-$(CONFIG_ARCH_KONA) += kona-rumi.dtb \
         qrb5165m-iot-rb5.dtb \
         qrb5165n-iot-rb5.dtb \
         qrb5165n-v2-iot-rb5.dtb \
-        kona-v2.1-iot-rb5.dtb
+        kona-v2.1-iot-rb5.dtb \
+        kona-7230-iot-rb5.dtb \
+        kona-7230m-iot-rb5.dtb
+
 endif
 
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
@@ -203,6 +351,7 @@ dtb-$(CONFIG_ARCH_BENGAL) += bengal-rumi.dtb \
 		bengalp-iot-idp-usbc.dtb \
 		bengalp-iot-idp-2gb.dtb
 endif
+endif  # CONFIG_MMI_DEVICE_DTBS
 
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
         dtbo-$(CONFIG_ARCH_SCUBA) += \
@@ -214,7 +363,9 @@ ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
 		scuba-iot-idp-overlay.dtbo \
 		scuba-iot-idp-usbc-overlay.dtbo \
 		scuba-iot-qrd-eldo-overlay.dtbo \
-		scuba-iot-qrd-non-eldo-overlay.dtbo
+		scuba-iot-qrd-non-eldo-overlay.dtbo \
+		scuba-iot-rb1-overlay.dtbo \
+		scubalite-iot-idp-overlay.dtbo
 
 scuba-rumi-overlay.dtbo-base := scuba.dtb scubap.dtb scuba-2gb.dtb
 scuba-idp-overlay.dtbo-base := scuba.dtb scubap.dtb scuba-2gb.dtb
@@ -224,7 +375,9 @@ scuba-idp-usbc-overlay.dtbo-base := scuba.dtb scubap.dtb scuba-2gb.dtb
 scuba-iot-idp-overlay.dtbo-base := scuba-iot.dtb scuba-iot-2gb.dtb scubap-iot.dtb scubap-iot-idp.dtb scubap-iot-idp-2gb.dtb
 scuba-iot-qrd-eldo-overlay.dtbo-base := scuba-iot.dtb scubap-iot.dtb scuba-iot-2gb.dtb
 scuba-iot-qrd-non-eldo-overlay.dtbo-base := scuba-iot.dtb scubap-iot.dtb scuba-iot-2gb.dtb
+scuba-iot-rb1-overlay.dtbo-base := scubap-iot-2gb.dtb
 scuba-iot-idp-usbc-overlay.dtbo-base := scuba-iot.dtb scubap-iot.dtb scuba-iot-2gb.dtb
+scubalite-iot-idp-overlay.dtbo-base := scuba-iot-2gb.dtb scubap-iot-2gb.dtb
 else
 dtb-$(CONFIG_ARCH_SCUBA) += scuba-rumi.dtb \
 	scuba-idp.dtb \
@@ -240,9 +393,12 @@ dtb-$(CONFIG_ARCH_SCUBA) += scuba-rumi.dtb \
 	scubap-iot-idp.dtb \
 	scuba-iot-qrd-eldo.dtb \
 	scuba-iot-qrd-non-eldo.dtb \
+	scubap-iot-rb1-2gb.dtb \
 	scubap-iot-idp-2gb.dtb \
 	scuba-iot-idp-2gb.dtb \
-	scuba-iot-idp-usbc-2gb.dtb
+	scuba-iot-idp-usbc-2gb.dtb \
+	scubalite-iot-idp-2gb.dtb \
+	scubaplite-iot-idp-2gb.dtb
 endif
 
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
@@ -346,6 +502,7 @@ ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
                 sdm660-cdp-external-codec-overlay.dtbo \
                 sdm660-cdp-internal-codec-overlay.dtbo \
                 sdm660-qrd-external-codec-overlay.dtbo \
+                sdm660-qrd-dsi-rm67195-amoled-overlay.dtbo \
                 sdm660-rcm-external-codec-overlay.dtbo \
                 sdm660-rcm-internal-codec-overlay.dtbo \
                 sda660-mtp-external-codec-overlay.dtbo \
@@ -361,6 +518,8 @@ sdm660-cdp-external-codec-overlay.dtbo-base := sdm660-pm660l.dtb
 sdm660-cdp-internal-codec-overlay.dtbo-base := sdm660-pm660l.dtb
 
 sdm660-qrd-external-codec-overlay.dtbo-base := sdm660-pm660l.dtb
+
+sdm660-qrd-dsi-rm67195-amoled-overlay.dtbo-base := sdm660-pm660a.dtb
 
 sdm660-rcm-external-codec-overlay.dtbo-base := sdm660-pm660l.dtb
 
@@ -400,7 +559,8 @@ sdm660-internal-codec-cdp.dtb \
         sdm660-pm660a-headset-jacktype-no-cdp.dtb \
         sdm660-pm660a-headset-jacktype-no-rcm.dtb \
         sdm660-usbc-audio-mtp.dtb \
-        sdm660-usbc-audio-rcm.dtb
+        sdm660-usbc-audio-rcm.dtb \
+	sdm660-qrd-dsi-rm67195-amoled.dtb
 endif
 
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)

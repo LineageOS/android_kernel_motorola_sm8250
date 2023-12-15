@@ -8,6 +8,11 @@
 	gpu_opp_table_v2: gpu-opp-table_v2 {
 		compatible = "operating-points-v2";
 
+		opp-905000000 {
+			opp-hz = /bits/ 64 <905000000>;
+			opp-microvolt = <RPMH_REGULATOR_LEVEL_TURBO_L1>;
+		};
+
 		opp-670000000 {
 			opp-hz = /bits/ 64 <670000000>;
 			opp-microvolt = <RPMH_REGULATOR_LEVEL_NOM_L1>;
@@ -472,6 +477,7 @@
 				qcom,bus-max = <0>;
 			};
 		};
+
 
 		qcom,gpu-pwrlevels-4 {
 			#address-cells = <1>;

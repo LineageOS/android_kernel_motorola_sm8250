@@ -319,7 +319,7 @@
 					dev = "/dev/block/platform/soc/1d84000.ufshc/by-name/vendor";
 					type = "ext4";
 					mnt_flags = "ro,barrier=1,discard";
-					fsmgr_flags = "wait,slotselect,avb";
+					fsmgr_flags = "wait,slotselect";
 					status = "ok";
 				};
 			};
@@ -529,7 +529,7 @@
 	};
 
 	chosen {
-		bootargs = "rcupdate.rcu_expedited=1 rcu_nocbs=0-7 earlycon=msm_geni_serial,0x888000 kpti=off";
+		bootargs = "rcupdate.rcu_expedited=1 rcu_nocbs=0-7 kpti=off";
 	};
 
 	soc: soc { };
@@ -2939,6 +2939,7 @@
 		qcom,fastrpc-adsp-sensors-pdr;
 		qcom,rpc-latency-us = <235>;
 		qcom,qos-cores = <0 1 2 3 4 5>;
+		qcom,secure-domains = <0x0F>;
 
 		qcom,msm_fastrpc_compute_cb1 {
 			compatible = "qcom,msm-fastrpc-compute-cb";

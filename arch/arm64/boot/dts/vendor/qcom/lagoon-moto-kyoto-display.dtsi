@@ -1,0 +1,172 @@
+/* Copyright (c) 2019, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+//#include <dt-bindings/regulator/qcom,rpmh-regulator-levels.h>
+#include "dsi-panel-mot-dummy-qhd-video.dtsi"
+#include "lagoon-sde-display.dtsi"
+#include "dsi-panel-mot-visionox-rm692d7-667-1080p-cmd.dtsi"
+#include "dsi-panel-mot-visionox-rm692a9-667-1080p-cmd.dtsi"
+
+&dsi_panel_pwr_supply {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	qcom,panel-supply-entry@0 {
+		reg = <0>;
+		qcom,supply-name = "vddio";
+		qcom,supply-min-voltage = <1800000>;
+		qcom,supply-max-voltage = <1800000>;
+		qcom,supply-enable-load = <62000>;
+		qcom,supply-disable-load = <80>;
+		qcom,supply-post-on-sleep = <20>;
+	};
+
+	qcom,panel-supply-entry@1 {
+		reg = <1>;
+		qcom,supply-name = "vddr";
+		qcom,supply-min-voltage = <1200000>;
+		qcom,supply-max-voltage = <1200000>;
+		qcom,supply-enable-load = <21800>;
+		qcom,supply-disable-load = <4>;
+		qcom,supply-post-on-sleep = <20>;
+	};
+
+	qcom,panel-supply-entry@2 {
+		reg = <1>;
+		qcom,supply-name = "vdd";
+		qcom,supply-min-voltage = <3000000>;
+		qcom,supply-max-voltage = <3000000>;
+		qcom,supply-enable-load = <857000>;
+		qcom,supply-disable-load = <0>;
+		qcom,supply-post-on-sleep = <0>;
+	};
+
+	qcom,panel-supply-entry@3 {
+		reg = <2>;
+		qcom,supply-name = "lab";
+		qcom,supply-min-voltage = <4600000>;
+		qcom,supply-max-voltage = <6000000>;
+		qcom,supply-enable-load = <363000>;
+		qcom,supply-disable-load = <100>;
+	};
+
+	qcom,panel-supply-entry@4 {
+		reg = <2>;
+		qcom,supply-name = "ibb";
+		qcom,supply-min-voltage = <4600000>;
+		qcom,supply-max-voltage = <6000000>;
+		qcom,supply-enable-load = <363000>;
+		qcom,supply-disable-load = <20>;
+	};
+};
+
+&sde_dp {
+	status = "disabled";
+};
+
+&mdss_mdp {
+	connectors = <&sde_wb &sde_dsi &sde_rscc>;
+};
+
+&pm6150a_amoled {
+	status = "ok";
+};
+
+&sde_dsi {
+	/delete-property/ qcom,dsi-default-panel;
+	qcom,dsi-default-panel = <&dsi_rm692a9_vx_cmd>;
+
+	vddr-supply = <&L3E>;
+
+	qcom,platform-mot-ext-feature-enable;
+	qcom,platform-mot-early-power-enable;
+};
+
+&dsi_rm692a9_vx_cmd {
+	qcom,platform-te-gpio = <&tlmm 23 0>;
+	qcom,platform-reset-gpio = <&pm6150l_gpios 9 0>;
+
+	qcom,esd-check-enabled;
+	qcom,mdss-dsi-panel-status-check-mode = "reg_read";
+	qcom,mdss-dsi-panel-status-command = [06 01 00 01 00 00 01 0A];
+	qcom,mdss-dsi-panel-status-command-state = "dsi_lp_mode";
+	qcom,mdss-dsi-panel-status-value = <0x9c>;
+	qcom,mdss-dsi-panel-status-read-length = <1>;
+
+	qcom,mdss-dsi-bl-default-level = <1024>;
+	qcom,mdss-brightness-max-level = <2047>;
+
+        qcom,mdss-dsi-panel-peak-brightness = <4500000>;
+        qcom,mdss-dsi-panel-blackness-level = <3000>;
+
+	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0",
+				"src_byte_clk0", "src_pixel_clk0",
+				"shadow_byte_clk0", "shadow_pixel_clk0";
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,mdss-dsi-t-clk-post = <0x0E>;
+	qcom,mdss-dsi-t-clk-pre = <0x37>;
+	qcom,mdss-dsi-display-timings {
+		timing@0 {
+			qcom,mdss-dsi-panel-phy-timings = [00 21 08 08 25 22 09
+							08 09 02 04 00];
+			qcom,display-topology = <1 0 1>;
+			qcom,default-topology-index = <0>;
+		};
+	};
+};
+
+&dsi_rm692d7_vxr_cmd {
+	qcom,platform-te-gpio = <&tlmm 23 0>;
+	qcom,platform-reset-gpio = <&pm6150l_gpios 9 0>;
+
+	//qcom,esd-check-enabled;
+	qcom,mdss-dsi-panel-status-check-mode = "reg_read";
+	qcom,mdss-dsi-panel-status-command = [06 01 00 01 00 00 01 0A];
+	qcom,mdss-dsi-panel-status-command-state = "dsi_lp_mode";
+	qcom,mdss-dsi-panel-status-value = <0x9c>;
+	qcom,mdss-dsi-panel-status-read-length = <1>;
+
+	qcom,mdss-dsi-bl-default-level = <1024>;
+	qcom,mdss-brightness-max-level = <2047>;
+
+        qcom,mdss-dsi-panel-peak-brightness = <4500000>;
+        qcom,mdss-dsi-panel-blackness-level = <3000>;
+
+	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0",
+				"src_byte_clk0", "src_pixel_clk0",
+				"shadow_byte_clk0", "shadow_pixel_clk0";
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,mdss-dsi-t-clk-post = <0x0E>;
+	qcom,mdss-dsi-t-clk-pre = <0x38>;
+	qcom,mdss-dsi-display-timings {
+		timing@0 {
+			qcom,mdss-dsi-panel-phy-timings = [00 22 08 09 25 23 09
+							09 09 02 04 00];
+			qcom,display-topology = <1 0 1>;
+			qcom,default-topology-index = <0>;
+		};
+	};
+};
+
+&mot_dummy_vid_qhd {
+	qcom,platform-reset-gpio = <&pm6150l_gpios 9 0>;
+
+	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
+	qcom,mdss-dsi-display-timings {
+		timing@0 {
+			qcom,mdss-dsi-panel-framerate = <60>;
+			qcom,mdss-dsi-panel-phy-timings = [00 20 08 08 24 23 08
+							08 05 02 04 00];
+			qcom,display-topology = <1 0 1>;
+			qcom,default-topology-index = <0>;
+		};
+	};
+};
