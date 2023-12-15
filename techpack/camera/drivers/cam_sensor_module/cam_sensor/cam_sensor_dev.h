@@ -115,6 +115,7 @@ struct cam_sensor_ctrl_t {
 	uint16_t pipeline_delay;
 	int32_t open_cnt;
 	bool force_low_priority_for_init_setting;
+	bool slg_pmic_workaround;
 };
 
 #endif /* _CAM_SENSOR_DEV_H_ */

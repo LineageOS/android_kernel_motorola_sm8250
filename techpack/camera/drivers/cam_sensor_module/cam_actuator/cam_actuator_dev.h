@@ -116,6 +116,9 @@ struct cam_actuator_ctrl_t {
 	struct intf_params bridge_intf;
 	uint32_t last_flush_req;
 	uint32_t open_cnt;
+#ifdef CONFIG_AF_NOISE_ELIMINATION
+	bool is_multi_user_supported;
+#endif
 };
 
 #endif /* _CAM_ACTUATOR_DEV_H_ */

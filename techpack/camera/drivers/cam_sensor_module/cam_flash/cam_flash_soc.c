@@ -21,7 +21,10 @@ static int32_t cam_get_source_node_info(
 
 	soc_private->is_wled_flash =
 		of_property_read_bool(of_node, "wled-flash-support");
-
+	/*MOT_FLASHLIGHT_GPIO BEGIN*/
+	soc_private->is_gpio_flash =
+		of_property_read_bool(of_node, "gpio-flash-support");
+	 /*MOT_FLASHLIGHT_GPIO END*/
 	switch_src_node = of_parse_phandle(of_node, "switch-source", 0);
 	if (!switch_src_node) {
 		CAM_WARN(CAM_FLASH, "switch_src_node NULL");
