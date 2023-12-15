@@ -57,7 +57,7 @@
 
 #include <linux/mmi_wake_lock.h>
 
-#if defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #include <linux/touchscreen_mmi.h>
 #endif
 
@@ -125,7 +125,7 @@ extern const uint16_t touch_key_array[TOUCH_KEY_NUM];
 #define NVT_TOUCH_EXT_PROC 1
 #define NVT_TOUCH_MP 1
 #define MT_PROTOCOL_B 1
-#if defined (NVT_SENSOR_EN) || defined (CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if defined (NVT_SENSOR_EN) || IS_ENABLED (CONFIG_INPUT_TOUCHSCREEN_MMI)
 #define WAKEUP_GESTURE 1
 #else
 #define WAKEUP_GESTURE 0
@@ -264,7 +264,7 @@ struct nvt_ts_data {
 #endif
 #endif //version code >= 5.4.0
 
-#if defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 	struct ts_mmi_class_methods *imports;
 #endif
 #ifdef TS_MMI_TOUCH_MULTIWAY_UPDATE_FW

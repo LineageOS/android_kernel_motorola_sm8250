@@ -20,7 +20,7 @@
 #include <linux/gpio.h>
 
 #include "nt36xxx.h"
-#if defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #include <linux/touchscreen_mmi.h>
 #endif
 
