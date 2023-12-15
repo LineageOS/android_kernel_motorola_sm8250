@@ -63,6 +63,11 @@ MODULE_PARM_DESC(bc12_compliance, "Disable sending dp pulse for CDP");
 /* AHB2PHY read/write waite value */
 #define ONE_READ_WRITE_WAIT 0x11
 
+#undef dev_dbg
+#undef pr_debug
+#define dev_dbg dev_err
+#define pr_debug pr_err
+
 /* XHCI registers */
 #define USB3_HCSPARAMS1		(0x4)
 #define USB3_PORTSC		(0x420)
@@ -206,8 +211,7 @@ struct usb_irq_info {
 
 static const struct usb_irq_info usb_irq_info[USB_MAX_IRQ] = {
 	{ "hs_phy_irq",
-	  IRQF_TRIGGER_HIGH | IRQF_ONESHOT | IRQ_TYPE_LEVEL_HIGH |
-		 IRQF_EARLY_RESUME,
+	  IRQF_TRIGGER_RISING | IRQF_ONESHOT | IRQF_EARLY_RESUME,
 	  false,
 	},
 	{ "pwr_event_irq",
@@ -364,6 +368,7 @@ struct dwc3_msm {
 	dma_addr_t		dummy_gsi_db_dma;
 	int			orientation_override;
 	bool			usb_data_enabled;
+	bool			ext_typec_switch;
 };
 
 #define USB_HSPHY_3P3_VOL_MIN		3050000 /* uV */
@@ -2842,6 +2847,11 @@ static int dwc3_msm_resume(struct dwc3_msm *mdwc)
 		mdwc->ss_phy->flags &= ~(PHY_LANE_A | PHY_LANE_B);
 		if (mdwc->orientation_override)
 			mdwc->ss_phy->flags |= mdwc->orientation_override;
+		else if (mdwc->ext_typec_switch)
+		{
+			dev_dbg(mdwc->dev, "%s: DWC3 ext_typec_switch set in device tree forcing PHY_LANE_A\n", __func__);
+			mdwc->ss_phy->flags |= PHY_LANE_A;
+		}
 		else if (mdwc->typec_orientation == ORIENTATION_CC1)
 			mdwc->ss_phy->flags |= PHY_LANE_A;
 		else if (mdwc->typec_orientation == ORIENTATION_CC2)
@@ -3806,6 +3816,9 @@ static int dwc3_msm_probe(struct platform_device *pdev)
 	mdwc->charging_disabled = of_property_read_bool(node,
 				"qcom,charging-disabled");
 
+	mdwc->ext_typec_switch = of_property_read_bool(node,
+				"mmi,ext-typec-switch");
+
 	ret = of_property_read_u32(node, "qcom,lpm-to-suspend-delay-ms",
 				&mdwc->lpm_to_suspend_delay);
 	if (ret) {
@@ -4717,10 +4730,10 @@ static void dwc3_otg_sm_work(struct work_struct *w)
 		if (test_bit(ID, &mdwc->inputs) &&
 				!test_bit(B_SESS_VLD, &mdwc->inputs)) {
 			dbg_event(0xFF, "undef_id_!bsv", 0);
+			dwc3_msm_resume(mdwc);
 			pm_runtime_set_active(mdwc->dev);
 			pm_runtime_enable(mdwc->dev);
 			pm_runtime_get_noresume(mdwc->dev);
-			dwc3_msm_resume(mdwc);
 			pm_runtime_put_sync(mdwc->dev);
 			dbg_event(0xFF, "Undef NoUSB",
 				atomic_read(&mdwc->dev->power.usage_count));

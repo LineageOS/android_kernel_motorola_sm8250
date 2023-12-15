@@ -1200,6 +1200,11 @@ static int fastrpc_buf_alloc(struct fastrpc_file *fl, size_t size,
 		goto bail;
 	}
 
+	VERIFY(err, fl->sctx != NULL);
+	if (err) {
+		err = -EBADR;
+		goto bail;
+	}
 	VERIFY(err, size > 0 && size < me->max_size_limit);
 	if (err) {
 		err = -EFAULT;
@@ -3515,6 +3520,7 @@ static int fastrpc_internal_munmap_fd(struct fastrpc_file *fl,
 			(unsigned int)ud->len);
 		err = -1;
 		mutex_unlock(&fl->map_mutex);
+		mutex_unlock(&fl->internal_map_mutex);
 		goto bail;
 	}
 	if (map && (map->attr & FASTRPC_ATTR_KEEP_MAP)) {
@@ -3522,6 +3528,7 @@ static int fastrpc_internal_munmap_fd(struct fastrpc_file *fl,
 		fastrpc_mmap_free(map, 0);
 	}
 	mutex_unlock(&fl->map_mutex);
+	mutex_unlock(&fl->internal_map_mutex);
 bail:
 	mutex_unlock(&fl->internal_map_mutex);
 	return err;
