@@ -77,19 +77,19 @@ struct dp_panel_private {
 };
 
 static const struct dp_panel_info fail_safe = {
-	.h_active = 640,
-	.v_active = 480,
-	.h_back_porch = 48,
-	.h_front_porch = 16,
-	.h_sync_width = 96,
+	.h_active = 1920,
+	.v_active = 1080,
+	.h_back_porch = 148,
+	.h_front_porch = 88,
+	.h_sync_width = 44,
 	.h_active_low = 0,
-	.v_back_porch = 33,
-	.v_front_porch = 10,
-	.v_sync_width = 2,
+	.v_back_porch = 36,
+	.v_front_porch = 4,
+	.v_sync_width = 5,
 	.v_active_low = 0,
 	.h_skew = 0,
 	.refresh_rate = 60,
-	.pixel_clk_khz = 25200,
+	.pixel_clk_khz = 148500,
 	.bpp = 24,
 };
 
@@ -2197,7 +2197,7 @@ static u32 dp_panel_get_supported_bpp(struct dp_panel *dp_panel,
 	struct dp_panel_private *panel;
 	const u32 max_supported_bpp = 30;
 	u32 min_supported_bpp = 18;
-	u32 bpp = 0, data_rate_khz = 0, tmds_max_clock = 0;
+	u32 bpp = 0, data_rate_khz = 0;
 
 	panel = container_of(dp_panel, struct dp_panel_private, dp_panel);
 
@@ -2210,7 +2210,6 @@ static u32 dp_panel_get_supported_bpp(struct dp_panel *dp_panel,
 
 	data_rate_khz = link_params->lane_count *
 		drm_dp_bw_code_to_link_rate(link_params->bw_code) * 8;
-	tmds_max_clock = dp_panel->connector->display_info.max_tmds_clock;
 
 	for (; bpp > min_supported_bpp; bpp -= 6) {
 		if (dp_panel->dsc_en) {
@@ -2226,10 +2225,6 @@ static u32 dp_panel_get_supported_bpp(struct dp_panel *dp_panel,
 					DP_DSC_8_BPC))
 				continue;
 		}
-
-		if (tmds_max_clock > 0 &&
-		    mult_frac(mode_pclk_khz, bpp, 24)  > tmds_max_clock)
-			continue;
 
 		if (mode_pclk_khz * bpp <= data_rate_khz)
 			break;
