@@ -676,6 +676,7 @@ return:
 static int nvt_mmi_pre_resume(struct device *dev)
 {
 	struct nvt_ts_data *ts_data;
+	char *fw_name;
 
 	GET_TS_DATA(dev);
 	NVT_LOG("enter\n");
@@ -688,9 +689,14 @@ static int nvt_mmi_pre_resume(struct device *dev)
 	}
 #endif
 
+	if (nvt_boot_firmware_name)
+		fw_name = nvt_boot_firmware_name;
+	else
+		fw_name = BOOT_UPDATE_FIRMWARE_NAME;
+
 	mutex_lock(&ts->lock);
-	NVT_LOG("update firmware: %s\n", nvt_boot_firmware_name);
-	nvt_update_firmware(nvt_boot_firmware_name);
+	NVT_LOG("update firmware: %s\n", fw_name);
+	nvt_update_firmware(fw_name);
 
 	mutex_unlock(&ts->lock);
 
