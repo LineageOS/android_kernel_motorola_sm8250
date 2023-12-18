@@ -267,6 +267,12 @@ const uint16_t gesture_key_array[] = {
 	KEY_POWER,  //GESTURE_SLIDE_LEFT
 	KEY_POWER,  //GESTURE_SLIDE_RIGHT
 };
+
+#ifdef CONFIG_INPUT_NOVA_0FLASH_MMI_EMULATE_DT2W
+/* Double tap detection resources */
+#define DT2W_TIME_MS 500
+static s64 tap_time_pre = 0;
+#endif
 #endif
 
 #ifdef CONFIG_MTK_SPI
@@ -1109,6 +1115,30 @@ static void nvt_flash_proc_deinit(void)
 /* function page definition */
 #define FUNCPAGE_GESTURE         1
 
+#ifdef CONFIG_INPUT_NOVA_0FLASH_MMI_EMULATE_DT2W
+static inline bool is_gesture_enabled(uint8_t gesture_id)
+{
+	unsigned char gesture_type = 0;
+	bool rc = false;
+	if (ts->imports && ts->imports->get_gesture_type) {
+		ts->imports->get_gesture_type(&ts->client->dev, &gesture_type);
+		switch (gesture_id) {
+		case GESTURE_SINGLE_CLICK:
+			rc = gesture_type & TS_MMI_GESTURE_SINGLE;
+			break;
+		case GESTURE_DOUBLE_CLICK:
+			rc = gesture_type & TS_MMI_GESTURE_DOUBLE;
+			break;
+		default:
+			break;
+		}
+	}
+	return rc;
+}
+#endif
+
+static void nvt_ts_wakeup_gesture_report_timer(struct timer_list *t);
+
 /*******************************************************
 Description:
 	Novatek touchscreen wake up gesture key report function.
@@ -1118,11 +1148,11 @@ return:
 *******************************************************/
 void nvt_ts_wakeup_gesture_report(uint8_t gesture_id, uint8_t *data)
 {
-	uint32_t keycode = 0;
 	uint8_t func_type = data[2];
 	uint8_t func_id = data[3];
-#ifdef NVT_SENSOR_EN
-	static int report_cnt = 0;
+#ifdef CONFIG_INPUT_NOVA_0FLASH_MMI_EMULATE_DT2W
+	s64 now = ktime_to_ms(ktime_get());
+	unsigned long timeout = 1;
 #endif
 
 	/* support fw specifal data protocol */
@@ -1133,8 +1163,42 @@ void nvt_ts_wakeup_gesture_report(uint8_t gesture_id, uint8_t *data)
 		return;
 	}
 
-	NVT_LOG("gesture_id = %d\n", gesture_id);
+#ifdef CONFIG_INPUT_NOVA_0FLASH_MMI_EMULATE_DT2W
+	/* NOTE: FW reports single click as double click */
+	if (gesture_id == GESTURE_DOUBLE_CLICK) {
+		if (now - tap_time_pre > DT2W_TIME_MS) {
+			tap_time_pre = now;
+			gesture_id = GESTURE_SINGLE_CLICK;
+			if (is_gesture_enabled(GESTURE_DOUBLE_CLICK)) {
+				timeout = msecs_to_jiffies(DT2W_TIME_MS);
+				NVT_DBG("Delay single click as double click is enabled\n");
+			}
+		}
 
+		/* FW doesn't check for us */
+		if (!is_gesture_enabled(gesture_id)) {
+			NVT_DBG("gesture_id = %d not enabled, skip.\n", gesture_id);
+			return;
+		}
+	}
+#endif
+
+	NVT_LOG("gesture_id = %d\n", gesture_id);
+	atomic_set(&ts->gesture_id, gesture_id);
+#ifdef CONFIG_INPUT_NOVA_0FLASH_MMI_EMULATE_DT2W
+	mod_timer(&ts->gt_timer, jiffies + timeout);
+#else
+	nvt_ts_wakeup_gesture_report_timer(&ts->gt_timer);
+#endif
+}
+
+static void nvt_ts_wakeup_gesture_report_timer(struct timer_list __always_unused *t)
+{
+	uint32_t keycode = 0;
+	uint8_t gesture_id = atomic_read(&ts->gesture_id);
+#ifdef NVT_SENSOR_EN
+	static int report_cnt = 0;
+#endif
 	switch (gesture_id) {
 		case GESTURE_WORD_C:
 			NVT_DBG("Gesture : Word-C.\n");
@@ -2998,6 +3062,9 @@ static int32_t nvt_ts_probe(struct spi_device *client)
 #if WAKEUP_GESTURE
 	device_init_wakeup(&ts->input_dev->dev, 1);
 #endif
+#ifdef CONFIG_INPUT_NOVA_0FLASH_MMI_EMULATE_DT2W
+	timer_setup(&ts->gt_timer, nvt_ts_wakeup_gesture_report_timer, 0);
+#endif
 #ifdef NVT_SENSOR_EN
 	if (!initialized_sensor) {
 #ifdef CONFIG_HAS_WAKELOCK
@@ -3261,6 +3328,9 @@ err_create_nvt_esd_check_wq_failed:
 	}
 err_create_nvt_fwu_wq_failed:
 #endif
+#ifdef CONFIG_INPUT_NOVA_0FLASH_MMI_EMULATE_DT2W
+	del_timer_sync(&ts->gt_timer);
+#endif
 #if WAKEUP_GESTURE
 	device_init_wakeup(&ts->input_dev->dev, 0);
 #endif
@@ -3406,6 +3476,10 @@ static int32_t nvt_ts_remove(struct spi_device *client)
 	}
 #endif
 
+#ifdef CONFIG_INPUT_NOVA_0FLASH_MMI_EMULATE_DT2W
+	del_timer_sync(&ts->gt_timer);
+#endif
+
 #if !IS_ENABLED(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #if WAKEUP_GESTURE
 	device_init_wakeup(&ts->input_dev->dev, 0);
@@ -3500,6 +3574,10 @@ static void nvt_ts_shutdown(struct spi_device *client)
 		destroy_workqueue(nvt_fwu_wq);
 		nvt_fwu_wq = NULL;
 	}
+#endif
+
+#ifdef CONFIG_INPUT_NOVA_0FLASH_MMI_EMULATE_DT2W
+	del_timer_sync(&ts->gt_timer);
 #endif
 
 #if WAKEUP_GESTURE

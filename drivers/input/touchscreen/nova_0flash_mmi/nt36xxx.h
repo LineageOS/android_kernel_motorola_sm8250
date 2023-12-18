@@ -221,6 +221,8 @@ struct nvt_ts_data {
 #ifdef WAKEUP_GESTURE
 	bool gesture_enabled;
 	bool wakeable;
+	struct timer_list gt_timer;
+	atomic_t gesture_id;
 #endif
 #ifdef NVT_TOUCH_LAST_TIME
 	ktime_t last_event_time;
