@@ -117,5 +117,6 @@
 		novatek,usb_charger;
 		novatek,gesture-wait-pm;
 		status = "/chosen", "mmi,panel_name", "tianma_nt36672c_1080x2520_670_dsc_vid";
+		mmi,enable-gestures;
 	};
 };
