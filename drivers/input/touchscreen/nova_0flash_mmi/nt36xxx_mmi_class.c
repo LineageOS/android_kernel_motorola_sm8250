@@ -578,7 +578,7 @@ static int nvt_mmi_panel_state(struct device *dev,
 	enum ts_mmi_pm_mode from, enum ts_mmi_pm_mode to)
 {
 	struct nvt_ts_data *ts_data;
-#if defined(CONFIG_BOARD_USES_DOUBLE_TAP_CTRL)
+#if defined(CONFIG_BOARD_USES_DOUBLE_TAP_CTRL) && !defined(CONFIG_INPUT_NOVA_0FLASH_MMI_EMULATE_DT2W)
 	static uint8_t gesture_cmd = 0x00;
 	unsigned char gesture_type = 0;
 #endif
@@ -596,7 +596,7 @@ static int nvt_mmi_panel_state(struct device *dev,
 		        ts->gesture_enabled = false;
 #endif
 
-#if defined(CONFIG_BOARD_USES_DOUBLE_TAP_CTRL)
+#if defined(CONFIG_BOARD_USES_DOUBLE_TAP_CTRL) && !defined(CONFIG_INPUT_NOVA_0FLASH_MMI_EMULATE_DT2W)
                         if (ts_data->imports && ts_data->imports->get_gesture_type) {
                                 ts_data->imports->get_gesture_type(dev, &gesture_type);
 		        }
