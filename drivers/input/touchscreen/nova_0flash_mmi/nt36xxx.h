@@ -305,11 +305,13 @@ typedef enum {
 } SPI_EVENT_MAP;
 
 #ifdef NVT_SET_TOUCH_STATE
+#ifndef CONFIG_PANEL_NOTIFICATIONS
 #define MAX_PANEL_IDX 2
 enum touch_panel_id {
 	TOUCH_PANEL_IDX_PRIMARY = 0,
 	TOUCH_PANEL_MAX_IDX,
 };
+#endif
 
 enum touch_state {
 	TOUCH_DEEP_SLEEP_STATE = 0,
