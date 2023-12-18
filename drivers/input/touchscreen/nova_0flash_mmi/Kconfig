@@ -131,4 +131,13 @@ config GTP_DDA_STYLUS
 
 	  If unsure, say N.
 
+config INPUT_NOVA_0FLASH_MMI_EMULATE_DT2W
+	bool "Moto Novatek NT36xxx emulate dt2w"
+	default n
+	depends on BOARD_USES_DOUBLE_TAP_CTRL
+	help
+	  Say Y here if you want to emulate dt2w on Moto Novatek NT36xxx.
+
+	  If unsure, say N.
+
 endif
