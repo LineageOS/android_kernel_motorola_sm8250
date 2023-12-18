@@ -370,6 +370,7 @@ enum ts_mmi_work {
 	int	(*get_poison_distance)(struct device *dev, void *idata);
 	int	(*get_poison_trigger_distance)(struct device *dev, void *idata);
 	int	(*get_active_region)(struct device *dev, void *uiadata);
+	int	(*get_gesture_mode_type)(struct device *dev, void *idata);
 	/* SET methods */
 	int	(*reset)(struct device *dev, int type);
 	int	(*drv_irq)(struct device *dev, int state);

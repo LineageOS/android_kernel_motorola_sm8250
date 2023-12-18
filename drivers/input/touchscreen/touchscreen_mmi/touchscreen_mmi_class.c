@@ -118,6 +118,7 @@ TOUCH_MMI_GET_ATTR_RO(config_id, FMT_STRING);
 TOUCH_MMI_GET_ATTR_RO(poweron, FMT_INTEGER);
 TOUCH_MMI_GET_ATTR_RO(flashprog, FMT_INTEGER);
 TOUCH_MMI_GET_ATTR_RO(irq_status, FMT_INTEGER);
+TOUCH_MMI_GET_ATTR_RO(gesture_mode_type, FMT_INTEGER);
 TOUCH_MMI_GET_ATTR_RW(drv_irq, FMT_INTEGER);
 TOUCH_MMI_GET_ATTR_RW(suppression, FMT_HEX_INTEGER);
 TOUCH_MMI_GET_ATTR_RW(hold_grip, FMT_HEX_INTEGER);
@@ -454,6 +455,7 @@ static struct attribute *sysfs_class_attrs[] = {
 	&dev_attr_hw_irqstat.attr,
 	&dev_attr_ic_ver.attr,
 	&dev_attr_drv_irq.attr,
+	&dev_attr_gesture_mode_type.attr,
 	&dev_attr_reset.attr,
 	&dev_attr_forcereflash.attr,
 	&dev_attr_doreflash.attr,
