@@ -695,14 +695,43 @@ static int fts_mmi_panel_state(struct device *dev,
 		enum ts_mmi_pm_mode from, enum ts_mmi_pm_mode to)
 {
 	u8 mask[4] = { 0 };
+#ifdef CONFIG_BOARD_USES_DOUBLE_TAP_CTRL
+	unsigned char gesture_type = 0;
+	u8 mask_disabled[4] = { 0 };
+#endif
 	struct fts_ts_info *ts = dev_get_drvdata(dev);
 	ASSERT_PTR(ts);
 	dev_dbg(dev, "%s: panel state change: %d->%d\n", __func__, from, to);
 	pr_info("panel state change: %d->%d\n", from, to);
 	switch (to) {
 	case TS_MMI_PM_GESTURE:
+#ifdef CONFIG_BOARD_USES_DOUBLE_TAP_CTRL
+		if (ts->imports && ts->imports->get_gesture_type) {
+			ts->imports->get_gesture_type(dev, &gesture_type);
+		}
+
+		/* support single tap gesture */
+		if (gesture_type & TS_MMI_GESTURE_SINGLE) {
+			fromIDtoMask(GEST_ID_SIGTAP, mask, GESTURE_MASK_SIZE);
+			dev_info(ts->dev, "enable single gesture mode\n");
+		} else {
+			fromIDtoMask(GEST_ID_SIGTAP, mask_disabled, GESTURE_MASK_SIZE);
+			dev_info(ts->dev, "disable single gesture mode\n");
+		}
+
+		/* support double tap gesture */
+		if (gesture_type & TS_MMI_GESTURE_DOUBLE) {
+			fromIDtoMask(GEST_ID_DBLTAP, mask, GESTURE_MASK_SIZE);
+			dev_info(ts->dev, "enable double gesture mode\n");
+		} else {
+			fromIDtoMask(GEST_ID_DBLTAP, mask_disabled, GESTURE_MASK_SIZE);
+			dev_info(ts->dev, "disable double gesture mode\n");
+		}
+		updateGestureMask(mask_disabled, GESTURE_MASK_SIZE, 0);
+#else
 		/* support single tap gesture */
 		fromIDtoMask(GEST_ID_SIGTAP, mask, GESTURE_MASK_SIZE);
+#endif
 		updateGestureMask(mask, GESTURE_MASK_SIZE, 1);
 		ts->gesture_enabled = 1;
 	case TS_MMI_PM_DEEPSLEEP:
