@@ -1072,12 +1072,12 @@ static inline void toggle_gesture(uint8_t gesture_id, bool on)
 		clear_bit(gesture_id, ts->gesture_bits);
 }
 
-static inline bool should_enable_gesture()
+static inline bool should_enable_gesture(void)
 {
 	return !bitmap_empty(ts->gesture_bits, DATA_PROTOCOL);
 }
 
-static inline void clear_gestures()
+static inline void clear_gestures(void)
 {
 	bitmap_zero(ts->gesture_bits, DATA_PROTOCOL);
 }
