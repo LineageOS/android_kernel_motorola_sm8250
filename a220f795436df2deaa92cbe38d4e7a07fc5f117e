@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6f9af1dc_969a30ff",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-02-01T22:12:25Z",
+      "side": 1,
+      "message": "Might also need this chain https://review.lineageos.org/c/LineageOS/android_kernel_xiaomi_sm8250/+/374328",
+      "revId": "a220f795436df2deaa92cbe38d4e7a07fc5f117e",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
