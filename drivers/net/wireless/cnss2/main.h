@@ -33,6 +33,7 @@
 // BEGIN IKSWR-1888 Support loading different bdwlan.elf
 #define MAX_FIRMWARE_NAME_LEN		32
 // END IKSWR-1888 Support loading different bdwlan.elf
+#define CNSS_INVALID_CAL_DURATION       0xFFFFFFFF
 
 #define CNSS_EVENT_SYNC   BIT(0)
 #define CNSS_EVENT_UNINTERRUPTIBLE BIT(1)
@@ -399,6 +400,7 @@ struct cnss_plat_data {
 	u32 diag_reg_read_len;
 	u8 *diag_reg_read_buf;
 	u8 cal_done;
+	u32 cal_duration;
 	u8 powered_on;
 	u8 use_fw_path_with_prefix;
 	char firmware_name[MAX_FIRMWARE_NAME_LEN];
