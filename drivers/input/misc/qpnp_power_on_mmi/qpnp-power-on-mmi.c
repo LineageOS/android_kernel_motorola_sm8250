@@ -152,7 +152,7 @@ static void kpd_bark_work_func(struct work_struct *work)
 	if (pon->kpd_hw_warmreset) {
 		pr_err("trigger hw_warmreset, BOOT_SEQ=%d\n", get_boot_seq());
 		/* print blocked tasks */
-		print_blocked_tasks();
+		// print_blocked_tasks();
 		kernel_restart("hw_warmreset");
 	} else {
 		dev_err(&pon->pdev->dev, "HW User Reset! 2 sec to Reset!\n");
