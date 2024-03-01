@@ -135,12 +135,9 @@
 .org .Lventry_start\@ + 128	// Did we overflow the ventry slot?
 	.endm
 
-	.macro tramp_alias, dst, sym, tmp
+	.macro tramp_alias, dst, sym
 	mov_q	\dst, TRAMP_VALIAS
-	adr_l	\tmp, \sym
-	add	\dst, \dst, \tmp
-	adr_l	\tmp, .entry.tramp.text
-	sub	\dst, \dst, \tmp
+	add	\dst, \dst, #(\sym - .entry.tramp.text)
 	.endm
 
 	// This macro corrupts x0-x3. It is the caller's duty
@@ -375,10 +372,10 @@ alternative_else_nop_endif
 #ifdef CONFIG_UNMAP_KERNEL_AT_EL0
 	bne	4f
 	msr	far_el1, x29
-	tramp_alias	x30, tramp_exit_native, x29
+	tramp_alias	x30, tramp_exit_native
 	br	x30
 4:
-	tramp_alias	x30, tramp_exit_compat, x29
+	tramp_alias	x30, tramp_exit_compat
 	br	x30
 #endif
 	.else
@@ -1306,7 +1303,7 @@ alternative_if_not ARM64_UNMAP_KERNEL_AT_EL0
 alternative_else_nop_endif
 
 #ifdef CONFIG_UNMAP_KERNEL_AT_EL0
-	tramp_alias	dst=x5, sym=__sdei_asm_exit_trampoline, tmp=x3
+	tramp_alias	dst=x5, sym=__sdei_asm_exit_trampoline
 	br	x5
 #endif
 ENDPROC(__sdei_asm_handler)
