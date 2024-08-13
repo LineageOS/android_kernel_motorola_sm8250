@@ -836,6 +836,22 @@ static DEVICE_ATTR(force_charging_enable, 0644,
 		force_charging_enable_show,
 		force_charging_enable_store);
 
+static ssize_t force_charging_disable_show(struct device *dev,
+			struct device_attribute *attr,
+			char *buf)
+{
+	int state;
+
+	if (!this_chip) {
+		pr_err("mmi_charger: chip not valid\n");
+		return -ENODEV;
+	}
+
+	state = mmi_get_effective_voter(&this_chip->disable_charging_vote) >= 0;
+
+	return scnprintf(buf, CHG_SHOW_MAX_SIZE, "%d\n", state);
+}
+
 static ssize_t force_charging_disable_store(struct device *dev,
 			struct device_attribute *attr,
 			const char *buf, size_t count)
@@ -862,8 +878,8 @@ static ssize_t force_charging_disable_store(struct device *dev,
 	return count;
 }
 
-static DEVICE_ATTR(force_charging_disable, 0200,
-		NULL,
+static DEVICE_ATTR(force_charging_disable, 0644,
+		force_charging_disable_show,
 		force_charging_disable_store);
 
 static struct attribute * mmi_g[] = {
