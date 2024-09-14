@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "66ab05a1_8e9ba7e2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-09-14T18:48:36Z",
+      "side": 1,
+      "message": "If you use kernel/qcom/sm8250, mind pushing to it too?",
+      "revId": "9a0acfb6d0411f2c86197d76a8c84eda7701f01f",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
