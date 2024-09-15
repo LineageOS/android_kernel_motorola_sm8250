@@ -16,6 +16,24 @@
       "message": "If you use kernel/qcom/sm8250, mind pushing to it too?",
       "revId": "9a0acfb6d0411f2c86197d76a8c84eda7701f01f",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b0bc83f4_15da91c1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10258
+      },
+      "writtenOn": "2024-09-15T02:36:38Z",
+      "side": 1,
+      "message": "I don\u0027t use that, feel free to cherry-pick.",
+      "parentUuid": "66ab05a1_8e9ba7e2",
+      "revId": "9a0acfb6d0411f2c86197d76a8c84eda7701f01f",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
