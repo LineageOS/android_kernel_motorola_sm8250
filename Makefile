@@ -1,7 +1,11 @@
 # SPDX-License-Identifier: GPL-2.0
 VERSION = 4
 PATCHLEVEL = 19
+<<<<<<< PATCH SET (a1af19 [DNM] HAX)
+SUBLEVEL = 325
+=======
 SUBLEVEL = 193
+>>>>>>> BASE      (73cefa Merge tag 'ASB-2021-06-05_4.19-stable' into lineage-23.0)
 EXTRAVERSION =
 NAME = "People's Front"
 
