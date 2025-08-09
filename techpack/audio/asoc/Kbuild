@@ -76,12 +76,6 @@ ifeq ($(KERNEL_BUILD), 0)
 		export
 		INCS    +=  -include $(AUDIO_ROOT)/config/gvmautoconf.h
 	endif
-	ifneq (,$(filter nairo%, $(TARGET_PRODUCT)))
-		INCS    +=  -include $(AUDIO_ROOT)/config/litonairo_asoc.h
-        endif
-	ifneq (,$(filter smith%, $(TARGET_PRODUCT)))
-		INCS    +=  -include $(AUDIO_ROOT)/config/litosmith.h
-	endif
 	ifeq ($(CONFIG_ARCH_SDM660), y)
 		include $(AUDIO_ROOT)/config/sdm660auto.conf
 		export
@@ -101,6 +95,12 @@ ifeq ($(KERNEL_BUILD), 0)
 		include $(AUDIO_ROOT)/config/sdm450auto.conf
 		export
 		INCS    +=  -include $(AUDIO_ROOT)/config/sdm450autoconf.h
+	endif
+	ifeq ($(CONFIG_NAIRO_DTB), y)
+		INCS    +=  -include $(AUDIO_ROOT)/config/litonairo_asoc.h
+	endif
+	ifeq ($(CONFIG_SMITH_DTB), y)
+		INCS    +=  -include $(AUDIO_ROOT)/config/litosmith.h
 	endif
 endif
 
@@ -165,7 +165,7 @@ endif
 
 ifdef CONFIG_SND_SOC_LITO
 # Separate machine driver for Smith/Racer
-ifneq (,$(filter smith%, $(TARGET_PRODUCT)))
+ifeq ($(CONFIG_SMITH_DTB), y)
 	MACHINE_OBJS += lito-smith.o
 else
 	MACHINE_OBJS += lito.o
