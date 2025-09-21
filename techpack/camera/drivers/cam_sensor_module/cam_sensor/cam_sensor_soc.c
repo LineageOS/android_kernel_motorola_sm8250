@@ -158,6 +158,13 @@ static int32_t cam_sensor_driver_get_dt_data(struct cam_sensor_ctrl_t *s_ctrl)
 		}
 	}
 
+	if (!of_property_read_bool(of_node, "slg,pmic-workaround")) {
+		CAM_DBG(CAM_SENSOR, "No SLG PMIC Workaround defined");
+		s_ctrl->slg_pmic_workaround = false;
+	} else {
+		s_ctrl->slg_pmic_workaround = true;
+	}
+
 	/* Read subdev info */
 	rc = cam_sensor_get_sub_module_index(of_node, sensordata);
 	if (rc < 0) {

@@ -127,7 +127,13 @@ struct cam_ois_opcode {
  * @i2c_freq_mode         :    i2c frequency mode
  * @cmd_type              :    Explains type of command
  * @ois_fw_flag           :    indicates if fw is present or not
+ * @ois_preprog_flag      :    indicates if preprog is present or not
+ * @ois_precoeff_flag     :    indicates if precoeff is present or not
  * @is_ois_calib          :    indicates the calibration data is available
+ * @ois_postcalib_flag    :    indicates if postcalib is present or not
+ * @ois_fw_txn_data_sz    :    num data bytes per i2c txn when sending fw
+ * @ois_fw_inc_addr       :    should address increment when sending fw
+ * @ois_fw_addr_type      :    address type of fw i2c txn
  * @ois_name              :    OIS name
  * @opcode                :    opcode
  */
@@ -136,7 +142,14 @@ struct cam_cmd_ois_info {
 	uint8_t               i2c_freq_mode;
 	uint8_t               cmd_type;
 	uint8_t               ois_fw_flag;
+	uint8_t               ois_preprog_flag;
+	uint8_t               ois_precoeff_flag;
 	uint8_t               is_ois_calib;
+	uint8_t               ois_postcalib_flag;
+	uint8_t               ois_fw_txn_data_sz;
+	uint8_t               ois_fw_inc_addr;
+	uint8_t               ois_fw_addr_type;
+	uint8_t               ois_fw_data_type;
 	char                  ois_name[MAX_OIS_NAME_SIZE];
 	struct cam_ois_opcode opcode;
 } __attribute__((packed));
@@ -378,6 +391,10 @@ struct cam_sensor_acquire_dev {
 	uint32_t    handle_type;
 	uint32_t    reserved;
 	uint64_t    info_handle;
+	/*MOT_FLASHLIGHT_GPIO BEGIN*/
+	uint32_t    param;
+	uint32_t    reserved1;
+	/*MOT_FLASHLIGHT_GPIO END*/
 } __attribute__((packed));
 
 /**

@@ -130,6 +130,7 @@ struct cam_flash_frame_setting {
  * @torch_op_current    : Torch operational current
  * @torch_max_current   : Max supported current for LED in torch mode
  * @is_wled_flash       : Detection between WLED/LED flash
+ * @is_gpio_flash       : Detection GPIO controlled flash MOT_FLASHLIGHT_GPIO
  */
 
 struct cam_flash_private_soc {
@@ -142,6 +143,7 @@ struct cam_flash_private_soc {
 	uint32_t     torch_op_current[CAM_FLASH_MAX_LED_TRIGGERS];
 	uint32_t     torch_max_current[CAM_FLASH_MAX_LED_TRIGGERS];
 	bool         is_wled_flash;
+	bool         is_gpio_flash;
 };
 
 struct cam_flash_func_tbl {
@@ -199,6 +201,11 @@ struct cam_flash_ctrl {
 	uint8_t                             flash_type;
 	bool                                is_regulator_enabled;
 	struct cam_flash_func_tbl           func_tbl;
+	/*MOT_FLASHLIGHT_GPIO BEGIN*/
+	/*For flash lights switching between different flash sources*/
+	struct cam_flash_func_tbl           default_func_tbl;
+	struct cam_flash_func_tbl           alt_func_tbl;
+	/*MOT_FLASHLIGHT_GPIO END*/
 	struct led_trigger           *flash_trigger[CAM_FLASH_MAX_LED_TRIGGERS];
 	struct led_trigger           *torch_trigger[CAM_FLASH_MAX_LED_TRIGGERS];
 /* I2C related setting */
@@ -209,7 +216,14 @@ struct cam_flash_ctrl {
 	uint32_t                            last_flush_req;
 	uint32_t                            open_cnt;
 };
-
+/*MOT_FLASHLIGHT_GPIO BEGIN*/
+extern char *saved_command_line; //use androidboot.radio to distinguish different SKU
+int cam_flash_gpio_pkt_parser(struct cam_flash_ctrl *fctrl, void *arg);
+int cam_flash_gpio_apply_setting(struct cam_flash_ctrl *fctrl, uint64_t req_id);
+int cam_flash_gpio_off(struct cam_flash_ctrl *fctrl);
+int cam_flash_gpio_power_ops(struct cam_flash_ctrl *fctrl, bool regulator_enable);
+int cam_flash_gpio_flush_request(struct cam_flash_ctrl *fctrl, enum cam_flash_flush_type, uint64_t req_id);
+/*MOT_FLASHLIGHT_GPIO END*/
 int cam_flash_pmic_gpio_pkt_parser(
 	struct cam_flash_ctrl *fctrl, void *arg);
 int cam_flash_i2c_pkt_parser(struct cam_flash_ctrl *fctrl, void *arg);
