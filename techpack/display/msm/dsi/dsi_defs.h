@@ -281,6 +281,21 @@ enum dsi_dyn_clk_feature_type {
  * @DSI_CMD_SET_POST_TIMING_SWITCH:        Post timing switch
  * @DSI_CMD_SET_QSYNC_ON                   Enable qsync mode
  * @DSI_CMD_SET_QSYNC_OFF                  Disable qsync mode
+ * @DSI_CMD_SET_HBM_FOD_ON:                Turning HBM_FOD on
+ * @DSI_CMD_SET_HBM_ON:                    Turning HBM on
+ * @DSI_CMD_SET_HBM_OFF:                   Turning HBM off
+ * @DSI_CMD_SET_ACL_ON:                    Turning ACL on
+ * @DSI_CMD_SET_ACL_OFF:                   Turning ACL off
+ * DSI_CMD_SET_HBM_DIM_OFF:		   Turning HBM DIM off
+ * @DSI_CMD_SET_CABC_UI:                   CABC UI mode
+ * @DSI_CMD_SET_CABC_MV:                   CABC MV mode
+ * @DSI_CMD_SET_CABC_DIS:                  CABC DIS mode
+ * @DSI_CMD_SET_DC_ON:                    DC mode on
+ * @DSI_CMD_SET_DC_OFF:                   DC mode off
+ * @DSI_CMD_SET_COLOR_VBT :                    COLOR VBT mode
+ * @DSI_CMD_SET_COLOR_STD:                   COLOR STD mode
+ * @DSI_CMD_SET_COLOR_GAME :                    COLOR GAME mode
+ * @DSI_CMD_SET_COLOR_NONE:                   COLOR NONE mode
  * @DSI_CMD_SET_MAX
  */
 enum dsi_cmd_set_type {
@@ -307,6 +322,21 @@ enum dsi_cmd_set_type {
 	DSI_CMD_SET_POST_TIMING_SWITCH,
 	DSI_CMD_SET_QSYNC_ON,
 	DSI_CMD_SET_QSYNC_OFF,
+	DSI_CMD_SET_HBM_FOD_ON,
+	DSI_CMD_SET_HBM_ON,
+	DSI_CMD_SET_HBM_OFF,
+	DSI_CMD_SET_ACL_ON,
+	DSI_CMD_SET_ACL_OFF,
+	DSI_CMD_SET_HBM_DIM_OFF,
+	DSI_CMD_SET_CABC_UI,
+	DSI_CMD_SET_CABC_MV,
+	DSI_CMD_SET_CABC_DIS,
+	DSI_CMD_SET_DC_ON,
+	DSI_CMD_SET_DC_OFF,
+	DSI_CMD_SET_COLOR_VBT,
+	DSI_CMD_SET_COLOR_STD,
+	DSI_CMD_SET_COLOR_GAME,
+	DSI_CMD_SET_COLOR_NONE,
 	DSI_CMD_SET_MAX
 };
 
@@ -621,6 +651,7 @@ struct dsi_display_mode_priv_info {
 	u32 dsi_transfer_time_us;
 	u64 clk_rate_hz;
 	u64 min_dsi_clk_hz;
+	u32 phy_drive_strength;
 
 	struct msm_display_topology topology;
 	struct msm_display_dsc_info dsc;
