@@ -1,0 +1,293 @@
+/* Copyright (c) 2019, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include "kona-moto-common-overlay.dtsi"
+
+/ {
+	model = "Savannah";
+	compatible = "qcom,kona-savannah", "qcom,kona-moto", "qcom,kona";
+	qcom,msm-id = <356 0x10000>;
+	qcom,board-id = <0 0xA100>;
+};
+
+/*
+ * Savannah HW rev EVT1 specific changes go here
+ */
+
+&qupv3_se13_i2c {
+	goodix_ts_i2c@5d {
+		status = "/chosen","mmi,panel_name","contains","smd";
+		goodix,x2x;
+		goodix,y2y;
+		goodix,cfg_bin_name = "goodix_cfg_group2.bin";
+		goodix,fw_name = "goodix-gtx5-38-04-foles.bin";
+	};
+};
+
+&rear_pmic {
+	status = "disabled";
+};
+
+&cam_cci1 {
+	status = "disabled";
+	/delete-node/ qcom,actuator@0;
+	/delete-node/ qcom,eeprom@0;
+	/delete-node/ qcom,cam-sensor@0;
+};
+
+&cam_cci0 {
+	actuator_rear_old: qcom,actuator@0 {
+		cell-index = <0>;
+		reg = <0x0>;
+		compatible = "qcom,actuator";
+		cci-master = <0>;
+		cam_vaf-supply = <&dummy_cam_vreg>;
+		regulator-names = "cam_vaf";
+		rgltr-cntrl-support;
+		rgltr-min-voltage = <2800000>;
+		rgltr-max-voltage = <2800000>;
+		rgltr-load-current = <0>;
+	};
+
+	eeprom_rear_old: qcom,eeprom@0 {
+		cell-index = <0>;
+		reg = <0x0>;
+		compatible = "qcom,eeprom";
+		cci-master = <0>;
+		cam_vio-supply = <&dummy_cam_vreg>;
+		regulator-names = "cam_vio";
+		rgltr-cntrl-support;
+		rgltr-min-voltage = <2800000>;
+		rgltr-max-voltage = <2800000>;
+		rgltr-load-current = <0>;
+	};
+
+	ois_main_old: qcom,ois@0 {
+		cell-index = <0>;
+		reg = <0x0>;
+		compatible = "qcom,ois";
+		cci-master = <0>;
+		cam_vio-supply = <&pm8150a_l5>;
+		regulator-names = "cam_vio";
+		rgltr-cntrl-support;
+		rgltr-min-voltage = <1800000>;
+		rgltr-max-voltage = <1800000>;
+		rgltr-load-current = <14000>;
+	};
+
+	main_sensor_old: qcom,cam-sensor@0 {
+		cell-index = <0>;
+		compatible = "qcom,cam-sensor";
+		reg = <0x00>;
+		csiphy-sd-index = <2>;
+		sensor-position-roll = <90>;
+		sensor-position-pitch = <0>;
+		sensor-position-yaw = <180>;
+		led-flash-src = <&led_flash_rear>;
+		actuator-src = <&actuator_rear_old>;
+		eeprom-src = <&eeprom_rear_old>;
+		ois-src = <&ois_main_old>;
+		cam_vio-supply = <&pm8150a_l5>;
+		cam_clk-supply = <&titan_top_gdsc>;
+		regulator-names = "cam_vio", "cam_clk";
+		rgltr-cntrl-support;
+		rgltr-min-voltage = <1800000 0>;
+		rgltr-max-voltage = <1800000 0>;
+		rgltr-load-current = <105000 0>;
+		gpio-no-mux = <0>;
+		pinctrl-names = "cam_default", "cam_suspend";
+		pinctrl-0 = <&cam_sensor_mclk2_active
+				&cam_sensor_active_rst2>;
+		pinctrl-1 = <&cam_sensor_mclk2_suspend
+				&cam_sensor_suspend_rst2>;
+		gpios = <&tlmm 96 0>,
+			<&tlmm 78 0>;
+		gpio-req-tbl-label =    "CAMIF_MCLK2",
+					"CAM_RESET2";
+		clocks = <&clock_camcc CAM_CC_MCLK2_CLK>;
+		gpio-reset = <1>;
+		gpio-req-tbl-num = <0 1>;
+		gpio-req-tbl-flags = <1 0>;
+		sensor-mode = <0>;
+		cci-master = <0>;
+		status = "ok";
+		clock-names = "cam_clk";
+		clock-cntl-level = "turbo";
+		clock-rates = <24000000>;
+		pmicreset-gpios = <&pm8150l_gpios 5 0>;
+		slg,pmic-workaround;
+	};
+};
+
+&front_sensor {
+	csiphy-sd-index = <1>;
+	cci-master = <0>;
+	pinctrl-0 = <&cam_sensor_mclk1_active
+			&cam_sensor_active_rear_aux>;
+	pinctrl-1 = <&cam_sensor_mclk1_suspend
+			&cam_sensor_suspend_rear_aux>;
+	gpios = <&tlmm 95 0>,
+		<&tlmm 92 0>;
+	gpio-req-tbl-label =    "CAMIF_MCLK1",
+				"CAM_RESET1";
+	clocks = <&clock_camcc CAM_CC_MCLK1_CLK>;
+};
+
+&wide_sensor {
+	csiphy-sd-index = <0>;
+	cci-master = <1>;
+	pinctrl-0 = <&cam_sensor_mclk0_active
+			&cam_sensor_active_rear>;
+	pinctrl-1 = <&cam_sensor_mclk0_suspend
+			&cam_sensor_suspend_rear>;
+	gpios = <&tlmm 94 0>,
+		<&tlmm 93 0>;
+	gpio-req-tbl-label =    "CAMIF_MCLK0",
+				"CAM_RESET0";
+	clocks = <&clock_camcc CAM_CC_MCLK0_CLK>;
+	pmicreset-gpios = <&pm8150l_gpios 5 0>;
+	slg,pmic-workaround;
+};
+
+&tele_sensor {
+	csiphy-sd-index = <3>;
+	pinctrl-0 = <&cam_sensor_mclk3_active
+			&cam_sensor_active_3>;
+	pinctrl-1 = <&cam_sensor_mclk3_suspend
+			&cam_sensor_suspend_3>;
+	gpios = <&tlmm 97 0>,
+		<&tlmm 109 0>;
+	gpio-req-tbl-label =    "CAMIF_MCLK3",
+				"CAM_RESET3";
+	clocks = <&clock_camcc CAM_CC_MCLK3_CLK>;
+	pmicreset-gpios = <&pm8150l_gpios 5 0>;
+	slg,pmic-workaround;
+};
+
+&qupv3_se15_i2c {
+	sx933x@28 {
+		status = "disabled";
+	};
+};
+
+&pm8150l_vadc {
+	/delete-node/ img108mp@4d;
+	/delete-node/ img25mp@4f;
+};
+
+&pm8150l_adc_tm {
+	io-channels = <&pm8150l_vadc ADC_AMUX_THM2_PU2>;
+
+	/delete-node/ img108mp@4d;
+	/delete-node/ img25mp@4f;
+};
+
+&pm8150b_vadc {
+	/delete-node/ chg_therm@4e;
+	/delete-node/ wlc_therm@4d;
+
+	conn_therm@4f {
+		reg = <ADC_AMUX_THM3_PU2>;
+		label = "conn_therm";
+		qcom,ratiometric;
+		qcom,hw-settle-time = <200>;
+		qcom,pre-scaling = <1 1>;
+	};
+
+	chg_therm@4d {
+		reg = <ADC_AMUX_THM1_PU2>;
+		label = "chg_therm";
+		qcom,ratiometric;
+		qcom,hw-settle-time = <200>;
+		qcom,pre-scaling = <1 1>;
+	};
+};
+
+&pm8150b_adc_tm {
+	io-channels = <&pm8150b_vadc ADC_AMUX_THM3_PU2>,
+        <&pm8150b_vadc ADC_AMUX_THM1_PU2>;
+
+	/delete-node/ wlc_therm@4d;
+	/delete-node/ chg_therm@4e;
+
+	conn_therm@4f {
+		reg = <ADC_AMUX_THM3_PU2>;
+		qcom,ratiometric;
+		qcom,hw-settle-time = <200>;
+	};
+
+	chg_therm@4d {
+		reg = <ADC_AMUX_THM1_PU2>;
+		qcom,ratiometric;
+		qcom,hw-settle-time = <200>;
+	};
+};
+
+&thermal_zones {
+	wlc-therm-usr {
+		status = "disabled";
+	};
+
+	img108mp-therm-usr {
+		status = "disabled";
+	};
+
+	img25mp-therm-usr {
+		status = "disabled";
+	};
+
+	conn-therm-usr {
+		polling-delay-passive = <0>;
+		polling-delay = <0>;
+		thermal-governor = "user_space";
+		thermal-sensors = <&pm8150b_adc_tm ADC_AMUX_THM3_PU2>;
+		trips {
+			active-config0 {
+				temperature = <125000>;
+				hysteresis = <1000>;
+				type = "passive";
+			};
+		};
+	};
+
+	chg-therm-usr {
+		polling-delay-passive = <0>;
+		polling-delay = <0>;
+		thermal-governor = "user_space";
+		thermal-sensors = <&pm8150b_adc_tm ADC_AMUX_THM1_PU2>;
+		trips {
+			active-config0 {
+				temperature = <125000>;
+				hysteresis = <1000>;
+				type = "passive";
+			};
+		};
+	};
+};
+
+&cs35l41_spk {
+	status = "disabled";
+};
+
+&sound_madera {
+	asoc-codec = <&stub_codec>, <&ext_disp_audio_codec>, <&cs47l35>,
+			<&cs35l41_rcv>;
+	asoc-codec-names = "msm-stub-codec.1",
+			"msm-ext-disp-audio-codec-rx",
+			"cs47l35-codec", "cs35l41-rcv";
+	cirrus,prince-max-devs = <1>;
+	cirrus,prince-devs = <&cs35l41_rcv>;
+	cirrus,prince-dev-prefix = "RCV";
+};

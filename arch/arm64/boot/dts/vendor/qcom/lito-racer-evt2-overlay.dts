@@ -1,0 +1,49 @@
+/* Copyright (c) 2019, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include "lito-racer-common-overlay.dtsi"
+
+/ {
+	model = "Racer";
+	compatible = "qcom,lito-racer", "qcom,lito-moto", "qcom,lito";
+	qcom,msm-id = <400 0x10000>, <440 0x10000>;
+	qcom,board-id = <0x47 0xA200>;
+};
+
+/*
+ * Charleston HW rev EVT2 specific changes go here
+ */
+
+/* On EVT1 & EVT2 hardware, the INT was connected to modem specific pin wrongly
+   Config the INT pin as high impedance input to save standby power consumption
+   (about 10mA current).
+*/
+&cs35l41_spk {
+	cirrus,gpio-config2 {
+		cirrus,gpio-src-select = <0x0>;
+	};
+};
+
+&cs35l41_rcv {
+	cirrus,gpio-config2 {
+		cirrus,gpio-src-select = <0x0>;
+	};
+};
+
+&q6core {
+	sound-madera {
+		qcom,model = "kona-madera-evt-snd-card";
+	};
+};

@@ -1,0 +1,47 @@
+/* Copyright (c) 2019, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include "kona-moto-common-overlay.dtsi"
+
+/ {
+	model = "Burton";
+	compatible = "qcom,kona-burton", "qcom,kona-moto", "qcom,kona";
+	qcom,msm-id = <356 0x20001>;
+	qcom,board-id = <0 0xB1C0>;
+};
+
+/*
+ * Burton HW rev DVT1C specific changes go here
+ */
+
+/* Laser is broken, turn on always to help mitigate the issue */
+&pm8150a_l7 {
+	regulator-always-on;
+};
+
+&qupv3_se15_i2c {
+	stmvl53l1@29 {
+		status = "disabled";
+	};
+
+	sx933x@28 {
+		Semtech,button-flag = <0x07>;
+	};
+};
+
+&cs35l41_spk {
+	interrupts = <138 IRQ_TYPE_LEVEL_LOW>;
+	interrupt-names = "prince_irq";
+};

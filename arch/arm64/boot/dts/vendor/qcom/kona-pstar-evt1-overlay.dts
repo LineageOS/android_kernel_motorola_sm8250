@@ -1,0 +1,38 @@
+/* Copyright (c) 2019, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include "kona-pstar-common-overlay.dtsi"
+
+/ {
+	model = "pstar";
+	compatible = "qcom,kona-pstar", "qcom,kona-moto", "qcom,kona";
+	qcom,msm-id = <356 0x20001>;
+	qcom,board-id = <0 0xA000>;
+};
+/* EVT1 Goodix3626z9&FPC1542 AVDD L13A 3p3v */
+&L13A {
+	regulator-min-microvolt = <3304000>;
+	regulator-max-microvolt = <3304000>;
+	qcom,init-voltage = <3304000>;
+	qcom,init-mode = <RPMH_REGULATOR_MODE_HPM>;
+	regulator-always-on;
+};
+
+&qupv3_se13_i2c {
+	st_fts@49 {
+		st,regulator_avdd = "pm8150a_l11";
+		st,regulator_dvdd = "pm8150_l14";
+	};
+};

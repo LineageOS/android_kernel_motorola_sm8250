@@ -1,0 +1,155 @@
+/* Copyright (c) 2019, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+//#include <dt-bindings/regulator/qcom,rpmh-regulator-levels.h>
+#include "dsi-panel-mot-dummy-qhd-video.dtsi"
+#include "lagoon-sde-display.dtsi"
+#include "dsi-panel-mot-tianma-ft8756-666-1080p-video.dtsi"
+#include "dsi-panel-mot-csot-ft8756-666-1080p-video.dtsi"
+
+&sde_dp {
+	status = "disabled";
+};
+
+&mdss_mdp {
+	connectors = <&sde_wb &sde_dsi &sde_rscc>;
+};
+
+&pm6150a_amoled {
+	status = "disabled";
+};
+
+&pm6150l_wled {
+	qcom,string-cfg = <7>;
+	qcom,cabc-sel = <1>;
+	qcom,ovp = <25000>;
+	status = "ok";
+	mmi,low-bl-force-cabc-disable;
+	mmi,low-bl-threshold = <200>;
+	mmi,low-bl-remap-percent = <80>;
+	mmi,low-bl-delay-ms = <50>;
+
+	/delete-node/ wled_switch;
+};
+
+&pm6150l_lcdb {
+	status = "ok";
+	qcom,pwrup-delay-ms = <8>;
+	qcom,pwrdn-delay-ms = <8>;
+};
+
+&sde_dsi {
+	/delete-property/ qcom,dsi-default-panel;
+	qcom,dsi-default-panel = <&dsi_ft8756_tm_video>;
+
+	vddio_disp-supply = <&L1E>;
+	vsp_disp-supply = <&lcdb_ldo_vreg>;
+	vsn_disp-supply = <&lcdb_ncp_vreg>;
+
+	qcom,platform-mot-ext-feature-enable;
+	qcom,platform-mot-early-power-enable;
+};
+
+&dsi_ft8756_tm_video {
+	qcom,platform-te-gpio = <&tlmm 23 0>;
+	qcom,platform-reset-gpio = <&pm6150l_gpios 9 0>;
+
+	qcom,mdss-dsi-hbm-on-command = [15 01 00 00 00 00 02 51 FF];
+	qcom,mdss-dsi-hbm-on-command-state =  "dsi_lp_mode";
+	qcom,mdss-dsi-hbm-off-command = [15 01 00 00 00 00 02 51 CC];
+	qcom,mdss-dsi-hbm-off-command-state =  "dsi_lp_mode";
+	qcom,mdss-dsi-hbm-type = "lcd-dcs-wled";
+
+	qcom,esd-check-enabled;
+	qcom,mdss-dsi-panel-status-check-mode = "reg_read";
+	qcom,mdss-dsi-panel-status-command = [06 01 00 01 00 00 01 0A];
+	qcom,mdss-dsi-panel-status-command-state = "dsi_lp_mode";
+	qcom,mdss-dsi-panel-status-value = <0x9c>;
+	qcom,mdss-dsi-panel-status-read-length = <1>;
+
+	qcom,mdss-dsi-bl-default-level = <2048>;
+	qcom,mdss-brightness-max-level = <4095>;
+
+        qcom,mdss-dsi-panel-hdr-enabled;
+        qcom,mdss-dsi-panel-hdr-color-primaries = <15600 16150 33750
+				15900 13150 34200 7500 3000>;
+        qcom,mdss-dsi-panel-peak-brightness = <4500000>;
+        qcom,mdss-dsi-panel-blackness-level = <3000>;
+
+	qcom,tp_state_check_enable;
+
+	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
+	qcom,mdss-dsi-display-timings {
+		timing@0 {
+			qcom,mdss-dsi-panel-clockrate = <965000000>;
+			qcom,mdss-dsi-panel-framerate = <60>;
+			qcom,mdss-dsi-panel-phy-timings = [00 21 08 08 25 22 09
+							08 09 02 04 00];
+			qcom,display-topology = <1 0 1>;
+			qcom,default-topology-index = <0>;
+		};
+	};
+};
+
+&dsi_ft8756_csot_video {
+	qcom,platform-te-gpio = <&tlmm 23 0>;
+	qcom,platform-reset-gpio = <&pm6150l_gpios 9 0>;
+
+	qcom,mdss-dsi-hbm-on-command = [15 01 00 00 00 00 02 51 FF];
+	qcom,mdss-dsi-hbm-on-command-state =  "dsi_lp_mode";
+	qcom,mdss-dsi-hbm-off-command = [15 01 00 00 00 00 02 51 CC];
+	qcom,mdss-dsi-hbm-off-command-state =  "dsi_lp_mode";
+	qcom,mdss-dsi-hbm-type = "lcd-dcs-wled";
+
+	qcom,esd-check-enabled;
+	qcom,mdss-dsi-panel-status-check-mode = "reg_read";
+	qcom,mdss-dsi-panel-status-command = [06 01 00 01 00 00 01 0A];
+	qcom,mdss-dsi-panel-status-command-state = "dsi_lp_mode";
+	qcom,mdss-dsi-panel-status-value = <0x9c>;
+	qcom,mdss-dsi-panel-status-read-length = <1>;
+
+	qcom,mdss-dsi-bl-default-level = <2048>;
+	qcom,mdss-brightness-max-level = <4095>;
+
+        qcom,mdss-dsi-panel-hdr-enabled;
+        qcom,mdss-dsi-panel-hdr-color-primaries = <15600 16150 33750
+				15900 13150 34200 7500 3000>;
+        qcom,mdss-dsi-panel-peak-brightness = <4500000>;
+        qcom,mdss-dsi-panel-blackness-level = <3000>;
+
+	qcom,tp_state_check_enable;
+
+	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
+	qcom,mdss-dsi-display-timings {
+		timing@0 {
+			qcom,mdss-dsi-panel-clockrate = <965000000>;
+			qcom,mdss-dsi-panel-framerate = <60>;
+			qcom,mdss-dsi-panel-phy-timings = [00 21 08 08 25 23 08
+							08 09 02 04 00];
+			qcom,display-topology = <1 0 1>;
+			qcom,default-topology-index = <0>;
+		};
+	};
+};
+&mot_dummy_vid_qhd {
+	qcom,platform-reset-gpio = <&pm6150l_gpios 9 0>;
+
+	qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
+	qcom,mdss-dsi-display-timings {
+		timing@0 {
+			qcom,mdss-dsi-panel-framerate = <60>;
+			qcom,mdss-dsi-panel-phy-timings = [00 20 08 08 24 23 08
+							08 05 02 04 00];
+			qcom,display-topology = <1 0 1>;
+			qcom,default-topology-index = <0>;
+		};
+	};
+};

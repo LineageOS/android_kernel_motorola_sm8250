@@ -1,0 +1,53 @@
+/* Copyright (c) 2019, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+&pm7250b_mmi {
+	qcom,enable-charging-limit;
+	qcom,upper-limit-capacity = <65>;
+	qcom,lower-limit-capacity = <60>;
+	qcom,mmi-temp-zones = <0 4200 1000 0>,
+			<10 4200 2500 1000>,
+			<15 0 2500 2500>,
+			<45 4200 4000 4000>,
+			<60 4200 3600 0>;
+	qcom,iterm-ma = <243>;
+	qcom,vfloat-comp-uv = <20000>;
+	qcom,pd-power-max = <20000>;
+};
+
+&pm7250b_charger {
+	status = "ok";
+	qcom,fcc-max-ua = <4000000>;
+	qcom,fv-max-uv = <4450000>;
+	qcom,usb-icl-ua = <3000000>;
+	qcom,thermal-mitigation = <4000000 3500000
+				3000000 2500000
+				2000000 1500000
+				1200000 900000
+				600000 300000>;
+};
+
+&pm7250b_qg {
+	status = "ok";
+	qcom,battery-data = <&mot_batterydata>;
+	qcom,qg-iterm-ma = <400>;
+	qcom,vbatt-cutoff-mv = <3200>;
+	qcom,vbatt-empty-mv = <3000>;
+	qcom,vbatt-empty-cold-mv = <3000>;
+};
+
+&mot_batterydata {
+	df-serialnum = "SB18C85232";
+	qcom,batt-id-range-pct = <15>;
+	#include "qg-batterydata-mk50-atl-5000mah.dtsi"
+	#include "qg-batterydata-mk50-scud-5000mah.dtsi"
+};
