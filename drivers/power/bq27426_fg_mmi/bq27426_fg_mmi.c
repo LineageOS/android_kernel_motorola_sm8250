@@ -2215,12 +2215,11 @@ static void fg_update_bqfs_workfunc(struct work_struct *work)
 static void fg_dump_registers(struct bq_fg_chip *bq)
 {
 	int i;
-	int ret;
 	u16 val;
 
 	for (i = 0; i < ARRAY_SIZE(fg_dump_regs); i++) {
 		msleep(5);
-		ret = fg_read_word(bq, fg_dump_regs[i], &val);
+		fg_read_word(bq, fg_dump_regs[i], &val);
 	}
 }
 
