@@ -460,8 +460,8 @@ int mmc_switch_status(struct mmc_card *card)
 	return __mmc_switch_status(card, true);
 }
 
-static int mmc_poll_for_busy(struct mmc_card *card, unsigned int timeout_ms,
-			bool send_status, bool retry_crc_err)
+int mmc_poll_for_busy(struct mmc_card *card, unsigned int timeout_ms,
+		      bool send_status, bool retry_crc_err)
 {
 	struct mmc_host *host = card->host;
 	int err;
@@ -514,6 +514,7 @@ static int mmc_poll_for_busy(struct mmc_card *card, unsigned int timeout_ms,
 
 	return 0;
 }
+EXPORT_SYMBOL_GPL(mmc_poll_for_busy);
 
 /**
  *	__mmc_switch - modify EXT_CSD register
@@ -984,9 +985,7 @@ int mmc_flush_cache(struct mmc_card *card)
 {
 	int err = 0;
 
-	if (mmc_card_mmc(card) &&
-			mmc_cache_enabled(card->host) &&
-			(!(card->quirks & MMC_QUIRK_CACHE_DISABLE))) {
+	if (mmc_cache_enabled(card->host)) {
 		err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
 				 EXT_CSD_FLUSH_CACHE, 1,
 				 MMC_CACHE_FLUSH_TIMEOUT_MS);

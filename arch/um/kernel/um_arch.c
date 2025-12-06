@@ -3,6 +3,7 @@
  * Licensed under the GPL
  */
 
+#include <linux/cpu.h>
 #include <linux/delay.h>
 #include <linux/init.h>
 #include <linux/mm.h>
@@ -14,7 +15,7 @@
 #include <linux/sched/task.h>
 #include <linux/kmsg_dump.h>
 
-#include <asm/pgtable.h>
+#include <linux/pgtable.h>
 #include <asm/processor.h>
 #include <asm/sections.h>
 #include <asm/setup.h>
@@ -352,7 +353,7 @@ void __init setup_arch(char **cmdline_p)
 	setup_hostinfo(host_info, sizeof host_info);
 }
 
-void __init check_bugs(void)
+void __init arch_cpu_finalize_init(void)
 {
 	arch_check_bugs();
 	os_check_bugs();

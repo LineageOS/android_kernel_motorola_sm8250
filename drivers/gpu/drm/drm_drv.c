@@ -31,6 +31,7 @@
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/mount.h>
+#include <linux/pseudo_fs.h>
 #include <linux/slab.h>
 #include <linux/srcu.h>
 
@@ -406,28 +407,15 @@ EXPORT_SYMBOL(drm_dev_unplug);
 static int drm_fs_cnt;
 static struct vfsmount *drm_fs_mnt;
 
-static const struct dentry_operations drm_fs_dops = {
-	.d_dname	= simple_dname,
-};
-
-static const struct super_operations drm_fs_sops = {
-	.statfs		= simple_statfs,
-};
-
-static struct dentry *drm_fs_mount(struct file_system_type *fs_type, int flags,
-				   const char *dev_name, void *data)
+static int drm_fs_init_fs_context(struct fs_context *fc)
 {
-	return mount_pseudo(fs_type,
-			    "drm:",
-			    &drm_fs_sops,
-			    &drm_fs_dops,
-			    0x010203ff);
+	return init_pseudo(fc, 0x010203ff) ? 0 : -ENOMEM;
 }
 
 static struct file_system_type drm_fs_type = {
 	.name		= "drm",
 	.owner		= THIS_MODULE,
-	.mount		= drm_fs_mount,
+	.init_fs_context = drm_fs_init_fs_context,
 	.kill_sb	= kill_anon_super,
 };
 
@@ -818,8 +806,11 @@ int drm_dev_register(struct drm_device *dev, unsigned long flags)
 			goto err_minors;
 	}
 
-	if (drm_core_check_feature(dev, DRIVER_MODESET))
-		drm_modeset_register_all(dev);
+	if (drm_core_check_feature(dev, DRIVER_MODESET)) {
+		ret = drm_modeset_register_all(dev);
+		if (ret)
+			goto err_unload;
+	}
 
 	ret = 0;
 
@@ -831,6 +822,9 @@ int drm_dev_register(struct drm_device *dev, unsigned long flags)
 
 	goto out_unlock;
 
+err_unload:
+	if (dev->driver->unload)
+		dev->driver->unload(dev);
 err_minors:
 	remove_compat_control_link(dev);
 	drm_minor_unregister(dev, DRM_MINOR_PRIMARY);

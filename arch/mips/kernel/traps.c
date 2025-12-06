@@ -56,7 +56,7 @@
 #include <asm/mipsmtregs.h>
 #include <asm/module.h>
 #include <asm/msa.h>
-#include <asm/pgtable.h>
+#include <linux/pgtable.h>
 #include <asm/ptrace.h>
 #include <asm/sections.h>
 #include <asm/siginfo.h>
@@ -412,7 +412,7 @@ void __noreturn die(const char *str, struct pt_regs *regs)
 	if (regs && kexec_should_crash(current))
 		crash_kexec(regs);
 
-	do_exit(sig);
+	make_task_dead(sig);
 }
 
 extern struct exception_table_entry __start___dbe_table[];
@@ -749,13 +749,13 @@ int process_fpemu_return(int sig, void __user *fault_addr, unsigned long fcr31)
 		return 1;
 
 	case SIGSEGV:
-		down_read(&current->mm->mmap_sem);
+		mmap_read_lock(current->mm);
 		vma = find_vma(current->mm, (unsigned long)fault_addr);
 		if (vma && (vma->vm_start <= (unsigned long)fault_addr))
 			si_code = SEGV_ACCERR;
 		else
 			si_code = SEGV_MAPERR;
-		up_read(&current->mm->mmap_sem);
+		mmap_read_unlock(current->mm);
 		force_sig_fault(SIGSEGV, si_code, fault_addr, current);
 		return 1;
 

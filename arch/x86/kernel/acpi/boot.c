@@ -41,7 +41,7 @@
 #include <asm/e820/api.h>
 #include <asm/irqdomain.h>
 #include <asm/pci_x86.h>
-#include <asm/pgtable.h>
+#include <linux/pgtable.h>
 #include <asm/io_apic.h>
 #include <asm/apic.h>
 #include <asm/io.h>
@@ -155,6 +155,9 @@ static int __init acpi_parse_madt(struct acpi_table_header *table)
 		printk(KERN_DEBUG PREFIX "Local APIC address 0x%08x\n",
 		       madt->address);
 	}
+
+	if (madt->flags & ACPI_MADT_PCAT_COMPAT)
+		legacy_pic_pcat_compat();
 
 	default_acpi_madt_oem_check(madt->header.oem_id,
 				    madt->header.oem_table_id);

@@ -1,9 +1,8 @@
+// SPDX-License-Identifier: GPL-2.0-only
 /*
  * MPC52xx SPI bus driver.
  *
  * Copyright (C) 2008 Secret Lab Technologies Ltd.
- *
- * This file is released under the GPLv2
  *
  * This is the driver for the MPC5200's dedicated SPI controller.
  *
@@ -520,6 +519,7 @@ static int mpc52xx_spi_remove(struct platform_device *op)
 	struct mpc52xx_spi *ms = spi_master_get_devdata(master);
 	int i;
 
+	cancel_work_sync(&ms->work);
 	free_irq(ms->irq0, ms);
 	free_irq(ms->irq1, ms);
 

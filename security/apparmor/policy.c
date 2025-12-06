@@ -231,6 +231,9 @@ void aa_free_profile(struct aa_profile *profile)
 	for (i = 0; i < profile->xattr_count; i++)
 		kzfree(profile->xattrs[i]);
 	kzfree(profile->xattrs);
+	for (i=0; i < profile->secmark_count; i++)
+		kzfree(profile->secmark[i].label);
+	kzfree(profile->secmark);
 	kzfree(profile->dirname);
 	aa_put_dfa(profile->xmatch);
 	aa_put_dfa(profile->policy.dfa);
@@ -1125,7 +1128,7 @@ ssize_t aa_remove_profiles(struct aa_ns *policy_ns, struct aa_label *subj,
 
 	if (!name) {
 		/* remove namespace - can only happen if fqname[0] == ':' */
-		mutex_lock_nested(&ns->parent->lock, ns->level);
+		mutex_lock_nested(&ns->parent->lock, ns->parent->level);
 		__aa_bump_ns_revision(ns);
 		__aa_remove_ns(ns);
 		mutex_unlock(&ns->parent->lock);

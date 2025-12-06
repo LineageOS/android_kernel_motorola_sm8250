@@ -312,7 +312,7 @@ int neigh_ifdown(struct neigh_table *tbl, struct net_device *dev)
 	write_lock_bh(&tbl->lock);
 	neigh_flush_dev(tbl, dev);
 	pneigh_ifdown_and_unlock(tbl, dev);
-	pneigh_queue_purge(&tbl->proxy_queue, dev_net(dev));
+	pneigh_queue_purge(&tbl->proxy_queue, dev ? dev_net(dev) : NULL);
 	if (skb_queue_empty_lockless(&tbl->proxy_queue))
 		del_timer_sync(&tbl->proxy_timer);
 	return 0;
@@ -475,37 +475,6 @@ struct neighbour *neigh_lookup(struct neigh_table *tbl, const void *pkey,
 	return n;
 }
 EXPORT_SYMBOL(neigh_lookup);
-
-struct neighbour *neigh_lookup_nodev(struct neigh_table *tbl, struct net *net,
-				     const void *pkey)
-{
-	struct neighbour *n;
-	unsigned int key_len = tbl->key_len;
-	u32 hash_val;
-	struct neigh_hash_table *nht;
-
-	NEIGH_CACHE_STAT_INC(tbl, lookups);
-
-	rcu_read_lock_bh();
-	nht = rcu_dereference_bh(tbl->nht);
-	hash_val = tbl->hash(pkey, NULL, nht->hash_rnd) >> (32 - nht->hash_shift);
-
-	for (n = rcu_dereference_bh(nht->hash_buckets[hash_val]);
-	     n != NULL;
-	     n = rcu_dereference_bh(n->next)) {
-		if (!memcmp(n->primary_key, pkey, key_len) &&
-		    net_eq(dev_net(n->dev), net)) {
-			if (!refcount_inc_not_zero(&n->refcnt))
-				n = NULL;
-			NEIGH_CACHE_STAT_INC(tbl, hits);
-			break;
-		}
-	}
-
-	rcu_read_unlock_bh();
-	return n;
-}
-EXPORT_SYMBOL(neigh_lookup_nodev);
 
 struct neighbour *__neigh_create(struct neigh_table *tbl, const void *pkey,
 				 struct net_device *dev, bool want_ref)
@@ -1661,9 +1630,6 @@ static struct neigh_table *neigh_find_table(int family)
 	case AF_INET6:
 		tbl = neigh_tables[NEIGH_ND_TABLE];
 		break;
-	case AF_DECnet:
-		tbl = neigh_tables[NEIGH_DN_TABLE];
-		break;
 	}
 
 	return tbl;
@@ -2009,6 +1975,7 @@ static const struct nla_policy nl_neightbl_policy[NDTA_MAX+1] = {
 static const struct nla_policy nl_ntbl_parm_policy[NDTPA_MAX+1] = {
 	[NDTPA_IFINDEX]			= { .type = NLA_U32 },
 	[NDTPA_QUEUE_LEN]		= { .type = NLA_U32 },
+	[NDTPA_QUEUE_LENBYTES]		= { .type = NLA_U32 },
 	[NDTPA_PROXY_QLEN]		= { .type = NLA_U32 },
 	[NDTPA_APP_PROBES]		= { .type = NLA_U32 },
 	[NDTPA_UCAST_PROBES]		= { .type = NLA_U32 },
@@ -2923,10 +2890,12 @@ static inline size_t neigh_nlmsg_size(void)
 static void __neigh_notify(struct neighbour *n, int type, int flags,
 			   u32 pid)
 {
-	struct net *net = dev_net(n->dev);
 	struct sk_buff *skb;
 	int err = -ENOBUFS;
+	struct net *net;
 
+	rcu_read_lock();
+	net = dev_net_rcu(n->dev);
 	skb = nlmsg_new(neigh_nlmsg_size(), GFP_ATOMIC);
 	if (skb == NULL)
 		goto errout;
@@ -2939,10 +2908,11 @@ static void __neigh_notify(struct neighbour *n, int type, int flags,
 		goto errout;
 	}
 	rtnl_notify(skb, net, 0, RTNLGRP_NEIGH, NULL, GFP_ATOMIC);
-	return;
+	goto out;
 errout:
-	if (err < 0)
-		rtnl_set_sk_err(net, RTNLGRP_NEIGH, err);
+	rtnl_set_sk_err(net, RTNLGRP_NEIGH, err);
+out:
+	rcu_read_unlock();
 }
 
 void neigh_app_ns(struct neighbour *n)
@@ -2957,7 +2927,7 @@ static int int_max = INT_MAX;
 static int unres_qlen_max = INT_MAX / SKB_TRUESIZE(ETH_FRAME_LEN);
 
 static int proc_unres_qlen(struct ctl_table *ctl, int write,
-			   void __user *buffer, size_t *lenp, loff_t *ppos)
+			   void *buffer, size_t *lenp, loff_t *ppos)
 {
 	int size, ret;
 	struct ctl_table tmp = *ctl;
@@ -3021,8 +2991,8 @@ static void neigh_proc_update(struct ctl_table *ctl, int write)
 }
 
 static int neigh_proc_dointvec_zero_intmax(struct ctl_table *ctl, int write,
-					   void __user *buffer,
-					   size_t *lenp, loff_t *ppos)
+					   void *buffer, size_t *lenp,
+					   loff_t *ppos)
 {
 	struct ctl_table tmp = *ctl;
 	int ret;
@@ -3035,8 +3005,8 @@ static int neigh_proc_dointvec_zero_intmax(struct ctl_table *ctl, int write,
 	return ret;
 }
 
-int neigh_proc_dointvec(struct ctl_table *ctl, int write,
-			void __user *buffer, size_t *lenp, loff_t *ppos)
+int neigh_proc_dointvec(struct ctl_table *ctl, int write, void *buffer,
+			size_t *lenp, loff_t *ppos)
 {
 	int ret = proc_dointvec(ctl, write, buffer, lenp, ppos);
 
@@ -3045,8 +3015,7 @@ int neigh_proc_dointvec(struct ctl_table *ctl, int write,
 }
 EXPORT_SYMBOL(neigh_proc_dointvec);
 
-int neigh_proc_dointvec_jiffies(struct ctl_table *ctl, int write,
-				void __user *buffer,
+int neigh_proc_dointvec_jiffies(struct ctl_table *ctl, int write, void *buffer,
 				size_t *lenp, loff_t *ppos)
 {
 	int ret = proc_dointvec_jiffies(ctl, write, buffer, lenp, ppos);
@@ -3057,8 +3026,8 @@ int neigh_proc_dointvec_jiffies(struct ctl_table *ctl, int write,
 EXPORT_SYMBOL(neigh_proc_dointvec_jiffies);
 
 static int neigh_proc_dointvec_userhz_jiffies(struct ctl_table *ctl, int write,
-					      void __user *buffer,
-					      size_t *lenp, loff_t *ppos)
+					      void *buffer, size_t *lenp,
+					      loff_t *ppos)
 {
 	int ret = proc_dointvec_userhz_jiffies(ctl, write, buffer, lenp, ppos);
 
@@ -3067,8 +3036,7 @@ static int neigh_proc_dointvec_userhz_jiffies(struct ctl_table *ctl, int write,
 }
 
 int neigh_proc_dointvec_ms_jiffies(struct ctl_table *ctl, int write,
-				   void __user *buffer,
-				   size_t *lenp, loff_t *ppos)
+				   void *buffer, size_t *lenp, loff_t *ppos)
 {
 	int ret = proc_dointvec_ms_jiffies(ctl, write, buffer, lenp, ppos);
 
@@ -3078,8 +3046,8 @@ int neigh_proc_dointvec_ms_jiffies(struct ctl_table *ctl, int write,
 EXPORT_SYMBOL(neigh_proc_dointvec_ms_jiffies);
 
 static int neigh_proc_dointvec_unres_qlen(struct ctl_table *ctl, int write,
-					  void __user *buffer,
-					  size_t *lenp, loff_t *ppos)
+					  void *buffer, size_t *lenp,
+					  loff_t *ppos)
 {
 	int ret = proc_unres_qlen(ctl, write, buffer, lenp, ppos);
 
@@ -3088,8 +3056,8 @@ static int neigh_proc_dointvec_unres_qlen(struct ctl_table *ctl, int write,
 }
 
 static int neigh_proc_base_reachable_time(struct ctl_table *ctl, int write,
-					  void __user *buffer,
-					  size_t *lenp, loff_t *ppos)
+					  void *buffer, size_t *lenp,
+					  loff_t *ppos)
 {
 	struct neigh_parms *p = ctl->extra2;
 	int ret;

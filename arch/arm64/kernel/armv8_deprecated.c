@@ -207,14 +207,16 @@ static void __init register_insn_emulation(struct insn_emulation_ops *ops)
 }
 
 static int emulation_proc_handler(struct ctl_table *table, int write,
-				  void __user *buffer, size_t *lenp,
+				  void *buffer, size_t *lenp,
 				  loff_t *ppos)
 {
 	int ret = 0;
-	struct insn_emulation *insn = container_of(table->data, struct insn_emulation, current_mode);
-	enum insn_emulation_mode prev_mode = insn->current_mode;
+	struct insn_emulation *insn;
+	enum insn_emulation_mode prev_mode;
 
 	mutex_lock(&insn_emulation_mutex);
+	insn = container_of(table->data, struct insn_emulation, current_mode);
+	prev_mode = insn->current_mode;
 	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
 
 	if (ret || !write || prev_mode == insn->current_mode)

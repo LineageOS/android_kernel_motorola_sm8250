@@ -345,7 +345,7 @@ static void oops_end(unsigned long flags, struct pt_regs *regs, int signr)
 	if (panic_on_oops)
 		panic("Fatal exception");
 	if (signr)
-		do_exit(signr);
+		make_task_dead(signr);
 }
 
 /*
@@ -393,7 +393,7 @@ int is_valid_bugaddr(unsigned long pc)
 	u32 insn = __opcode_to_mem_arm(BUG_INSTR_VALUE);
 #endif
 
-	if (probe_kernel_address((unsigned *)pc, bkpt))
+	if (get_kernel_nofault(bkpt, (unsigned *)pc))
 		return 0;
 
 	return bkpt == insn;

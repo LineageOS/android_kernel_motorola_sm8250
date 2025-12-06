@@ -166,6 +166,7 @@ struct sci_port {
 static struct sci_port sci_ports[SCI_NPORTS];
 static unsigned long sci_ports_in_use;
 static struct uart_driver sci_uart_driver;
+static bool sci_uart_earlycon;
 
 static inline struct sci_port *
 to_sci_port(struct uart_port *uart)
@@ -1248,12 +1249,27 @@ static int sci_dma_rx_find_active(struct sci_port *s)
 	return -1;
 }
 
+static void sci_dma_rx_chan_invalidate(struct sci_port *s)
+{
+	unsigned int i;
+
+	s->chan_rx = NULL;
+	for (i = 0; i < ARRAY_SIZE(s->cookie_rx); i++)
+		s->cookie_rx[i] = -EINVAL;
+	s->active_rx = 0;
+}
+
 static void sci_rx_dma_release(struct sci_port *s)
 {
 	struct dma_chan *chan = s->chan_rx_saved;
+	struct uart_port *port = &s->port;
+	unsigned long flags;
 
-	s->chan_rx_saved = s->chan_rx = NULL;
-	s->cookie_rx[0] = s->cookie_rx[1] = -EINVAL;
+	uart_port_lock_irqsave(port, &flags);
+	s->chan_rx_saved = NULL;
+	sci_dma_rx_chan_invalidate(s);
+	uart_port_unlock_irqrestore(port, flags);
+
 	dmaengine_terminate_sync(chan);
 	dma_free_coherent(chan->device->dev, s->buf_len_rx * 2, s->rx_buf[0],
 			  sg_dma_address(&s->sg_rx[0]));
@@ -1267,6 +1283,20 @@ static void start_hrtimer_us(struct hrtimer *hrt, unsigned long usec)
 	ktime_t t = ktime_set(sec, nsec);
 
 	hrtimer_start(hrt, t, HRTIMER_MODE_REL);
+}
+
+static void sci_dma_rx_reenable_irq(struct sci_port *s)
+{
+	struct uart_port *port = &s->port;
+	u16 scr;
+
+	/* Direct new serial port interrupts back to CPU */
+	scr = serial_port_in(port, SCSCR);
+	if (port->type == PORT_SCIFA || port->type == PORT_SCIFB) {
+		scr &= ~SCSCR_RDRQE;
+		enable_irq(s->irqs[SCIx_RXI_IRQ]);
+	}
+	serial_port_out(port, SCSCR, scr | SCSCR_RIE);
 }
 
 static void sci_dma_rx_complete(void *arg)
@@ -1318,8 +1348,9 @@ fail:
 	dev_warn(port->dev, "Failed submitting Rx DMA descriptor\n");
 	/* Switch to PIO */
 	spin_lock_irqsave(&port->lock, flags);
-	s->chan_rx = NULL;
-	sci_start_rx(port);
+	dmaengine_terminate_async(chan);
+	sci_dma_rx_chan_invalidate(s);
+	sci_dma_rx_reenable_irq(s);
 	spin_unlock_irqrestore(&port->lock, flags);
 }
 
@@ -1372,10 +1403,7 @@ fail:
 		spin_lock_irqsave(&port->lock, flags);
 	if (i)
 		dmaengine_terminate_async(chan);
-	for (i = 0; i < 2; i++)
-		s->cookie_rx[i] = -EINVAL;
-	s->active_rx = 0;
-	s->chan_rx = NULL;
+	sci_dma_rx_chan_invalidate(s);
 	sci_start_rx(port);
 	if (!port_lock_held)
 		spin_unlock_irqrestore(&port->lock, flags);
@@ -1459,7 +1487,6 @@ static enum hrtimer_restart rx_timer_fn(struct hrtimer *t)
 	unsigned long flags;
 	unsigned int read;
 	int active, count;
-	u16 scr;
 
 	dev_dbg(port->dev, "DMA Rx timed out\n");
 
@@ -1509,13 +1536,7 @@ static enum hrtimer_restart rx_timer_fn(struct hrtimer *t)
 	if (port->type == PORT_SCIFA || port->type == PORT_SCIFB)
 		sci_submit_rx(s, true);
 
-	/* Direct new serial port interrupts back to CPU */
-	scr = serial_port_in(port, SCSCR);
-	if (port->type == PORT_SCIFA || port->type == PORT_SCIFB) {
-		scr &= ~SCSCR_RDRQE;
-		enable_irq(s->irqs[SCIx_RXI_IRQ]);
-	}
-	serial_port_out(port, SCSCR, scr | SCSCR_RIE);
+	sci_dma_rx_reenable_irq(s);
 
 	spin_unlock_irqrestore(&port->lock, flags);
 
@@ -2908,6 +2929,13 @@ static int sci_init_single(struct platform_device *dev,
 	for (i = 0; i < ARRAY_SIZE(sci_port->irqs); ++i)
 		sci_port->irqs[i] = platform_get_irq(dev, i);
 
+	/*
+	 * The fourth interrupt on SCI port is transmit end interrupt, so
+	 * shuffle the interrupts.
+	 */
+	if (p->type == PORT_SCI)
+		swap(sci_port->irqs[SCIx_BRI_IRQ], sci_port->irqs[SCIx_TEI_IRQ]);
+
 	/* The SCI generates several interrupts. They can be muxed together or
 	 * connected to different interrupt lines. In the muxed case only one
 	 * interrupt resource is specified as there is only one interrupt ID.
@@ -2973,7 +3001,7 @@ static int sci_init_single(struct platform_device *dev,
 	port->flags		= UPF_FIXED_PORT | UPF_BOOT_AUTOCONF | p->flags;
 	port->fifosize		= sci_port->params->fifosize;
 
-	if (port->type == PORT_SCI) {
+	if (port->type == PORT_SCI && !dev->dev.of_node) {
 		if (sci_port->reg_size >= 0x20)
 			port->regshift = 2;
 		else
@@ -3322,6 +3350,7 @@ static int sci_probe_single(struct platform_device *dev,
 static int sci_probe(struct platform_device *dev)
 {
 	struct plat_sci_port *p;
+	struct resource *res;
 	struct sci_port *sp;
 	unsigned int dev_id;
 	int ret;
@@ -3349,6 +3378,26 @@ static int sci_probe(struct platform_device *dev)
 	}
 
 	sp = &sci_ports[dev_id];
+
+	/*
+	 * In case:
+	 * - the probed port alias is zero (as the one used by earlycon), and
+	 * - the earlycon is still active (e.g., "earlycon keep_bootcon" in
+	 *   bootargs)
+	 *
+	 * defer the probe of this serial. This is a debug scenario and the user
+	 * must be aware of it.
+	 *
+	 * Except when the probed port is the same as the earlycon port.
+	 */
+
+	res = platform_get_resource(dev, IORESOURCE_MEM, 0);
+	if (!res)
+		return -ENODEV;
+
+	if (sci_uart_earlycon && sp == &sci_ports[0] && sp->port.mapbase != res->start)
+		return dev_err_probe(&dev->dev, -EBUSY, "sci_port[0] is used by earlycon!\n");
+
 	platform_set_drvdata(dev, sp);
 
 	ret = sci_probe_single(dev, dev_id, p, sp);
@@ -3434,7 +3483,7 @@ early_platform_init_buffer("earlyprintk", &sci_driver,
 			   early_serial_buf, ARRAY_SIZE(early_serial_buf));
 #endif
 #ifdef CONFIG_SERIAL_SH_SCI_EARLYCON
-static struct plat_sci_port port_cfg __initdata;
+static struct plat_sci_port port_cfg;
 
 static int __init early_console_setup(struct earlycon_device *device,
 				      int type)
@@ -3449,6 +3498,7 @@ static int __init early_console_setup(struct earlycon_device *device,
 	port_cfg.type = type;
 	sci_ports[0].cfg = &port_cfg;
 	sci_ports[0].params = sci_probe_regmap(&port_cfg);
+	sci_uart_earlycon = true;
 	port_cfg.scscr = sci_serial_in(&sci_ports[0].port, SCSCR);
 	sci_serial_out(&sci_ports[0].port, SCSCR,
 		       SCSCR_RE | SCSCR_TE | port_cfg.scscr);

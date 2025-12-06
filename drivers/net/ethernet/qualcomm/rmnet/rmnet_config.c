@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /* Copyright (c) 2013-2020, The Linux Foundation. All rights reserved.
- * Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
  *
  * RMNET configuration engine
  *
@@ -46,6 +45,8 @@ enum {
 	IFLA_RMNET_UL_AGG_PARAMS,
 	__IFLA_RMNET_EXT_MAX,
 };
+
+#define IFLA_RMNET_EXT_MAX	(__IFLA_RMNET_EXT_MAX - 1)
 
 static const struct nla_policy rmnet_policy[__IFLA_RMNET_EXT_MAX] = {
 	[IFLA_RMNET_MUX_ID] = {
@@ -479,7 +480,7 @@ nla_put_failure:
 
 struct rtnl_link_ops rmnet_link_ops __read_mostly = {
 	.kind		= "rmnet",
-	.maxtype	= __IFLA_RMNET_EXT_MAX,
+	.maxtype	= IFLA_RMNET_EXT_MAX,
 	.priv_size	= sizeof(struct rmnet_priv),
 	.setup		= rmnet_vnd_setup,
 	.validate	= rmnet_rtnl_validate,
@@ -717,36 +718,6 @@ out:
 	return ret;
 }
 EXPORT_SYMBOL(rmnet_all_flows_enabled);
-
-void rmnet_prepare_ps_bearers(void *port, u8 *num_bearers, u8 *bearer_id)
-{
-	struct rmnet_endpoint *ep;
-	unsigned long bkt;
-	u8 current_num_bearers = 0;
-	u8 number_bearers_left = 0;
-	u8 num_bearers_in_out;
-
-	if (unlikely(!port || !num_bearers))
-		return;
-
-	number_bearers_left = *num_bearers;
-
-	rcu_read_lock();
-	hash_for_each_rcu(((struct rmnet_port *)port)->muxed_ep,
-			  bkt, ep, hlnode) {
-		num_bearers_in_out = number_bearers_left;
-		qmi_rmnet_prepare_ps_bearers(ep->egress_dev,
-					     &num_bearers_in_out,
-					     bearer_id ? bearer_id +
-						current_num_bearers : NULL);
-		current_num_bearers += num_bearers_in_out;
-		number_bearers_left -= num_bearers_in_out;
-	}
-	rcu_read_unlock();
-
-	*num_bearers = current_num_bearers;
-}
-EXPORT_SYMBOL(rmnet_prepare_ps_bearers);
 
 int rmnet_get_powersave_notif(void *port)
 {

@@ -907,11 +907,10 @@ static void touch_pmd(struct vm_area_struct *vma, unsigned long addr,
 }
 
 struct page *follow_devmap_pmd(struct vm_area_struct *vma, unsigned long addr,
-		pmd_t *pmd, int flags)
+		pmd_t *pmd, int flags, struct dev_pagemap **pgmap)
 {
 	unsigned long pfn = pmd_pfn(*pmd);
 	struct mm_struct *mm = vma->vm_mm;
-	struct dev_pagemap *pgmap;
 	struct page *page;
 
 	assert_spin_locked(pmd_lockptr(mm, pmd));
@@ -941,12 +940,11 @@ struct page *follow_devmap_pmd(struct vm_area_struct *vma, unsigned long addr,
 		return ERR_PTR(-EEXIST);
 
 	pfn += (addr & ~PMD_MASK) >> PAGE_SHIFT;
-	pgmap = get_dev_pagemap(pfn, NULL);
-	if (!pgmap)
+	*pgmap = get_dev_pagemap(pfn, *pgmap);
+	if (!*pgmap)
 		return ERR_PTR(-EFAULT);
 	page = pfn_to_page(pfn);
 	get_page(page);
-	put_dev_pagemap(pgmap);
 
 	return page;
 }
@@ -1055,11 +1053,10 @@ static void touch_pud(struct vm_area_struct *vma, unsigned long addr,
 }
 
 struct page *follow_devmap_pud(struct vm_area_struct *vma, unsigned long addr,
-		pud_t *pud, int flags)
+		pud_t *pud, int flags, struct dev_pagemap **pgmap)
 {
 	unsigned long pfn = pud_pfn(*pud);
 	struct mm_struct *mm = vma->vm_mm;
-	struct dev_pagemap *pgmap;
 	struct page *page;
 
 	assert_spin_locked(pud_lockptr(mm, pud));
@@ -1083,12 +1080,11 @@ struct page *follow_devmap_pud(struct vm_area_struct *vma, unsigned long addr,
 		return ERR_PTR(-EEXIST);
 
 	pfn += (addr & ~PUD_MASK) >> PAGE_SHIFT;
-	pgmap = get_dev_pagemap(pfn, NULL);
-	if (!pgmap)
+	*pgmap = get_dev_pagemap(pfn, *pgmap);
+	if (!*pgmap)
 		return ERR_PTR(-EFAULT);
 	page = pfn_to_page(pfn);
 	get_page(page);
-	put_dev_pagemap(pgmap);
 
 	return page;
 }
@@ -1184,8 +1180,7 @@ static vm_fault_t do_huge_pmd_wp_page_fallback(struct vm_fault *vmf,
 	int i;
 	vm_fault_t ret = 0;
 	struct page **pages;
-	unsigned long mmun_start;	/* For mmu_notifiers */
-	unsigned long mmun_end;		/* For mmu_notifiers */
+	struct mmu_notifier_range range;
 
 	pages = kmalloc_array(HPAGE_PMD_NR, sizeof(struct page *),
 			      GFP_KERNEL);
@@ -1223,9 +1218,10 @@ static vm_fault_t do_huge_pmd_wp_page_fallback(struct vm_fault *vmf,
 		cond_resched();
 	}
 
-	mmun_start = haddr;
-	mmun_end   = haddr + HPAGE_PMD_SIZE;
-	mmu_notifier_invalidate_range_start(vma->vm_mm, mmun_start, mmun_end);
+	mmu_notifier_range_init(&range, MMU_NOTIFY_UNMAP, 0, vma, vma->vm_mm,
+				haddr,
+				haddr + HPAGE_PMD_SIZE);
+	mmu_notifier_invalidate_range_start(&range);
 
 	vmf->ptl = pmd_lock(vma->vm_mm, vmf->pmd);
 	if (unlikely(!pmd_same(*vmf->pmd, orig_pmd)))
@@ -1247,8 +1243,8 @@ static vm_fault_t do_huge_pmd_wp_page_fallback(struct vm_fault *vmf,
 
 	for (i = 0; i < HPAGE_PMD_NR; i++, haddr += PAGE_SIZE) {
 		pte_t entry;
-		entry = mk_pte(pages[i], vmf->vma_page_prot);
-		entry = maybe_mkwrite(pte_mkdirty(entry), vmf->vma_flags);
+		entry = mk_pte(pages[i], vma->vm_page_prot);
+		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
 		memcg = (void *)page_private(pages[i]);
 		set_page_private(pages[i], 0);
 		page_add_new_anon_rmap(pages[i], vmf->vma, haddr, false);
@@ -1270,8 +1266,7 @@ static vm_fault_t do_huge_pmd_wp_page_fallback(struct vm_fault *vmf,
 	 * No need to double call mmu_notifier->invalidate_range() callback as
 	 * the above pmdp_huge_clear_flush_notify() did already call it.
 	 */
-	mmu_notifier_invalidate_range_only_end(vma->vm_mm, mmun_start,
-						mmun_end);
+	mmu_notifier_invalidate_range_only_end(&range);
 
 	ret |= VM_FAULT_WRITE;
 	put_page(page);
@@ -1281,7 +1276,7 @@ out:
 
 out_free_pages:
 	spin_unlock(vmf->ptl);
-	mmu_notifier_invalidate_range_end(vma->vm_mm, mmun_start, mmun_end);
+	mmu_notifier_invalidate_range_end(&range);
 	for (i = 0; i < HPAGE_PMD_NR; i++) {
 		memcg = (void *)page_private(pages[i]);
 		set_page_private(pages[i], 0);
@@ -1298,8 +1293,7 @@ vm_fault_t do_huge_pmd_wp_page(struct vm_fault *vmf, pmd_t orig_pmd)
 	struct page *page = NULL, *new_page;
 	struct mem_cgroup *memcg;
 	unsigned long haddr = vmf->address & HPAGE_PMD_MASK;
-	unsigned long mmun_start;	/* For mmu_notifiers */
-	unsigned long mmun_end;		/* For mmu_notifiers */
+	struct mmu_notifier_range range;
 	gfp_t huge_gfp;			/* for allocation and charge */
 	vm_fault_t ret = 0;
 
@@ -1388,9 +1382,10 @@ alloc:
 				    vma, HPAGE_PMD_NR);
 	__SetPageUptodate(new_page);
 
-	mmun_start = haddr;
-	mmun_end   = haddr + HPAGE_PMD_SIZE;
-	mmu_notifier_invalidate_range_start(vma->vm_mm, mmun_start, mmun_end);
+	mmu_notifier_range_init(&range, MMU_NOTIFY_UNMAP, 0, vma, vma->vm_mm,
+				haddr,
+				haddr + HPAGE_PMD_SIZE);
+	mmu_notifier_invalidate_range_start(&range);
 
 	spin_lock(vmf->ptl);
 	if (page)
@@ -1425,8 +1420,7 @@ out_mn:
 	 * No need to double call mmu_notifier->invalidate_range() callback as
 	 * the above pmdp_huge_clear_flush_notify() did already call it.
 	 */
-	mmu_notifier_invalidate_range_only_end(vma->vm_mm, mmun_start,
-					       mmun_end);
+	mmu_notifier_invalidate_range_only_end(&range);
 out:
 	return ret;
 out_unlock:
@@ -1669,7 +1663,7 @@ bool madvise_free_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
 	struct mm_struct *mm = tlb->mm;
 	bool ret = false;
 
-	tlb_remove_check_page_size_change(tlb, HPAGE_PMD_SIZE);
+	tlb_change_page_size(tlb, HPAGE_PMD_SIZE);
 
 	ptl = pmd_trans_huge_lock(pmd, vma);
 	if (!ptl)
@@ -1745,7 +1739,7 @@ int zap_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
 	pmd_t orig_pmd;
 	spinlock_t *ptl;
 
-	tlb_remove_check_page_size_change(tlb, HPAGE_PMD_SIZE);
+	tlb_change_page_size(tlb, HPAGE_PMD_SIZE);
 
 	ptl = __pmd_trans_huge_lock(pmd, vma);
 	if (!ptl)
@@ -2052,14 +2046,16 @@ void __split_huge_pud(struct vm_area_struct *vma, pud_t *pud,
 		unsigned long address)
 {
 	spinlock_t *ptl;
-	struct mm_struct *mm = vma->vm_mm;
-	unsigned long haddr = address & HPAGE_PUD_MASK;
+	struct mmu_notifier_range range;
 
-	mmu_notifier_invalidate_range_start(mm, haddr, haddr + HPAGE_PUD_SIZE);
-	ptl = pud_lock(mm, pud);
+	mmu_notifier_range_init(&range, MMU_NOTIFY_UNMAP, 0, vma, vma->vm_mm,
+				address & HPAGE_PUD_MASK,
+				(address & HPAGE_PUD_MASK) + HPAGE_PUD_SIZE);
+	mmu_notifier_invalidate_range_start(&range);
+	ptl = pud_lock(vma->vm_mm, pud);
 	if (unlikely(!pud_trans_huge(*pud) && !pud_devmap(*pud)))
 		goto out;
-	__split_huge_pud_locked(vma, pud, haddr);
+	__split_huge_pud_locked(vma, pud, range.start);
 
 out:
 	spin_unlock(ptl);
@@ -2067,8 +2063,7 @@ out:
 	 * No need to double call mmu_notifier->invalidate_range() callback as
 	 * the above pudp_huge_clear_flush_notify() did already call it.
 	 */
-	mmu_notifier_invalidate_range_only_end(mm, haddr, haddr +
-					       HPAGE_PUD_SIZE);
+	mmu_notifier_invalidate_range_only_end(&range);
 }
 #endif /* CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
 
@@ -2285,13 +2280,15 @@ void __split_huge_pmd(struct vm_area_struct *vma, pmd_t *pmd,
 		unsigned long address, bool freeze, struct page *page)
 {
 	spinlock_t *ptl;
-	struct mm_struct *mm = vma->vm_mm;
-	unsigned long haddr = address & HPAGE_PMD_MASK;
+	struct mmu_notifier_range range;
 	bool do_unlock_page = false;
 	pmd_t _pmd;
 
-	mmu_notifier_invalidate_range_start(mm, haddr, haddr + HPAGE_PMD_SIZE);
-	ptl = pmd_lock(mm, pmd);
+	mmu_notifier_range_init(&range, MMU_NOTIFY_UNMAP, 0, vma, vma->vm_mm,
+				address & HPAGE_PMD_MASK,
+				(address & HPAGE_PMD_MASK) + HPAGE_PMD_SIZE);
+	mmu_notifier_invalidate_range_start(&range);
+	ptl = pmd_lock(vma->vm_mm, pmd);
 
 	/*
 	 * If caller asks to setup a migration entries, we need a page to check
@@ -2300,7 +2297,7 @@ void __split_huge_pmd(struct vm_area_struct *vma, pmd_t *pmd,
 	VM_BUG_ON(freeze && !page);
 	if (page) {
 		VM_WARN_ON_ONCE(!PageLocked(page));
-		if (page != pmd_page(*pmd))
+		if (is_pmd_migration_entry(*pmd) || page != pmd_page(*pmd))
 			goto out;
 	}
 
@@ -2337,7 +2334,7 @@ repeat:
 			clear_page_mlock(page);
 	} else if (!(pmd_devmap(*pmd) || is_pmd_migration_entry(*pmd)))
 		goto out;
-	__split_huge_pmd_locked(vma, pmd, haddr, freeze);
+	__split_huge_pmd_locked(vma, pmd, range.start, freeze);
 out:
 	spin_unlock(ptl);
 	if (do_unlock_page)
@@ -2355,8 +2352,7 @@ out:
 	 *     any further changes to individual pte will notify. So no need
 	 *     to call mmu_notifier->invalidate_range()
 	 */
-	mmu_notifier_invalidate_range_only_end(mm, haddr, haddr +
-					       HPAGE_PMD_SIZE);
+	mmu_notifier_invalidate_range_only_end(&range);
 }
 
 void split_huge_pmd_address(struct vm_area_struct *vma, unsigned long address,

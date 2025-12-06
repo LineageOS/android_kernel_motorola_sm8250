@@ -129,13 +129,13 @@ struct xgbe_stats {
 
 #define XGMAC_MMC_STAT(_string, _var)				\
 	{ _string,						\
-	  FIELD_SIZEOF(struct xgbe_mmc_stats, _var),		\
+	  sizeof_field(struct xgbe_mmc_stats, _var),		\
 	  offsetof(struct xgbe_prv_data, mmc_stats._var),	\
 	}
 
 #define XGMAC_EXT_STAT(_string, _var)				\
 	{ _string,						\
-	  FIELD_SIZEOF(struct xgbe_ext_stats, _var),		\
+	  sizeof_field(struct xgbe_ext_stats, _var),		\
 	  offsetof(struct xgbe_prv_data, ext_stats._var),	\
 	}
 
@@ -314,10 +314,15 @@ static int xgbe_get_link_ksettings(struct net_device *netdev,
 
 	cmd->base.phy_address = pdata->phy.address;
 
-	cmd->base.autoneg = pdata->phy.autoneg;
-	cmd->base.speed = pdata->phy.speed;
-	cmd->base.duplex = pdata->phy.duplex;
+	if (netif_carrier_ok(netdev)) {
+		cmd->base.speed = pdata->phy.speed;
+		cmd->base.duplex = pdata->phy.duplex;
+	} else {
+		cmd->base.speed = SPEED_UNKNOWN;
+		cmd->base.duplex = DUPLEX_UNKNOWN;
+	}
 
+	cmd->base.autoneg = pdata->phy.autoneg;
 	cmd->base.port = PORT_NONE;
 
 	XGBE_LM_COPY(cmd, supported, lks, supported);

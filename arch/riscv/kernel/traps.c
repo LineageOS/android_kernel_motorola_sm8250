@@ -64,7 +64,7 @@ void die(struct pt_regs *regs, const char *str)
 	if (panic_on_oops)
 		panic("Fatal exception");
 	if (ret != NOTIFY_STOP)
-		do_exit(SIGSEGV);
+		make_task_dead(SIGSEGV);
 }
 
 void do_trap(struct pt_regs *regs, int signo, int code,
@@ -151,7 +151,7 @@ int is_valid_bugaddr(unsigned long pc)
 
 	if (pc < PAGE_OFFSET)
 		return 0;
-	if (probe_kernel_address((bug_insn_t *)pc, insn))
+	if (get_kernel_nofault(insn, (bug_insn_t *)pc))
 		return 0;
 	return (insn == __BUG_INSN);
 }

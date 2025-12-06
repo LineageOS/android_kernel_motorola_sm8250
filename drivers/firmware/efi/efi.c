@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-2.0-only
 /*
  * efi.c - EFI subsystem
  *
@@ -9,8 +10,6 @@
  * allowing the efivarfs to be mounted or the efivars module to be loaded.
  * The existance of /sys/firmware/efi may also be used by userspace to
  * determine that the system supports EFI.
- *
- * This file is released under the GPLv2.
  */
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
@@ -359,8 +358,8 @@ static int __init efisubsys_init(void)
 	efi_kobj = kobject_create_and_add("efi", firmware_kobj);
 	if (!efi_kobj) {
 		pr_err("efi: Firmware registration failed.\n");
-		destroy_workqueue(efi_rts_wq);
-		return -ENOMEM;
+		error = -ENOMEM;
+		goto err_destroy_wq;
 	}
 
 	error = generic_ops_register();
@@ -396,7 +395,10 @@ err_unregister:
 	generic_ops_unregister();
 err_put:
 	kobject_put(efi_kobj);
-	destroy_workqueue(efi_rts_wq);
+err_destroy_wq:
+	if (efi_rts_wq)
+		destroy_workqueue(efi_rts_wq);
+
 	return error;
 }
 
@@ -556,7 +558,7 @@ int __init efi_config_parse_tables(void *config_tables, int count, int sz,
 
 		seed = early_memremap(efi.rng_seed, sizeof(*seed));
 		if (seed != NULL) {
-			size = seed->size;
+			size = min(seed->size, EFI_RANDOM_SEED_SIZE);
 			early_memunmap(seed, sizeof(*seed));
 		} else {
 			pr_err("Could not map UEFI random seed!\n");
@@ -647,7 +649,7 @@ device_initcall(efi_load_efivars);
 		{ name },				   \
 		{ prop },				   \
 		offsetof(struct efi_fdt_params, field),    \
-		FIELD_SIZEOF(struct efi_fdt_params, field) \
+		sizeof_field(struct efi_fdt_params, field) \
 	}
 
 struct params {

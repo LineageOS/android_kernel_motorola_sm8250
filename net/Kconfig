@@ -92,12 +92,6 @@ source "net/netlabel/Kconfig"
 
 endif # if INET
 
-config ANDROID_PARANOID_NETWORK
-	bool "Only allow certain groups to create sockets"
-	default y
-	help
-		none
-
 config NETWORK_SECMARK
 	bool "Security Marking"
 	help
@@ -202,7 +196,6 @@ config BRIDGE_NETFILTER
 source "net/netfilter/Kconfig"
 source "net/ipv4/netfilter/Kconfig"
 source "net/ipv6/netfilter/Kconfig"
-source "net/decnet/netfilter/Kconfig"
 source "net/bridge/netfilter/Kconfig"
 
 endif
@@ -219,7 +212,6 @@ source "net/802/Kconfig"
 source "net/bridge/Kconfig"
 source "net/dsa/Kconfig"
 source "net/8021q/Kconfig"
-source "net/decnet/Kconfig"
 source "net/llc/Kconfig"
 source "drivers/net/appletalk/Kconfig"
 source "net/x25/Kconfig"
@@ -305,8 +297,11 @@ config BPF_JIT
 
 config BPF_STREAM_PARSER
 	bool "enable BPF STREAM_PARSER"
+	depends on INET
 	depends on BPF_SYSCALL
+	depends on CGROUP_BPF
 	select STREAM_PARSER
+	select NET_SOCK_MSG
 	---help---
 	 Enabling this allows a stream parser to be used with
 	 BPF_MAP_TYPE_SOCKMAP.
@@ -426,6 +421,14 @@ config GRO_CELLS
 
 config SOCK_VALIDATE_XMIT
 	bool
+
+config NET_SOCK_MSG
+	bool
+	default n
+	help
+	  The NET_SOCK_MSG provides a framework for plain sockets (e.g. TCP) or
+	  ULPs (upper layer modules, e.g. TLS) to process L7 application data
+	  with the help of BPF programs.
 
 config NET_DEVLINK
 	tristate "Network physical/parent device Netlink interface"

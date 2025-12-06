@@ -16,7 +16,6 @@
 
 #ifndef __WCSS_SEQ_HWIOREG_UMAC_H__
 #define __WCSS_SEQ_HWIOREG_UMAC_H__
-
 #include "seq_hwio.h"
 #include "wcss_seq_hwiobase.h"
 #ifdef SCALE_INCLUDES
@@ -767,9 +766,49 @@
 #define HWIO_UMAC_MXI_R0_MXI_NULL_REMAP_REG_REMAP_ADDR_BMSK                                                 0x1fffffff
 #define HWIO_UMAC_MXI_R0_MXI_NULL_REMAP_REG_REMAP_ADDR_SHFT                                                          0
 
-#define HWIO_UMAC_MXI_R0_MXI_S_PARE_REGISTER_ADDR(x)                                                        ((x) + 0xa0)
-#define HWIO_UMAC_MXI_R0_MXI_S_PARE_REGISTER_PHYS(x)                                                        ((x) + 0xa0)
-#define HWIO_UMAC_MXI_R0_MXI_S_PARE_REGISTER_OFFS                                                           (0xa0)
+#define HWIO_UMAC_MXI_R0_MXI_NULL_REMAP_CFG_REG_ADDR(x)                                                     ((x) + 0xa0)
+#define HWIO_UMAC_MXI_R0_MXI_NULL_REMAP_CFG_REG_PHYS(x)                                                     ((x) + 0xa0)
+#define HWIO_UMAC_MXI_R0_MXI_NULL_REMAP_CFG_REG_OFFS                                                        (0xa0)
+#define HWIO_UMAC_MXI_R0_MXI_NULL_REMAP_CFG_REG_RMSK                                                               0x7
+#define HWIO_UMAC_MXI_R0_MXI_NULL_REMAP_CFG_REG_POR                                                         0x00000000
+#define HWIO_UMAC_MXI_R0_MXI_NULL_REMAP_CFG_REG_POR_RMSK                                                    0xffffffff
+#define HWIO_UMAC_MXI_R0_MXI_NULL_REMAP_CFG_REG_ATTR                                                                     0x3
+#define HWIO_UMAC_MXI_R0_MXI_NULL_REMAP_CFG_REG_IN(x)            \
+                in_dword(HWIO_UMAC_MXI_R0_MXI_NULL_REMAP_CFG_REG_ADDR(x))
+#define HWIO_UMAC_MXI_R0_MXI_NULL_REMAP_CFG_REG_INM(x, m)            \
+                in_dword_masked(HWIO_UMAC_MXI_R0_MXI_NULL_REMAP_CFG_REG_ADDR(x), m)
+#define HWIO_UMAC_MXI_R0_MXI_NULL_REMAP_CFG_REG_OUT(x, v)            \
+                out_dword(HWIO_UMAC_MXI_R0_MXI_NULL_REMAP_CFG_REG_ADDR(x),v)
+#define HWIO_UMAC_MXI_R0_MXI_NULL_REMAP_CFG_REG_OUTM(x,m,v) \
+                out_dword_masked_ns(HWIO_UMAC_MXI_R0_MXI_NULL_REMAP_CFG_REG_ADDR(x),m,v,HWIO_UMAC_MXI_R0_MXI_NULL_REMAP_CFG_REG_IN(x))
+#define HWIO_UMAC_MXI_R0_MXI_NULL_REMAP_CFG_REG_SIZE_OF_NULL_REMAP_BMSK                                            0x7
+#define HWIO_UMAC_MXI_R0_MXI_NULL_REMAP_CFG_REG_SIZE_OF_NULL_REMAP_SHFT                                              0
+
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_SS_UP_TIMEOUT_INT_CTRL_ADDR(x)                                        ((x) + 0xa4)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_SS_UP_TIMEOUT_INT_CTRL_PHYS(x)                                        ((x) + 0xa4)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_SS_UP_TIMEOUT_INT_CTRL_OFFS                                           (0xa4)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_SS_UP_TIMEOUT_INT_CTRL_RMSK                                            0x1ffffff
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_SS_UP_TIMEOUT_INT_CTRL_POR                                            0x00001ffe
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_SS_UP_TIMEOUT_INT_CTRL_POR_RMSK                                       0xffffffff
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_SS_UP_TIMEOUT_INT_CTRL_ATTR                                                        0x3
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_SS_UP_TIMEOUT_INT_CTRL_IN(x)            \
+                in_dword(HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_SS_UP_TIMEOUT_INT_CTRL_ADDR(x))
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_SS_UP_TIMEOUT_INT_CTRL_INM(x, m)            \
+                in_dword_masked(HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_SS_UP_TIMEOUT_INT_CTRL_ADDR(x), m)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_SS_UP_TIMEOUT_INT_CTRL_OUT(x, v)            \
+                out_dword(HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_SS_UP_TIMEOUT_INT_CTRL_ADDR(x),v)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_SS_UP_TIMEOUT_INT_CTRL_OUTM(x,m,v) \
+                out_dword_masked_ns(HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_SS_UP_TIMEOUT_INT_CTRL_ADDR(x),m,v,HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_SS_UP_TIMEOUT_INT_CTRL_IN(x))
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_SS_UP_TIMEOUT_INT_CTRL_GXI_SS_UP_TIMEOUT_STATS_BMSK                    0x1ffe000
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_SS_UP_TIMEOUT_INT_CTRL_GXI_SS_UP_TIMEOUT_STATS_SHFT                           13
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_SS_UP_TIMEOUT_INT_CTRL_GXI_SS_UP_TIMEOUT_LIMIT_BMSK                       0x1ffe
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_SS_UP_TIMEOUT_INT_CTRL_GXI_SS_UP_TIMEOUT_LIMIT_SHFT                            1
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_SS_UP_TIMEOUT_INT_CTRL_GXI_SS_UP_TIMEOUT_INT_BMSK                            0x1
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_SS_UP_TIMEOUT_INT_CTRL_GXI_SS_UP_TIMEOUT_INT_SHFT                              0
+
+#define HWIO_UMAC_MXI_R0_MXI_S_PARE_REGISTER_ADDR(x)                                                        ((x) + 0xa8)
+#define HWIO_UMAC_MXI_R0_MXI_S_PARE_REGISTER_PHYS(x)                                                        ((x) + 0xa8)
+#define HWIO_UMAC_MXI_R0_MXI_S_PARE_REGISTER_OFFS                                                           (0xa8)
 #define HWIO_UMAC_MXI_R0_MXI_S_PARE_REGISTER_RMSK                                                           0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_S_PARE_REGISTER_POR                                                            0x00000000
 #define HWIO_UMAC_MXI_R0_MXI_S_PARE_REGISTER_POR_RMSK                                                       0xffffffff
@@ -785,9 +824,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_S_PARE_REGISTER_VAL_BMSK                                                       0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_S_PARE_REGISTER_VAL_SHFT                                                                0
 
-#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_BASE_LSB_ADDR(x)                                                 ((x) + 0xa4)
-#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_BASE_LSB_PHYS(x)                                                 ((x) + 0xa4)
-#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_BASE_LSB_OFFS                                                    (0xa4)
+#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_BASE_LSB_ADDR(x)                                                 ((x) + 0xac)
+#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_BASE_LSB_PHYS(x)                                                 ((x) + 0xac)
+#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_BASE_LSB_OFFS                                                    (0xac)
 #define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_BASE_LSB_RMSK                                                    0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_BASE_LSB_POR                                                     0x00000000
 #define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_BASE_LSB_POR_RMSK                                                0xffffffff
@@ -803,9 +842,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_BASE_LSB_BASE_ADDR_LSB_BMSK                                      0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_BASE_LSB_BASE_ADDR_LSB_SHFT                                               0
 
-#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_BASE_MSB_ADDR(x)                                                 ((x) + 0xa8)
-#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_BASE_MSB_PHYS(x)                                                 ((x) + 0xa8)
-#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_BASE_MSB_OFFS                                                    (0xa8)
+#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_BASE_MSB_ADDR(x)                                                 ((x) + 0xb0)
+#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_BASE_MSB_PHYS(x)                                                 ((x) + 0xb0)
+#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_BASE_MSB_OFFS                                                    (0xb0)
 #define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_BASE_MSB_RMSK                                                          0xff
 #define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_BASE_MSB_POR                                                     0x00000000
 #define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_BASE_MSB_POR_RMSK                                                0xffffffff
@@ -821,9 +860,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_BASE_MSB_BASE_ADDR_MSB_BMSK                                            0xff
 #define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_BASE_MSB_BASE_ADDR_MSB_SHFT                                               0
 
-#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_MASK_LSB_ADDR(x)                                                 ((x) + 0xac)
-#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_MASK_LSB_PHYS(x)                                                 ((x) + 0xac)
-#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_MASK_LSB_OFFS                                                    (0xac)
+#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_MASK_LSB_ADDR(x)                                                 ((x) + 0xb4)
+#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_MASK_LSB_PHYS(x)                                                 ((x) + 0xb4)
+#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_MASK_LSB_OFFS                                                    (0xb4)
 #define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_MASK_LSB_RMSK                                                    0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_MASK_LSB_POR                                                     0x00000000
 #define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_MASK_LSB_POR_RMSK                                                0xffffffff
@@ -839,9 +878,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_MASK_LSB_BASE_ADDR_MASK_LSB_BMSK                                 0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_MASK_LSB_BASE_ADDR_MASK_LSB_SHFT                                          0
 
-#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_MASK_MSB_ADDR(x)                                                 ((x) + 0xb0)
-#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_MASK_MSB_PHYS(x)                                                 ((x) + 0xb0)
-#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_MASK_MSB_OFFS                                                    (0xb0)
+#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_MASK_MSB_ADDR(x)                                                 ((x) + 0xb8)
+#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_MASK_MSB_PHYS(x)                                                 ((x) + 0xb8)
+#define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_MASK_MSB_OFFS                                                    (0xb8)
 #define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_MASK_MSB_RMSK                                                    0xc00000ff
 #define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_MASK_MSB_POR                                                     0x00000010
 #define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_MASK_MSB_POR_RMSK                                                0xffffffff
@@ -861,9 +900,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_MASK_MSB_BASE_ADDR_MASK_MSB_BMSK                                       0xff
 #define HWIO_UMAC_MXI_R0_MXI_INTERNAL_ADDR_MASK_MSB_BASE_ADDR_MASK_MSB_SHFT                                          0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_TESTBUS_LOWER_ADDR(x)                                                     ((x) + 0xb4)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_TESTBUS_LOWER_PHYS(x)                                                     ((x) + 0xb4)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_TESTBUS_LOWER_OFFS                                                        (0xb4)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_TESTBUS_LOWER_ADDR(x)                                                     ((x) + 0xbc)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_TESTBUS_LOWER_PHYS(x)                                                     ((x) + 0xbc)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_TESTBUS_LOWER_OFFS                                                        (0xbc)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_TESTBUS_LOWER_RMSK                                                        0xffffffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_TESTBUS_LOWER_POR                                                         0x00000000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_TESTBUS_LOWER_POR_RMSK                                                    0xffffffff
@@ -875,9 +914,9 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_TESTBUS_LOWER_VALUE_BMSK                                                  0xffffffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_TESTBUS_LOWER_VALUE_SHFT                                                           0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_TESTBUS_UPPER_ADDR(x)                                                     ((x) + 0xb8)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_TESTBUS_UPPER_PHYS(x)                                                     ((x) + 0xb8)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_TESTBUS_UPPER_OFFS                                                        (0xb8)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_TESTBUS_UPPER_ADDR(x)                                                     ((x) + 0xc0)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_TESTBUS_UPPER_PHYS(x)                                                     ((x) + 0xc0)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_TESTBUS_UPPER_OFFS                                                        (0xc0)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_TESTBUS_UPPER_RMSK                                                              0xff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_TESTBUS_UPPER_POR                                                         0x00000000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_TESTBUS_UPPER_POR_RMSK                                                    0xffffffff
@@ -889,9 +928,9 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_TESTBUS_UPPER_VALUE_BMSK                                                        0xff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_TESTBUS_UPPER_VALUE_SHFT                                                           0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_SM_STATES_IX_0_ADDR(x)                                                    ((x) + 0xbc)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_SM_STATES_IX_0_PHYS(x)                                                    ((x) + 0xbc)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_SM_STATES_IX_0_OFFS                                                       (0xbc)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_SM_STATES_IX_0_ADDR(x)                                                    ((x) + 0xc4)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_SM_STATES_IX_0_PHYS(x)                                                    ((x) + 0xc4)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_SM_STATES_IX_0_OFFS                                                       (0xc4)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_SM_STATES_IX_0_RMSK                                                            0xfff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_SM_STATES_IX_0_POR                                                        0x00000211
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_SM_STATES_IX_0_POR_RMSK                                                   0xffffffff
@@ -907,9 +946,9 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_SM_STATES_IX_0_SM_STATE_WR_DATA_BMSK                                             0xf
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_SM_STATES_IX_0_SM_STATE_WR_DATA_SHFT                                               0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_END_OF_TEST_CHECK_ADDR(x)                                                 ((x) + 0xc0)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_END_OF_TEST_CHECK_PHYS(x)                                                 ((x) + 0xc0)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_END_OF_TEST_CHECK_OFFS                                                    (0xc0)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_END_OF_TEST_CHECK_ADDR(x)                                                 ((x) + 0xc8)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_END_OF_TEST_CHECK_PHYS(x)                                                 ((x) + 0xc8)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_END_OF_TEST_CHECK_OFFS                                                    (0xc8)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_END_OF_TEST_CHECK_RMSK                                                           0x1
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_END_OF_TEST_CHECK_POR                                                     0x00000000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_END_OF_TEST_CHECK_POR_RMSK                                                0xffffffff
@@ -925,9 +964,9 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_END_OF_TEST_CHECK_END_OF_TEST_SELF_CHECK_BMSK                                    0x1
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_END_OF_TEST_CHECK_END_OF_TEST_SELF_CHECK_SHFT                                      0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_CLOCK_GATE_DISABLE_ADDR(x)                                                ((x) + 0xc4)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_CLOCK_GATE_DISABLE_PHYS(x)                                                ((x) + 0xc4)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_CLOCK_GATE_DISABLE_OFFS                                                   (0xc4)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_CLOCK_GATE_DISABLE_ADDR(x)                                                ((x) + 0xcc)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_CLOCK_GATE_DISABLE_PHYS(x)                                                ((x) + 0xcc)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_CLOCK_GATE_DISABLE_OFFS                                                   (0xcc)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_CLOCK_GATE_DISABLE_RMSK                                                   0x80003fff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_CLOCK_GATE_DISABLE_POR                                                    0x00000000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_CLOCK_GATE_DISABLE_POR_RMSK                                               0xffffffff
@@ -971,10 +1010,10 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_CLOCK_GATE_DISABLE_CORE_BMSK                                                     0x1
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_CLOCK_GATE_DISABLE_CORE_SHFT                                                       0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_ADDR(x)                                                      ((x) + 0xc8)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_PHYS(x)                                                      ((x) + 0xc8)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_OFFS                                                         (0xc8)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_RMSK                                                         0x81010101
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_ADDR(x)                                                      ((x) + 0xd0)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_PHYS(x)                                                      ((x) + 0xd0)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_OFFS                                                         (0xd0)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_RMSK                                                         0x81011f01
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_POR                                                          0x00000000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_POR_RMSK                                                     0xffffffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_ATTR                                                                      0x1
@@ -988,14 +1027,22 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_GXI_AXI_WR_ERR_INT_SHFT                                              24
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_GXI_AXI_RD_ERR_INT_BMSK                                         0x10000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_GXI_AXI_RD_ERR_INT_SHFT                                              16
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_GXI_RD_ZERO_ADDR_ERR_INT_BMSK                                    0x1000
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_GXI_RD_ZERO_ADDR_ERR_INT_SHFT                                        12
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_GXI_RD_ZERO_SIZE_ERR_INT_BMSK                                     0x800
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_GXI_RD_ZERO_SIZE_ERR_INT_SHFT                                        11
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_GXI_WR_ZERO_ADDR_ERR_INT_BMSK                                     0x400
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_GXI_WR_ZERO_ADDR_ERR_INT_SHFT                                        10
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_GXI_WR_ZERO_SIZE_ERR_INT_BMSK                                     0x200
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_GXI_WR_ZERO_SIZE_ERR_INT_SHFT                                         9
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_GXI_WDTIMEOUT_HW_ERR_INT_BMSK                                     0x100
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_GXI_WDTIMEOUT_HW_ERR_INT_SHFT                                         8
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_GXI_WDTIMEOUT_WARN_INT_BMSK                                         0x1
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_INTS_GXI_WDTIMEOUT_WARN_INT_SHFT                                           0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_STATS_ADDR(x)                                                     ((x) + 0xcc)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_STATS_PHYS(x)                                                     ((x) + 0xcc)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_STATS_OFFS                                                        (0xcc)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_STATS_ADDR(x)                                                     ((x) + 0xd4)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_STATS_PHYS(x)                                                     ((x) + 0xd4)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_STATS_OFFS                                                        (0xd4)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_STATS_RMSK                                                          0xffffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_STATS_POR                                                         0x00000000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_STATS_POR_RMSK                                                    0xffffffff
@@ -1011,9 +1058,29 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_STATS_AXI_RD_ERR_PORT_BMSK                                              0xff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ERR_STATS_AXI_RD_ERR_PORT_SHFT                                                 0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_EXT_ACC_ERR_INTS_ADDR(x)                                              ((x) + 0xd0)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_EXT_ACC_ERR_INTS_PHYS(x)                                              ((x) + 0xd0)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_EXT_ACC_ERR_INTS_OFFS                                                 (0xd0)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ZERO_ERR_STATS_ADDR(x)                                                ((x) + 0xd8)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ZERO_ERR_STATS_PHYS(x)                                                ((x) + 0xd8)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ZERO_ERR_STATS_OFFS                                                   (0xd8)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ZERO_ERR_STATS_RMSK                                                   0xffffffff
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ZERO_ERR_STATS_POR                                                    0x00000000
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ZERO_ERR_STATS_POR_RMSK                                               0xffffffff
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ZERO_ERR_STATS_ATTR                                                                0x1
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ZERO_ERR_STATS_IN(x)            \
+                in_dword(HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ZERO_ERR_STATS_ADDR(x))
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ZERO_ERR_STATS_INM(x, m)            \
+                in_dword_masked(HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ZERO_ERR_STATS_ADDR(x), m)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ZERO_ERR_STATS_RD_ZERO_ADDR_PORT_BMSK                                 0xff000000
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ZERO_ERR_STATS_RD_ZERO_ADDR_PORT_SHFT                                         24
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ZERO_ERR_STATS_RD_ZERO_SIZE_PORT_BMSK                                   0xff0000
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ZERO_ERR_STATS_RD_ZERO_SIZE_PORT_SHFT                                         16
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ZERO_ERR_STATS_WR_ZERO_ADDR_PORT_BMSK                                     0xff00
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ZERO_ERR_STATS_WR_ZERO_ADDR_PORT_SHFT                                          8
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ZERO_ERR_STATS_WR_ZERO_SIZE_PORT_BMSK                                       0xff
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_ZERO_ERR_STATS_WR_ZERO_SIZE_PORT_SHFT                                          0
+
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_EXT_ACC_ERR_INTS_ADDR(x)                                              ((x) + 0xdc)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_EXT_ACC_ERR_INTS_PHYS(x)                                              ((x) + 0xdc)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_EXT_ACC_ERR_INTS_OFFS                                                 (0xdc)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_EXT_ACC_ERR_INTS_RMSK                                                  0x1010101
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_EXT_ACC_ERR_INTS_POR                                                  0x00000000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_EXT_ACC_ERR_INTS_POR_RMSK                                             0xffffffff
@@ -1031,9 +1098,9 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_EXT_ACC_ERR_INTS_GXI_PCIE_L0_RD_TIMEOUT_BMSK                                 0x1
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_EXT_ACC_ERR_INTS_GXI_PCIE_L0_RD_TIMEOUT_SHFT                                   0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_EXT_ACC_ERR_STATS_ADDR(x)                                             ((x) + 0xd4)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_EXT_ACC_ERR_STATS_PHYS(x)                                             ((x) + 0xd4)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_EXT_ACC_ERR_STATS_OFFS                                                (0xd4)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_EXT_ACC_ERR_STATS_ADDR(x)                                             ((x) + 0xe0)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_EXT_ACC_ERR_STATS_PHYS(x)                                             ((x) + 0xe0)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_EXT_ACC_ERR_STATS_OFFS                                                (0xe0)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_EXT_ACC_ERR_STATS_RMSK                                                    0xffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_EXT_ACC_ERR_STATS_POR                                                 0x00000000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_EXT_ACC_ERR_STATS_POR_RMSK                                            0xffffffff
@@ -1047,9 +1114,9 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_EXT_ACC_ERR_STATS_AXI_RD_PCIE_L0_ACC_ERR_PORT_BMSK                          0xff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_EXT_ACC_ERR_STATS_AXI_RD_PCIE_L0_ACC_ERR_PORT_SHFT                             0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_DEFAULT_CONTROL_ADDR(x)                                               ((x) + 0xd8)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_DEFAULT_CONTROL_PHYS(x)                                               ((x) + 0xd8)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_DEFAULT_CONTROL_OFFS                                                  (0xd8)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_DEFAULT_CONTROL_ADDR(x)                                               ((x) + 0xe4)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_DEFAULT_CONTROL_PHYS(x)                                               ((x) + 0xe4)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_DEFAULT_CONTROL_OFFS                                                  (0xe4)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_DEFAULT_CONTROL_RMSK                                                  0xffff3f3f
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_DEFAULT_CONTROL_POR                                                   0x00000000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_DEFAULT_CONTROL_POR_RMSK                                              0xffffffff
@@ -1071,9 +1138,9 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_DEFAULT_CONTROL_GXI_DEFAULT_MAX_PENDING_WRITES_BMSK                         0x3f
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_DEFAULT_CONTROL_GXI_DEFAULT_MAX_PENDING_WRITES_SHFT                            0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_REDUCED_CONTROL_ADDR(x)                                               ((x) + 0xdc)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_REDUCED_CONTROL_PHYS(x)                                               ((x) + 0xdc)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_REDUCED_CONTROL_OFFS                                                  (0xdc)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_REDUCED_CONTROL_ADDR(x)                                               ((x) + 0xe8)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_REDUCED_CONTROL_PHYS(x)                                               ((x) + 0xe8)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_REDUCED_CONTROL_OFFS                                                  (0xe8)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_REDUCED_CONTROL_RMSK                                                  0xffff3f3f
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_REDUCED_CONTROL_POR                                                   0x00000000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_REDUCED_CONTROL_POR_RMSK                                              0xffffffff
@@ -1095,9 +1162,9 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_REDUCED_CONTROL_GXI_REDUCED_MAX_PENDING_WRITES_BMSK                         0x3f
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_REDUCED_CONTROL_GXI_REDUCED_MAX_PENDING_WRITES_SHFT                            0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_MISC_CONTROL_IX_0_ADDR(x)                                             ((x) + 0xe0)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_MISC_CONTROL_IX_0_PHYS(x)                                             ((x) + 0xe0)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_MISC_CONTROL_IX_0_OFFS                                                (0xe0)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_MISC_CONTROL_IX_0_ADDR(x)                                             ((x) + 0xec)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_MISC_CONTROL_IX_0_PHYS(x)                                             ((x) + 0xec)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_MISC_CONTROL_IX_0_OFFS                                                (0xec)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_MISC_CONTROL_IX_0_RMSK                                                0xefffffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_MISC_CONTROL_IX_0_POR                                                 0x46000000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_MISC_CONTROL_IX_0_POR_RMSK                                            0xffffffff
@@ -1121,9 +1188,9 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_MISC_CONTROL_IX_0_GXI_CLEAR_STATS_BMSK                                       0x1
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_MISC_CONTROL_IX_0_GXI_CLEAR_STATS_SHFT                                         0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_MISC_CONTROL_IX_1_ADDR(x)                                             ((x) + 0xe4)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_MISC_CONTROL_IX_1_PHYS(x)                                             ((x) + 0xe4)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_MISC_CONTROL_IX_1_OFFS                                                (0xe4)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_MISC_CONTROL_IX_1_ADDR(x)                                             ((x) + 0xf0)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_MISC_CONTROL_IX_1_PHYS(x)                                             ((x) + 0xf0)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_MISC_CONTROL_IX_1_OFFS                                                (0xf0)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_MISC_CONTROL_IX_1_RMSK                                                0xc00007ff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_MISC_CONTROL_IX_1_POR                                                 0x00000013
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_MISC_CONTROL_IX_1_POR_RMSK                                            0xffffffff
@@ -1155,9 +1222,9 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_MISC_CONTROL_IX_1_GXI_WRITE_BURST_SIZE_EXT_BMSK                              0x7
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_MISC_CONTROL_IX_1_GXI_WRITE_BURST_SIZE_EXT_SHFT                                0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_WARN_CONTROL_ADDR(x)                                             ((x) + 0xe8)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_WARN_CONTROL_PHYS(x)                                             ((x) + 0xe8)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_WARN_CONTROL_OFFS                                                (0xe8)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_WARN_CONTROL_ADDR(x)                                             ((x) + 0xf4)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_WARN_CONTROL_PHYS(x)                                             ((x) + 0xf4)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_WARN_CONTROL_OFFS                                                (0xf4)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_WARN_CONTROL_RMSK                                                0xffff0001
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_WARN_CONTROL_POR                                                 0x00ff0000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_WARN_CONTROL_POR_RMSK                                            0xffffffff
@@ -1175,9 +1242,9 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_WARN_CONTROL_GXI_WDOG_WARN_DISABLE_BMSK                                 0x1
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_WARN_CONTROL_GXI_WDOG_WARN_DISABLE_SHFT                                   0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_WARN_STATUS_ADDR(x)                                              ((x) + 0xec)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_WARN_STATUS_PHYS(x)                                              ((x) + 0xec)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_WARN_STATUS_OFFS                                                 (0xec)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_WARN_STATUS_ADDR(x)                                              ((x) + 0xf8)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_WARN_STATUS_PHYS(x)                                              ((x) + 0xf8)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_WARN_STATUS_OFFS                                                 (0xf8)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_WARN_STATUS_RMSK                                                     0xffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_WARN_STATUS_POR                                                  0x00000000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_WARN_STATUS_POR_RMSK                                             0xffffffff
@@ -1189,9 +1256,9 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_WARN_STATUS_GXI_WDOG_WARN_STATUS_BMSK                                0xffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_WARN_STATUS_GXI_WDOG_WARN_STATUS_SHFT                                     0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_IDLE_COUNTERS_ADDR(x)                                                 ((x) + 0xf0)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_IDLE_COUNTERS_PHYS(x)                                                 ((x) + 0xf0)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_IDLE_COUNTERS_OFFS                                                    (0xf0)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_IDLE_COUNTERS_ADDR(x)                                                 ((x) + 0xfc)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_IDLE_COUNTERS_PHYS(x)                                                 ((x) + 0xfc)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_IDLE_COUNTERS_OFFS                                                    (0xfc)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_IDLE_COUNTERS_RMSK                                                    0xffffffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_IDLE_COUNTERS_POR                                                     0x00000000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_IDLE_COUNTERS_POR_RMSK                                                0xffffffff
@@ -1205,9 +1272,9 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_IDLE_COUNTERS_GXI_WRITE_IDLE_CNT_BMSK                                     0xffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_IDLE_COUNTERS_GXI_WRITE_IDLE_CNT_SHFT                                          0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_HW_ERR_CONTROL_ADDR(x)                                           ((x) + 0xf4)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_HW_ERR_CONTROL_PHYS(x)                                           ((x) + 0xf4)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_HW_ERR_CONTROL_OFFS                                              (0xf4)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_HW_ERR_CONTROL_ADDR(x)                                           ((x) + 0x100)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_HW_ERR_CONTROL_PHYS(x)                                           ((x) + 0x100)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_HW_ERR_CONTROL_OFFS                                              (0x100)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_HW_ERR_CONTROL_RMSK                                              0xffff0001
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_HW_ERR_CONTROL_POR                                               0x00ff0000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_HW_ERR_CONTROL_POR_RMSK                                          0xffffffff
@@ -1225,9 +1292,9 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_HW_ERR_CONTROL_GXI_WDOG_HW_ERR_DISABLE_BMSK                             0x1
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_HW_ERR_CONTROL_GXI_WDOG_HW_ERR_DISABLE_SHFT                               0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_HW_ERR_STATUS_ADDR(x)                                            ((x) + 0xf8)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_HW_ERR_STATUS_PHYS(x)                                            ((x) + 0xf8)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_HW_ERR_STATUS_OFFS                                               (0xf8)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_HW_ERR_STATUS_ADDR(x)                                            ((x) + 0x104)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_HW_ERR_STATUS_PHYS(x)                                            ((x) + 0x104)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_HW_ERR_STATUS_OFFS                                               (0x104)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_HW_ERR_STATUS_RMSK                                                   0xffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_HW_ERR_STATUS_POR                                                0x00000000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_HW_ERR_STATUS_POR_RMSK                                           0xffffffff
@@ -1239,9 +1306,9 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_HW_ERR_STATUS_GXI_WDOG_HW_ERR_STATUS_BMSK                            0xffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WDOG_HW_ERR_STATUS_GXI_WDOG_HW_ERR_STATUS_SHFT                                 0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_LATENCY_CTRL_ADDR(x)                                               ((x) + 0xfc)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_LATENCY_CTRL_PHYS(x)                                               ((x) + 0xfc)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_LATENCY_CTRL_OFFS                                                  (0xfc)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_LATENCY_CTRL_ADDR(x)                                               ((x) + 0x108)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_LATENCY_CTRL_PHYS(x)                                               ((x) + 0x108)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_LATENCY_CTRL_OFFS                                                  (0x108)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_LATENCY_CTRL_RMSK                                                     0xfffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_LATENCY_CTRL_POR                                                   0x00000000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_LATENCY_CTRL_POR_RMSK                                              0xffffffff
@@ -1261,9 +1328,9 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_LATENCY_CTRL_AXI_LATENCY_MIN_BMSK                                      0xffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_LATENCY_CTRL_AXI_LATENCY_MIN_SHFT                                           0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_LATENCY_CTRL_ADDR(x)                                               ((x) + 0x100)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_LATENCY_CTRL_PHYS(x)                                               ((x) + 0x100)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_LATENCY_CTRL_OFFS                                                  (0x100)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_LATENCY_CTRL_ADDR(x)                                               ((x) + 0x10c)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_LATENCY_CTRL_PHYS(x)                                               ((x) + 0x10c)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_LATENCY_CTRL_OFFS                                                  (0x10c)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_LATENCY_CTRL_RMSK                                                     0xfffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_LATENCY_CTRL_POR                                                   0x00000000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_LATENCY_CTRL_POR_RMSK                                              0xffffffff
@@ -1283,9 +1350,9 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_LATENCY_CTRL_AXI_LATENCY_MIN_BMSK                                      0xffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_LATENCY_CTRL_AXI_LATENCY_MIN_SHFT                                           0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_ERR_STALL_DISABLE_IX_0_ADDR(x)                                     ((x) + 0x104)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_ERR_STALL_DISABLE_IX_0_PHYS(x)                                     ((x) + 0x104)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_ERR_STALL_DISABLE_IX_0_OFFS                                        (0x104)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_ERR_STALL_DISABLE_IX_0_ADDR(x)                                     ((x) + 0x110)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_ERR_STALL_DISABLE_IX_0_PHYS(x)                                     ((x) + 0x110)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_ERR_STALL_DISABLE_IX_0_OFFS                                        (0x110)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_ERR_STALL_DISABLE_IX_0_RMSK                                        0xffffffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_ERR_STALL_DISABLE_IX_0_POR                                         0x00000000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_ERR_STALL_DISABLE_IX_0_POR_RMSK                                    0xffffffff
@@ -1301,9 +1368,9 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_ERR_STALL_DISABLE_IX_0_VALUE_BMSK                                  0xffffffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_ERR_STALL_DISABLE_IX_0_VALUE_SHFT                                           0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_ERR_STALL_DISABLE_IX_0_ADDR(x)                                     ((x) + 0x108)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_ERR_STALL_DISABLE_IX_0_PHYS(x)                                     ((x) + 0x108)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_ERR_STALL_DISABLE_IX_0_OFFS                                        (0x108)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_ERR_STALL_DISABLE_IX_0_ADDR(x)                                     ((x) + 0x114)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_ERR_STALL_DISABLE_IX_0_PHYS(x)                                     ((x) + 0x114)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_ERR_STALL_DISABLE_IX_0_OFFS                                        (0x114)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_ERR_STALL_DISABLE_IX_0_RMSK                                        0xffffffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_ERR_STALL_DISABLE_IX_0_POR                                         0x00000000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_ERR_STALL_DISABLE_IX_0_POR_RMSK                                    0xffffffff
@@ -1319,9 +1386,9 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_ERR_STALL_DISABLE_IX_0_VALUE_BMSK                                  0xffffffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_ERR_STALL_DISABLE_IX_0_VALUE_SHFT                                           0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_ERR_STALL_DISABLE_IX_1_ADDR(x)                                     ((x) + 0x10c)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_ERR_STALL_DISABLE_IX_1_PHYS(x)                                     ((x) + 0x10c)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_ERR_STALL_DISABLE_IX_1_OFFS                                        (0x10c)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_ERR_STALL_DISABLE_IX_1_ADDR(x)                                     ((x) + 0x118)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_ERR_STALL_DISABLE_IX_1_PHYS(x)                                     ((x) + 0x118)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_ERR_STALL_DISABLE_IX_1_OFFS                                        (0x118)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_ERR_STALL_DISABLE_IX_1_RMSK                                        0xffffffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_ERR_STALL_DISABLE_IX_1_POR                                         0x00000000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_ERR_STALL_DISABLE_IX_1_POR_RMSK                                    0xffffffff
@@ -1337,9 +1404,9 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_ERR_STALL_DISABLE_IX_1_VALUE_BMSK                                  0xffffffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_WR_ERR_STALL_DISABLE_IX_1_VALUE_SHFT                                           0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_ERR_STALL_DISABLE_IX_1_ADDR(x)                                     ((x) + 0x110)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_ERR_STALL_DISABLE_IX_1_PHYS(x)                                     ((x) + 0x110)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_ERR_STALL_DISABLE_IX_1_OFFS                                        (0x110)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_ERR_STALL_DISABLE_IX_1_ADDR(x)                                     ((x) + 0x11c)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_ERR_STALL_DISABLE_IX_1_PHYS(x)                                     ((x) + 0x11c)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_ERR_STALL_DISABLE_IX_1_OFFS                                        (0x11c)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_ERR_STALL_DISABLE_IX_1_RMSK                                        0xffffffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_ERR_STALL_DISABLE_IX_1_POR                                         0x00000000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_ERR_STALL_DISABLE_IX_1_POR_RMSK                                    0xffffffff
@@ -1355,9 +1422,9 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_ERR_STALL_DISABLE_IX_1_VALUE_BMSK                                  0xffffffff
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_RD_ERR_STALL_DISABLE_IX_1_VALUE_SHFT                                           0
 
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_AXI_OUTSANDING_CTL_ADDR(x)                                            ((x) + 0x114)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_AXI_OUTSANDING_CTL_PHYS(x)                                            ((x) + 0x114)
-#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_AXI_OUTSANDING_CTL_OFFS                                               (0x114)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_AXI_OUTSANDING_CTL_ADDR(x)                                            ((x) + 0x120)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_AXI_OUTSANDING_CTL_PHYS(x)                                            ((x) + 0x120)
+#define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_AXI_OUTSANDING_CTL_OFFS                                               (0x120)
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_AXI_OUTSANDING_CTL_RMSK                                                   0xbfbf
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_AXI_OUTSANDING_CTL_POR                                                0x00000000
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_AXI_OUTSANDING_CTL_POR_RMSK                                           0xffffffff
@@ -1379,9 +1446,9 @@
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_AXI_OUTSANDING_CTL_RD_OVR_CNT_BMSK                                          0x3f
 #define HWIO_UMAC_MXI_R0_WMAC_GXI_GXI_AXI_OUTSANDING_CTL_RD_OVR_CNT_SHFT                                             0
 
-#define HWIO_UMAC_MXI_R0_MXI_CMD_FIFO_DBG_CTL_ADDR(x)                                                       ((x) + 0x118)
-#define HWIO_UMAC_MXI_R0_MXI_CMD_FIFO_DBG_CTL_PHYS(x)                                                       ((x) + 0x118)
-#define HWIO_UMAC_MXI_R0_MXI_CMD_FIFO_DBG_CTL_OFFS                                                          (0x118)
+#define HWIO_UMAC_MXI_R0_MXI_CMD_FIFO_DBG_CTL_ADDR(x)                                                       ((x) + 0x124)
+#define HWIO_UMAC_MXI_R0_MXI_CMD_FIFO_DBG_CTL_PHYS(x)                                                       ((x) + 0x124)
+#define HWIO_UMAC_MXI_R0_MXI_CMD_FIFO_DBG_CTL_OFFS                                                          (0x124)
 #define HWIO_UMAC_MXI_R0_MXI_CMD_FIFO_DBG_CTL_RMSK                                                              0xbfbf
 #define HWIO_UMAC_MXI_R0_MXI_CMD_FIFO_DBG_CTL_POR                                                           0x00000000
 #define HWIO_UMAC_MXI_R0_MXI_CMD_FIFO_DBG_CTL_POR_RMSK                                                      0xffffffff
@@ -1403,9 +1470,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_CMD_FIFO_DBG_CTL_RD_CMD_FIFO_ADDR_BMSK                                               0x3f
 #define HWIO_UMAC_MXI_R0_MXI_CMD_FIFO_DBG_CTL_RD_CMD_FIFO_ADDR_SHFT                                                  0
 
-#define HWIO_UMAC_MXI_R0_MXI_CMD_FIFO_DBG_STS_ADDR(x)                                                       ((x) + 0x11c)
-#define HWIO_UMAC_MXI_R0_MXI_CMD_FIFO_DBG_STS_PHYS(x)                                                       ((x) + 0x11c)
-#define HWIO_UMAC_MXI_R0_MXI_CMD_FIFO_DBG_STS_OFFS                                                          (0x11c)
+#define HWIO_UMAC_MXI_R0_MXI_CMD_FIFO_DBG_STS_ADDR(x)                                                       ((x) + 0x128)
+#define HWIO_UMAC_MXI_R0_MXI_CMD_FIFO_DBG_STS_PHYS(x)                                                       ((x) + 0x128)
+#define HWIO_UMAC_MXI_R0_MXI_CMD_FIFO_DBG_STS_OFFS                                                          (0x128)
 #define HWIO_UMAC_MXI_R0_MXI_CMD_FIFO_DBG_STS_RMSK                                                          0x3f3f3f3f
 #define HWIO_UMAC_MXI_R0_MXI_CMD_FIFO_DBG_STS_POR                                                           0x00000000
 #define HWIO_UMAC_MXI_R0_MXI_CMD_FIFO_DBG_STS_POR_RMSK                                                      0xffffffff
@@ -1423,9 +1490,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_CMD_FIFO_DBG_STS_RD_CMD_FIFO_RD_PTR_BMSK                                             0x3f
 #define HWIO_UMAC_MXI_R0_MXI_CMD_FIFO_DBG_STS_RD_CMD_FIFO_RD_PTR_SHFT                                                0
 
-#define HWIO_UMAC_MXI_R0_MXI_CMD_RD_CMD_DBG_LO_ADDR(x)                                                      ((x) + 0x120)
-#define HWIO_UMAC_MXI_R0_MXI_CMD_RD_CMD_DBG_LO_PHYS(x)                                                      ((x) + 0x120)
-#define HWIO_UMAC_MXI_R0_MXI_CMD_RD_CMD_DBG_LO_OFFS                                                         (0x120)
+#define HWIO_UMAC_MXI_R0_MXI_CMD_RD_CMD_DBG_LO_ADDR(x)                                                      ((x) + 0x12c)
+#define HWIO_UMAC_MXI_R0_MXI_CMD_RD_CMD_DBG_LO_PHYS(x)                                                      ((x) + 0x12c)
+#define HWIO_UMAC_MXI_R0_MXI_CMD_RD_CMD_DBG_LO_OFFS                                                         (0x12c)
 #define HWIO_UMAC_MXI_R0_MXI_CMD_RD_CMD_DBG_LO_RMSK                                                         0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_CMD_RD_CMD_DBG_LO_POR                                                          0x00000000
 #define HWIO_UMAC_MXI_R0_MXI_CMD_RD_CMD_DBG_LO_POR_RMSK                                                     0xffffffff
@@ -1437,9 +1504,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_CMD_RD_CMD_DBG_LO_VALUE_BMSK                                                   0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_CMD_RD_CMD_DBG_LO_VALUE_SHFT                                                            0
 
-#define HWIO_UMAC_MXI_R0_MXI_CMD_RD_CMD_DBG_HI_ADDR(x)                                                      ((x) + 0x124)
-#define HWIO_UMAC_MXI_R0_MXI_CMD_RD_CMD_DBG_HI_PHYS(x)                                                      ((x) + 0x124)
-#define HWIO_UMAC_MXI_R0_MXI_CMD_RD_CMD_DBG_HI_OFFS                                                         (0x124)
+#define HWIO_UMAC_MXI_R0_MXI_CMD_RD_CMD_DBG_HI_ADDR(x)                                                      ((x) + 0x130)
+#define HWIO_UMAC_MXI_R0_MXI_CMD_RD_CMD_DBG_HI_PHYS(x)                                                      ((x) + 0x130)
+#define HWIO_UMAC_MXI_R0_MXI_CMD_RD_CMD_DBG_HI_OFFS                                                         (0x130)
 #define HWIO_UMAC_MXI_R0_MXI_CMD_RD_CMD_DBG_HI_RMSK                                                         0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_CMD_RD_CMD_DBG_HI_POR                                                          0x00000000
 #define HWIO_UMAC_MXI_R0_MXI_CMD_RD_CMD_DBG_HI_POR_RMSK                                                     0xffffffff
@@ -1451,9 +1518,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_CMD_RD_CMD_DBG_HI_VALUE_BMSK                                                   0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_CMD_RD_CMD_DBG_HI_VALUE_SHFT                                                            0
 
-#define HWIO_UMAC_MXI_R0_MXI_CMD_WR_CMD_DBG_LO_ADDR(x)                                                      ((x) + 0x128)
-#define HWIO_UMAC_MXI_R0_MXI_CMD_WR_CMD_DBG_LO_PHYS(x)                                                      ((x) + 0x128)
-#define HWIO_UMAC_MXI_R0_MXI_CMD_WR_CMD_DBG_LO_OFFS                                                         (0x128)
+#define HWIO_UMAC_MXI_R0_MXI_CMD_WR_CMD_DBG_LO_ADDR(x)                                                      ((x) + 0x134)
+#define HWIO_UMAC_MXI_R0_MXI_CMD_WR_CMD_DBG_LO_PHYS(x)                                                      ((x) + 0x134)
+#define HWIO_UMAC_MXI_R0_MXI_CMD_WR_CMD_DBG_LO_OFFS                                                         (0x134)
 #define HWIO_UMAC_MXI_R0_MXI_CMD_WR_CMD_DBG_LO_RMSK                                                         0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_CMD_WR_CMD_DBG_LO_POR                                                          0x00000000
 #define HWIO_UMAC_MXI_R0_MXI_CMD_WR_CMD_DBG_LO_POR_RMSK                                                     0xffffffff
@@ -1465,9 +1532,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_CMD_WR_CMD_DBG_LO_VALUE_BMSK                                                   0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_CMD_WR_CMD_DBG_LO_VALUE_SHFT                                                            0
 
-#define HWIO_UMAC_MXI_R0_MXI_CMD_WR_CMD_DBG_HI_ADDR(x)                                                      ((x) + 0x12c)
-#define HWIO_UMAC_MXI_R0_MXI_CMD_WR_CMD_DBG_HI_PHYS(x)                                                      ((x) + 0x12c)
-#define HWIO_UMAC_MXI_R0_MXI_CMD_WR_CMD_DBG_HI_OFFS                                                         (0x12c)
+#define HWIO_UMAC_MXI_R0_MXI_CMD_WR_CMD_DBG_HI_ADDR(x)                                                      ((x) + 0x138)
+#define HWIO_UMAC_MXI_R0_MXI_CMD_WR_CMD_DBG_HI_PHYS(x)                                                      ((x) + 0x138)
+#define HWIO_UMAC_MXI_R0_MXI_CMD_WR_CMD_DBG_HI_OFFS                                                         (0x138)
 #define HWIO_UMAC_MXI_R0_MXI_CMD_WR_CMD_DBG_HI_RMSK                                                         0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_CMD_WR_CMD_DBG_HI_POR                                                          0x00000000
 #define HWIO_UMAC_MXI_R0_MXI_CMD_WR_CMD_DBG_HI_POR_RMSK                                                     0xffffffff
@@ -1479,9 +1546,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_CMD_WR_CMD_DBG_HI_VALUE_BMSK                                                   0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_CMD_WR_CMD_DBG_HI_VALUE_SHFT                                                            0
 
-#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_MASK_LSB_ADDR(x)                                                       ((x) + 0x130)
-#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_MASK_LSB_PHYS(x)                                                       ((x) + 0x130)
-#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_MASK_LSB_OFFS                                                          (0x130)
+#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_MASK_LSB_ADDR(x)                                                       ((x) + 0x13c)
+#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_MASK_LSB_PHYS(x)                                                       ((x) + 0x13c)
+#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_MASK_LSB_OFFS                                                          (0x13c)
 #define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_MASK_LSB_RMSK                                                          0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_MASK_LSB_POR                                                           0xff000000
 #define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_MASK_LSB_POR_RMSK                                                      0xffffffff
@@ -1497,9 +1564,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_MASK_LSB_REG_SS_ADDR_MASK_LSB_BMSK                                     0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_MASK_LSB_REG_SS_ADDR_MASK_LSB_SHFT                                              0
 
-#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_MASK_MSB_ADDR(x)                                                       ((x) + 0x134)
-#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_MASK_MSB_PHYS(x)                                                       ((x) + 0x134)
-#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_MASK_MSB_OFFS                                                          (0x134)
+#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_MASK_MSB_ADDR(x)                                                       ((x) + 0x140)
+#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_MASK_MSB_PHYS(x)                                                       ((x) + 0x140)
+#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_MASK_MSB_OFFS                                                          (0x140)
 #define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_MASK_MSB_RMSK                                                                0xff
 #define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_MASK_MSB_POR                                                           0x0000007f
 #define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_MASK_MSB_POR_RMSK                                                      0xffffffff
@@ -1515,9 +1582,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_MASK_MSB_REG_SS_ADDR_MASK_MSB_BMSK                                           0xff
 #define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_MASK_MSB_REG_SS_ADDR_MASK_MSB_SHFT                                              0
 
-#define HWIO_UMAC_MXI_R0_MXI_SS_INT_ADDR_MASK_LSB_ADDR(x)                                                   ((x) + 0x138)
-#define HWIO_UMAC_MXI_R0_MXI_SS_INT_ADDR_MASK_LSB_PHYS(x)                                                   ((x) + 0x138)
-#define HWIO_UMAC_MXI_R0_MXI_SS_INT_ADDR_MASK_LSB_OFFS                                                      (0x138)
+#define HWIO_UMAC_MXI_R0_MXI_SS_INT_ADDR_MASK_LSB_ADDR(x)                                                   ((x) + 0x144)
+#define HWIO_UMAC_MXI_R0_MXI_SS_INT_ADDR_MASK_LSB_PHYS(x)                                                   ((x) + 0x144)
+#define HWIO_UMAC_MXI_R0_MXI_SS_INT_ADDR_MASK_LSB_OFFS                                                      (0x144)
 #define HWIO_UMAC_MXI_R0_MXI_SS_INT_ADDR_MASK_LSB_RMSK                                                      0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_SS_INT_ADDR_MASK_LSB_POR                                                       0x00000000
 #define HWIO_UMAC_MXI_R0_MXI_SS_INT_ADDR_MASK_LSB_POR_RMSK                                                  0xffffffff
@@ -1533,9 +1600,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_SS_INT_ADDR_MASK_LSB_REG_INT_ADDR_MASK_LSB_BMSK                                0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_SS_INT_ADDR_MASK_LSB_REG_INT_ADDR_MASK_LSB_SHFT                                         0
 
-#define HWIO_UMAC_MXI_R0_MXI_SS_INT_ADDR_MASK_MSB_ADDR(x)                                                   ((x) + 0x13c)
-#define HWIO_UMAC_MXI_R0_MXI_SS_INT_ADDR_MASK_MSB_PHYS(x)                                                   ((x) + 0x13c)
-#define HWIO_UMAC_MXI_R0_MXI_SS_INT_ADDR_MASK_MSB_OFFS                                                      (0x13c)
+#define HWIO_UMAC_MXI_R0_MXI_SS_INT_ADDR_MASK_MSB_ADDR(x)                                                   ((x) + 0x148)
+#define HWIO_UMAC_MXI_R0_MXI_SS_INT_ADDR_MASK_MSB_PHYS(x)                                                   ((x) + 0x148)
+#define HWIO_UMAC_MXI_R0_MXI_SS_INT_ADDR_MASK_MSB_OFFS                                                      (0x148)
 #define HWIO_UMAC_MXI_R0_MXI_SS_INT_ADDR_MASK_MSB_RMSK                                                            0xff
 #define HWIO_UMAC_MXI_R0_MXI_SS_INT_ADDR_MASK_MSB_POR                                                       0x00000010
 #define HWIO_UMAC_MXI_R0_MXI_SS_INT_ADDR_MASK_MSB_POR_RMSK                                                  0xffffffff
@@ -1551,9 +1618,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_SS_INT_ADDR_MASK_MSB_REG_INT_ADDR_MASK_MSB_BMSK                                      0xff
 #define HWIO_UMAC_MXI_R0_MXI_SS_INT_ADDR_MASK_MSB_REG_INT_ADDR_MASK_MSB_SHFT                                         0
 
-#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_RANGE_LSB_ADDR(x)                                                      ((x) + 0x140)
-#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_RANGE_LSB_PHYS(x)                                                      ((x) + 0x140)
-#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_RANGE_LSB_OFFS                                                         (0x140)
+#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_RANGE_LSB_ADDR(x)                                                      ((x) + 0x14c)
+#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_RANGE_LSB_PHYS(x)                                                      ((x) + 0x14c)
+#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_RANGE_LSB_OFFS                                                         (0x14c)
 #define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_RANGE_LSB_RMSK                                                         0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_RANGE_LSB_POR                                                          0x00b80000
 #define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_RANGE_LSB_POR_RMSK                                                     0xffffffff
@@ -1569,9 +1636,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_RANGE_LSB_REG_SS_ADDR_RANGE_LSB_BMSK                                   0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_RANGE_LSB_REG_SS_ADDR_RANGE_LSB_SHFT                                            0
 
-#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_RANGE_MSB_ADDR(x)                                                      ((x) + 0x144)
-#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_RANGE_MSB_PHYS(x)                                                      ((x) + 0x144)
-#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_RANGE_MSB_OFFS                                                         (0x144)
+#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_RANGE_MSB_ADDR(x)                                                      ((x) + 0x150)
+#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_RANGE_MSB_PHYS(x)                                                      ((x) + 0x150)
+#define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_RANGE_MSB_OFFS                                                         (0x150)
 #define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_RANGE_MSB_RMSK                                                               0xff
 #define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_RANGE_MSB_POR                                                          0x00000010
 #define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_RANGE_MSB_POR_RMSK                                                     0xffffffff
@@ -1587,9 +1654,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_RANGE_MSB_REG_SS_ADDR_RANGE_MSB_BMSK                                         0xff
 #define HWIO_UMAC_MXI_R0_MXI_SS_ADDR_RANGE_MSB_REG_SS_ADDR_RANGE_MSB_SHFT                                            0
 
-#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_CFG_ADDR(x)                                                         ((x) + 0x148)
-#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_CFG_PHYS(x)                                                         ((x) + 0x148)
-#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_CFG_OFFS                                                            (0x148)
+#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_CFG_ADDR(x)                                                         ((x) + 0x154)
+#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_CFG_PHYS(x)                                                         ((x) + 0x154)
+#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_CFG_OFFS                                                            (0x154)
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_CFG_RMSK                                                            0xff13ff13
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_CFG_POR                                                             0x00000000
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_CFG_POR_RMSK                                                        0xffffffff
@@ -1619,9 +1686,9 @@
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_CFG_ADDR_INJ_ENABLE_BMSK                                                   0x1
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_CFG_ADDR_INJ_ENABLE_SHFT                                                     0
 
-#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_CFG_ADDR(x)                                                         ((x) + 0x14c)
-#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_CFG_PHYS(x)                                                         ((x) + 0x14c)
-#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_CFG_OFFS                                                            (0x14c)
+#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_CFG_ADDR(x)                                                         ((x) + 0x158)
+#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_CFG_PHYS(x)                                                         ((x) + 0x158)
+#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_CFG_OFFS                                                            (0x158)
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_CFG_RMSK                                                            0xff07ff07
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_CFG_POR                                                             0x00000000
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_CFG_POR_RMSK                                                        0xffffffff
@@ -1651,9 +1718,9 @@
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_CFG_ADDR_INJ_ENABLE_BMSK                                                   0x1
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_CFG_ADDR_INJ_ENABLE_SHFT                                                     0
 
-#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_ADDR_IX_0_ADDR(x)                                                   ((x) + 0x150)
-#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_ADDR_IX_0_PHYS(x)                                                   ((x) + 0x150)
-#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_ADDR_IX_0_OFFS                                                      (0x150)
+#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_ADDR_IX_0_ADDR(x)                                                   ((x) + 0x15c)
+#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_ADDR_IX_0_PHYS(x)                                                   ((x) + 0x15c)
+#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_ADDR_IX_0_OFFS                                                      (0x15c)
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_ADDR_IX_0_RMSK                                                      0xffffffff
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_ADDR_IX_0_POR                                                       0x00000000
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_ADDR_IX_0_POR_RMSK                                                  0xffffffff
@@ -1669,9 +1736,9 @@
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_ADDR_IX_0_ERR_ADDR_LSB_BMSK                                         0xffffffff
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_ADDR_IX_0_ERR_ADDR_LSB_SHFT                                                  0
 
-#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_ADDR_IX_1_ADDR(x)                                                   ((x) + 0x154)
-#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_ADDR_IX_1_PHYS(x)                                                   ((x) + 0x154)
-#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_ADDR_IX_1_OFFS                                                      (0x154)
+#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_ADDR_IX_1_ADDR(x)                                                   ((x) + 0x160)
+#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_ADDR_IX_1_PHYS(x)                                                   ((x) + 0x160)
+#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_ADDR_IX_1_OFFS                                                      (0x160)
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_ADDR_IX_1_RMSK                                                            0xff
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_ADDR_IX_1_POR                                                       0x00000000
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_ADDR_IX_1_POR_RMSK                                                  0xffffffff
@@ -1687,9 +1754,9 @@
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_ADDR_IX_1_ERR_ADDR_MSB_BMSK                                               0xff
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_ADDR_IX_1_ERR_ADDR_MSB_SHFT                                                  0
 
-#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_DATA_IX_0_ADDR(x)                                                   ((x) + 0x158)
-#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_DATA_IX_0_PHYS(x)                                                   ((x) + 0x158)
-#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_DATA_IX_0_OFFS                                                      (0x158)
+#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_DATA_IX_0_ADDR(x)                                                   ((x) + 0x164)
+#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_DATA_IX_0_PHYS(x)                                                   ((x) + 0x164)
+#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_DATA_IX_0_OFFS                                                      (0x164)
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_DATA_IX_0_RMSK                                                      0xffffffff
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_DATA_IX_0_POR                                                       0x00000000
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_DATA_IX_0_POR_RMSK                                                  0xffffffff
@@ -1705,9 +1772,9 @@
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_DATA_IX_0_ERR_DATA_LSB_BMSK                                         0xffffffff
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_DATA_IX_0_ERR_DATA_LSB_SHFT                                                  0
 
-#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_DATA_IX_1_ADDR(x)                                                   ((x) + 0x15c)
-#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_DATA_IX_1_PHYS(x)                                                   ((x) + 0x15c)
-#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_DATA_IX_1_OFFS                                                      (0x15c)
+#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_DATA_IX_1_ADDR(x)                                                   ((x) + 0x168)
+#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_DATA_IX_1_PHYS(x)                                                   ((x) + 0x168)
+#define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_DATA_IX_1_OFFS                                                      (0x168)
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_DATA_IX_1_RMSK                                                      0xffffffff
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_DATA_IX_1_POR                                                       0x00000000
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_DATA_IX_1_POR_RMSK                                                  0xffffffff
@@ -1723,9 +1790,9 @@
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_DATA_IX_1_ERR_DATA_MSB_BMSK                                         0xffffffff
 #define HWIO_UMAC_MXI_R0_GXI_WR_ERR_INJ_DATA_IX_1_ERR_DATA_MSB_SHFT                                                  0
 
-#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_ADDR_IX_0_ADDR(x)                                                   ((x) + 0x160)
-#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_ADDR_IX_0_PHYS(x)                                                   ((x) + 0x160)
-#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_ADDR_IX_0_OFFS                                                      (0x160)
+#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_ADDR_IX_0_ADDR(x)                                                   ((x) + 0x16c)
+#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_ADDR_IX_0_PHYS(x)                                                   ((x) + 0x16c)
+#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_ADDR_IX_0_OFFS                                                      (0x16c)
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_ADDR_IX_0_RMSK                                                      0xffffffff
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_ADDR_IX_0_POR                                                       0x00000000
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_ADDR_IX_0_POR_RMSK                                                  0xffffffff
@@ -1741,9 +1808,9 @@
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_ADDR_IX_0_ERR_ADDR_LSB_BMSK                                         0xffffffff
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_ADDR_IX_0_ERR_ADDR_LSB_SHFT                                                  0
 
-#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_ADDR_IX_1_ADDR(x)                                                   ((x) + 0x164)
-#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_ADDR_IX_1_PHYS(x)                                                   ((x) + 0x164)
-#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_ADDR_IX_1_OFFS                                                      (0x164)
+#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_ADDR_IX_1_ADDR(x)                                                   ((x) + 0x170)
+#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_ADDR_IX_1_PHYS(x)                                                   ((x) + 0x170)
+#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_ADDR_IX_1_OFFS                                                      (0x170)
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_ADDR_IX_1_RMSK                                                            0xff
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_ADDR_IX_1_POR                                                       0x00000000
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_ADDR_IX_1_POR_RMSK                                                  0xffffffff
@@ -1759,9 +1826,9 @@
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_ADDR_IX_1_ERR_ADDR_MSB_BMSK                                               0xff
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_ADDR_IX_1_ERR_ADDR_MSB_SHFT                                                  0
 
-#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_DATA_IX_0_ADDR(x)                                                   ((x) + 0x168)
-#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_DATA_IX_0_PHYS(x)                                                   ((x) + 0x168)
-#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_DATA_IX_0_OFFS                                                      (0x168)
+#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_DATA_IX_0_ADDR(x)                                                   ((x) + 0x174)
+#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_DATA_IX_0_PHYS(x)                                                   ((x) + 0x174)
+#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_DATA_IX_0_OFFS                                                      (0x174)
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_DATA_IX_0_RMSK                                                      0xffffffff
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_DATA_IX_0_POR                                                       0x00000000
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_DATA_IX_0_POR_RMSK                                                  0xffffffff
@@ -1777,9 +1844,9 @@
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_DATA_IX_0_ERR_DATA_LSB_BMSK                                         0xffffffff
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_DATA_IX_0_ERR_DATA_LSB_SHFT                                                  0
 
-#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_DATA_IX_1_ADDR(x)                                                   ((x) + 0x16c)
-#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_DATA_IX_1_PHYS(x)                                                   ((x) + 0x16c)
-#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_DATA_IX_1_OFFS                                                      (0x16c)
+#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_DATA_IX_1_ADDR(x)                                                   ((x) + 0x178)
+#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_DATA_IX_1_PHYS(x)                                                   ((x) + 0x178)
+#define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_DATA_IX_1_OFFS                                                      (0x178)
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_DATA_IX_1_RMSK                                                      0xffffffff
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_DATA_IX_1_POR                                                       0x00000000
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_DATA_IX_1_POR_RMSK                                                  0xffffffff
@@ -1795,9 +1862,9 @@
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_DATA_IX_1_ERR_DATA_MSB_BMSK                                         0xffffffff
 #define HWIO_UMAC_MXI_R0_GXI_RD_ERR_INJ_DATA_IX_1_ERR_DATA_MSB_SHFT                                                  0
 
-#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ADDR(x)                                              ((x) + 0x170)
-#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_PHYS(x)                                              ((x) + 0x170)
-#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_OFFS                                                 (0x170)
+#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ADDR(x)                                              ((x) + 0x17c)
+#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_PHYS(x)                                              ((x) + 0x17c)
+#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_OFFS                                                 (0x17c)
 #define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_RMSK                                                 0x3fffffff
 #define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_POR                                                  0x08000000
 #define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_POR_RMSK                                             0xffffffff
@@ -1823,9 +1890,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_BMSK                                        0x1ffffff
 #define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_SHFT                                                0
 
-#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_IX_0_ADDR(x)                               ((x) + 0x174)
-#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_IX_0_PHYS(x)                               ((x) + 0x174)
-#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_IX_0_OFFS                                  (0x174)
+#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_IX_0_ADDR(x)                               ((x) + 0x180)
+#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_IX_0_PHYS(x)                               ((x) + 0x180)
+#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_IX_0_OFFS                                  (0x180)
 #define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_IX_0_RMSK                                  0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_IX_0_POR                                   0x00000000
 #define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_IX_0_POR_RMSK                              0xffffffff
@@ -1841,9 +1908,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_IX_0_ID_BITMAP_BMSK                        0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_IX_0_ID_BITMAP_SHFT                                 0
 
-#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_IX_1_ADDR(x)                               ((x) + 0x178)
-#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_IX_1_PHYS(x)                               ((x) + 0x178)
-#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_IX_1_OFFS                                  (0x178)
+#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_IX_1_ADDR(x)                               ((x) + 0x184)
+#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_IX_1_PHYS(x)                               ((x) + 0x184)
+#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_IX_1_OFFS                                  (0x184)
 #define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_IX_1_RMSK                                  0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_IX_1_POR                                   0x00000000
 #define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_IX_1_POR_RMSK                              0xffffffff
@@ -1859,9 +1926,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_IX_1_ID_BITMAP_BMSK                        0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_CTRL_ID_BITMAP_IX_1_ID_BITMAP_SHFT                                 0
 
-#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_STATUS_ADDR(x)                                            ((x) + 0x17c)
-#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_STATUS_PHYS(x)                                            ((x) + 0x17c)
-#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_STATUS_OFFS                                               (0x17c)
+#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_STATUS_ADDR(x)                                            ((x) + 0x188)
+#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_STATUS_PHYS(x)                                            ((x) + 0x188)
+#define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_STATUS_OFFS                                               (0x188)
 #define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_STATUS_RMSK                                                      0xf
 #define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_STATUS_POR                                                0x00000000
 #define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_STATUS_POR_RMSK                                           0xffffffff
@@ -1877,9 +1944,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_STATUS_AXI_ERROR_STATUS_BMSK                                     0x1
 #define HWIO_UMAC_MXI_R0_MXI_TRANSACTION_TRACKING_STATUS_AXI_ERROR_STATUS_SHFT                                       0
 
-#define HWIO_UMAC_MXI_R0_MXI_TRACKING_DETAILS_ARRAY_L0_n_ADDR(base,n)                                       ((base) + 0X180 + (0x4*(n)))
-#define HWIO_UMAC_MXI_R0_MXI_TRACKING_DETAILS_ARRAY_L0_n_PHYS(base,n)                                       ((base) + 0X180 + (0x4*(n)))
-#define HWIO_UMAC_MXI_R0_MXI_TRACKING_DETAILS_ARRAY_L0_n_OFFS(n)                                            (0X180 + (0x4*(n)))
+#define HWIO_UMAC_MXI_R0_MXI_TRACKING_DETAILS_ARRAY_L0_n_ADDR(base,n)                                       ((base) + 0X18C + (0x4*(n)))
+#define HWIO_UMAC_MXI_R0_MXI_TRACKING_DETAILS_ARRAY_L0_n_PHYS(base,n)                                       ((base) + 0X18C + (0x4*(n)))
+#define HWIO_UMAC_MXI_R0_MXI_TRACKING_DETAILS_ARRAY_L0_n_OFFS(n)                                            (0X18C + (0x4*(n)))
 #define HWIO_UMAC_MXI_R0_MXI_TRACKING_DETAILS_ARRAY_L0_n_RMSK                                               0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_TRACKING_DETAILS_ARRAY_L0_n_MAXn                                                        3
 #define HWIO_UMAC_MXI_R0_MXI_TRACKING_DETAILS_ARRAY_L0_n_POR                                                0x00000000
@@ -1892,9 +1959,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_TRACKING_DETAILS_ARRAY_L0_n_ADDR_LOW_BMSK                                      0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_TRACKING_DETAILS_ARRAY_L0_n_ADDR_LOW_SHFT                                               0
 
-#define HWIO_UMAC_MXI_R0_MXI_TRACKING_DETAILS_ARRAY_HI_n_ADDR(base,n)                                       ((base) + 0X190 + (0x4*(n)))
-#define HWIO_UMAC_MXI_R0_MXI_TRACKING_DETAILS_ARRAY_HI_n_PHYS(base,n)                                       ((base) + 0X190 + (0x4*(n)))
-#define HWIO_UMAC_MXI_R0_MXI_TRACKING_DETAILS_ARRAY_HI_n_OFFS(n)                                            (0X190 + (0x4*(n)))
+#define HWIO_UMAC_MXI_R0_MXI_TRACKING_DETAILS_ARRAY_HI_n_ADDR(base,n)                                       ((base) + 0X19C + (0x4*(n)))
+#define HWIO_UMAC_MXI_R0_MXI_TRACKING_DETAILS_ARRAY_HI_n_PHYS(base,n)                                       ((base) + 0X19C + (0x4*(n)))
+#define HWIO_UMAC_MXI_R0_MXI_TRACKING_DETAILS_ARRAY_HI_n_OFFS(n)                                            (0X19C + (0x4*(n)))
 #define HWIO_UMAC_MXI_R0_MXI_TRACKING_DETAILS_ARRAY_HI_n_RMSK                                               0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_TRACKING_DETAILS_ARRAY_HI_n_MAXn                                                        3
 #define HWIO_UMAC_MXI_R0_MXI_TRACKING_DETAILS_ARRAY_HI_n_POR                                                0x00000000
@@ -1919,9 +1986,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_TRACKING_DETAILS_ARRAY_HI_n_ADDR_HIGH_BMSK                                           0xff
 #define HWIO_UMAC_MXI_R0_MXI_TRACKING_DETAILS_ARRAY_HI_n_ADDR_HIGH_SHFT                                              0
 
-#define HWIO_UMAC_MXI_R0_MXI_CURRENT_TIMESTAMP_IX_0_ADDR(x)                                                 ((x) + 0x1a0)
-#define HWIO_UMAC_MXI_R0_MXI_CURRENT_TIMESTAMP_IX_0_PHYS(x)                                                 ((x) + 0x1a0)
-#define HWIO_UMAC_MXI_R0_MXI_CURRENT_TIMESTAMP_IX_0_OFFS                                                    (0x1a0)
+#define HWIO_UMAC_MXI_R0_MXI_CURRENT_TIMESTAMP_IX_0_ADDR(x)                                                 ((x) + 0x1ac)
+#define HWIO_UMAC_MXI_R0_MXI_CURRENT_TIMESTAMP_IX_0_PHYS(x)                                                 ((x) + 0x1ac)
+#define HWIO_UMAC_MXI_R0_MXI_CURRENT_TIMESTAMP_IX_0_OFFS                                                    (0x1ac)
 #define HWIO_UMAC_MXI_R0_MXI_CURRENT_TIMESTAMP_IX_0_RMSK                                                    0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_CURRENT_TIMESTAMP_IX_0_POR                                                     0x00000000
 #define HWIO_UMAC_MXI_R0_MXI_CURRENT_TIMESTAMP_IX_0_POR_RMSK                                                0xffffffff
@@ -1933,9 +2000,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_CURRENT_TIMESTAMP_IX_0_TIMESTAMP_BMSK                                          0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_CURRENT_TIMESTAMP_IX_0_TIMESTAMP_SHFT                                                   0
 
-#define HWIO_UMAC_MXI_R0_MXI_CURRENT_TIMESTAMP_IX_1_ADDR(x)                                                 ((x) + 0x1a4)
-#define HWIO_UMAC_MXI_R0_MXI_CURRENT_TIMESTAMP_IX_1_PHYS(x)                                                 ((x) + 0x1a4)
-#define HWIO_UMAC_MXI_R0_MXI_CURRENT_TIMESTAMP_IX_1_OFFS                                                    (0x1a4)
+#define HWIO_UMAC_MXI_R0_MXI_CURRENT_TIMESTAMP_IX_1_ADDR(x)                                                 ((x) + 0x1b0)
+#define HWIO_UMAC_MXI_R0_MXI_CURRENT_TIMESTAMP_IX_1_PHYS(x)                                                 ((x) + 0x1b0)
+#define HWIO_UMAC_MXI_R0_MXI_CURRENT_TIMESTAMP_IX_1_OFFS                                                    (0x1b0)
 #define HWIO_UMAC_MXI_R0_MXI_CURRENT_TIMESTAMP_IX_1_RMSK                                                    0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_CURRENT_TIMESTAMP_IX_1_POR                                                     0x00000000
 #define HWIO_UMAC_MXI_R0_MXI_CURRENT_TIMESTAMP_IX_1_POR_RMSK                                                0xffffffff
@@ -1947,9 +2014,9 @@
 #define HWIO_UMAC_MXI_R0_MXI_CURRENT_TIMESTAMP_IX_1_TIMESTAMP_BMSK                                          0xffffffff
 #define HWIO_UMAC_MXI_R0_MXI_CURRENT_TIMESTAMP_IX_1_TIMESTAMP_SHFT                                                   0
 
-#define HWIO_UMAC_MXI_R0_GXI_SECURITY_BIT_OVERRIDE_ADDR(x)                                                  ((x) + 0x1a8)
-#define HWIO_UMAC_MXI_R0_GXI_SECURITY_BIT_OVERRIDE_PHYS(x)                                                  ((x) + 0x1a8)
-#define HWIO_UMAC_MXI_R0_GXI_SECURITY_BIT_OVERRIDE_OFFS                                                     (0x1a8)
+#define HWIO_UMAC_MXI_R0_GXI_SECURITY_BIT_OVERRIDE_ADDR(x)                                                  ((x) + 0x1b4)
+#define HWIO_UMAC_MXI_R0_GXI_SECURITY_BIT_OVERRIDE_PHYS(x)                                                  ((x) + 0x1b4)
+#define HWIO_UMAC_MXI_R0_GXI_SECURITY_BIT_OVERRIDE_OFFS                                                     (0x1b4)
 #define HWIO_UMAC_MXI_R0_GXI_SECURITY_BIT_OVERRIDE_RMSK                                                          0xfff
 #define HWIO_UMAC_MXI_R0_GXI_SECURITY_BIT_OVERRIDE_POR                                                      0x00000049
 #define HWIO_UMAC_MXI_R0_GXI_SECURITY_BIT_OVERRIDE_POR_RMSK                                                 0xffffffff
@@ -1979,9 +2046,9 @@
 #define HWIO_UMAC_MXI_R0_GXI_SECURITY_BIT_OVERRIDE_TCL_SEC_BIT_OVERRIDE_EN_BMSK                                    0x1
 #define HWIO_UMAC_MXI_R0_GXI_SECURITY_BIT_OVERRIDE_TCL_SEC_BIT_OVERRIDE_EN_SHFT                                      0
 
-#define HWIO_UMAC_MXI_R0_GXI_FLUSH_ERR_STATS_ADDR(x)                                                        ((x) + 0x1ac)
-#define HWIO_UMAC_MXI_R0_GXI_FLUSH_ERR_STATS_PHYS(x)                                                        ((x) + 0x1ac)
-#define HWIO_UMAC_MXI_R0_GXI_FLUSH_ERR_STATS_OFFS                                                           (0x1ac)
+#define HWIO_UMAC_MXI_R0_GXI_FLUSH_ERR_STATS_ADDR(x)                                                        ((x) + 0x1b8)
+#define HWIO_UMAC_MXI_R0_GXI_FLUSH_ERR_STATS_PHYS(x)                                                        ((x) + 0x1b8)
+#define HWIO_UMAC_MXI_R0_GXI_FLUSH_ERR_STATS_OFFS                                                           (0x1b8)
 #define HWIO_UMAC_MXI_R0_GXI_FLUSH_ERR_STATS_RMSK                                                            0x1ff01ff
 #define HWIO_UMAC_MXI_R0_GXI_FLUSH_ERR_STATS_POR                                                            0x00000000
 #define HWIO_UMAC_MXI_R0_GXI_FLUSH_ERR_STATS_POR_RMSK                                                       0xffffffff
@@ -15747,7 +15814,7 @@
 #define HWIO_REO_R0_DESTINATION_RING_CTRL_TID_BASED_IX_1_PHYS(x)                                                       ((x) + 0x18)
 #define HWIO_REO_R0_DESTINATION_RING_CTRL_TID_BASED_IX_1_OFFS                                                          (0x18)
 #define HWIO_REO_R0_DESTINATION_RING_CTRL_TID_BASED_IX_1_RMSK                                                          0xffffffff
-#define HWIO_REO_R0_DESTINATION_RING_CTRL_TID_BASED_IX_1_POR                                                           0x6666ba98
+#define HWIO_REO_R0_DESTINATION_RING_CTRL_TID_BASED_IX_1_POR                                                           0x66666668
 #define HWIO_REO_R0_DESTINATION_RING_CTRL_TID_BASED_IX_1_POR_RMSK                                                      0xffffffff
 #define HWIO_REO_R0_DESTINATION_RING_CTRL_TID_BASED_IX_1_ATTR                                                                       0x3
 #define HWIO_REO_R0_DESTINATION_RING_CTRL_TID_BASED_IX_1_IN(x)            \
@@ -35084,7 +35151,7 @@
 #define HWIO_UMCMN_R0_ISR_S16_ADDR(x)                                                           ((x) + 0x74)
 #define HWIO_UMCMN_R0_ISR_S16_PHYS(x)                                                           ((x) + 0x74)
 #define HWIO_UMCMN_R0_ISR_S16_OFFS                                                              (0x74)
-#define HWIO_UMCMN_R0_ISR_S16_RMSK                                                                    0x1f
+#define HWIO_UMCMN_R0_ISR_S16_RMSK                                                                   0x1ff
 #define HWIO_UMCMN_R0_ISR_S16_POR                                                               0x00000000
 #define HWIO_UMCMN_R0_ISR_S16_POR_RMSK                                                          0xffffffff
 #define HWIO_UMCMN_R0_ISR_S16_ATTR                                                                           0x0
@@ -35096,6 +35163,14 @@
                 out_dword(HWIO_UMCMN_R0_ISR_S16_ADDR(x),v)
 #define HWIO_UMCMN_R0_ISR_S16_OUTM(x,m,v) \
                 out_dword_masked_ns(HWIO_UMCMN_R0_ISR_S16_ADDR(x),m,v,HWIO_UMCMN_R0_ISR_S16_IN(x))
+#define HWIO_UMCMN_R0_ISR_S16_MXI_RD_ZERO_ADDR_ERR_BMSK                                              0x100
+#define HWIO_UMCMN_R0_ISR_S16_MXI_RD_ZERO_ADDR_ERR_SHFT                                                  8
+#define HWIO_UMCMN_R0_ISR_S16_MXI_RD_ZERO_SIZE_ERR_BMSK                                               0x80
+#define HWIO_UMCMN_R0_ISR_S16_MXI_RD_ZERO_SIZE_ERR_SHFT                                                  7
+#define HWIO_UMCMN_R0_ISR_S16_MXI_WR_ZERO_ADDR_ERR_BMSK                                               0x40
+#define HWIO_UMCMN_R0_ISR_S16_MXI_WR_ZERO_ADDR_ERR_SHFT                                                  6
+#define HWIO_UMCMN_R0_ISR_S16_MXI_WR_ZERO_SIZE_ERR_BMSK                                               0x20
+#define HWIO_UMCMN_R0_ISR_S16_MXI_WR_ZERO_SIZE_ERR_SHFT                                                  5
 #define HWIO_UMCMN_R0_ISR_S16_MXI_GXI_WDTO_ERR_BMSK                                                   0x10
 #define HWIO_UMCMN_R0_ISR_S16_MXI_GXI_WDTO_ERR_SHFT                                                      4
 #define HWIO_UMCMN_R0_ISR_S16_MXI_GXI_AXI_WR_ERR_BMSK                                                  0x8
@@ -36054,7 +36129,7 @@
 #define HWIO_UMCMN_R0_IMR_S16_ADDR(x)                                                           ((x) + 0xbc)
 #define HWIO_UMCMN_R0_IMR_S16_PHYS(x)                                                           ((x) + 0xbc)
 #define HWIO_UMCMN_R0_IMR_S16_OFFS                                                              (0xbc)
-#define HWIO_UMCMN_R0_IMR_S16_RMSK                                                                    0x1f
+#define HWIO_UMCMN_R0_IMR_S16_RMSK                                                                   0x1ff
 #define HWIO_UMCMN_R0_IMR_S16_POR                                                               0x00000000
 #define HWIO_UMCMN_R0_IMR_S16_POR_RMSK                                                          0xffffffff
 #define HWIO_UMCMN_R0_IMR_S16_ATTR                                                                           0x3
@@ -36066,6 +36141,14 @@
                 out_dword(HWIO_UMCMN_R0_IMR_S16_ADDR(x),v)
 #define HWIO_UMCMN_R0_IMR_S16_OUTM(x,m,v) \
                 out_dword_masked_ns(HWIO_UMCMN_R0_IMR_S16_ADDR(x),m,v,HWIO_UMCMN_R0_IMR_S16_IN(x))
+#define HWIO_UMCMN_R0_IMR_S16_MXI_RD_ZERO_ADDR_ERR_BMSK                                              0x100
+#define HWIO_UMCMN_R0_IMR_S16_MXI_RD_ZERO_ADDR_ERR_SHFT                                                  8
+#define HWIO_UMCMN_R0_IMR_S16_MXI_RD_ZERO_SIZE_ERR_BMSK                                               0x80
+#define HWIO_UMCMN_R0_IMR_S16_MXI_RD_ZERO_SIZE_ERR_SHFT                                                  7
+#define HWIO_UMCMN_R0_IMR_S16_MXI_WR_ZERO_ADDR_ERR_BMSK                                               0x40
+#define HWIO_UMCMN_R0_IMR_S16_MXI_WR_ZERO_ADDR_ERR_SHFT                                                  6
+#define HWIO_UMCMN_R0_IMR_S16_MXI_WR_ZERO_SIZE_ERR_BMSK                                               0x20
+#define HWIO_UMCMN_R0_IMR_S16_MXI_WR_ZERO_SIZE_ERR_SHFT                                                  5
 #define HWIO_UMCMN_R0_IMR_S16_MXI_GXI_WDTO_ERR_BMSK                                                   0x10
 #define HWIO_UMCMN_R0_IMR_S16_MXI_GXI_WDTO_ERR_SHFT                                                      4
 #define HWIO_UMCMN_R0_IMR_S16_MXI_GXI_AXI_WR_ERR_BMSK                                                  0x8
@@ -36820,8 +36903,36 @@
 #define HWIO_UMCMN_R0_TRC_CTRL_2_UMAC_MISC_TRC_EVENT_SEL_SHFT                                           19
 #define HWIO_UMCMN_R0_TRC_CTRL_2_TRC_BUS_MUX_SEL_BMSK                                              0x78000
 #define HWIO_UMCMN_R0_TRC_CTRL_2_TRC_BUS_MUX_SEL_SHFT                                                   15
-#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_BIT_2_BMSK                                          0x7fff
-#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_BIT_2_SHFT                                               0
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_UMXI_BMSK                                           0x4000
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_UMXI_SHFT                                               14
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_RESERVED_BMSK                                       0x2000
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_RESERVED_SHFT                                           13
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_WBM1_BMSK                                           0x1000
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_WBM1_SHFT                                               12
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_TQM1_BMSK                                            0x800
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_TQM1_SHFT                                               11
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_REO1_BMSK                                            0x400
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_REO1_SHFT                                               10
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_TCL1_BMSK                                            0x200
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_TCL1_SHFT                                                9
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_CXC1_BMSK                                            0x100
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_CXC1_SHFT                                                8
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_REO_BMSK                                              0x80
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_REO_SHFT                                                 7
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_TCL_BMSK                                              0x40
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_TCL_SHFT                                                 6
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_WBM_BMSK                                              0x20
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_WBM_SHFT                                                 5
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_TQM_BMSK                                              0x10
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_TQM_SHFT                                                 4
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_SW_BMSK                                                0x8
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_SW_SHFT                                                  3
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_CXC_BMSK                                               0x4
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_CXC_SHFT                                                 2
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_CE_BMSK                                                0x2
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_CE_SHFT                                                  1
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_ECD_BMSK                                               0x1
+#define HWIO_UMCMN_R0_TRC_CTRL_2_EVENT_BLK_MASK_ECD_SHFT                                                 0
 
 #define HWIO_UMCMN_R0_EVENTMASK_IX0_ADDR(x)                                                     ((x) + 0x17c)
 #define HWIO_UMCMN_R0_EVENTMASK_IX0_PHYS(x)                                                     ((x) + 0x17c)

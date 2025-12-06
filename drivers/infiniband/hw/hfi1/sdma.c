@@ -831,7 +831,7 @@ static const struct rhashtable_params sdma_rht_params = {
 	.nelem_hint = NR_CPUS_HINT,
 	.head_offset = offsetof(struct sdma_rht_node, node),
 	.key_offset = offsetof(struct sdma_rht_node, cpu_id),
-	.key_len = FIELD_SIZEOF(struct sdma_rht_node, cpu_id),
+	.key_len = sizeof_field(struct sdma_rht_node, cpu_id),
 	.max_size = NR_CPUS,
 	.min_size = 8,
 	.automatic_shrinking = true,
@@ -3202,7 +3202,6 @@ int _pad_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx)
 {
 	int rval = 0;
 
-	tx->num_desc++;
 	if ((unlikely(tx->num_desc == tx->desc_limit))) {
 		rval = _extend_sdma_tx_descs(dd, tx);
 		if (rval) {
@@ -3216,6 +3215,7 @@ int _pad_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx)
 		SDMA_MAP_NONE,
 		dd->sdma_pad_phys,
 		sizeof(u32) - (tx->packet_len & (sizeof(u32) - 1)));
+	tx->num_desc++;
 	_sdma_close_tx(dd, tx);
 	return rval;
 }

@@ -1055,10 +1055,12 @@ static int mmc_select_bus_width(struct mmc_card *card)
 	static const unsigned int ext_csd_bits[] = {
 		EXT_CSD_BUS_WIDTH_8,
 		EXT_CSD_BUS_WIDTH_4,
+		EXT_CSD_BUS_WIDTH_1,
 	};
 	static const unsigned int bus_widths[] = {
 		MMC_BUS_WIDTH_8,
 		MMC_BUS_WIDTH_4,
+		MMC_BUS_WIDTH_1,
 	};
 	struct mmc_host *host = card->host;
 	unsigned int idx, bus_width = 0;
@@ -2553,7 +2555,8 @@ static int mmc_test_awake_ext_csd(struct mmc_host *host)
 static bool _mmc_cache_enabled(struct mmc_host *host)
 {
 	return host->card->ext_csd.cache_size > 0 &&
-	       host->card->ext_csd.cache_ctrl & 1;
+	       host->card->ext_csd.cache_ctrl & 1 &&
+	       !(host->card->quirks & MMC_QUIRK_CACHE_DISABLE);
 }
 
 static int _mmc_suspend(struct mmc_host *host, bool is_suspend)

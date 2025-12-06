@@ -1,10 +1,9 @@
+// SPDX-License-Identifier: GPL-2.0-only
 /*
  * The driver for Freescale MPC512x LocalPlus Bus FIFO
  * (called SCLPC in the Reference Manual).
  *
  * Copyright (C) 2013-2015 Alexander Popov <alex.popov@linux.com>.
- *
- * This file is released under the GPLv2.
  */
 
 #include <linux/interrupt.h>
@@ -241,10 +240,8 @@ static int mpc512x_lpbfifo_kick(void)
 	dma_conf.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
 
 	/* Make DMA channel work with LPB FIFO data register */
-	if (dma_dev->device_config(lpbfifo.chan, &dma_conf)) {
-		ret = -EINVAL;
-		goto err_dma_prep;
-	}
+	if (dma_dev->device_config(lpbfifo.chan, &dma_conf))
+		return -EINVAL;
 
 	sg_init_table(&sg, 1);
 

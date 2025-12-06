@@ -343,6 +343,7 @@ static int hpfb_dio_probe(struct dio_dev *d, const struct dio_device_id *ent)
 	if (hpfb_init_one(paddr, vaddr)) {
 		if (d->scode >= DIOII_SCBASE)
 			iounmap((void *)vaddr);
+		release_mem_region(d->resource.start, resource_size(&d->resource));
 		return -ENOMEM;
 	}
 	return 0;
@@ -401,7 +402,7 @@ int __init hpfb_init(void)
 	if (err)
 		return err;
 
-	err = probe_kernel_read(&i, (unsigned char *)INTFBVADDR + DIO_IDOFF, 1);
+	err = copy_from_kernel_nofault(&i, (unsigned char *)INTFBVADDR + DIO_IDOFF, 1);
 
 	if (!err && (i == DIO_ID_FBUFFER) && topcat_sid_ok(sid = DIO_SECID(INTFBVADDR))) {
 		if (!request_mem_region(INTFBPADDR, DIO_DEVSIZE, "Internal Topcat"))

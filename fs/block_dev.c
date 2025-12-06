@@ -25,6 +25,7 @@
 #include <linux/writeback.h>
 #include <linux/mpage.h>
 #include <linux/mount.h>
+#include <linux/pseudo_fs.h>
 #include <linux/uio.h>
 #include <linux/namei.h>
 #include <linux/log2.h>
@@ -363,7 +364,7 @@ __blkdev_direct_IO(struct kiocb *iocb, struct iov_iter *iter, int nr_pages)
 
 	dio->size = 0;
 	dio->multi_bio = false;
-	dio->should_dirty = is_read && (iter->type == ITER_IOVEC);
+	dio->should_dirty = is_read && iter_is_iovec(iter);
 
 	blk_start_plug(&plug);
 	for (;;) {
@@ -802,19 +803,19 @@ static const struct super_operations bdev_sops = {
 	.evict_inode = bdev_evict_inode,
 };
 
-static struct dentry *bd_mount(struct file_system_type *fs_type,
-	int flags, const char *dev_name, void *data)
+static int bd_init_fs_context(struct fs_context *fc)
 {
-	struct dentry *dent;
-	dent = mount_pseudo(fs_type, "bdev:", &bdev_sops, NULL, BDEVFS_MAGIC);
-	if (!IS_ERR(dent))
-		dent->d_sb->s_iflags |= SB_I_CGROUPWB;
-	return dent;
+	struct pseudo_fs_context *ctx = init_pseudo(fc, BDEVFS_MAGIC);
+	if (!ctx)
+		return -ENOMEM;
+	fc->s_iflags |= SB_I_CGROUPWB;
+	ctx->ops = &bdev_sops;
+	return 0;
 }
 
 static struct file_system_type bd_type = {
 	.name		= "bdev",
-	.mount		= bd_mount,
+	.init_fs_context = bd_init_fs_context,
 	.kill_sb	= kill_anon_super,
 };
 
@@ -2044,21 +2045,26 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
 	if ((start | len) & (bdev_logical_block_size(bdev) - 1))
 		return -EINVAL;
 
-	/* Invalidate the page cache, including dirty pages. */
+	/*
+	 * Invalidate the page cache, including dirty pages, for valid
+	 * de-allocate mode calls to fallocate().
+	 */
 	mapping = bdev->bd_inode->i_mapping;
-	truncate_inode_pages_range(mapping, start, end);
 
 	switch (mode) {
 	case FALLOC_FL_ZERO_RANGE:
 	case FALLOC_FL_ZERO_RANGE | FALLOC_FL_KEEP_SIZE:
+		truncate_inode_pages_range(mapping, start, end);
 		error = blkdev_issue_zeroout(bdev, start >> 9, len >> 9,
 					    GFP_KERNEL, BLKDEV_ZERO_NOUNMAP);
 		break;
 	case FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE:
+		truncate_inode_pages_range(mapping, start, end);
 		error = blkdev_issue_zeroout(bdev, start >> 9, len >> 9,
 					     GFP_KERNEL, BLKDEV_ZERO_NOFALLBACK);
 		break;
 	case FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE | FALLOC_FL_NO_HIDE_STALE:
+		truncate_inode_pages_range(mapping, start, end);
 		error = blkdev_issue_discard(bdev, start >> 9, len >> 9,
 					     GFP_KERNEL, 0);
 		break;

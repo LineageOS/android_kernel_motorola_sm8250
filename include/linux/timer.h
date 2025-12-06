@@ -184,11 +184,7 @@ extern int try_to_del_timer_sync(struct timer_list *timer);
 
 extern struct timer_base timer_base_deferrable;
 
-#ifdef CONFIG_SMP
-  extern int del_timer_sync(struct timer_list *timer);
-#else
-# define del_timer_sync(t)		del_timer(t)
-#endif
+extern int del_timer_sync(struct timer_list *timer);
 
 #define del_singleshot_timer_sync(t) del_timer_sync(t)
 
@@ -202,8 +198,7 @@ struct ctl_table;
 
 extern unsigned int sysctl_timer_migration;
 int timer_migration_handler(struct ctl_table *table, int write,
-			    void __user *buffer, size_t *lenp,
-			    loff_t *ppos);
+			    void *buffer, size_t *lenp, loff_t *ppos);
 #endif
 
 unsigned long __round_jiffies(unsigned long j, int cpu);

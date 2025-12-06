@@ -179,7 +179,7 @@ static int map_vdso(const struct vdso_image *image,
 	unsigned long text_start, addr = 0;
 	int ret = 0;
 
-	down_write(&mm->mmap_sem);
+	mmap_write_lock(mm);
 
 	/*
 	 * First, get an unmapped region: then randomize it, and make sure that
@@ -235,7 +235,7 @@ up_fail:
 	if (ret)
 		current->mm->context.vdso = NULL;
 
-	up_write(&mm->mmap_sem);
+	mmap_write_unlock(mm);
 	return ret;
 }
 
@@ -262,9 +262,8 @@ static __init int vdso_setup(char *s)
 	unsigned long val;
 
 	err = kstrtoul(s, 10, &val);
-	if (err)
-		return err;
-	vdso_enabled = val;
-	return 0;
+	if (!err)
+		vdso_enabled = val;
+	return 1;
 }
 __setup("vdso=", vdso_setup);

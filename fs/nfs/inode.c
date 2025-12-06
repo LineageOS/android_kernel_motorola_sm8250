@@ -50,6 +50,7 @@
 #include "pnfs.h"
 #include "nfs.h"
 #include "netns.h"
+#include "sysfs.h"
 
 #include "nfstrace.h"
 
@@ -307,7 +308,7 @@ nfs_find_actor(struct inode *inode, void *opaque)
 
 	if (NFS_FILEID(inode) != fattr->fileid)
 		return 0;
-	if ((S_IFMT & inode->i_mode) != (S_IFMT & fattr->mode))
+	if (inode_wrong_type(inode, fattr->mode))
 		return 0;
 	if (nfs_compare_fh(NFS_FH(inode), fh))
 		return 0;
@@ -1408,7 +1409,7 @@ static int nfs_check_inode_attributes(struct inode *inode, struct nfs_fattr *fat
 	/* Has the inode gone and changed behind our back? */
 	if ((fattr->valid & NFS_ATTR_FATTR_FILEID) && nfsi->fileid != fattr->fileid)
 		return -ESTALE;
-	if ((fattr->valid & NFS_ATTR_FATTR_TYPE) && (inode->i_mode & S_IFMT) != (fattr->mode & S_IFMT))
+	if ((fattr->valid & NFS_ATTR_FATTR_TYPE) && inode_wrong_type(inode, fattr->mode))
 		return -ESTALE;
 
 	if (!nfs_file_has_buffered_writers(nfsi)) {
@@ -1483,6 +1484,7 @@ void nfs_fattr_init(struct nfs_fattr *fattr)
 	fattr->gencount = nfs_inc_attr_generation_counter();
 	fattr->owner_name = NULL;
 	fattr->group_name = NULL;
+	fattr->mdsthreshold = NULL;
 }
 EXPORT_SYMBOL_GPL(nfs_fattr_init);
 
@@ -1824,7 +1826,7 @@ static int nfs_update_inode(struct inode *inode, struct nfs_fattr *fattr)
 	/*
 	 * Make sure the inode's type hasn't changed.
 	 */
-	if ((fattr->valid & NFS_ATTR_FATTR_TYPE) && (inode->i_mode & S_IFMT) != (fattr->mode & S_IFMT)) {
+	if ((fattr->valid & NFS_ATTR_FATTR_TYPE) && inode_wrong_type(inode, fattr->mode)) {
 		/*
 		* Big trouble! The inode has become a different object.
 		*/
@@ -1858,7 +1860,11 @@ static int nfs_update_inode(struct inode *inode, struct nfs_fattr *fattr)
 	nfs_wcc_update_inode(inode, fattr);
 
 	if (pnfs_layoutcommit_outstanding(inode)) {
-		nfsi->cache_validity |= save_cache_validity & NFS_INO_INVALID_ATTR;
+		nfsi->cache_validity |=
+			save_cache_validity &
+			(NFS_INO_INVALID_CHANGE | NFS_INO_INVALID_CTIME |
+			 NFS_INO_INVALID_MTIME | NFS_INO_INVALID_SIZE |
+			 NFS_INO_REVAL_FORCED);
 		cache_revalidated = false;
 	}
 
@@ -2197,6 +2203,10 @@ static int __init init_nfs_fs(void)
 {
 	int err;
 
+	err = nfs_sysfs_init();
+	if (err < 0)
+		goto out10;
+
 	err = register_pernet_subsys(&nfs_net_ops);
 	if (err < 0)
 		goto out9;
@@ -2260,6 +2270,8 @@ out7:
 out8:
 	unregister_pernet_subsys(&nfs_net_ops);
 out9:
+	nfs_sysfs_exit();
+out10:
 	return err;
 }
 
@@ -2276,6 +2288,7 @@ static void __exit exit_nfs_fs(void)
 	unregister_nfs_fs();
 	nfs_fs_proc_exit();
 	nfsiod_stop();
+	nfs_sysfs_exit();
 }
 
 /* Not quite true; I just maintain it */

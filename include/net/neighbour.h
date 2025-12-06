@@ -172,7 +172,7 @@ struct pneigh_entry {
 	possible_net_t		net;
 	struct net_device	*dev;
 	u8			flags;
-	u8			key[0];
+	u32			key[0];
 };
 
 /*
@@ -251,11 +251,6 @@ static inline void *neighbour_priv(const struct neighbour *n)
 #define NEIGH_UPDATE_F_ADMIN			0x80000000
 
 
-static inline bool neigh_key_eq16(const struct neighbour *n, const void *pkey)
-{
-	return *(const u16 *)n->primary_key == *(const u16 *)pkey;
-}
-
 static inline bool neigh_key_eq32(const struct neighbour *n, const void *pkey)
 {
 	return *(const u32 *)n->primary_key == *(const u32 *)pkey;
@@ -305,8 +300,6 @@ void neigh_table_init(int index, struct neigh_table *tbl);
 int neigh_table_clear(int index, struct neigh_table *tbl);
 struct neighbour *neigh_lookup(struct neigh_table *tbl, const void *pkey,
 			       struct net_device *dev);
-struct neighbour *neigh_lookup_nodev(struct neigh_table *tbl, struct net *net,
-				     const void *pkey);
 struct neighbour *__neigh_create(struct neigh_table *tbl, const void *pkey,
 				 struct net_device *dev, bool want_ref);
 static inline struct neighbour *neigh_create(struct neigh_table *tbl,
@@ -491,11 +484,12 @@ static inline int neigh_hh_output(const struct hh_cache *hh, struct sk_buff *skb
 	return dev_queue_xmit(skb);
 }
 
-static inline int neigh_output(struct neighbour *n, struct sk_buff *skb)
+static inline int neigh_output(struct neighbour *n, struct sk_buff *skb,
+			       bool skip_cache)
 {
 	const struct hh_cache *hh = &n->hh;
 
-	if ((n->nud_state & NUD_CONNECTED) && hh->hh_len)
+	if ((n->nud_state & NUD_CONNECTED) && hh->hh_len && !skip_cache)
 		return neigh_hh_output(hh, skb);
 	else
 		return n->output(n, skb);

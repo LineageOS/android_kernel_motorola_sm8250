@@ -72,7 +72,7 @@ static ssize_t node_read_meminfo(struct device *dev,
 	si_meminfo_node(&i, nid);
 	sreclaimable = node_page_state(pgdat, NR_SLAB_RECLAIMABLE);
 	sunreclaimable = node_page_state(pgdat, NR_SLAB_UNRECLAIMABLE);
-	n = sprintf(buf,
+	n = sysfs_emit(buf,
 		       "Node %d MemTotal:       %8lu kB\n"
 		       "Node %d MemFree:        %8lu kB\n"
 		       "Node %d MemUsed:        %8lu kB\n"
@@ -593,6 +593,10 @@ int __register_one_node(int nid)
 		return -ENOMEM;
 
 	error = register_node(node_devices[nid], nid);
+	if (error) {
+		node_devices[nid] = NULL;
+		return error;
+	}
 
 	/* link cpu under this node */
 	for_each_present_cpu(cpu) {

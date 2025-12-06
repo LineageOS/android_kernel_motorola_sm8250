@@ -106,7 +106,7 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff *skb,
 			if (!skb->protocol)
 				virtio_net_hdr_set_proto(skb, hdr);
 retry:
-			if (!skb_flow_dissect_flow_keys_basic(skb, &keys,
+			if (!skb_flow_dissect_flow_keys_basic(NULL, skb, &keys,
 							      NULL, 0, 0, 0,
 							      0)) {
 				/* UFO does not specify ipv4 or 6: try both */
@@ -139,6 +139,10 @@ retry:
 		/* UFO may not include transport header in gso_size. */
 		if (gso_type & SKB_GSO_UDP)
 			nh_off -= thlen;
+
+		/* Kernel has a special handling for GSO_BY_FRAGS. */
+		if (gso_size == GSO_BY_FRAGS)
+			return -EINVAL;
 
 		/* Too small packets are not really GSO ones. */
 		if (skb->len - nh_off > gso_size) {

@@ -20,7 +20,7 @@
 #include <asm/hwcap.h>
 #include <mach/hardware.h>
 #include <asm/pgtable-hwdef.h>
-#include <asm/pgtable.h>
+#include <linux/pgtable.h>
 #include <asm/ptrace.h>
 
 #include "proc-macros.S"
@@ -199,7 +199,7 @@ sa110_crval:
 
 	.align
 
-	.section ".proc.info.init", #alloc
+	.section ".proc.info.init", "a"
 
 	.type	__sa110_proc_info,#object
 __sa110_proc_info:

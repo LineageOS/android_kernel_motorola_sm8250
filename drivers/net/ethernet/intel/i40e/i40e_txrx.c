@@ -800,9 +800,6 @@ static bool i40e_clean_tx_irq(struct i40e_vsi *vsi,
 		if (!eop_desc)
 			break;
 
-		/* prevent any other reads prior to eop_desc */
-		smp_rmb();
-
 		i40e_trace(clean_tx_irq, tx_ring, tx_desc, tx_buf);
 		/* we have caught up to head, no work left to do */
 		if (tx_head == tx_desc)
@@ -2210,7 +2207,7 @@ static int i40e_xmit_xdp_ring(struct xdp_frame *xdpf,
 static int i40e_xmit_xdp_tx_ring(struct xdp_buff *xdp,
 				 struct i40e_ring *xdp_ring)
 {
-	struct xdp_frame *xdpf = convert_to_xdp_frame(xdp);
+	struct xdp_frame *xdpf = xdp_convert_buff_to_frame(xdp);
 
 	if (unlikely(!xdpf))
 		return I40E_XDP_CONSUMED;
@@ -2642,7 +2639,7 @@ tx_only:
 		return budget;
 	}
 
-	if (vsi->back->flags & I40E_TXR_FLAGS_WB_ON_ITR)
+	if (q_vector->tx.ring[0].flags & I40E_TXR_FLAGS_WB_ON_ITR)
 		q_vector->arm_wb_state = false;
 
 	/* Work is done so exit the polling mode and re-enable the interrupt */

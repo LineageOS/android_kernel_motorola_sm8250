@@ -13,6 +13,7 @@
 #include <linux/slab.h>
 #include "afs_fs.h"
 #include "internal.h"
+#include "protocol_yfs.h"
 
 static unsigned afs_server_gc_delay = 10;	/* Server record timeout in seconds */
 static unsigned afs_server_update_delay = 30;	/* Time till VLDB recheck in secs */
@@ -37,7 +38,7 @@ struct afs_server *afs_find_server(struct afs_net *net,
 	const struct afs_addr_list *alist;
 	struct afs_server *server = NULL;
 	unsigned int i;
-	int seq = 0, diff;
+	int seq = 1, diff;
 
 	rcu_read_lock();
 
@@ -45,6 +46,7 @@ struct afs_server *afs_find_server(struct afs_net *net,
 		if (server)
 			afs_put_server(net, server);
 		server = NULL;
+		seq++; /* 2 on the 1st/lockless path, otherwise odd */
 		read_seqbegin_or_lock(&net->fs_addr_lock, &seq);
 
 		if (srx->transport.family == AF_INET6) {
@@ -100,7 +102,7 @@ struct afs_server *afs_find_server_by_uuid(struct afs_net *net, const uuid_t *uu
 {
 	struct afs_server *server = NULL;
 	struct rb_node *p;
-	int diff, seq = 0;
+	int diff, seq = 1;
 
 	_enter("%pU", uuid);
 
@@ -112,7 +114,7 @@ struct afs_server *afs_find_server_by_uuid(struct afs_net *net, const uuid_t *uu
 		if (server)
 			afs_put_server(net, server);
 		server = NULL;
-
+		seq++; /* 2 on the 1st/lockless path, otherwise odd */
 		read_seqbegin_or_lock(&net->fs_lock, &seq);
 
 		p = net->fs_servers.rb_node;
@@ -526,6 +528,8 @@ void afs_purge_servers(struct afs_net *net)
  */
 static bool afs_do_probe_fileserver(struct afs_fs_cursor *fc)
 {
+	int i;
+
 	_enter("");
 
 	fc->ac.addr = NULL;
@@ -539,6 +543,11 @@ static bool afs_do_probe_fileserver(struct afs_fs_cursor *fc)
 					&fc->ac, fc->key);
 		switch (fc->ac.error) {
 		case 0:
+			if (test_bit(AFS_SERVER_FL_IS_YFS, &fc->cbi->server->flags)) {
+				for (i = 0; i < fc->ac.alist->nr_addrs; i++)
+					fc->ac.alist->addrs[i].srx_service =
+						YFS_FS_SERVICE;
+			}
 			afs_end_cursor(&fc->ac);
 			set_bit(AFS_SERVER_FL_PROBED, &fc->cbi->server->flags);
 			return true;
@@ -555,7 +564,7 @@ static bool afs_do_probe_fileserver(struct afs_fs_cursor *fc)
 		case -ETIME:
 			break;
 		default:
-			fc->ac.error = -EIO;
+			fc->ac.error = afs_io_error(NULL, afs_io_error_fs_probe_fail);
 			goto error;
 		}
 	}

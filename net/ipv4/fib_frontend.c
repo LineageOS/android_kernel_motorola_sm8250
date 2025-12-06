@@ -345,6 +345,7 @@ static int __fib_validate_source(struct sk_buff *skb, __be32 src, __be32 dst,
 	fl4.flowi4_tun_key.tun_id = 0;
 	fl4.flowi4_flags = 0;
 	fl4.flowi4_uid = sock_net_uid(net, NULL);
+	fl4.flowi4_multipath_hash = 0;
 
 	no_addr = idev->ifa_list == NULL;
 
@@ -382,7 +383,7 @@ static int __fib_validate_source(struct sk_buff *skb, __be32 src, __be32 dst,
 		dev_match = true;
 #endif
 	if (dev_match) {
-		ret = FIB_RES_NH(res).nh_scope >= RT_SCOPE_HOST;
+		ret = FIB_RES_NH(res).fib_nh_scope >= RT_SCOPE_HOST;
 		return ret;
 	}
 	if (no_addr)
@@ -394,7 +395,7 @@ static int __fib_validate_source(struct sk_buff *skb, __be32 src, __be32 dst,
 	ret = 0;
 	if (fib_lookup(net, &fl4, &res, FIB_LOOKUP_IGNORE_LINKSTATE) == 0) {
 		if (res.type == RTN_UNICAST)
-			ret = FIB_RES_NH(res).nh_scope >= RT_SCOPE_HOST;
+			ret = FIB_RES_NH(res).fib_nh_scope >= RT_SCOPE_HOST;
 	}
 	return ret;
 
@@ -556,6 +557,9 @@ static int rtentry_to_fib_config(struct net *net, int cmd, struct rtentry *rt,
 		    addr_type == RTN_UNICAST)
 			cfg->fc_scope = RT_SCOPE_UNIVERSE;
 	}
+
+	if (!cfg->fc_table)
+		cfg->fc_table = RT_TABLE_MAIN;
 
 	if (cmd == SIOCDELRT)
 		return 0;
@@ -1132,7 +1136,7 @@ static void nl_fib_lookup(struct net *net, struct fib_result_nl *frn)
 	struct flowi4           fl4 = {
 		.flowi4_mark = frn->fl_mark,
 		.daddr = frn->fl_addr,
-		.flowi4_tos = frn->fl_tos,
+		.flowi4_tos = frn->fl_tos & IPTOS_RT_MASK,
 		.flowi4_scope = frn->fl_scope,
 	};
 	struct fib_table *tb;

@@ -1,11 +1,10 @@
+// SPDX-License-Identifier: GPL-2.0-only
 /*
  * Copyright (C) 2012 Red Hat, Inc.
  *
  * Author: Mikulas Patocka <mpatocka@redhat.com>
  *
  * Based on Chromium dm-verity driver (C) 2011 The Chromium OS Authors
- *
- * This file is released under the GPLv2.
  *
  * In the file "/sys/module/dm_verity/parameters/prefetch_cluster" you can set
  * default prefetch value. Data are read in "prefetch_cluster" chunks from the
@@ -482,7 +481,7 @@ static int verity_verify_io(struct dm_verity_io *io)
 		sector_t cur_block = io->block + b;
 		struct ahash_request *req = verity_io_hash_req(v, io);
 
-		if (v->validated_blocks &&
+		if (v->validated_blocks && bio->bi_status == BLK_STS_OK &&
 		    likely(test_bit(cur_block, v->validated_blocks))) {
 			verity_bv_skip_block(v, io, &io->iter);
 			continue;
@@ -538,7 +537,7 @@ static int verity_verify_io(struct dm_verity_io *io)
 				return -EIO;
 			}
 			if (verity_handle_err(v, DM_VERITY_BLOCK_TYPE_DATA,
-					   cur_block))
+					      cur_block))
 				return -EIO;
 		}
 	}
@@ -583,7 +582,9 @@ static void verity_end_io(struct bio *bio)
 	struct dm_verity_io *io = bio->bi_private;
 
 	if (bio->bi_status &&
-	    (!verity_fec_is_enabled(io->v) || verity_is_system_shutting_down())) {
+	    (!verity_fec_is_enabled(io->v) ||
+	     verity_is_system_shutting_down() ||
+	     (bio->bi_opf & REQ_RAHEAD))) {
 		verity_finish_io(io, bio->bi_status);
 		return;
 	}

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-2.0
 /*
- * Renesas R-Car Gen2 DMA Controller Driver
+ * Renesas R-Car Gen2/Gen3 DMA Controller Driver
  *
- * Copyright (C) 2014 Renesas Electronics Inc.
+ * Copyright (C) 2014-2019 Renesas Electronics Inc.
  *
  * Author: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
  */
@@ -1816,7 +1816,10 @@ static int rcar_dmac_probe(struct platform_device *pdev)
 	dmac->dev = &pdev->dev;
 	platform_set_drvdata(pdev, dmac);
 	dmac->dev->dma_parms = &dmac->parms;
-	dma_set_max_seg_size(dmac->dev, RCAR_DMATCR_MASK);
+	ret = dma_set_max_seg_size(dmac->dev, RCAR_DMATCR_MASK);
+	if (ret)
+		return ret;
+
 	ret = dma_set_mask_and_coherent(dmac->dev, DMA_BIT_MASK(40));
 	if (ret)
 		return ret;

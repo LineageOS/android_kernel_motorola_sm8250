@@ -5,6 +5,7 @@
 
 #include <linux/fs.h>
 #include <linux/mount.h>
+#include <linux/pseudo_fs.h>
 #include <linux/magic.h>
 #include "btrfs-tests.h"
 #include "../ctree.h"
@@ -22,17 +23,19 @@ static const struct super_operations btrfs_test_super_ops = {
 	.destroy_inode	= btrfs_test_destroy_inode,
 };
 
-static struct dentry *btrfs_test_mount(struct file_system_type *fs_type,
-				       int flags, const char *dev_name,
-				       void *data)
+
+static int btrfs_test_init_fs_context(struct fs_context *fc)
 {
-	return mount_pseudo(fs_type, "btrfs_test:", &btrfs_test_super_ops,
-			    NULL, BTRFS_TEST_MAGIC);
+	struct pseudo_fs_context *ctx = init_pseudo(fc, BTRFS_TEST_MAGIC);
+	if (!ctx)
+		return -ENOMEM;
+	ctx->ops = &btrfs_test_super_ops;
+	return 0;
 }
 
 static struct file_system_type test_type = {
 	.name		= "btrfs_test_fs",
-	.mount		= btrfs_test_mount,
+	.init_fs_context = btrfs_test_init_fs_context,
 	.kill_sb	= kill_anon_super,
 };
 
@@ -174,7 +177,7 @@ void btrfs_free_dummy_fs_info(struct btrfs_fs_info *fs_info)
 
 void btrfs_free_dummy_root(struct btrfs_root *root)
 {
-	if (!root)
+	if (IS_ERR_OR_NULL(root))
 		return;
 	/* Will be freed by btrfs_free_fs_roots */
 	if (WARN_ON(test_bit(BTRFS_ROOT_IN_RADIX, &root->state)))

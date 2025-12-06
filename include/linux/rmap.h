@@ -43,13 +43,7 @@ struct anon_vma {
 	 */
 	atomic_t refcount;
 
-	/*
-	 * Count of child anon_vmas and VMAs which points to this anon_vma.
-	 *
-	 * This counter is used for making decision about reusing anon_vma
-	 * instead of forking new one. See comments in function anon_vma_clone.
-	 */
-	unsigned degree;
+	unsigned degree;		/* ANDROID: KABI preservation, DO NOT USE! */
 
 	struct anon_vma *parent;	/* Parent of this anon_vma */
 
@@ -64,6 +58,25 @@ struct anon_vma {
 
 	/* Interval tree of private "related" vmas */
 	struct rb_root_cached rb_root;
+
+	/*
+	 * ANDROID: KABI preservation, it's safe to put these at the end of this structure as it's
+	 * only passed by a pointer everywhere, the size and internal structures are local to the
+	 * core kernel.
+	 */
+#ifndef __GENKSYMS__
+	/*
+	 * Count of child anon_vmas. Equals to the count of all anon_vmas that
+	 * have ->parent pointing to this one, including itself.
+	 *
+	 * This counter is used for making decision about reusing anon_vma
+	 * instead of forking new one. See comments in function anon_vma_clone.
+	 */
+	unsigned long num_children;
+	/* Count of VMAs whose ->anon_vma pointer points to this object. */
+	unsigned long num_active_vmas;
+#endif
+
 };
 
 /*
@@ -180,16 +193,8 @@ void page_add_anon_rmap(struct page *, struct vm_area_struct *,
 		unsigned long, bool);
 void do_page_add_anon_rmap(struct page *, struct vm_area_struct *,
 			   unsigned long, int);
-void __page_add_new_anon_rmap(struct page *page, struct vm_area_struct *vma,
-			      unsigned long address, bool compound);
-static inline void page_add_new_anon_rmap(struct page *page,
-					  struct vm_area_struct *vma,
-					  unsigned long address, bool compound)
-{
-	VM_BUG_ON_VMA(address < vma->vm_start || address >= vma->vm_end, vma);
-	__page_add_new_anon_rmap(page, vma, address, compound);
-}
-
+void page_add_new_anon_rmap(struct page *, struct vm_area_struct *,
+		unsigned long, bool);
 void page_add_file_rmap(struct page *, bool);
 void page_remove_rmap(struct page *, bool);
 

@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2017-2021 The Linux Foundation. All rights reserved.
- * Copyright (c) 2021-2022 Qualcomm Innovation Center, Inc. All rights reserved.
+ * Copyright (c) 2021-2024 Qualcomm Innovation Center, Inc. All rights reserved.
  *
  * Permission to use, copy, modify, and/or distribute this software for
  * any purpose with or without fee is hereby granted, provided that the
@@ -27,6 +27,42 @@
 #include <htt.h>
 #include <htt_stats.h>
 #include <htt_common.h> /* HTT_STATS_MAX_CHAINS */
+
+
+/* HTT_PPDU_STATS_VAR_LEN_ARRAY1:
+ * This macro is for converting the definition of existing variable-length
+ * arrays within HTT PPDU stats structs of the form "type name[1];" to use
+ * the form "type name[];" while ensuring that the length of the TLV struct
+ * is unmodified by the conversion.
+ * In general, any new variable-length structs should simply use
+ * "type name[];" directly, rather than using HTT_PPDU_STATS_VAR_LEN_ARRAY1.
+ * However, if there's a legitimate reason to make the new variable-length
+ * struct appear to not have a variable length, HTT_PPDU_STATS_VAR_LEN_ARRAY1
+ * can be used for this purpose.
+ */
+#if defined(ATH_TARGET) || defined(__WINDOWS__)
+    #define HTT_PPDU_STATS_VAR_LEN_ARRAY1(type, name) type name[1]
+#else
+    /*
+     * Certain build settings of the Linux kernel don't allow zero-element
+     * arrays, and C++ doesn't allow zero-length empty structs.
+     * Confirm that there's no build that combines kernel with C++.
+     */
+    #ifdef __cplusplus
+        #error unsupported combination of kernel and C plus plus
+    #endif
+    #define HTT_PPDU_STATS_DUMMY_ZERO_LEN_FIELD struct {} dummy_zero_len_field
+
+    #define HTT_PPDU_STATS_VAR_LEN_ARRAY1(type, name) \
+        union { \
+            type name ## __first_elem; \
+            struct { \
+                HTT_PPDU_STATS_DUMMY_ZERO_LEN_FIELD; \
+                type name[]; \
+            };  \
+        }
+#endif
+
 
 #define HTT_STATS_NUM_SUPPORTED_BW_SMART_ANTENNA 4 /* 20, 40, 80, 160 MHz */
 
@@ -298,7 +334,7 @@ typedef struct {
          * The hw portion of this struct contains a scheduler_command_status
          * struct, whose definition is different for different target HW types.
          */
-        A_UINT32 hw[1];
+        HTT_PPDU_STATS_VAR_LEN_ARRAY1(A_UINT32, hw);
     };
 } htt_ppdu_stats_sch_cmd_tlv_v;
 
@@ -612,6 +648,58 @@ typedef enum HTT_PPDU_STATS_SPATIAL_REUSE HTT_PPDU_STATS_SPATIAL_REUSE;
             ((_var) |= ((_val) << HTT_PPDU_STATS_COMMON_TLV_BSS_COLOR_ID_S)); \
     } while (0)
 
+#define HTT_PPDU_STATS_COMMON_TLV_BACKOFF_AC_VALID_M     0x00020000
+#define HTT_PPDU_STATS_COMMON_TLV_BACKOFF_AC_VALID_S             17
+
+#define HTT_PPDU_STATS_COMMON_TLV_BACKOFF_AC_VALID_GET(_var) \
+    (((_var) & HTT_PPDU_STATS_COMMON_TLV_BACKOFF_AC_VALID_M) >> \
+    HTT_PPDU_STATS_COMMON_TLV_BACKOFF_AC_VALID_S)
+
+#define HTT_PPDU_STATS_COMMON_TLV_BACKOFF_AC_VALID_SET(_var, _val) \
+    do { \
+        HTT_CHECK_SET_VAL(HTT_PPDU_STATS_COMMON_TLV_BACKOFF_AC_VALID, _val); \
+        ((_var) |= ((_val) << HTT_PPDU_STATS_COMMON_TLV_BACKOFF_AC_VALID_S)); \
+    } while (0)
+
+#define HTT_PPDU_STATS_COMMON_TLV_BACKOFF_AC_M     0x000c0000
+#define HTT_PPDU_STATS_COMMON_TLV_BACKOFF_AC_S             18
+
+#define HTT_PPDU_STATS_COMMON_TLV_BACKOFF_AC_GET(_var) \
+    (((_var) & HTT_PPDU_STATS_COMMON_TLV_BACKOFF_AC_M) >> \
+    HTT_PPDU_STATS_COMMON_TLV_BACKOFF_AC_S)
+
+#define HTT_PPDU_STATS_COMMON_TLV_BACKOFF_AC_SET(_var, _val) \
+    do { \
+        HTT_CHECK_SET_VAL(HTT_PPDU_STATS_COMMON_TLV_AC_VALID, _val); \
+        ((_var) |= ((_val) << HTT_PPDU_STATS_COMMON_TLV_BACKOFF_AC_S)); \
+    } while (0)
+
+#define HTT_PPDU_STATS_COMMON_TLV_NUM_UL_USER_RESPONSES_VALID_M     0x00100000
+#define HTT_PPDU_STATS_COMMON_TLV_NUM_UL_USER_RESPONSES_VALID_S             20
+
+#define HTT_PPDU_STATS_COMMON_TLV_NUM_UL_USER_RESPONSES_VALID_GET(_var) \
+    (((_var) & HTT_PPDU_STATS_COMMON_TLV_NUM_UL_USER_RESPONSES_VALID_M) >> \
+    HTT_PPDU_STATS_COMMON_TLV_NUM_UL_USER_RESPONSES_VALID_S)
+
+#define HTT_PPDU_STATS_COMMON_TLV_NUM_UL_USER_RESPONSES_VALID_SET(_var, _val) \
+    do { \
+        HTT_CHECK_SET_VAL(HTT_PPDU_STATS_COMMON_TLV_NUM_UL_USER_RESPONSES_VALID, _val); \
+        ((_var) |= ((_val) << HTT_PPDU_STATS_COMMON_TLV_NUM_UL_USER_RESPONSES_VALID_S)); \
+    } while (0)
+
+#define HTT_PPDU_STATS_COMMON_TLV_NUM_UL_USER_RESPONSES_M     0x1fe00000
+#define HTT_PPDU_STATS_COMMON_TLV_NUM_UL_USER_RESPONSES_S             21
+
+#define HTT_PPDU_STATS_COMMON_TLV_NUM_UL_USER_RESPONSES_GET(_var) \
+    (((_var) & HTT_PPDU_STATS_COMMON_TLV_NUM_UL_USER_RESPONSES_M) >> \
+    HTT_PPDU_STATS_COMMON_TLV_NUM_UL_USER_RESPONSES_S)
+
+#define HTT_PPDU_STATS_COMMON_TLV_NUM_UL_USER_RESPONSES_SET(_var, _val) \
+    do { \
+        HTT_CHECK_SET_VAL(HTT_PPDU_STATS_COMMON_TLV_NUM_UL_USER_RESPONSES_VALID, _val); \
+        ((_var) |= ((_val) << HTT_PPDU_STATS_COMMON_TLV_NUM_UL_USER_RESPONSES_S)); \
+    } while (0)
+
 #define HTT_PPDU_STATS_COMMON_TRIG_COOKIE_M    0x0000ffff
 #define HTT_PPDU_STATS_COMMON_TRIG_COOKIE_S    0
 
@@ -760,19 +848,36 @@ typedef struct {
      *               by which SRG/Non-SRG based spatial reuse opportunity
      *               was created.
      * BIT [16:16] - PPDU transmitted using PSR opportunity
-     * BIT [31:17] - reserved
+     * BIT [17:17] - backoff_ac_valid
+     * BIT [19:18] - backoff_ac: WMM ACI Value of the backoff engine used for
+     *               this transmission. Only valid if backoff_ac_valid is set
+     *               to 1. Typically this would match the default tid
+     *               number -> AC mapping. For frames in the middle of a SIFS
+     *               burst, the backoff_ac_valid will be 0.
+     * BIT [20:20] - num_ul_user_responses_valid
+     * BIT [21:28] - num_ul_user_responses: The number of user responses
+     *               detected by the MAC layer. This value can be compared with
+     *               the "num_ul_expected_users" field to see whether this frame
+     *               had a complete or partial response failure. Only valid if
+     *               num_ul_user_responses_valid is set to 1.
+     * BIT [31:29] - reserved
      */
     union {
+        A_UINT32 reserved__num_ul_user_responses__num_ul_user_responses_valid__backoff_ac__backoff_ac_valid__psr_tx__aborted_obss_rssi__srg_tx__non_srg_tx__bss_color_id;
         A_UINT32 reserved__psr_tx__aborted_obss_rssi__srg_tx__non_srg_tx___bss_color_id;
         A_UINT32 reserved__aborted_obss_rssi__srg_tx__non_srg_tx___bss_color_id;
         A_UINT32 reserved__bss_color_id;
         struct {
-            A_UINT32 bss_color_id:       6,
-                     non_srg_tx:         1,
-                     srg_tx:             1,
-                     aborted_obss_rssi:  8,
-                     psr_tx:             1,
-                     reserved2:         15;
+            A_UINT32 bss_color_id:                6,
+                     non_srg_tx:                  1,
+                     srg_tx:                      1,
+                     aborted_obss_rssi:           8,
+                     psr_tx:                      1,
+                     backoff_ac_valid:            1,
+                     backoff_ac:                  2,
+                     num_ul_user_responses_valid: 1,
+                     num_ul_user_responses:       8,
+                     reserved2:                   3;
         };
     };
 
@@ -787,16 +892,18 @@ typedef struct {
     };
 
     /*
-     * htt_seq_type field is added for backward compatibility with
-     * pktlog decoder, host driver or any third party tool interpreting
-     * ppdu sequence type. If field 'htt_seq_type'is not present or is
-     * present but set to WAL_PPDU_SEQ_TYPE, decoder should interpret
-     * the seq type as WAL_TXSEND_PPDU_SEQUENCE.
-     * If the new field htt_seq_type is present and is set to
-     * HTT_PPDU_SEQ_TYPE then decoder should interpret the seq type as
-     * HTT_PPDU_STATS_SEQ_TYPE. htt_seq_type field will be set to
-     * HTT_PPDU_SEQ_TYPE in firmware versions where this field is
-     * defined.
+     * BIT [0 : 0] - htt_seq_type field is added for backward compatibility
+     *               with pktlog decoder, host driver or any third party tool
+     *               interpreting ppdu sequence type. If field 'htt_seq_type'
+     *               is not present or is present but set to WAL_PPDU_SEQ_TYPE,
+     *               decoder should interpret the seq type as
+     *               WAL_TXSEND_PPDU_SEQUENCE.
+     *               If the new field htt_seq_type is present and is set to
+     *               HTT_PPDU_SEQ_TYPE then decoder should interpret the
+     *               seq type as HTT_PPDU_STATS_SEQ_TYPE.
+     *               htt_seq_type field will be set to HTT_PPDU_SEQ_TYPE in
+     *               firmware versions where this field is defined.
+     * BIT [31: 1] - reserved
      */
     union {
         A_UINT32 reserved__htt_seq_type;
@@ -805,6 +912,16 @@ typedef struct {
                      reserved3:     31;
         };
     };
+    /* is_manual_ulofdma_trigger:
+     * Flag to indicate if a given UL OFDMA trigger is manually triggered
+     * from the Host
+     */
+    A_UINT32 is_manual_ulofdma_trigger;
+    /* is_combined_ul_bsrp_trigger:
+     * Flag to indicate if a given UL BSRP trigger is sent combined as
+     * part of existing DL/UL data sequence
+     */
+    A_UINT32 is_combined_ul_bsrp_trigger;
 } htt_ppdu_stats_common_tlv;
 
 #define HTT_PPDU_STATS_USER_COMMON_TLV_TID_NUM_M     0x000000ff
@@ -976,6 +1093,20 @@ typedef struct {
          ((_var) |= ((_val) << HTT_PPDU_STATS_USER_COMMON_TLV_CHAIN_ENABLE_BITS_S)); \
      } while (0)
 
+#define HTT_PPDU_STATS_USER_COMMON_TLV_IS_SMART_ULOFDMA_BASIC_TRIG_M  0x00010000
+#define HTT_PPDU_STATS_USER_COMMON_TLV_IS_SMART_ULOFDMA_BASIC_TRIG_S          16
+
+#define HTT_PPDU_STATS_USER_COMMON_TLV_IS_SMART_ULOFDMA_BASIC_TRIG_GET(_var) \
+    (((_var) & HTT_PPDU_STATS_USER_COMMON_TLV_IS_SMART_ULOFDMA_BASIC_TRIG_M) >> \
+    HTT_PPDU_STATS_USER_COMMON_TLV_IS_SMART_ULOFDMA_BASIC_TRIG_S)
+
+#define HTT_PPDU_STATS_USER_COMMON_TLV_IS_SMART_ULOFDMA_BASIC_TRIG_SET(_var, _val) \
+     do { \
+         HTT_CHECK_SET_VAL(HTT_PPDU_STATS_USER_COMMON_TLV_IS_SMART_ULOFDMA_BASIC_TRIG, _val); \
+         ((_var) |= ((_val) << HTT_PPDU_STATS_USER_COMMON_TLV_IS_SMART_ULOFDMA_BASIC_TRIG_S)); \
+     } while (0)
+
+
 #define HTT_PPDU_STATS_USER_COMMON_TLV_TX_PWR_CHAINS_PER_U32 4
 #define HTT_PPDU_STATS_USER_COMMON_TLV_TX_PWR_MASK 0x000000ff
 
@@ -1097,8 +1228,6 @@ typedef struct {
      */
     A_UINT32 sw_rts_prot_dur_us;
 
-    /* Data fields related to Transmit power */
-
     /* tx_pwr_multiplier:
      * Hawkeye now supports power accuracy in 0.25 dBm steps,
      * so all powers are x4.
@@ -1113,10 +1242,16 @@ typedef struct {
      * Default value: 1
      * tx_pwr[0] value is used for all chains if chain_enable_bits field
      * is set to 1.
+     *
+     * is_smart_ulofdma_basic_trig:
+     * To check if user grouped in UL OFDMA Basic Trigger Frame is
+     * due to Smart Basic Trigger.
      */
-    A_UINT32 tx_pwr_multiplier  : 8,
-             chain_enable_bits  : 8,
-             reserved2          : 16;
+    A_UINT32 tx_pwr_multiplier          :  8,
+             chain_enable_bits          :  8,
+             is_smart_ulofdma_basic_trig:  1,
+             is_primary_link_peer       :  1,
+             reserved2                  : 14;
 
     /*
      * Transmit powers (signed values packed into unsigned bitfields)
@@ -1169,6 +1304,19 @@ typedef struct {
      * value is larger than A_INT8.
      */
     A_UINT32 alt_tx_pwr[HTT_STATS_MAX_CHAINS / HTT_PPDU_STATS_USER_COMMON_TLV_TX_PWR_CHAINS_PER_U32];
+
+    /*
+     * A bitmap indicating the MSDUQs that the scheduler is attempting to
+     * transmit in this PPDU. Note that in some cases, the scheduler's notion
+     * of what MSDUQs are being transmitted from may not be fully accurate,
+     * such as when MPDUs are retried, or when some previously generated MPDUs
+     * that were not attempted OTA yet are tried.
+     *
+     * The valid bit indices for this bitmap are defined by the HTT_MSDUQ_INDEX
+     * enum (in htt.h). For example, (1 << HTT_MSDUQ_INDEX_UDP) would
+     * correspond to the default UDP msduq.
+     */
+    A_UINT32 msduq_bitmap;
 } htt_ppdu_stats_user_common_tlv;
 
 #define HTT_PPDU_STATS_USER_RATE_TLV_TID_NUM_M     0x000000ff
@@ -1712,6 +1860,32 @@ typedef enum HTT_PPDU_STATS_RESP_PPDU_TYPE HTT_PPDU_STATS_RESP_PPDU_TYPE;
         ((_var) |= ((_val) << HTT_PPDU_STATS_USER_RATE_TLV_PUNC_PATTERN_BITMAP_S)); \
     } while (0)
 
+#define HTT_PPDU_STATS_USER_RATE_TLV_EXTRA_EHT_LTF_M  0x00010000
+#define HTT_PPDU_STATS_USER_RATE_TLV_EXTRA_EHT_LTF_S          16
+
+#define HTT_PPDU_STATS_USER_RATE_TLV_EXTRA_EHT_LTF_GET(_var) \
+    (((_var) & HTT_PPDU_STATS_USER_RATE_TLV_EXTRA_EHT_LTF_M) >> \
+    HTT_PPDU_STATS_USER_RATE_TLV_EXTRA_EHT_LTF_S)
+
+#define HTT_PPDU_STATS_USER_RATE_TLV_EXTRA_EHT_LTF_SET (_var , _val) \
+    do { \
+        HTT_CHECK_SET_VAL(HTT_PPDU_STATS_USER_RATE_TLV_EXTRA_EHT_LTF, _val); \
+        ((_var) |= ((_val) << HTT_PPDU_STATS_USER_RATE_TLV_EXTRA_EHT_LTF_S)); \
+    } while (0)
+
+#define HTT_PPDU_STATS_USER_RATE_TLV_IS_MIN_RATE_M  0x00020000
+#define HTT_PPDU_STATS_USER_RATE_TLV_IS_MIN_RATE_S          17
+
+#define HTT_PPDU_STATS_USER_RATE_TLV_IS_MIN_RATE_GET(_var) \
+    (((_var) & HTT_PPDU_STATS_USER_RATE_TLV_IS_MIN_RATE_M) >> \
+    HTT_PPDU_STATS_USER_RATE_TLV_IS_MIN_RATE_S)
+
+#define HTT_PPDU_STATS_USER_RATE_TLV_IS_MIN_RATE_SET (_var , _val) \
+    do { \
+        HTT_CHECK_SET_VAL(HTT_PPDU_STATS_USER_RATE_TLV_IS_MIN_RATE, _val); \
+        ((_var) |= ((_val) << HTT_PPDU_STATS_USER_RATE_TLV_IS_MIN_RATE_S)); \
+    } while (0)
+
 typedef enum HTT_PPDU_STATS_RU_SIZE {
     HTT_PPDU_STATS_RU_26,
     HTT_PPDU_STATS_RU_52,
@@ -1897,9 +2071,13 @@ typedef struct {
     /*
      * BIT [15:0]  :- Punctured BW bitmap pattern to indicate which BWs are
      *                punctured.
+     * BIT 16      :- flag showing whether EHT extra LTF is applied
+     *                for current PPDU
      */
     A_UINT32 punc_pattern_bitmap: 16,
-             reserved4:           16;
+             extra_eht_ltf:       1,
+             is_min_rate:         1,
+             reserved4:           14;
 } htt_ppdu_stats_user_rate_tlv;
 
 #define HTT_PPDU_STATS_USR_RATE_VALID_M     0x80000000
@@ -2342,7 +2520,7 @@ typedef struct {
 
     /*
      * Max rates configured per BW:
-     * for BW supported by Smart Antenna - 20MHZ, 40MHZ and 80MHZ and 160MHZ
+     * for BW supported by Smart Antenna - 20MHZ, 40MHZ, 80MHZ and 160MHZ
      * (Note: 160 MHz is currently not supported by Smart Antenna)
      */
     A_UINT32 max_rates[HTT_STATS_NUM_SUPPORTED_BW_SMART_ANTENNA];
@@ -2363,6 +2541,17 @@ typedef struct {
              sw_rts_failure:    1,
              cts_rcvd_diff_bw:  1,
              reserved2:        28;
+
+    /*
+     * Max rates configured per BW:
+     * for BW supported by Smart Antenna - 320 MHZ
+     */
+    A_UINT32 max_rates_ext;
+
+    /* hw_prot_dur_us:
+     * hw protection frame's FES duration in micro seconds.
+     */
+    A_UINT32 hw_prot_dur_us;
 } htt_ppdu_stats_user_cmpltn_common_tlv;
 
 #define HTT_PPDU_STATS_USER_CMPLTN_BA_BITMAP_TLV_TID_NUM_M     0x000000ff
@@ -2732,10 +2921,10 @@ typedef struct {
      * The size of the actual mgmt payload (in bytes) can be obtained from
      * the frame_length field.
      * The size of entire payload including the padding for alignment
-     * (in bytes) can be derived from the length in tlv parametes,
+     * (in bytes) can be derived from the length in tlv parameters,
      * minus the 12 bytes of the above fields.
      */
-    A_UINT32 payload[1];
+    HTT_PPDU_STATS_VAR_LEN_ARRAY1(A_UINT32, payload);
 } htt_ppdu_stats_tx_mgmtctrl_payload_tlv;
 
 #define HTT_PPDU_STATS_RX_MGMTCTRL_TLV_FRAME_LENGTH_M     0x0000ffff
@@ -2774,10 +2963,10 @@ typedef struct {
      * The size of the actual mgmt payload (in bytes) can be obtained from
      * the frame_length field.
      * The size of entire payload including the padding for alignment
-     * (in bytes) can be derived from the length in tlv parametes,
+     * (in bytes) can be derived from the length in tlv parameters,
      * minus the 12 bytes of the above fields.
      */
-    A_UINT32 payload[1];
+    HTT_PPDU_STATS_VAR_LEN_ARRAY1(A_UINT32, payload);
 } htt_ppdu_stats_rx_mgmtctrl_payload_tlv;
 
 #define HTT_PPDU_STATS_USERS_INFO_TLV_MAX_USERS_M   0x000000ff
@@ -2844,7 +3033,7 @@ typedef struct {
              win_size   : 8,
              reserved2  : 3;
     /* The number of elements in the ba_bitmap array depends on win_size. */
-    A_UINT32 ba_bitmap[1];
+    HTT_PPDU_STATS_VAR_LEN_ARRAY1(A_UINT32, ba_bitmap);
 } htt_ppdu_stats_for_smu_tlv;
 
 typedef struct {

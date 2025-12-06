@@ -11,7 +11,7 @@
 #include <asm/thread_info.h>
 #include <asm/memory.h>
 #include <asm/page.h>
-#include <asm/pgtable.h>
+#include <linux/pgtable.h>
 
 #include "image.h"
 
@@ -134,6 +134,7 @@ SECTIONS
 			IDMAP_TEXT
 			HIBERNATE_TEXT
 			TRAMP_TEXT
+			*(.text..L.cfi.jumptable .text..L.cfi.jumptable.*)
 			*(.fixup)
 			*(.gnu.warning)
 		. = ALIGN(16);
@@ -175,7 +176,6 @@ SECTIONS
 		INIT_SETUP(16)
 		INIT_CALLS
 		CON_INITCALL
-		SECURITY_INITCALL
 		INIT_RAM_FS
 		*(.init.rodata.* .init.bss)	/* from the EFI stub */
 	}

@@ -2,6 +2,7 @@
 config M68K
 	bool
 	default y
+	select ARCH_HAS_CPU_FINALIZE_INIT if MMU
 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE if HAS_DMA
 	select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
 	select ARCH_NO_COHERENT_DMA_MMAP if !MMU
@@ -29,6 +30,7 @@ config M68K
 	select DMA_NONCOHERENT_OPS if HAS_DMA
 	select HAVE_MEMBLOCK
 	select ARCH_DISCARD_MEMBLOCK
+	select MMU_GATHER_NO_RANGE if MMU
 	select NO_BOOTMEM
 
 config CPU_BIG_ENDIAN

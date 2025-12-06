@@ -428,6 +428,9 @@ void drm_connector_cleanup(struct drm_connector *connector)
 	mutex_destroy(&connector->mutex);
 
 	memset(connector, 0, sizeof(*connector));
+
+	if (dev->registered)
+		drm_sysfs_hotplug_event(dev);
 }
 EXPORT_SYMBOL(drm_connector_cleanup);
 
@@ -678,7 +681,7 @@ void drm_connector_list_iter_end(struct drm_connector_list_iter *iter)
 		__drm_connector_put_safe(iter->conn);
 		spin_unlock_irqrestore(&config->connector_list_lock, flags);
 	}
-	lock_release(&connector_list_iter_dep_map, 0, _RET_IP_);
+	lock_release(&connector_list_iter_dep_map, _RET_IP_);
 }
 EXPORT_SYMBOL(drm_connector_list_iter_end);
 

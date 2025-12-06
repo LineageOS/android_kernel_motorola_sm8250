@@ -43,7 +43,7 @@
 #include <asm/irq.h>
 #include <asm/irq_regs.h>
 #include <asm/page.h>
-#include <asm/pgtable.h>
+#include <linux/pgtable.h>
 #include <asm/oplib.h>
 #include <linux/uaccess.h>
 #include <asm/starfire.h>
@@ -1211,20 +1211,6 @@ void __init smp_setup_processor_id(void)
 		xcall_deliver_impl = cheetah_xcall_deliver;
 	else
 		xcall_deliver_impl = hypervisor_xcall_deliver;
-}
-
-void __init smp_fill_in_cpu_possible_map(void)
-{
-	int possible_cpus = num_possible_cpus();
-	int i;
-
-	if (possible_cpus > nr_cpu_ids)
-		possible_cpus = nr_cpu_ids;
-
-	for (i = 0; i < possible_cpus; i++)
-		set_cpu_possible(i, true);
-	for (; i < NR_CPUS; i++)
-		set_cpu_possible(i, false);
 }
 
 void smp_fill_in_sib_core_maps(void)

@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-2.0-only */
 /*
  * Copyright (C) 2012 Red Hat, Inc.
  * Copyright (C) 2015 Google, Inc.
@@ -5,8 +6,6 @@
  * Author: Mikulas Patocka <mpatocka@redhat.com>
  *
  * Based on Chromium dm-verity driver (C) 2011 The Chromium OS Authors
- *
- * This file is released under the GPLv2.
  */
 
 #ifndef DM_VERITY_H
@@ -72,10 +71,10 @@ struct dm_verity_io {
 	/* original value of bio->bi_end_io */
 	bio_end_io_t *orig_bi_end_io;
 
+	struct bvec_iter iter;
+
 	sector_t block;
 	unsigned n_blocks;
-
-	struct bvec_iter iter;
 
 	struct work_struct work;
 
@@ -107,12 +106,6 @@ static inline u8 *verity_io_want_digest(struct dm_verity *v,
 					struct dm_verity_io *io)
 {
 	return (u8 *)(io + 1) + v->ahash_reqsize + v->digest_size;
-}
-
-static inline u8 *verity_io_digest_end(struct dm_verity *v,
-				       struct dm_verity_io *io)
-{
-	return verity_io_want_digest(v, io) + v->digest_size;
 }
 
 extern int verity_for_bv_block(struct dm_verity *v, struct dm_verity_io *io,

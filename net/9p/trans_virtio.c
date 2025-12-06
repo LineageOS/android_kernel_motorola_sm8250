@@ -329,7 +329,7 @@ static int p9_get_mapped_pages(struct virtio_chan *chan,
 	if (!iov_iter_count(data))
 		return 0;
 
-	if (!(data->type & ITER_KVEC)) {
+	if (iov_iter_is_kvec(data)) {
 		int n;
 		/*
 		 * We allow only p9_max_pages pinned. We wait for the
@@ -409,7 +409,7 @@ p9_virtio_zc_request(struct p9_client *client, struct p9_req_t *req,
 	struct page **in_pages = NULL, **out_pages = NULL;
 	struct virtio_chan *chan = client->trans;
 	struct scatterlist *sgs[4];
-	size_t offs;
+	size_t offs = 0;
 	int need_drop = 0;
 	int kicked = 0;
 

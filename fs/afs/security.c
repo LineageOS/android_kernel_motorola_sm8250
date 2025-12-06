@@ -124,7 +124,7 @@ void afs_cache_permit(struct afs_vnode *vnode, struct key *key,
 	bool changed = false;
 	int i, j;
 
-	_enter("{%x:%u},%x,%x",
+	_enter("{%llx:%llu},%x,%x",
 	       vnode->fid.vid, vnode->fid.vnode, key_serial(key), caller_access);
 
 	rcu_read_lock();
@@ -287,7 +287,7 @@ int afs_check_permit(struct afs_vnode *vnode, struct key *key,
 	bool valid = false;
 	int i, ret;
 
-	_enter("{%x:%u},%x",
+	_enter("{%llx:%llu},%x",
 	       vnode->fid.vid, vnode->fid.vnode, key_serial(key));
 
 	/* check the permits to see if we've got one yet */
@@ -340,14 +340,14 @@ int afs_check_permit(struct afs_vnode *vnode, struct key *key,
 int afs_permission(struct inode *inode, int mask)
 {
 	struct afs_vnode *vnode = AFS_FS_I(inode);
-	afs_access_t uninitialized_var(access);
+	afs_access_t access;
 	struct key *key;
 	int ret;
 
 	if (mask & MAY_NOT_BLOCK)
 		return -ECHILD;
 
-	_enter("{{%x:%u},%lx},%x,",
+	_enter("{{%llx:%llu},%lx},%x,",
 	       vnode->fid.vid, vnode->fid.vnode, vnode->flags, mask);
 
 	key = afs_request_key(vnode->volume->cell);

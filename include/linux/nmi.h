@@ -214,23 +214,18 @@ u64 hw_nmi_get_sample_period(int watchdog_thresh);
 #endif
 
 #if defined(CONFIG_HARDLOCKUP_CHECK_TIMESTAMP) && \
-    defined(CONFIG_HARDLOCKUP_DETECTOR)
+    defined(CONFIG_HARDLOCKUP_DETECTOR_PERF)
 void watchdog_update_hrtimer_threshold(u64 period);
 #else
 static inline void watchdog_update_hrtimer_threshold(u64 period) { }
 #endif
 
 struct ctl_table;
-extern int proc_watchdog(struct ctl_table *, int ,
-			 void __user *, size_t *, loff_t *);
-extern int proc_nmi_watchdog(struct ctl_table *, int ,
-			     void __user *, size_t *, loff_t *);
-extern int proc_soft_watchdog(struct ctl_table *, int ,
-			      void __user *, size_t *, loff_t *);
-extern int proc_watchdog_thresh(struct ctl_table *, int ,
-				void __user *, size_t *, loff_t *);
-extern int proc_watchdog_cpumask(struct ctl_table *, int,
-				 void __user *, size_t *, loff_t *);
+int proc_watchdog(struct ctl_table *, int, void *, size_t *, loff_t *);
+int proc_nmi_watchdog(struct ctl_table *, int , void *, size_t *, loff_t *);
+int proc_soft_watchdog(struct ctl_table *, int , void *, size_t *, loff_t *);
+int proc_watchdog_thresh(struct ctl_table *, int , void *, size_t *, loff_t *);
+int proc_watchdog_cpumask(struct ctl_table *, int, void *, size_t *, loff_t *);
 
 #ifdef CONFIG_HAVE_ACPI_APEI_NMI
 #include <asm/nmi.h>

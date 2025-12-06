@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-2.0-only
 /*
  * kernel/power/hibernate.c - Hibernation (a.k.a suspend-to-disk) support.
  *
@@ -6,8 +7,6 @@
  * Copyright (c) 2004 Pavel Machek <pavel@ucw.cz>
  * Copyright (c) 2009 Rafael J. Wysocki, Novell Inc.
  * Copyright (C) 2012 Bojan Smojver <bojan@rexursive.com>
- *
- * This file is released under the GPLv2.
  */
 
 #define pr_fmt(fmt) "PM: " fmt
@@ -579,7 +578,11 @@ int hibernation_platform_enter(void)
 
 	local_irq_disable();
 	system_state = SYSTEM_SUSPEND;
-	syscore_suspend();
+
+	error = syscore_suspend();
+	if (error)
+		goto Enable_irqs;
+
 	if (pm_wakeup_pending()) {
 		error = -EAGAIN;
 		goto Power_up;
@@ -591,6 +594,7 @@ int hibernation_platform_enter(void)
 
  Power_up:
 	syscore_resume();
+ Enable_irqs:
 	system_state = SYSTEM_RUNNING;
 	local_irq_enable();
 

@@ -32,7 +32,7 @@
 #include <asm/asm-offsets.h>
 #include <asm/lowcore.h>
 #include <asm/stp.h>
-#include <asm/pgtable.h>
+#include <linux/pgtable.h>
 #include <asm/gmap.h>
 #include <asm/nmi.h>
 #include <asm/switch_to.h>
@@ -707,9 +707,9 @@ static int kvm_vm_ioctl_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
 			r = -EINVAL;
 		else {
 			r = 0;
-			down_write(&kvm->mm->mmap_sem);
+			mmap_write_lock(kvm->mm);
 			kvm->mm->context.allow_gmap_hpage_1m = 1;
-			up_write(&kvm->mm->mmap_sem);
+			mmap_write_unlock(kvm->mm);
 			/*
 			 * We might have to create fake 4k page
 			 * tables. To avoid that the hardware works on
@@ -1542,7 +1542,7 @@ static long kvm_s390_get_skeys(struct kvm *kvm, struct kvm_s390_skeys *args)
 	if (!keys)
 		return -ENOMEM;
 
-	down_read(&current->mm->mmap_sem);
+	mmap_read_lock(current->mm);
 	srcu_idx = srcu_read_lock(&kvm->srcu);
 	for (i = 0; i < args->count; i++) {
 		hva = gfn_to_hva(kvm, args->start_gfn + i);
@@ -1556,7 +1556,7 @@ static long kvm_s390_get_skeys(struct kvm *kvm, struct kvm_s390_skeys *args)
 			break;
 	}
 	srcu_read_unlock(&kvm->srcu, srcu_idx);
-	up_read(&current->mm->mmap_sem);
+	mmap_read_unlock(current->mm);
 
 	if (!r) {
 		r = copy_to_user((uint8_t __user *)args->skeydata_addr, keys,
@@ -1600,7 +1600,7 @@ static long kvm_s390_set_skeys(struct kvm *kvm, struct kvm_s390_skeys *args)
 		goto out;
 
 	i = 0;
-	down_read(&current->mm->mmap_sem);
+	mmap_read_lock(current->mm);
 	srcu_idx = srcu_read_lock(&kvm->srcu);
         while (i < args->count) {
 		unlocked = false;
@@ -1627,7 +1627,7 @@ static long kvm_s390_set_skeys(struct kvm *kvm, struct kvm_s390_skeys *args)
 			i++;
 	}
 	srcu_read_unlock(&kvm->srcu, srcu_idx);
-	up_read(&current->mm->mmap_sem);
+	mmap_read_unlock(current->mm);
 out:
 	kvfree(keys);
 	return r;
@@ -1716,6 +1716,10 @@ static unsigned long kvm_s390_next_dirty_cmma(struct kvm_memslots *slots,
 		ms = slots->memslots + slotidx;
 		ofs = 0;
 	}
+
+	if (cur_gfn < ms->base_gfn)
+		ofs = 0;
+
 	ofs = find_next_bit(kvm_second_dirty_bitmap(ms), ms->npages, ofs);
 	while ((slotidx > 0) && (ofs >= ms->npages)) {
 		slotidx--;
@@ -1813,14 +1817,14 @@ static int kvm_s390_get_cmma_bits(struct kvm *kvm,
 	if (!values)
 		return -ENOMEM;
 
-	down_read(&kvm->mm->mmap_sem);
+	mmap_read_lock(kvm->mm);
 	srcu_idx = srcu_read_lock(&kvm->srcu);
 	if (peek)
 		ret = kvm_s390_peek_cmma(kvm, args, values, bufsize);
 	else
 		ret = kvm_s390_get_cmma(kvm, args, values, bufsize);
 	srcu_read_unlock(&kvm->srcu, srcu_idx);
-	up_read(&kvm->mm->mmap_sem);
+	mmap_read_unlock(kvm->mm);
 
 	if (kvm->arch.migration_mode)
 		args->remaining = atomic64_read(&kvm->arch.cmma_dirty_pages);
@@ -1870,7 +1874,7 @@ static int kvm_s390_set_cmma_bits(struct kvm *kvm,
 		goto out;
 	}
 
-	down_read(&kvm->mm->mmap_sem);
+	mmap_read_lock(kvm->mm);
 	srcu_idx = srcu_read_lock(&kvm->srcu);
 	for (i = 0; i < args->count; i++) {
 		hva = gfn_to_hva(kvm, args->start_gfn + i);
@@ -1885,12 +1889,12 @@ static int kvm_s390_set_cmma_bits(struct kvm *kvm,
 		set_pgste_bits(kvm->mm, hva, mask, pgstev);
 	}
 	srcu_read_unlock(&kvm->srcu, srcu_idx);
-	up_read(&kvm->mm->mmap_sem);
+	mmap_read_unlock(kvm->mm);
 
 	if (!kvm->mm->context.uses_cmm) {
-		down_write(&kvm->mm->mmap_sem);
+		mmap_write_lock(kvm->mm);
 		kvm->mm->context.uses_cmm = 1;
-		up_write(&kvm->mm->mmap_sem);
+		mmap_write_unlock(kvm->mm);
 	}
 out:
 	vfree(bits);
@@ -2991,10 +2995,6 @@ int kvm_arch_vcpu_ioctl_set_fpu(struct kvm_vcpu *vcpu, struct kvm_fpu *fpu)
 
 	vcpu_load(vcpu);
 
-	if (test_fp_ctl(fpu->fpc)) {
-		ret = -EINVAL;
-		goto out;
-	}
 	vcpu->run->s.regs.fpc = fpu->fpc;
 	if (MACHINE_HAS_VX)
 		convert_fp_to_vx((__vector128 *) vcpu->run->s.regs.vrs,
@@ -3002,7 +3002,6 @@ int kvm_arch_vcpu_ioctl_set_fpu(struct kvm_vcpu *vcpu, struct kvm_fpu *fpu)
 	else
 		memcpy(vcpu->run->s.regs.fprs, &fpu->fprs, sizeof(fpu->fprs));
 
-out:
 	vcpu_put(vcpu);
 	return ret;
 }

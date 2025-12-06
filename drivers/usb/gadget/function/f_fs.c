@@ -285,6 +285,11 @@ static int __ffs_ep0_queue_wait(struct ffs_data *ffs, char *data, size_t len)
 	struct usb_request *req = ffs->ep0req;
 	int ret;
 
+	if (!req) {
+		spin_unlock_irq(&ffs->ev.waitq.lock);
+		return -EINVAL;
+	}
+
 	req->zero     = len < le16_to_cpu(ffs->ev.setup.wLength);
 
 	spin_unlock_irq(&ffs->ev.waitq.lock);
@@ -813,6 +818,7 @@ static void ffs_user_copy_worker(struct work_struct *work)
 	int ret = io_data->req->status ? io_data->req->status :
 					 io_data->req->actual;
 	bool kiocb_has_eventfd = io_data->kiocb->ki_flags & IOCB_EVENTFD;
+	unsigned long flags;
 
 	ffs_log("enter: ret %d for %s", ret, io_data->read ? "read" : "write");
 
@@ -831,7 +837,10 @@ static void ffs_user_copy_worker(struct work_struct *work)
 	if (io_data->ffs->ffs_eventfd && !kiocb_has_eventfd)
 		eventfd_signal(io_data->ffs->ffs_eventfd, 1);
 
+	spin_lock_irqsave(&io_data->ffs->eps_lock, flags);
 	usb_ep_free_request(io_data->ep, io_data->req);
+	io_data->req = NULL;
+	spin_unlock_irqrestore(&io_data->ffs->eps_lock, flags);
 
 	if (io_data->read)
 		kfree(io_data->to_free);
@@ -2006,7 +2015,7 @@ static int functionfs_bind(struct ffs_data *ffs, struct usb_composite_dev *cdev)
 	ffs_log("enter: state %d setup_state %d flag %lu", ffs->state,
 		ffs->setup_state, ffs->flags);
 
-	if (WARN_ON(ffs->state != FFS_ACTIVE
+	if ((ffs->state != FFS_ACTIVE
 		 || test_and_set_bit(FFS_FL_BOUND, &ffs->flags)))
 		return -EBADFD;
 
@@ -2041,12 +2050,16 @@ static void functionfs_unbind(struct ffs_data *ffs)
 	ENTER();
 
 	if (!WARN_ON(!ffs->gadget)) {
+		/* dequeue before freeing ep0req */
+		usb_ep_dequeue(ffs->gadget->ep0, ffs->ep0req);
+		mutex_lock(&ffs->mutex);
 		usb_ep_free_request(ffs->gadget->ep0, ffs->ep0req);
 		ffs->ep0req = NULL;
 		ffs->gadget = NULL;
 		clear_bit(FFS_FL_BOUND, &ffs->flags);
 		ffs_log("state %d setup_state %d flag %lu gadget %pK\n",
 			ffs->state, ffs->setup_state, ffs->flags, ffs->gadget);
+		mutex_unlock(&ffs->mutex);
 		ffs_data_put(ffs);
 	}
 }
@@ -3627,7 +3640,7 @@ static int ffs_func_setup(struct usb_function *f,
 	__ffs_event_add(ffs, FUNCTIONFS_SETUP);
 	spin_unlock_irqrestore(&ffs->ev.waitq.lock, flags);
 
-	return creq->wLength == 0 ? USB_GADGET_DELAYED_STATUS : 0;
+	return ffs->ev.setup.wLength == 0 ? USB_GADGET_DELAYED_STATUS : 0;
 }
 
 static bool ffs_func_req_match(struct usb_function *f,
@@ -3789,7 +3802,7 @@ static void ffs_free_inst(struct usb_function_instance *f)
 
 static int ffs_set_inst_name(struct usb_function_instance *fi, const char *name)
 {
-	if (strlen(name) >= FIELD_SIZEOF(struct ffs_dev, name))
+	if (strlen(name) >= sizeof_field(struct ffs_dev, name))
 		return -ENAMETOOLONG;
 	return ffs_name_dev(to_f_fs_opts(fi)->dev, name);
 }
@@ -3849,10 +3862,9 @@ static void ffs_func_unbind(struct usb_configuration *c,
 	/* Drain any pending AIO completions */
 	drain_workqueue(ffs->io_completion_wq);
 
-	if (!--opts->refcnt) {
-		ffs_event_add(ffs, FUNCTIONFS_UNBIND);
+	ffs_event_add(ffs, FUNCTIONFS_UNBIND);
+	if (!--opts->refcnt)
 		functionfs_unbind(ffs);
-	}
 
 	/* cleanup after autoconfig */
 	spin_lock_irqsave(&func->ffs->eps_lock, flags);
@@ -3876,12 +3888,8 @@ static void ffs_func_unbind(struct usb_configuration *c,
 	func->function.ssp_descriptors = NULL;
 	func->interfaces_nums = NULL;
 
-	if (opts->refcnt) {
-		ffs_event_add(ffs, FUNCTIONFS_UNBIND);
-
-		ffs_log("exit: state %d setup_state %d flag %lu", ffs->state,
-			ffs->setup_state, ffs->flags);
-	}
+	ffs_log("exit: state %d setup_state %d flag %lu", ffs->state,
+		ffs->setup_state, ffs->flags);
 }
 
 static struct usb_function *ffs_alloc(struct usb_function_instance *fi)

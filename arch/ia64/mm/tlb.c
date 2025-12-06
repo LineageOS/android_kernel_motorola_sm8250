@@ -297,8 +297,8 @@ local_flush_tlb_all (void)
 	ia64_srlz_i();			/* srlz.i implies srlz.d */
 }
 
-void
-flush_tlb_range (struct vm_area_struct *vma, unsigned long start,
+static void
+__flush_tlb_range (struct vm_area_struct *vma, unsigned long start,
 		 unsigned long end)
 {
 	struct mm_struct *mm = vma->vm_mm;
@@ -335,11 +335,30 @@ flush_tlb_range (struct vm_area_struct *vma, unsigned long start,
 	preempt_enable();
 	ia64_srlz_i();			/* srlz.i implies srlz.d */
 }
+
+void flush_tlb_range(struct vm_area_struct *vma,
+		unsigned long start, unsigned long end)
+{
+	if (unlikely(end - start >= 1024*1024*1024*1024UL
+			|| REGION_NUMBER(start) != REGION_NUMBER(end - 1))) {
+		/*
+		 * If we flush more than a tera-byte or across regions, we're
+		 * probably better off just flushing the entire TLB(s).  This
+		 * should be very rare and is not worth optimizing for.
+		 */
+		flush_tlb_all();
+	} else {
+		/* flush the address range from the tlb */
+		__flush_tlb_range(vma, start, end);
+		/* flush the virt. page-table area mapping the addr range */
+		__flush_tlb_range(vma, ia64_thash(start), ia64_thash(end));
+	}
+}
 EXPORT_SYMBOL(flush_tlb_range);
 
 void ia64_tlb_init(void)
 {
-	ia64_ptce_info_t uninitialized_var(ptce_info); /* GCC be quiet */
+	ia64_ptce_info_t ptce_info;
 	u64 tr_pgbits;
 	long status;
 	pal_vm_info_1_u_t vm_info_1;

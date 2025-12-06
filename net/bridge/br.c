@@ -151,7 +151,7 @@ static int br_switchdev_event(struct notifier_block *unused,
 			break;
 		}
 		br_fdb_offloaded_set(br, p, fdb_info->addr,
-				     fdb_info->vid);
+				     fdb_info->vid, true);
 		break;
 	case SWITCHDEV_FDB_DEL_TO_BRIDGE:
 		fdb_info = ptr;
@@ -163,7 +163,7 @@ static int br_switchdev_event(struct notifier_block *unused,
 	case SWITCHDEV_FDB_OFFLOADED:
 		fdb_info = ptr;
 		br_fdb_offloaded_set(br, p, fdb_info->addr,
-				     fdb_info->vid);
+				     fdb_info->vid, fdb_info->offloaded);
 		break;
 	}
 
@@ -202,7 +202,7 @@ static int __init br_init(void)
 {
 	int err;
 
-	BUILD_BUG_ON(sizeof(struct br_input_skb_cb) > FIELD_SIZEOF(struct sk_buff, cb));
+	BUILD_BUG_ON(sizeof(struct br_input_skb_cb) > sizeof_field(struct sk_buff, cb));
 
 	err = stp_proto_register(&br_stp_proto);
 	if (err < 0) {
