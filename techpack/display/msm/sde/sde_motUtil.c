@@ -353,7 +353,7 @@ static ssize_t _sde_debugfs_motUtil_dispUtil_read(char *buffer)
 			blen += snprintf((buffer + blen) , 6, "0x%02x ",
 					*motUtil_data.rd_buf++);
 
-			blen += snprintf((buffer + blen), 2, "\n");
+		blen += snprintf((buffer + blen), 2, "\n");
 	} else
 		SDE_ERROR("motUtil failed to read from panel\n");
 
