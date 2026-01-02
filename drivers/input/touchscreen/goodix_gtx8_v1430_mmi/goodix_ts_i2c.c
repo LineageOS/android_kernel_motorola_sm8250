@@ -100,22 +100,28 @@ int goodix_ts_core_init(void);
 static int goodix_parse_dt_resolution(struct device_node *node,
 		struct goodix_ts_board_data *board_data)
 {
-	int r, err;
+	int r;
 
 	r = of_property_read_u32(node, "goodix,panel-max-x",
 				 &board_data->panel_max_x);
-	if (r)
-		err = -ENOENT;
+	if (r) {
+		ts_err("failed get panel-max-x");
+		return r;
+	}
 
 	r = of_property_read_u32(node, "goodix,panel-max-y",
 				 &board_data->panel_max_y);
-	if (r)
-		err = -ENOENT;
+	if (r) {
+		ts_err("failed get panel-max-y");
+		return r;
+	}
 
 	r = of_property_read_u32(node, "goodix,panel-max-w",
 				 &board_data->panel_max_w);
-	if (r)
-		err = -ENOENT;
+	if (r) {
+		ts_err("failed get panel-max-w");
+		return r;
+	}
 
 	board_data->swap_axis = of_property_read_bool(node,
 					"goodix,swap-axis");
