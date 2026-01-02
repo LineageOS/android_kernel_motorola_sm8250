@@ -3507,7 +3507,7 @@ static int syna_tcm_fb_notifier_cb(struct notifier_block *nb,
 
 	if (evdata && evdata->data && tcm_hcd) {
 		transition = evdata->data;
-		
+
 		if (atomic_read(&tcm_hcd->firmware_flashing) &&
 				*transition == FB_BLANK_POWERDOWN) {
 
@@ -4125,9 +4125,7 @@ static int syna_tcm_remove(struct platform_device *pdev)
 
 static void syna_tcm_shutdown(struct platform_device *pdev)
 {
-	int retval;
-
-	retval = syna_tcm_remove(pdev);
+	syna_tcm_remove(pdev);
 }
 
 #ifdef CONFIG_PM
