@@ -1,0 +1,23 @@
+config TOUCHSCREEN_SYNAPTICS_TCM_MMI_I2C
+	tristate "Synaptics I2C MMI"
+	depends on I2C
+	default n
+	help
+	  Say Y here to use I2C bus for communication.
+
+	  Else, say N.
+
+	  This will configure I2C bus for communicating
+	  with touch controller.
+
+config TOUCHSCREEN_SYNAPTICS_TCM_MMI_SPI
+	tristate "Synaptics SPI MMI"
+	depends on SPI_MASTER
+	default n
+	help
+	  Say Y here to use SPI bus for communication.
+
+	  Else, say N.
+
+	  This will configure SPI bus for communicating
+	  with touch controller.

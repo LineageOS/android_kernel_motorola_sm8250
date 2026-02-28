@@ -1,0 +1,2 @@
+config CAMERA_CCI_INTF
+	tristate "Moto Camera CCI Interface"
