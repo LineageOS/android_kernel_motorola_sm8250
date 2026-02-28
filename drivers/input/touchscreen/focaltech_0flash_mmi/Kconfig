@@ -2,16 +2,58 @@
 # Focaltech Touchscreen driver configuration
 #
 
-config TOUCHSCREEN_FTS
-    bool "Focaltech Touchscreen"
-    depends on I2C
-    default n
-    help
-      Say Y here if you have Focaltech touch panel.
-      If unsure, say N.
+config TOUCHSCREEN_FTS_0FLASH_MMI
+	tristate "Moto Focaltech Touchscreen"
+	depends on I2C
+	default n
+	help
+	  Say Y here if you have Moto Focaltech touch panel.
+	  If unsure, say N.
 
-config TOUCHSCREEN_FTS_DIRECTORY
-    string "Focaltech ts directory name"
-    default "focaltech_touch"
-    depends on TOUCHSCREEN_FTS
+config INPUT_FOCALTECH_0FLASH_MMI_IC_NAME
+	string "Focaltech Chip IC Name"
+	depends on TOUCHSCREEN_FTS_0FLASH_MMI
+	default ""
+	help
+	  Set the Focaltech IC name to enable support for specific touch panel chips.
+	  If unsure, leave blank.
 
+config INPUT_FOCALTECH_0FLASH_MMI_ENABLE_DOUBLE_TAP
+	bool "Moto Focaltech Double tap"
+	depends on TOUCHSCREEN_FTS_0FLASH_MMI
+	default n
+	help
+	  Say Y here to enable support for double tap functionality on Focaltech touch panel.
+	  If unsure, say N.
+
+config INPUT_FOCALTECH_0FLASH_MMI_ENABLE_PALM
+	bool "Moto Focaltech Palm"
+	depends on TOUCHSCREEN_FTS_0FLASH_MMI
+	default n
+	help
+	  Say Y here to enable support for Palm functionality on Focaltech touch panel.
+	  If unsure, say N.
+
+config INPUT_FOCALTECH_0FLASH_MMI_PEN_NOTIFIER
+	bool "Moto Focaltech Pen notifier"
+	depends on TOUCHSCREEN_FTS_0FLASH_MMI
+	default n
+	help
+	  Say Y here to enable support for Pen notifier functionality on Focaltech touch panel.
+	  If unsure, say N.
+
+config TOUCHSCREEN_FTS_0FLASH_MMI_ESD_ENABLE
+	bool "Moto Focaltech ESD Detection"
+	depends on TOUCHSCREEN_FTS_0FLASH_MMI
+	default n
+	help
+	  Say Y here if you want to have ESD Detection support on Moto Focaltech touch panel.
+	  If unsure, say N.
+
+config INPUT_FOCALTECH_PANEL_NOTIFICATIONS
+	bool "Focaltech Panel Notifications"
+	depends on TOUCHSCREEN_FTS_0FLASH_MMI
+	default n
+	help
+	  Say Y here to enable panel notification support for Focaltech touch panels.
+	  If unsure, say N.

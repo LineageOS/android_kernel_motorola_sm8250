@@ -1,13 +1,4 @@
-# add -Wall to try to catch everything we can.
-EXTRA_CFLAGS += -Wall
-EXTRA_CFLAGS += -I$(TOP)/motorola/kernel/modules/include
+ccflags-$(CONFIG_INPUT_AWINIC_HAPTIC) += -DCONFIG_INPUT_AWINIC_HAPTIC
+ccflags-$(CONFIG_SMITH_DTB) += -DCONFIG_AW8697_BOOT_VIBRATION
 
-ifneq ($(filter m y,$(CONFIG_INPUT_AWINIC_HAPTIC)),)
-	EXTRA_CFLAGS += -DCONFIG_INPUT_AWINIC_HAPTIC
-endif
-
-ifneq (,$(filter smith%,$(TARGET_PRODUCT)))
-	EXTRA_CFLAGS += -DCONFIG_AW8697_BOOT_VIBRATION
-endif
-
-obj-m += aw8697.o
+obj-$(CONFIG_AW8697_HAPTIC) += aw8697.o

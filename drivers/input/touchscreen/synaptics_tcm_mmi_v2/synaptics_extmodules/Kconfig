@@ -1,0 +1,83 @@
+config TOUCHSCREEN_SYNAPTICS_TCM_MMI_DEVICE
+	tristate "Synaptics TCM device module"
+	depends on TOUCHSCREEN_SYNAPTICS_TCM_MMI_CORE
+	default n
+	help
+	  Say Y here to enable support for TCM device functionality.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called synaptics_tcm_device.
+
+config TOUCHSCREEN_SYNAPTICS_TCM_MMI_TESTING
+	tristate "Synaptics TCM testing module"
+	depends on TOUCHSCREEN_SYNAPTICS_TCM_MMI_CORE
+	default n
+	help
+	  Say Y here to enable support for testing functionality.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called synaptics_tcm_testing.
+
+config TOUCHSCREEN_SYNAPTICS_TCM_MMI_REFLASH
+	tristate "Synaptics TCM reflash module"
+	depends on TOUCHSCREEN_SYNAPTICS_TCM_MMI_CORE
+	default n
+	help
+	  Say Y here to enable support for reflash functionality.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called synaptics_tcm_reflash.
+
+config TOUCHSCREEN_SYNAPTICS_TCM_MMI_RECOVERY
+	tristate "Synaptics TCM recovery module"
+	depends on TOUCHSCREEN_SYNAPTICS_TCM_MMI_CORE
+	default n
+	help
+	  Say Y here to enable support for recovery functionality.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called synaptics_tcm_recovery.
+
+config TOUCHSCREEN_SYNAPTICS_TCM_MMI_ZEROFLASH
+	tristate "Synaptics TCM zeroflash module"
+	depends on TOUCHSCREEN_SYNAPTICS_TCM_MMI_CORE
+	default n
+	help
+	  Say Y here to enable support for ZeroFlash functionality.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called synaptics_tcm_zeroflash.
+
+config TOUCHSCREEN_SYNAPTICS_TCM_MMI_DIAGNOSTICS
+	tristate "Synaptics TCM diagnostics module"
+	depends on TOUCHSCREEN_SYNAPTICS_TCM_MMI_CORE
+	default n
+	help
+	  Say Y here to enable support for diagnostics functionality.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called synaptics_tcm_diagnostics.
+
+config TOUCHSCREEN_SYNAPTICS_TCM_MMI_GESTURES
+	bool "Synaptics TCM Moto gestures"
+	depends on TOUCHSCREEN_SYNAPTICS_TCM_MMI_CORE && INPUT_TOUCHSCREEN_MMI
+	default n
+	help
+	  Say Y here to enable support for Moto gestures functionality.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called synaptics_ts_mmi.

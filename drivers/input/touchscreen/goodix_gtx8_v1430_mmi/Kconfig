@@ -1,0 +1,47 @@
+#
+# Goodix GTx8 Touchscreen driver
+#
+
+config TOUCHSCREEN_GOODIX_GTX8_MMI
+	tristate "Goodix GTx8 Moto touchpanel driver"
+	default n
+	help
+	  This is the main file for touchpanel driver for Goodix GTx8
+	  touchscreens.
+
+	  Say Y here if you have a Goodix GTx8 touchscreen connected
+	  to your system.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called goodix_v1430_mmi.
+
+config TOUCHSCREEN_GOODIX_GTX8_MMI_UPDATE
+	tristate "Goodix GTx8 Moto touchpanel auto update support"
+	depends on TOUCHSCREEN_GOODIX_GTX8_MMI
+	default n
+	help
+	  This enables support for firmware update for Goodix GTx8
+	  touchscreens.
+
+	  Say Y here if you have a Goodix GTx8 touchscreen connected
+	  to your system.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called goodix_v1430_update_mmi.
+
+config TOUCHSCREEN_GOODIX_GTX8_MMI_TOOLS
+	tristate "Goodix GTx8 Moto touchpanel Tools"
+	depends on TOUCHSCREEN_GOODIX_GTX8_MMI
+	default n
+	help
+	  This is application debug interface support for Goodix GTx8
+	  touchscreens.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called goodix_v1430_ts_tools_mmi.
