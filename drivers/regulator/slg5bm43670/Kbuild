@@ -1,5 +1,2 @@
-EXTRA_CFLAGS += -Wall
-EXTRA_CFLAGS += -I$(ANDROID_BUILD_TOP)/motorola/kernel/modules/include
-
 slg5bm43670-objs += slg5bm43670-regulator.o
-obj-m	+= slg5bm43670.o
+obj-$(CONFIG_REGULATOR_SLG5BM43670)	+= slg5bm43670.o

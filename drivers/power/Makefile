@@ -8,3 +8,4 @@ obj-$(CONFIG_QPNP_SMBCHARGER_MMI) += qpnp-smbcharger-mmi/
 obj-$(CONFIG_MMI_PARALLEL_CHARGER) += mmi_parallel_charger/
 obj-$(CONFIG_MMI_PARALLEL_CHARGER_QC3P) += mmi_parallel_charger_qc3p/
 obj-$(CONFIG_BQ2597X_MMI) += bq2597x_mmi/
+obj-$(CONFIG_BQ27426_FG_MMI) += bq27426_fg_mmi/
