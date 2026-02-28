@@ -1,0 +1,11 @@
+config TOUCHSCREEN_SYNAPTICS_TCM_MMI_CORE
+	tristate "Synaptics TCM core module"
+	depends on I2C || SPI_MASTER
+	default n
+	help
+	  Say Y here to enable core functionality.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called synaptics_core_module.

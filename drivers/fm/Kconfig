@@ -1,0 +1,5 @@
+config RADIO_ELNA
+	tristate "ELNA FM Radio"
+	default n
+	help
+	  Choose Y here if you have this FM radio chip.

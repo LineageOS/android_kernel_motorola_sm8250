@@ -9,3 +9,4 @@ menuconfig INPUT_AWINIC_HAPTIC
 	  Enables Awinic Haptic driver.
 
 source "drivers/misc/awinic/aw8695/Kconfig"
+source "drivers/misc/awinic/aw8697/Kconfig"

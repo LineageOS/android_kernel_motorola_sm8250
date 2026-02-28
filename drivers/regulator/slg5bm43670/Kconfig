@@ -1,0 +1,9 @@
+config REGULATOR_SLG5BM43670
+	tristate "SLG5BM43670 REGULATOR"
+	default n
+	help
+	  Say Y here if you have a SLG5BM43670 compatible
+	  device connected.
+
+	  This driver can also be built as a module.  If so, the module
+	  will be called slg5bm43670-regulator.
