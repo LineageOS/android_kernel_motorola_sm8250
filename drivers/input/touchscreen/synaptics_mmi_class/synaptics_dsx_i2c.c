@@ -695,13 +695,12 @@ static int parse_patch_data(char *value_p, u8 data[], long *bitmask_v)
 static int synaptics_dsx_parse_patch(int func, char *query,
 		struct synaptics_dsx_patch *patch_ptr, bool expect_data)
 {
-	int i, error, rt_mod, function, num_of_bytes;
+	int i, error, function, num_of_bytes;
 	u8 data[64];
 	char *next, *subpkt_p, *value_p, *pair = query;
 	long regstr_v, bitmask_v, subpkt_v;
 	struct synaptics_dsx_func_patch *patch;
 
-	rt_mod = func & 0xf00;
 	function = func & 0xff;
 	for (i = 0; pair; pair = next, i++) {
 		num_of_bytes = 0;
