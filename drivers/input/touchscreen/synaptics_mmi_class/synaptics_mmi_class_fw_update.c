@@ -3800,12 +3800,10 @@ exit:
 static ssize_t fwu_sysfs_do_reflash_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t count)
 {
-	int retval;
-
 	if (count > MAX_IMAGE_NAME_LEN)
 		return -EINVAL;
 
-	retval = synaptics_dsx_firmware_update(dev, buf);
+	synaptics_dsx_firmware_update(dev, buf);
 
 	return count;
 }
