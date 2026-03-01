@@ -418,6 +418,7 @@ int sde_debugfs_mot_util_init(struct sde_kms *sde_kms,
 		return -ENOMEM;
 
 	motUtil_data.te_enable = true;
+	motUtil_data.hbm_status = false;
 	mutex_init(&motUtil_data.lock);
 	return 0;
 }
@@ -489,6 +490,9 @@ static ssize_t dsi_display_mot_kmsprop_store(struct device *dev,
 	if (rc < 0)
 		return rc;
 
+	if (kmsprop_attr->conn_type == KMSPROPTEST_TYPE_HBM)
+		motUtil_data.hbm_status = val;
+
 	return count;
 }
 
@@ -531,3 +535,9 @@ void sde_sysfs_mot_kms_prop_util_deinit(struct dsi_display *display)
 		sysfs_remove_file(&dev->kobj, &kmsprop_attrs[i].attr.attr);
 	}
 }
+
+bool get_mot_hbm_status(void)
+{
+	return motUtil_data.hbm_status;
+}
+EXPORT_SYMBOL(get_mot_hbm_status);
