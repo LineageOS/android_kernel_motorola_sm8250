@@ -6077,7 +6077,6 @@ static void synaptics_rmi4_detection_work(struct work_struct *work)
 				__func__, exp_fhandler->fn_type);
 
 		if (exp_fhandler->fn_type == RMI_F54 && rmi4_data->f54_data) {
-			int scan_failures = 0;
 			struct synaptics_rmi4_func_packet_regs *regs;
 
 			regs = find_function(rmi4_data, SYNAPTICS_RMI4_F54);
@@ -6105,7 +6104,6 @@ static void synaptics_rmi4_detection_work(struct work_struct *work)
 			if (error) {
 				regs->nr_regs = 0;
 				dev_err(dev, "%s: F54_Data scan failed\n", __func__);
-				scan_failures++;
 			}
 
 			regs = find_function(rmi4_data, SYNAPTICS_RMI4_F54 | QUERY_TYPE);
@@ -6115,7 +6113,6 @@ static void synaptics_rmi4_detection_work(struct work_struct *work)
 			if (error) {
 				regs->nr_regs = 0;
 				dev_err(dev, "%s: F54_Query scan failed\n", __func__);
-				scan_failures++;
 			}
 		}
 
