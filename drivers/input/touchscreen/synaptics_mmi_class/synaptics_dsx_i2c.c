@@ -3800,7 +3800,6 @@ static int synaptics_rmi4_f12_abs_report(struct synaptics_rmi4_data *rmi4_data,
 	int y;
 	int p;
 	int w;
-	int id;
 #ifdef USE_TIME_SYNC_EVENTS
 	struct timespec hw_time = ktime_to_timespec(ktime_get());
 #endif
@@ -3857,7 +3856,6 @@ static int synaptics_rmi4_f12_abs_report(struct synaptics_rmi4_data *rmi4_data,
 			x = finger_data->x_lsb | (finger_data->x_msb << 8);
 			y = finger_data->y_lsb | (finger_data->y_msb << 8);
 			p = w = finger_data->z;
-			id = finger;
 
 			if (rmi4_data->board.x_flip)
 				x = rmi4_data->sensor_max_x - x;
