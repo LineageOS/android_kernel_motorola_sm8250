@@ -4294,9 +4294,12 @@ static void synaptics_rmi4_f51_handler(struct synaptics_rmi4_data *rmi4_data,
 	struct f54_d16_s0_type *f54_d16_0;
 	struct f54_d17_s0_type *f54_d17_0;
 	struct f51_d0_s0_type *f51_d0_0;
+#if 0
 	unsigned char presence_mask = 0;
+	int ii;
+#endif
 	//ktime_t log = ktime_get();
-	int ii, error;
+	int error;
 
 	regs = find_function(rmi4_data, SYNAPTICS_RMI4_F51 | DATA_TYPE);
 	if (!regs)
@@ -4316,11 +4319,11 @@ static void synaptics_rmi4_f51_handler(struct synaptics_rmi4_data *rmi4_data,
 	if (!subpkt || !subpkt->present)
 		return;
 
+#if 0
 	presence_mask |= (1 << GUARD_BIT);
 	pr_debug("F%x@D%d: int status [0]=0x%x, [1]=0x%x\n",
 			regs->f_number & 0xff, reg->r_number,
 			f51_d0_0->data[0], f51_d0_0->data[1]);
-#if 0
 	tk_debug("F%x@D%d: int status [%s][%s][%s] md = %d\n",
 			regs->f_number & 0xff, reg->r_number,
 			f51_d0_0->noise_state ? "N" : "-",
@@ -4332,9 +4335,11 @@ static void synaptics_rmi4_f51_handler(struct synaptics_rmi4_data *rmi4_data,
 	if (!regs)
 		return;
 
+#if 0
 	/* not all features might be enabled, thus determine presence */
 	for (ii = 0; ii < regs->nr_regs; ii++)
 		presence_mask |= (1 << ii);
+#endif
 
 	error = synaptics_rmi4_read_packet_regs(rmi4_data, regs);
 	if (error < 0)
