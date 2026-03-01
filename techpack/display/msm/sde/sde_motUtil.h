@@ -129,6 +129,7 @@ struct motUtil {
 	u8 *rd_buf;
 	int val;
 	bool te_enable;
+	bool hbm_status;
 };
 
 #define DISPUTIL_DSI_WRITE      0
@@ -152,5 +153,7 @@ int sde_debugfs_mot_util_init(struct sde_kms *sde_kms,
 struct dsi_display;
 void sde_sysfs_mot_kms_prop_util_init(struct dsi_display *display);
 void sde_sysfs_mot_kms_prop_util_deinit(struct dsi_display *display);
+
+bool get_mot_hbm_status(void);
 
 #endif /* __MOTUTIL_H__ */
