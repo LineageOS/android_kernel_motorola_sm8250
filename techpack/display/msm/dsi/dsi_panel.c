@@ -5748,7 +5748,7 @@ err:
 
 int dsi_panel_post_enable(struct dsi_panel *panel)
 {
-#ifdef CONFIG_PSTAR_DTB
+#if defined(CONFIG_PSTAR_DTB) || defined(CONFIG_RACER_DTB)
 	struct msm_param_info param_info;
 #endif
 	int rc = 0;
@@ -5777,7 +5777,7 @@ int dsi_panel_post_enable(struct dsi_panel *panel)
 
 	PANEL_NOTIFY(PANEL_EVENT_DISPLAY_ON);
 
-#ifdef CONFIG_PSTAR_DTB
+#if defined(CONFIG_PSTAR_DTB) || defined(CONFIG_RACER_DTB)
 	if (dsi_panel_param_is_hbm_on(panel)) {
 		mutex_unlock(&panel->panel_lock);
 		param_info.param_idx = PARAM_HBM_ID;
