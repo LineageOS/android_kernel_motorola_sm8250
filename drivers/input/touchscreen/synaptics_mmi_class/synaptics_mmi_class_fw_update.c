@@ -4148,7 +4148,6 @@ static ssize_t fwu_sysfs_erase_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t count)
 {
 	unsigned int input;
-	int retval;
 
 	if (sscanf(buf, "%u", &input) != 1)
 		return -EINVAL;
@@ -4156,7 +4155,7 @@ static ssize_t fwu_sysfs_erase_store(struct device *dev,
 	if (input != 1)
 		return -EINVAL;
 
-	retval = synaptics_dsx_firmware_erase(dev);
+	synaptics_dsx_firmware_erase(dev);
 
 	return count;
 }
