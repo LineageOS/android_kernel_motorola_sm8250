@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b9b10e5f_b266932c",
+        "filename": "drivers/media/platform/msm/camera/cam_sensor_module/cam_cci/Kbuild",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-02T23:13:20Z",
+      "side": 1,
+      "message": "white lines",
+      "revId": "d78a84c7f9ae4314614a17b80ffd8f6b1cec8940",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "12040b72_75ad38f7",
+        "filename": "drivers/power/bq27426_fg_mmi/Kconfig",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-02T23:13:20Z",
+      "side": 1,
+      "message": "double tabs (not sure how it slipped :\"D).",
+      "revId": "d78a84c7f9ae4314614a17b80ffd8f6b1cec8940",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b2be241_f5c2d219",
+        "filename": "drivers/power/bq27426_fg_mmi/Kconfig",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-02T23:13:20Z",
+      "side": 1,
+      "message": "tab + 2 spaces",
+      "revId": "d78a84c7f9ae4314614a17b80ffd8f6b1cec8940",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3991a8b3_423a296e",
+        "filename": "drivers/regulator/slg5bm43670/Kconfig",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-02T23:13:20Z",
+      "side": 1,
+      "message": "tab + 2 spaces",
+      "revId": "d78a84c7f9ae4314614a17b80ffd8f6b1cec8940",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
