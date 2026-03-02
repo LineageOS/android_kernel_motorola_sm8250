@@ -158,7 +158,7 @@ endif
 endif
 
 ifdef CONFIG_SND_SOC_LITO
-	MACHINE_OBJS += kona.o
+	MACHINE_OBJS += lito.o
 endif
 
 # for BENGAL sound card driver
