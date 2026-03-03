@@ -33,6 +33,23 @@
       "message": "leftover from the old base",
       "revId": "51a969b390a67aef3a5601bd3282d55c2203cb3b",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2aebee9d_b9c417ce",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-03T18:11:02Z",
+      "side": 1,
+      "message": "misclick :\"D\n\n\nwe still need it \n\n```\n/media/samsung_ssd/los23/kernel/motorola/sm8250/drivers/input/touchscreen/goodix_gtx8_v1430_mmi/goodix_ts_core.c:2098:13: error: no member named \u0027fb_notifier\u0027 in \u0027struct goodix_ts_core\u0027; did you mean \u0027ts_notifier\u0027?\n 2098 |         core_data-\u003efb_notifier.notifier_call \u003d goodix_ts_fb_notifier_callback;\n      |                    ^~~~~~~~~~~\n      |                    ts_notifier\n\n```",
+      "revId": "51a969b390a67aef3a5601bd3282d55c2203cb3b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
