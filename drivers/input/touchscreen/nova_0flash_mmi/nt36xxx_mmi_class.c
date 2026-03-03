@@ -13,7 +13,7 @@
 
 #include <linux/interrupt.h>
 #include <linux/gpio.h>
-#include <linux/touchscreen_mmi.h>
+#include <linux/touchscreen_mmi_nvt.h>
 #include <linux/regulator/consumer.h>
 #include "nt36xxx.h"
 
