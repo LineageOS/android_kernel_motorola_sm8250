@@ -1360,6 +1360,8 @@ source "drivers/input/touchscreen/nova_0flash_mmi/Kconfig"
 
 source "drivers/input/touchscreen/touchscreen_mmi/Kconfig"
 
+source "drivers/input/touchscreen/touchscreen_mmi_nvt/Kconfig"
+
 source "drivers/input/touchscreen/stmicro_mmi/Kconfig"
 
 source "drivers/input/touchscreen/focaltech_0flash_mmi/Kconfig"
