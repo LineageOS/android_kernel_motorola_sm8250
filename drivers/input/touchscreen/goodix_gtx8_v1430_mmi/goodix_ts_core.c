@@ -1997,7 +1997,7 @@ static void goodix_ts_lateresume(struct early_suspend *h)
 }
 #endif
 
-#ifdef CONFIG_PM
+#if defined(CONFIG_PM) && !defined(CONFIG_DRM)
 #if !defined(CONFIG_FB) && !defined(CONFIG_HAS_EARLYSUSPEND)
 /**
  * goodix_ts_pm_suspend - PM suspend function
@@ -2241,9 +2241,9 @@ static int goodix_ts_remove(struct platform_device *pdev)
 	return 0;
 }
 
-#ifdef CONFIG_PM
+#if defined(CONFIG_PM) && !defined(CONFIG_DRM)
 static const struct dev_pm_ops dev_pm_ops = {
-#if !defined(CONFIG_FB) && !defined(CONFIG_DRM) && !defined(CONFIG_HAS_EARLYSUSPEND)
+#if !defined(CONFIG_FB) && !defined(CONFIG_HAS_EARLYSUSPEND)
 	.suspend = goodix_ts_pm_suspend,
 	.resume = goodix_ts_pm_resume,
 #endif
@@ -2260,7 +2260,7 @@ static struct platform_driver goodix_ts_driver = {
 	.driver = {
 		.name = GOODIX_CORE_DRIVER_NAME,
 		.owner = THIS_MODULE,
-#ifdef CONFIG_PM
+#if defined(CONFIG_PM) && !defined(CONFIG_DRM)
 		.pm = &dev_pm_ops,
 #endif
 	},
