@@ -21,7 +21,7 @@
 
 #include "nt36xxx.h"
 #if defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
-#include <linux/touchscreen_mmi.h>
+#include <linux/touchscreen_mmi_nvt.h>
 #endif
 
 #if BOOT_UPDATE_FIRMWARE
