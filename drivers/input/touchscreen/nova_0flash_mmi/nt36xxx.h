@@ -58,7 +58,7 @@
 #include <linux/mmi_wake_lock.h>
 
 #if defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
-#include <linux/touchscreen_mmi.h>
+#include <linux/touchscreen_mmi_nvt.h>
 #endif
 
 #define NVT_DEBUG 1
