@@ -466,7 +466,7 @@ struct goodix_ts_core {
 	struct notifier_block ts_notifier;
 	struct goodix_ts_esd ts_esd;
 
-#ifdef CONFIG_FB
+#if defined(CONFIG_FB) || defined(CONFIG_DRM)
 	struct notifier_block fb_notifier;
 #elif defined(CONFIG_HAS_EARLYSUSPEND)
 	struct early_suspend early_suspend;
