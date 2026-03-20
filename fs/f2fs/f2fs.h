@@ -822,6 +822,7 @@ enum {
 #ifdef CONFIG_FS_HPB
 	FI_HPB_INODE,		/* HPB */
 #endif
+	FI_OPENED_FILE,		/* indicate file has been opened */
 	FI_MAX,			/* max flag, never be used */
 };
 
