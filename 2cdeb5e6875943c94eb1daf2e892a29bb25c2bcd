@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "77120a24_be23bab8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10258
+      },
+      "writtenOn": "2026-03-24T23:28:38Z",
+      "side": 1,
+      "message": "i don\u0027t feel quite comfortable with overriding upstream code, what about moving to its own subdir?",
+      "revId": "2cdeb5e6875943c94eb1daf2e892a29bb25c2bcd",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
