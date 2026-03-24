@@ -18,6 +18,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f25cfff3_feb5e202",
+        "filename": "drivers/media/platform/msm/camera/cam_sensor_module/cam_cci/Kbuild",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2026-03-24T21:15:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b9b10e5f_b266932c",
+      "revId": "d78a84c7f9ae4314614a17b80ffd8f6b1cec8940",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "12040b72_75ad38f7",
@@ -31,6 +49,24 @@
       "writtenOn": "2026-03-02T23:13:20Z",
       "side": 1,
       "message": "double tabs (not sure how it slipped :\"D).",
+      "revId": "d78a84c7f9ae4314614a17b80ffd8f6b1cec8940",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f6fca5c9_b2328f7c",
+        "filename": "drivers/power/bq27426_fg_mmi/Kconfig",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2026-03-24T21:15:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "12040b72_75ad38f7",
       "revId": "d78a84c7f9ae4314614a17b80ffd8f6b1cec8940",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
@@ -52,6 +88,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f03b084e_f19960d3",
+        "filename": "drivers/power/bq27426_fg_mmi/Kconfig",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2026-03-24T21:15:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8b2be241_f5c2d219",
+      "revId": "d78a84c7f9ae4314614a17b80ffd8f6b1cec8940",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3991a8b3_423a296e",
@@ -65,6 +119,24 @@
       "writtenOn": "2026-03-02T23:13:20Z",
       "side": 1,
       "message": "tab + 2 spaces",
+      "revId": "d78a84c7f9ae4314614a17b80ffd8f6b1cec8940",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5170e42c_a3c67622",
+        "filename": "drivers/regulator/slg5bm43670/Kconfig",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2026-03-24T21:15:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3991a8b3_423a296e",
       "revId": "d78a84c7f9ae4314614a17b80ffd8f6b1cec8940",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
