@@ -34,6 +34,24 @@
       "parentUuid": "ed55e9ba_72cb31fe",
       "revId": "ebccf407a3b6a7ccb285b67f3f4ccf222cd15035",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0b93754f_69767a55",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10258
+      },
+      "writtenOn": "2026-03-24T23:04:20Z",
+      "side": 1,
+      "message": "ig index refers to the position in ec_ref_rx[], which doesn\u0027t need to match stock. it should be okay to append the moto one",
+      "parentUuid": "162a20ab_8194a357",
+      "revId": "ebccf407a3b6a7ccb285b67f3f4ccf222cd15035",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
