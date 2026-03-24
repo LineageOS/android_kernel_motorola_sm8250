@@ -16,6 +16,24 @@
       "message": "use dsi_panel_param_is_hbm_on?",
       "revId": "d610a45634e45d0652f8d403b061b490c2fdc4d0",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4543822e_ffef7d71",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-24T23:29:16Z",
+      "side": 1,
+      "message": "It will take in account also the fod hbm activation (leading to undesired behaviours :D).",
+      "parentUuid": "d122d133_b568ed6f",
+      "revId": "d610a45634e45d0652f8d403b061b490c2fdc4d0",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
