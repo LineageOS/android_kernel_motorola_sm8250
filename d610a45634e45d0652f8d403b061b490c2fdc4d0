@@ -88,6 +88,24 @@
       "parentUuid": "1cc0ad66_060e136a",
       "revId": "d610a45634e45d0652f8d403b061b490c2fdc4d0",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fb93f06f_5112b54e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10258
+      },
+      "writtenOn": "2026-03-25T13:18:19Z",
+      "side": 1,
+      "message": "`motUtil_data.hbm_status` is set on the path of updating hbm status, so it should be equal to `dsi_panel_param[0][PARAM_HBM_ID]`, do I misunderstandd the logic here?",
+      "parentUuid": "8b5c385e_68126e54",
+      "revId": "d610a45634e45d0652f8d403b061b490c2fdc4d0",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
