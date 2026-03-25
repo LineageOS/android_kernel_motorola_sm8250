@@ -214,6 +214,24 @@
       "parentUuid": "3e8d8a84_6171b07c",
       "revId": "d610a45634e45d0652f8d403b061b490c2fdc4d0",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "01067799_28657035",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-25T21:18:33Z",
+      "side": 1,
+      "message": "just gave a look. i\u0027ll start with a little correction, i complely confused the behaviour with another device i had to deal with it recently (HBM get\u0027s disabled if i trigger FOD HBM).\n\nin this case, given we can\u0027t rely on `DSI_CMD_SET_HBM_FOD_ON` prop (is unused on racer), i don\u0027t think there\u0027s a saner way to implement this check without really knowing if HBM has been truly enabled via the LiveDisplay toggle.\n\nto simplify what i meant, this is a video of what it would happen without this commit (notice how HBM get\u0027s disabled as soon i press the FOD zone): https://imgur.com/a/AcKdgRh\n\na proper implementation should look something like this (there is no dim layer calculation given we are already using the max possible brightness there): https://imgur.com/a/d6QoGSb",
+      "parentUuid": "5ee2727f_0b7224ad",
+      "revId": "d610a45634e45d0652f8d403b061b490c2fdc4d0",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
