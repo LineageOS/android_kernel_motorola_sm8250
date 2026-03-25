@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ba35ebaa_95b70866",
+        "filename": "drivers/gud/MobiCoreDriver/Kconfig",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-03-25T21:20:07Z",
+      "side": 1,
+      "message": "I\u0027m sorry what, mobicore on qcom?",
+      "revId": "1a8218203104ebb26fe193b03a72fd025b683beb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
