@@ -124,6 +124,24 @@
       "parentUuid": "fb93f06f_5112b54e",
       "revId": "d610a45634e45d0652f8d403b061b490c2fdc4d0",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "afbe88df_69b9796d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10258
+      },
+      "writtenOn": "2026-03-25T13:52:38Z",
+      "side": 1,
+      "message": "oh I see, `dsi_panel_param[0][PARAM_HBM_ID]` is altered by fod implementation so it could differ from livedisplay settimgs, which is in sync with `motUtil_data.hbm_status`. now that this change makes sense to me, just wondering if it\u0027s possible to reuse the infra of `DSI_CMD_SET_HBM_FOD_ON` so we don\u0027t maintain a separate `motUtil_data.hbm_status`?",
+      "parentUuid": "b9701df5_065204c5",
+      "revId": "d610a45634e45d0652f8d403b061b490c2fdc4d0",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
