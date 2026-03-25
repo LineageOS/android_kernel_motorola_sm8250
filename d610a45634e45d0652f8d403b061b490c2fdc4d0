@@ -106,6 +106,24 @@
       "parentUuid": "8b5c385e_68126e54",
       "revId": "d610a45634e45d0652f8d403b061b490c2fdc4d0",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b9701df5_065204c5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-25T13:34:55Z",
+      "side": 1,
+      "message": "it \"should\" have been the same. if you look at the implementation that Cosmin made, you will see that it enables HBM_ON_STATE (for then calculating the dim alpha to avoid flashbangs). the issue with checking against HBM_ON_STATE directly is that, when the LiveDisplay HBM is disabled and we try to authenticate with the fingerprint, it thinks that we have enabled the actual HBM. as a result, it keeps the HBM on until we turn off the screen or manually enable and disable it from the settings menu.",
+      "parentUuid": "fb93f06f_5112b54e",
+      "revId": "d610a45634e45d0652f8d403b061b490c2fdc4d0",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
