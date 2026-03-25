@@ -142,6 +142,24 @@
       "parentUuid": "b9701df5_065204c5",
       "revId": "d610a45634e45d0652f8d403b061b490c2fdc4d0",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "672d48c5_d39e3c52",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-25T14:00:49Z",
+      "side": 1,
+      "message": "`DSI_CMD_SET_HBM_FOD_ON` is reserved for lhbm implementations from what i can see. doubt it would be possible to reuse it without breaking that case",
+      "parentUuid": "afbe88df_69b9796d",
+      "revId": "d610a45634e45d0652f8d403b061b490c2fdc4d0",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
