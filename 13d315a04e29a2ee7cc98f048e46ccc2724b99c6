@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d85300fc_3faf7151",
+        "filename": "arch/arm64/configs/vendor/ext_config/nairo-default.config",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 10258
+      },
+      "writtenOn": "2026-03-25T00:15:01Z",
+      "side": 1,
+      "message": "shouldn\u0027t need this",
+      "range": {
+        "startLine": 51,
+        "startChar": 0,
+        "endLine": 51,
+        "endChar": 12
+      },
+      "revId": "13d315a04e29a2ee7cc98f048e46ccc2724b99c6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
