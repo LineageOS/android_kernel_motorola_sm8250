@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e5531754_888318ac",
+        "filename": "arch/arm64/configs/vendor/ext_config/smith-default.config",
+        "patchSetId": 2
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 10258
+      },
+      "writtenOn": "2026-03-25T00:16:09Z",
+      "side": 1,
+      "message": "shouldn\u0027t need this",
+      "range": {
+        "startLine": 50,
+        "startChar": 0,
+        "endLine": 50,
+        "endChar": 12
+      },
+      "revId": "1471f8e65d3ada8b5a03100a64e9b6ad82d7a561",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
