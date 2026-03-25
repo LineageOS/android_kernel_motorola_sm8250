@@ -232,6 +232,24 @@
       "parentUuid": "5ee2727f_0b7224ad",
       "revId": "d610a45634e45d0652f8d403b061b490c2fdc4d0",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "80f7d64f_663bb428",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10258
+      },
+      "writtenOn": "2026-03-25T21:26:27Z",
+      "side": 1,
+      "message": "thanks for the detailed demo, we kinda need a way to cache userspace hbm status, and `motUtil_data.hbm_status` appears to be a handy choice",
+      "parentUuid": "01067799_28657035",
+      "revId": "d610a45634e45d0652f8d403b061b490c2fdc4d0",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
