@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "39375c7b_8c128f9c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10258
+      },
+      "writtenOn": "2026-03-25T00:10:28Z",
+      "side": 1,
+      "message": "what exacr is the underlying issue? nio uses nova_0flash_mmi so I may look into it",
+      "revId": "bb37d75d31c5f1acb22e6c52c8c914c84ffeb46f",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
