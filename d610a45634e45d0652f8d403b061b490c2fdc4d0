@@ -160,6 +160,24 @@
       "parentUuid": "afbe88df_69b9796d",
       "revId": "d610a45634e45d0652f8d403b061b490c2fdc4d0",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6c4ff744_5fcf65ce",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10258
+      },
+      "writtenOn": "2026-03-25T14:36:48Z",
+      "side": 1,
+      "message": "the current form is acceptable to me, but I\u0027d highly recommend to have a try, cuz that mode doesn\u0027t seem to have special behavior https://github.com/LineageOS/android_kernel_motorola_sm8250/commit/762f06099288ccf0c6c481702431a2d87e0392e7",
+      "parentUuid": "672d48c5_d39e3c52",
+      "revId": "d610a45634e45d0652f8d403b061b490c2fdc4d0",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
