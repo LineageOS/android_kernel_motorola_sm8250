@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c4a6087f_edda98db",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10258
+      },
+      "writtenOn": "2026-03-25T00:04:39Z",
+      "side": 1,
+      "message": "copy moto version to another dir, or properly add moto support to the upstream driver? (workload manageable at a glance)",
+      "revId": "6712539c2838b5769d30969ebb3bd5ce535339c8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
