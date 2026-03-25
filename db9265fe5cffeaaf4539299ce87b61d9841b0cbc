@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8f5f70f8_1725313a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10258
+      },
+      "writtenOn": "2026-03-25T00:18:28Z",
+      "side": 1,
+      "message": "kona also doesn\u0027t use qcom perfd, extend the setting there",
+      "revId": "db9265fe5cffeaaf4539299ce87b61d9841b0cbc",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
