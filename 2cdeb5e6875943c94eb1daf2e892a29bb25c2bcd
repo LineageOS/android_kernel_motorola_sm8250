@@ -18,6 +18,23 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5571af76_f9ed1d1e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-26T17:50:11Z",
+      "side": 1,
+      "message": "same goes to registers.h, but the file is too big to even open here :(",
+      "revId": "2cdeb5e6875943c94eb1daf2e892a29bb25c2bcd",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "27b48ae9_b7d0ccfe",
@@ -82,6 +99,40 @@
       "writtenOn": "2026-03-26T17:29:49Z",
       "side": 1,
       "message": "squash with 476537",
+      "revId": "2cdeb5e6875943c94eb1daf2e892a29bb25c2bcd",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "65412023_123fd2d2",
+        "filename": "include/linux/mfd/tacna/core.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-26T17:50:11Z",
+      "side": 1,
+      "message": "does not belong to this change",
+      "revId": "2cdeb5e6875943c94eb1daf2e892a29bb25c2bcd",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c6848038_68f447c7",
+        "filename": "include/linux/mfd/tacna/pdata.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-26T17:50:11Z",
+      "side": 1,
+      "message": "does not belong to this change",
       "revId": "2cdeb5e6875943c94eb1daf2e892a29bb25c2bcd",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
