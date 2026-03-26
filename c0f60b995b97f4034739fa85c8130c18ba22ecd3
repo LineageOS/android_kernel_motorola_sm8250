@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "727d5b5b_e5441792",
+        "filename": "include/linux/extcon/extcon-tacna.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-26T18:50:18Z",
+      "side": 1,
+      "message": "unused",
+      "revId": "c0f60b995b97f4034739fa85c8130c18ba22ecd3",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
