@@ -67,6 +67,40 @@
       "message": "same as ../pinctrl-utils.h",
       "revId": "6712539c2838b5769d30969ebb3bd5ce535339c8",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "141ebf24_78d82fb3",
+        "filename": "drivers/regulator/arizona-micsupp.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-26T18:46:03Z",
+      "side": 1,
+      "message": "`tacna`",
+      "revId": "6712539c2838b5769d30969ebb3bd5ce535339c8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5b1606a1_cd3285de",
+        "filename": "drivers/regulator/arizona-micsupp.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-26T18:46:03Z",
+      "side": 1,
+      "message": "unused?",
+      "revId": "6712539c2838b5769d30969ebb3bd5ce535339c8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
