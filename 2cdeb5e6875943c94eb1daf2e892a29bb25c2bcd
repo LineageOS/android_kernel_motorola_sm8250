@@ -16,6 +16,74 @@
       "message": "i don\u0027t feel quite comfortable with overriding upstream code, what about moving to its own subdir?",
       "revId": "2cdeb5e6875943c94eb1daf2e892a29bb25c2bcd",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "27b48ae9_b7d0ccfe",
+        "filename": "include/linux/mfd/madera/core.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-26T17:29:49Z",
+      "side": 1,
+      "message": "squash with 476537",
+      "revId": "2cdeb5e6875943c94eb1daf2e892a29bb25c2bcd",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b46d2af7_20b4eaf5",
+        "filename": "include/linux/mfd/madera/core.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-26T17:29:49Z",
+      "side": 1,
+      "message": "squash with 476537",
+      "revId": "2cdeb5e6875943c94eb1daf2e892a29bb25c2bcd",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f59d6ad5_51938559",
+        "filename": "include/linux/mfd/madera/pdata.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-26T17:29:49Z",
+      "side": 1,
+      "message": "squash with 476537",
+      "revId": "2cdeb5e6875943c94eb1daf2e892a29bb25c2bcd",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4dbd1486_9f2efa29",
+        "filename": "include/linux/mfd/madera/pdata.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-26T17:29:49Z",
+      "side": 1,
+      "message": "squash with 476537",
+      "revId": "2cdeb5e6875943c94eb1daf2e892a29bb25c2bcd",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
