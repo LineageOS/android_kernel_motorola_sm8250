@@ -34,6 +34,24 @@
       "parentUuid": "ba35ebaa_95b70866",
       "revId": "1a8218203104ebb26fe193b03a72fd025b683beb",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "699f3168_9fde3479",
+        "filename": "drivers/gud/MobiCoreDriver/Kconfig",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-03-26T10:33:38Z",
+      "side": 1,
+      "message": "Acknowledged, didn\u0027t mean to leave it unresolved",
+      "parentUuid": "54e7953a_34475175",
+      "revId": "1a8218203104ebb26fe193b03a72fd025b683beb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
