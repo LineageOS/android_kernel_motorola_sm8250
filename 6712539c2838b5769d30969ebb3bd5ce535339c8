@@ -16,6 +16,57 @@
       "message": "copy moto version to another dir, or properly add moto support to the upstream driver? (workload manageable at a glance)",
       "revId": "6712539c2838b5769d30969ebb3bd5ce535339c8",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1fbd285f_d812316f",
+        "filename": "drivers/pinctrl/cirrus/pinctrl-cs47l35.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-26T17:28:02Z",
+      "side": 1,
+      "message": "nothing interesting in there",
+      "revId": "6712539c2838b5769d30969ebb3bd5ce535339c8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "25a9e9fc_8b44dd0e",
+        "filename": "drivers/pinctrl/cirrus/pinctrl-tacna.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-26T17:28:02Z",
+      "side": 1,
+      "message": "unused",
+      "revId": "6712539c2838b5769d30969ebb3bd5ce535339c8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6f2d54cb_e56ddd58",
+        "filename": "drivers/pinctrl/cirrus/pinctrl-utils.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-26T17:28:02Z",
+      "side": 1,
+      "message": "same as ../pinctrl-utils.h",
+      "revId": "6712539c2838b5769d30969ebb3bd5ce535339c8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
