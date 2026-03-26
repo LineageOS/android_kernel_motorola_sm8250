@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "91b3c9d9_d41d2d21",
+        "filename": "sound/soc/codecs/Makefile",
+        "patchSetId": 2
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-26T17:33:40Z",
+      "side": 1,
+      "message": "white line",
+      "revId": "ea7d3330c61011c97799777b3a91ed4d8d318332",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
