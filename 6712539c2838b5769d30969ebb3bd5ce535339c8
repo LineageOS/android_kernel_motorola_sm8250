@@ -101,6 +101,23 @@
       "message": "unused?",
       "revId": "6712539c2838b5769d30969ebb3bd5ce535339c8",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "caaacde6_2b34a92f",
+        "filename": "include/linux/regulator/arizona-ldo1.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-03-26T18:52:09Z",
+      "side": 1,
+      "message": "not used",
+      "revId": "6712539c2838b5769d30969ebb3bd5ce535339c8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
