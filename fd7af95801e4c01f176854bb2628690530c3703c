@@ -16,6 +16,23 @@
       "message": "bootloops early",
       "revId": "fd7af95801e4c01f176854bb2628690530c3703c",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c7bd6a12_18030e83",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2026-04-07T03:47:31Z",
+      "side": 1,
+      "message": "wrong deivce\n\n```\n\nPatchset 1\n11:47 PM\n In file included from /mnt/main/lineage-23/kernel/motorola/sm8250/drivers/input/misc/vl53L1/stmvl53l1_i2c.c:36:\n/mnt/main/lineage-23/kernel/motorola/sm8250/drivers/input/misc/vl53L1/stmvl53l1.h:43:10: fatal error: \u0027vl53l1_api.h\u0027 file not found\n   43 | #include \"vl53l1_api.h\"\n      |  \n      ```",
+      "revId": "fd7af95801e4c01f176854bb2628690530c3703c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
