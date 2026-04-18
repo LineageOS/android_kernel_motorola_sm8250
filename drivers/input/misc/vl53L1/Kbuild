@@ -2,7 +2,7 @@
 # Kbuild for the vl53L1 drivers.
 #
 
-ccflags-y	+= -I$(src)/inc
+ccflags-y	+= -I $(srctree)/drivers/input/misc/vl53L1/inc
 
 obj-$(CONFIG_INPUT_STMVL53L1)	+= stmvl53l1.o
 stmvl53l1-objs		:= stmvl53l1_module.o stmvl53l1_module-i2c.o
