@@ -52,6 +52,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c9bb93f4_8d814cdb",
+        "filename": "include/linux/mfd/madera/core.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 28223
+      },
+      "writtenOn": "2026-05-19T02:43:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "27b48ae9_b7d0ccfe",
+      "revId": "2cdeb5e6875943c94eb1daf2e892a29bb25c2bcd",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b46d2af7_20b4eaf5",
@@ -65,6 +83,24 @@
       "writtenOn": "2026-03-26T17:29:49Z",
       "side": 1,
       "message": "squash with 476537",
+      "revId": "2cdeb5e6875943c94eb1daf2e892a29bb25c2bcd",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f8c1191d_273405a3",
+        "filename": "include/linux/mfd/madera/core.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 28223
+      },
+      "writtenOn": "2026-05-19T02:43:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b46d2af7_20b4eaf5",
       "revId": "2cdeb5e6875943c94eb1daf2e892a29bb25c2bcd",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
@@ -86,6 +122,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9486ed2e_3193fd2e",
+        "filename": "include/linux/mfd/madera/pdata.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 28223
+      },
+      "writtenOn": "2026-05-19T02:43:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f59d6ad5_51938559",
+      "revId": "2cdeb5e6875943c94eb1daf2e892a29bb25c2bcd",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4dbd1486_9f2efa29",
@@ -99,6 +153,24 @@
       "writtenOn": "2026-03-26T17:29:49Z",
       "side": 1,
       "message": "squash with 476537",
+      "revId": "2cdeb5e6875943c94eb1daf2e892a29bb25c2bcd",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "75f0f6e9_0a80e3f6",
+        "filename": "include/linux/mfd/madera/pdata.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 28223
+      },
+      "writtenOn": "2026-05-19T02:43:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4dbd1486_9f2efa29",
       "revId": "2cdeb5e6875943c94eb1daf2e892a29bb25c2bcd",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
@@ -120,6 +192,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3b1049cf_6a592e67",
+        "filename": "include/linux/mfd/tacna/core.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 28223
+      },
+      "writtenOn": "2026-05-19T02:43:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "65412023_123fd2d2",
+      "revId": "2cdeb5e6875943c94eb1daf2e892a29bb25c2bcd",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c6848038_68f447c7",
@@ -133,6 +223,24 @@
       "writtenOn": "2026-03-26T17:50:11Z",
       "side": 1,
       "message": "does not belong to this change",
+      "revId": "2cdeb5e6875943c94eb1daf2e892a29bb25c2bcd",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "45ebb585_e6c063fc",
+        "filename": "include/linux/mfd/tacna/pdata.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 28223
+      },
+      "writtenOn": "2026-05-19T02:43:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c6848038_68f447c7",
       "revId": "2cdeb5e6875943c94eb1daf2e892a29bb25c2bcd",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
