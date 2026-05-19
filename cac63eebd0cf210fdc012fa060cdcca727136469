@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "09744c8e_40b7f9c4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10258
+      },
+      "writtenOn": "2026-05-19T09:45:33Z",
+      "side": 1,
+      "message": "FYI nio uses userspace remapping https://github.com/LineageOS/android_device_motorola_sm8250-common/blob/lineage-23.2/configs/keylayout/double-tap.kl, dunno if it\u0027ll work in your case tho",
+      "revId": "cac63eebd0cf210fdc012fa060cdcca727136469",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
