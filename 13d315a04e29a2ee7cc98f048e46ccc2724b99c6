@@ -22,6 +22,30 @@
       },
       "revId": "13d315a04e29a2ee7cc98f048e46ccc2724b99c6",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3fdadb16_d954fb5b",
+        "filename": "arch/arm64/configs/vendor/ext_config/nairo-default.config",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 28223
+      },
+      "writtenOn": "2026-05-19T00:45:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d85300fc_3faf7151",
+      "range": {
+        "startLine": 51,
+        "startChar": 0,
+        "endLine": 51,
+        "endChar": 12
+      },
+      "revId": "13d315a04e29a2ee7cc98f048e46ccc2724b99c6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
