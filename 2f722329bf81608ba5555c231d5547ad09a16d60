@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2e923a91_b73d882d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-05-19T15:19:11Z",
+      "side": 1,
+      "message": "Needs to be reworked (or dropped). Breaks gestures on nova_0flash_mmi",
+      "revId": "2f722329bf81608ba5555c231d5547ad09a16d60",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
