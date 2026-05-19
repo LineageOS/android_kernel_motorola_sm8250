@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3a907a53_ef3dead6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 28223
+      },
+      "writtenOn": "2026-05-19T02:46:52Z",
+      "side": 1,
+      "message": "https://github.com/torvalds/linux/commit/7bd7916dc8ab5b056f1b53e19021e476120481c0 should pick this instead",
+      "revId": "76b3da37bbea5b415d2952584a7160090916b4bb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
