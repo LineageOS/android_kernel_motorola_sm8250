@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b36b16fd_993bc113",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10258
+      },
+      "writtenOn": "2026-05-19T09:48:31Z",
+      "side": 1,
+      "message": "chmod 644 techpack/audio/asoc/lito.c",
+      "revId": "3897e5bb27d9f4b6f77f8c1bc39bdd60abf54cd5",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
