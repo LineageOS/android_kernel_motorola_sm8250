@@ -70,6 +70,24 @@
       "parentUuid": "7e15fce2_a7376f9a",
       "revId": "bb37d75d31c5f1acb22e6c52c8c914c84ffeb46f",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "666386c2_72168948",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-05-19T15:58:22Z",
+      "side": 1,
+      "message": "initally made for using the sensors hal for racer dt2w (which i could extend to implement screen-off udfps as well). i\u0027m open for a better alternative",
+      "parentUuid": "4bd7f66d_a07a4641",
+      "revId": "bb37d75d31c5f1acb22e6c52c8c914c84ffeb46f",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
