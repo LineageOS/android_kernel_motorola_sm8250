@@ -16,6 +16,24 @@
       "message": "upstream to qcom_sm8250? it appears general",
       "revId": "f6c05f4d4447e1d9eb2086da4a41867ef43cb0c9",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "41334efa_feaee881",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 28223
+      },
+      "writtenOn": "2026-05-19T00:47:51Z",
+      "side": 1,
+      "message": "https://review.lineageos.org/c/LineageOS/android_kernel_qcom_sm8250/+/483674",
+      "parentUuid": "374af147_d3690068",
+      "revId": "f6c05f4d4447e1d9eb2086da4a41867ef43cb0c9",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
