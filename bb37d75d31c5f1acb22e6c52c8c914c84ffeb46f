@@ -34,6 +34,24 @@
       "parentUuid": "39375c7b_8c128f9c",
       "revId": "bb37d75d31c5f1acb22e6c52c8c914c84ffeb46f",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7e15fce2_a7376f9a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-05-19T15:20:14Z",
+      "side": 1,
+      "message": "https://review.lineageos.org/c/LineageOS/android_kernel_motorola_sm8250/+/478884/comments/2e923a91_b73d882d",
+      "parentUuid": "289c4694_a02f9b63",
+      "revId": "bb37d75d31c5f1acb22e6c52c8c914c84ffeb46f",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
