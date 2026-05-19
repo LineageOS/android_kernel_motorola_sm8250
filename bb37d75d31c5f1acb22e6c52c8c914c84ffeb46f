@@ -16,6 +16,24 @@
       "message": "what exacr is the underlying issue? nio uses nova_0flash_mmi so I may look into it",
       "revId": "bb37d75d31c5f1acb22e6c52c8c914c84ffeb46f",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "289c4694_a02f9b63",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-05-19T14:55:12Z",
+      "side": 1,
+      "message": "it doesn\u0027t enter the gesture mode every time. been trying to debug it for a while\nhttps://katb.in/pujepizexag.",
+      "parentUuid": "39375c7b_8c128f9c",
+      "revId": "bb37d75d31c5f1acb22e6c52c8c914c84ffeb46f",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
