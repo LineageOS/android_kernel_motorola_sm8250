@@ -16,6 +16,24 @@
       "message": "squash with I058567ff4be014434ccef529be920cbc2ac332ba",
       "revId": "84b18c1c42eb5bc2227d658a48d2b6a2b29cc8b0",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4de72847_aae8c2fb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 28223
+      },
+      "writtenOn": "2026-05-19T00:22:30Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "82739b10_e3972f40",
+      "revId": "84b18c1c42eb5bc2227d658a48d2b6a2b29cc8b0",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
