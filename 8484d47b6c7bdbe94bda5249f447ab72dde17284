@@ -16,6 +16,24 @@
       "message": "To be squashed with 476541",
       "revId": "8484d47b6c7bdbe94bda5249f447ab72dde17284",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c85caa7_85dcd526",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 28223
+      },
+      "writtenOn": "2026-05-19T00:32:29Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "eb311ac8_5daab10f",
+      "revId": "8484d47b6c7bdbe94bda5249f447ab72dde17284",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
