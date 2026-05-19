@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1db7a6b5_bf14b889",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-05-19T19:45:00Z",
+      "side": 1,
+      "message": "For ref: smith and racer (combined) enables these configs\n\n```\nCONFIG_SND_SOC_CS35L41\u003dm\nCONFIG_SND_SOC_CS35L41_SPI\u003dm\nCONFIG_SND_SOC_CS35L41_I2C\u003dm\nCONFIG_PINCTRL_CS47L35\u003dy\nCONFIG_MFD_CS47L35\u003dy\nCONFIG_SND_SOC_CS47L35\u003dm\nCONFIG_SND_SOC_AOV_TRIGGER\u003dm\n\n```\n\nThe only config that doesn\u0027t exists on upstream `torvalds/linux` is CONFIG_SND_SOC_AOV_TRIGGER",
+      "parentUuid": "e675d05f_16f0629b",
+      "revId": "d52a05bd4af2670ac151341492a7d010519510f5",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "1a5cc528_37f6d454",
         "filename": "sound/soc/codecs/Makefile",
         "patchSetId": 4
