@@ -18,6 +18,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e5f0977d_cb2f98fe",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 28223
+      },
+      "writtenOn": "2026-05-19T02:42:42Z",
+      "side": 1,
+      "message": "https://review.lineageos.org/c/LineageOS/android_kernel_motorola_sm8250/+/483675",
+      "parentUuid": "c4a6087f_edda98db",
+      "revId": "6712539c2838b5769d30969ebb3bd5ce535339c8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1fbd285f_d812316f",
@@ -31,6 +49,24 @@
       "writtenOn": "2026-03-26T17:28:02Z",
       "side": 1,
       "message": "nothing interesting in there",
+      "revId": "6712539c2838b5769d30969ebb3bd5ce535339c8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9f950d28_661a0c7c",
+        "filename": "drivers/pinctrl/cirrus/pinctrl-cs47l35.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 28223
+      },
+      "writtenOn": "2026-05-19T02:42:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1fbd285f_d812316f",
       "revId": "6712539c2838b5769d30969ebb3bd5ce535339c8",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
@@ -52,6 +88,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "eba31c52_2d17ff59",
+        "filename": "drivers/pinctrl/cirrus/pinctrl-tacna.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 28223
+      },
+      "writtenOn": "2026-05-19T02:42:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "25a9e9fc_8b44dd0e",
+      "revId": "6712539c2838b5769d30969ebb3bd5ce535339c8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6f2d54cb_e56ddd58",
@@ -65,6 +119,24 @@
       "writtenOn": "2026-03-26T17:28:02Z",
       "side": 1,
       "message": "same as ../pinctrl-utils.h",
+      "revId": "6712539c2838b5769d30969ebb3bd5ce535339c8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ddb12032_5827d7fc",
+        "filename": "drivers/pinctrl/cirrus/pinctrl-utils.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 28223
+      },
+      "writtenOn": "2026-05-19T02:42:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6f2d54cb_e56ddd58",
       "revId": "6712539c2838b5769d30969ebb3bd5ce535339c8",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
@@ -103,6 +175,42 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7dbebb7d_7654be08",
+        "filename": "drivers/regulator/arizona-micsupp.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 28223
+      },
+      "writtenOn": "2026-05-19T02:42:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "141ebf24_78d82fb3",
+      "revId": "6712539c2838b5769d30969ebb3bd5ce535339c8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a06b8142_94dba98c",
+        "filename": "drivers/regulator/arizona-micsupp.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 28223
+      },
+      "writtenOn": "2026-05-19T02:42:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5b1606a1_cd3285de",
+      "revId": "6712539c2838b5769d30969ebb3bd5ce535339c8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "caaacde6_2b34a92f",
@@ -116,6 +224,24 @@
       "writtenOn": "2026-03-26T18:52:09Z",
       "side": 1,
       "message": "not used",
+      "revId": "6712539c2838b5769d30969ebb3bd5ce535339c8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7bfab155_a46fad2a",
+        "filename": "include/linux/regulator/arizona-ldo1.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 28223
+      },
+      "writtenOn": "2026-05-19T02:42:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "caaacde6_2b34a92f",
       "revId": "6712539c2838b5769d30969ebb3bd5ce535339c8",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
