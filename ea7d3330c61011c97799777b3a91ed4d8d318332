@@ -16,6 +16,24 @@
       "message": "white line",
       "revId": "ea7d3330c61011c97799777b3a91ed4d8d318332",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bf87e09d_2f102ccc",
+        "filename": "sound/soc/codecs/Makefile",
+        "patchSetId": 2
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 28223
+      },
+      "writtenOn": "2026-05-19T00:45:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "91b3c9d9_d41d2d21",
+      "revId": "ea7d3330c61011c97799777b3a91ed4d8d318332",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
