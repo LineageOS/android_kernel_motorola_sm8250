@@ -36,6 +36,8 @@
 
 #include <linux/input/mt.h>
 #include <linux/interrupt.h>
+#include <linux/jiffies.h>
+#include <linux/ktime.h>
 #include <linux/mmi_wake_lock.h>
 #include "synaptics_core.h"
 
@@ -154,7 +156,17 @@ struct touch_hcd {
 	struct syna_tcm_buffer resp;
 	struct syna_tcm_hcd *tcm_hcd;
 	struct wakeup_source *gesture_wakelock;
+#ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_TCM_MMI_CORE_EMULATE_DT2W
+	struct timer_list gt_timer;
+	atomic_t gesture_id;
+#endif
 };
+
+#ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_TCM_MMI_CORE_EMULATE_DT2W
+/* Double tap detection resources */
+#define DT2W_TIME_MS 500
+static s64 tap_time_pre;
+#endif
 
 static struct touch_hcd *touch_hcd;
 
@@ -659,6 +671,58 @@ exit:
 	return 0;
 }
 
+#ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_TCM_MMI_CORE_EMULATE_DT2W
+static inline bool is_gesture_enabled(uint8_t gesture_id)
+{
+	unsigned char gesture_type = 0;
+	bool rc = false;
+	struct syna_tcm_hcd *tcm_hcd = touch_hcd->tcm_hcd;
+
+	if (tcm_hcd->imports && tcm_hcd->imports->get_gesture_type) {
+		tcm_hcd->imports->get_gesture_type(
+				tcm_hcd->pdev->dev.parent, &gesture_type);
+		switch (gesture_id) {
+		case GESTURE_SINGLE_TAP:
+			rc = gesture_type & TS_MMI_GESTURE_SINGLE;
+			break;
+		case GESTURE_DOUBLE_TAP:
+			rc = gesture_type & TS_MMI_GESTURE_DOUBLE;
+			break;
+		default:
+			break;
+		}
+	}
+
+	return rc;
+}
+
+static void touch_gesture_report_timer(struct timer_list __always_unused *t)
+{
+	int ret;
+	uint8_t gesture_id = atomic_read(&touch_hcd->gesture_id);
+	struct gesture_data *gesture_data = &touch_hcd->touch_data.gesture_data;
+	struct syna_tcm_hcd *tcm_hcd = touch_hcd->tcm_hcd;
+	struct gesture_event_data event;
+
+	if (!tcm_hcd->imports || !tcm_hcd->imports->report_gesture)
+		return;
+
+	if (gesture_id == GESTURE_SINGLE_TAP) {
+		event.evcode = 1;
+	} else if (gesture_id == GESTURE_DOUBLE_TAP) {
+		event.evcode = 4;
+	} else {
+		return;
+	}
+
+	event.evdata.x = gesture_data->x_pos;
+	event.evdata.y = gesture_data->y_pos;
+	ret = tcm_hcd->imports->report_gesture(&event);
+	if (!ret)
+		PM_WAKEUP_EVENT(touch_hcd->gesture_wakelock, 3000);
+}
+#endif
+
 /**
  * touch_report() - Report touch events
  *
@@ -681,6 +745,10 @@ static void touch_report(void)
 	struct gesture_data *gesture_data;
 	struct syna_tcm_hcd *tcm_hcd = touch_hcd->tcm_hcd;
 	const struct syna_tcm_board_data *bdata = tcm_hcd->hw_if->bdata;
+#ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_TCM_MMI_CORE_EMULATE_DT2W
+	s64 now = ktime_to_ms(ktime_get());
+	unsigned long timeout = 1;
+#endif
 
 	if (!touch_hcd->init_touch_ok)
 		return;
@@ -706,6 +774,33 @@ static void touch_report(void)
 
 #if WAKEUP_GESTURE
 #if defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_TCM_MMI_CORE_EMULATE_DT2W
+	if (touch_data->gesture_id == GESTURE_SINGLE_TAP &&
+			tcm_hcd->in_suspend &&
+			tcm_hcd->wakeup_gesture_enabled) {
+
+		/* The panel only supports single tap gesture */
+		if (now - tap_time_pre > DT2W_TIME_MS) {
+			tap_time_pre = now;
+			touch_data->gesture_id = GESTURE_SINGLE_TAP;
+			if (is_gesture_enabled(GESTURE_DOUBLE_TAP)) {
+				timeout = msecs_to_jiffies(DT2W_TIME_MS);
+				LOGD(tcm_hcd->pdev->dev.parent,
+						"Delay single tap as double tap is enabled\n");
+			}
+		} else {
+			tap_time_pre = 0;
+			timeout = 1;
+			touch_data->gesture_id = GESTURE_DOUBLE_TAP;
+		}
+
+		atomic_set(&touch_hcd->gesture_id, touch_data->gesture_id);
+		mod_timer(&touch_hcd->gt_timer, jiffies + timeout);
+
+		goto exit;
+	}
+#endif
+
 	if (touch_data->gesture_id == GESTURE_SINGLE_TAP &&
 			tcm_hcd->in_suspend &&
 			tcm_hcd->wakeup_gesture_enabled) {
@@ -1252,6 +1347,11 @@ int touch_init(struct syna_tcm_hcd *tcm_hcd)
 	INIT_BUFFER(touch_hcd->out, false);
 	INIT_BUFFER(touch_hcd->resp, false);
 
+#ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_TCM_MMI_CORE_EMULATE_DT2W
+	timer_setup(&touch_hcd->gt_timer, touch_gesture_report_timer, 0);
+	atomic_set(&touch_hcd->gesture_id, 0);
+#endif
+
 	retval = touch_set_input_reporting();
 	if (retval < 0) {
 		LOGE(tcm_hcd->pdev->dev.parent,
@@ -1264,6 +1364,9 @@ int touch_init(struct syna_tcm_hcd *tcm_hcd)
 	return 0;
 
 err_set_input_reporting:
+#ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_TCM_MMI_CORE_EMULATE_DT2W
+	del_timer_sync(&touch_hcd->gt_timer);
+#endif
 	kfree(touch_hcd->touch_data.object_data);
 	kfree(touch_hcd->prev_status);
 
@@ -1287,6 +1390,9 @@ int touch_remove(struct syna_tcm_hcd *tcm_hcd)
 	if (touch_hcd->input_dev)
 		input_unregister_device(touch_hcd->input_dev);
 
+#ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_TCM_MMI_CORE_EMULATE_DT2W
+	del_timer_sync(&touch_hcd->gt_timer);
+#endif
 	kfree(touch_hcd->touch_data.object_data);
 	kfree(touch_hcd->prev_status);
 
