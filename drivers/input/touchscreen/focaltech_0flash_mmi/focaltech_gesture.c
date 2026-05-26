@@ -318,13 +318,12 @@ static void fts_gesture_report(struct input_dev *input_dev, int gesture_id)
             FTS_INFO("Gesture got but wakeable not set. Skip this gesture.");
             return;
         }
-        /* report single tap */
         if (gesture == KEY_WAKEUP) {
             if (fts_data->imports && fts_data->imports->report_gesture) {
                 struct gesture_event_data event;
 
                 FTS_INFO("invoke imported report gesture function\n");
-                event.evcode = 1;
+                event.evcode = 4;
                 /* call class method */
                 ret = fts_data->imports->report_gesture(&event);
                 ++report_cnt;
