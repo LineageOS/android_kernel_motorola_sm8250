@@ -39,6 +39,10 @@ ifeq ($(CONFIG_NAIRO_DTB), y)
 include $(srctree)/techpack/audio/config/litonairo.conf
 export $(shell sed 's/=.*//' $(srctree)/techpack/audio/config/litonairo.conf)
 endif
+ifeq ($(CONFIG_RACER_DTB), y)
+include $(srctree)/techpack/audio/config/litoracer.conf
+export $(shell sed 's/=.*//' $(srctree)/techpack/audio/config/litoracer.conf)
+endif
 
 # Use USERINCLUDE when you must reference the UAPI directories only.
 USERINCLUDE     += \
@@ -95,6 +99,10 @@ endif
 ifeq ($(CONFIG_SMITH_DTB), y)
 LINUXINCLUDE    += \
                 -include $(srctree)/techpack/audio/config/litosmith.h
+endif
+ifeq ($(CONFIG_RACER_DTB), y)
+LINUXINCLUDE    += \
+                -include $(srctree)/techpack/audio/config/litoracer.h
 endif
 
 obj-y += soc/
