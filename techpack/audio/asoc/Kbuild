@@ -102,6 +102,9 @@ ifeq ($(KERNEL_BUILD), 0)
 	ifeq ($(CONFIG_SMITH_DTB), y)
 		INCS    +=  -include $(AUDIO_ROOT)/config/litosmith.h
 	endif
+	ifeq ($(CONFIG_RACER_DTB), y)
+		INCS    +=  -include $(AUDIO_ROOT)/config/litoracer.h
+	endif
 endif
 
 # As per target team, build is done as follows:
