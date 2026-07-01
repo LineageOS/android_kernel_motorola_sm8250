@@ -1986,6 +1986,15 @@ static irqreturn_t syna_tcm_isr(int irq, void *data)
 
 	tcm_hcd->isr_pid = current->pid;
 
+	if ((tcm_hcd->in_suspend) && (tcm_hcd->wakeup_gesture_enabled)) {
+		retval = wait_event_interruptible_timeout(tcm_hcd->pm_wq, atomic_read(&tcm_hcd->pm_resume), msecs_to_jiffies(700));
+		if (!retval) {
+			LOGE(tcm_hcd->pdev->dev.parent,
+				"system(spi) can't finished resuming procedure.\n");
+			goto exit;
+		}
+	}
+
 	retval = tcm_hcd->read_message(tcm_hcd,
 			NULL,
 			0);
@@ -3734,6 +3743,8 @@ static int syna_tcm_probe(struct platform_device *pdev)
 	tcm_hcd->wr_chunk_size = WR_CHUNK_SIZE;
 	tcm_hcd->is_detected = false;
 	tcm_hcd->wakeup_gesture_enabled = WAKEUP_GESTURE;
+	atomic_set(&tcm_hcd->pm_resume, 1);
+	init_waitqueue_head(&tcm_hcd->pm_wq);
 
 #ifdef PREDICTIVE_READING
 	tcm_hcd->read_length = MIN_READ_LENGTH;
@@ -4129,11 +4140,30 @@ static void syna_tcm_shutdown(struct platform_device *pdev)
 }
 
 #ifdef CONFIG_PM
+static int syna_tcm_pm_suspend(struct device *dev)
+{
+	struct syna_tcm_hcd *tcm_hcd = dev_get_drvdata(dev);
+
+	atomic_set(&tcm_hcd->pm_resume, 0);
+
+	return 0;
+}
+
+static int syna_tcm_pm_resume(struct device *dev)
+{
+	struct syna_tcm_hcd *tcm_hcd = dev_get_drvdata(dev);
+
+	atomic_set(&tcm_hcd->pm_resume, 1);
+
+	if (tcm_hcd->wakeup_gesture_enabled)
+		wake_up_interruptible(&tcm_hcd->pm_wq);
+
+	return 0;
+}
+
 static const struct dev_pm_ops syna_tcm_dev_pm_ops = {
-#ifndef CONFIG_FB
-	.suspend = syna_tcm_suspend,
-	.resume = syna_tcm_resume,
-#endif
+	.suspend = syna_tcm_pm_suspend,
+	.resume = syna_tcm_pm_resume,
 };
 #endif
 

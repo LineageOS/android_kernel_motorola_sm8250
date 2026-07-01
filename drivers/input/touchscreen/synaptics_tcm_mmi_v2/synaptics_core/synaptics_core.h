@@ -542,6 +542,9 @@ struct syna_tcm_hcd {
 	int (*set_fw_name)(const char* fw_name);
 	struct ts_mmi_class_methods *imports;
 #endif
+
+	atomic_t pm_resume;
+	wait_queue_head_t pm_wq;
 };
 
 struct syna_tcm_module_cb {
