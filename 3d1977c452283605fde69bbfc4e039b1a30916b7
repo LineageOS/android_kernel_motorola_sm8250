@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4c9bb999_b8b4e44c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32253
+      },
+      "writtenOn": "2026-07-01T16:32:46Z",
+      "side": 1,
+      "message": "Waiting for the user to report back. Can\u0027t trigger it anymore on my unit w/ this applied.",
+      "revId": "3d1977c452283605fde69bbfc4e039b1a30916b7",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
