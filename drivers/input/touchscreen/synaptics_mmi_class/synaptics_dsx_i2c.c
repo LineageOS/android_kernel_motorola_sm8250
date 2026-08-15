@@ -5991,7 +5991,8 @@ static void synaptics_rmi4_detection_work(struct work_struct *work)
 
 			dev_dbg(dev, "%s: calling remove func for handler: %d\n",
 					__func__, exp_fhandler->fn_type);
-			exp_fhandler->func_remove(rmi4_data);
+			if (exp_fhandler->func_remove)
+				exp_fhandler->func_remove(rmi4_data);
 
 			/* need to restore status function on F34 removal */
 			if (exp_fhandler->fn_type == RMI_FW_UPDATER &&
@@ -6076,7 +6077,8 @@ static void synaptics_rmi4_detection_work(struct work_struct *work)
 				synaptics_dsx_sensor_state(rmi4_data, STATE_LOADING);
 		}
 
-		exp_fhandler->func_init(rmi4_data);
+		if (exp_fhandler->func_init)
+			exp_fhandler->func_init(rmi4_data);
 		exp_fhandler->inserted = true;
 		dev_dbg(dev, "%s: handler %d inserted\n",
 				__func__, exp_fhandler->fn_type);
@@ -6250,7 +6252,8 @@ void synaptics_rmi4_new_function(
 		list_add_tail(&exp_fhandler->link, &rmi4_data->exp_fn_ctrl.fn_list);
 	} else {
 		list_for_each_entry(exp_fhandler, &rmi4_data->exp_fn_ctrl.fn_list, link) {
-			if (exp_fhandler->func_init != func_init)
+			if (exp_fhandler->fn_type != fn_type ||
+			    exp_fhandler->func_init != func_init)
 				continue;
 			/* insert flag needed to run remove function in detection */
 			/* work even though function was never properly inserted */
