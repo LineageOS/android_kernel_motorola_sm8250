@@ -6584,6 +6584,19 @@ err_out:
 	return retval;
 }
 
+static int dummy_init(struct synaptics_rmi4_data *rmi4_data)
+{
+	struct synaptics_rmi4_data *ptr;
+	ptr = rmi4_data;
+	return 0;
+}
+
+static void dummy_remove(struct synaptics_rmi4_data *rmi4_data)
+{
+	struct synaptics_rmi4_data *ptr = rmi4_data;
+	ptr = rmi4_data;
+}
+
 static int dsx_pinctrl_init(struct synaptics_rmi4_data *info)
 {
 	int retval;
@@ -6818,7 +6831,7 @@ static int synaptics_rmi4_probe(struct i2c_client *client,
 			__func__);
 	synaptics_dsx_sensor_state(rmi4_data, STATE_UNKNOWN);
 	synaptics_rmi4_new_function(rmi4_data, RMI_DRM_FRAMEWORK, true,
-				NULL, NULL, NULL, NULL, IC_MODE_ANY);
+				dummy_init, dummy_remove, NULL, NULL, IC_MODE_ANY);
 	return 0;
 
 free_and_exit:
