@@ -34,6 +34,24 @@
       "parentUuid": "19162f69_b5fa0fb8",
       "revId": "89c740c1368c03c15bfb91a7bf566d58d37ca037",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "241b4c4e_3e9e4e6b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32837
+      },
+      "writtenOn": "2026-08-29T11:42:49Z",
+      "side": 1,
+      "message": "Handle optional DRM callbacks without dummy functions.",
+      "parentUuid": "a56181f9_8fe2cf13",
+      "revId": "89c740c1368c03c15bfb91a7bf566d58d37ca037",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
