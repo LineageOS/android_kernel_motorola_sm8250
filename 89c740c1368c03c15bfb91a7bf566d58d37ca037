@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "19162f69_b5fa0fb8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32837
+      },
+      "writtenOn": "2026-08-29T11:20:49Z",
+      "side": 1,
+      "message": "diff --git a/drivers/input/touchscreen/synaptics_mmi_class/synaptics_dsx_i2c.c b/drivers/input/touchscreen/synaptics_mmi_class/synaptics_dsx_i2c.c\n--- a/drivers/input/touchscreen/synaptics_mmi_class/synaptics_dsx_i2c.c\n+++ b/drivers/input/touchscreen/synaptics_mmi_class/synaptics_dsx_i2c.c\n@@ -5960,7 +5960,8 @@ static void synaptics_rmi4_detection_work(struct work_struct *work)\n \t\t\tdev_dbg(dev, \"%s: calling remove func for handler: %d\\n\",\n \t\t\t\t\t__func__, exp_fhandler-\u003efn_type);\n-\t\t\texp_fhandler-\u003efunc_remove(rmi4_data);\n+\t\t\tif (exp_fhandler-\u003efunc_remove)\n+\t\t\t\texp_fhandler-\u003efunc_remove(rmi4_data);\n \n \t\t\t/* need to restore status function on F34 removal */\n \t\t\tif (exp_fhandler-\u003efn_type \u003d\u003d RMI_FW_UPDATER \u0026\u0026\n@@ -6064,7 +6065,8 @@ static void synaptics_rmi4_detection_work(struct work_struct *work)\n \t\t\t\tsynaptics_dsx_sensor_state(rmi4_data, STATE_LOADING);\n \t\t}\n \n-\t\texp_fhandler-\u003efunc_init(rmi4_data);\n+\t\tif (exp_fhandler-\u003efunc_init)\n+\t\t\texp_fhandler-\u003efunc_init(rmi4_data);\n \t\texp_fhandler-\u003einserted \u003d true;\n \t\tdev_dbg(dev, \"%s: handler %d inserted\\n\",\n \t\t\t\t__func__, exp_fhandler-\u003efn_type);\n@@ -6191,7 +6193,8 @@ void synaptics_rmi4_new_function(\n \t\tlist_add_tail(\u0026exp_fhandler-\u003elink, \u0026rmi4_data-\u003eexp_fn_ctrl.fn_list);\n \t} else {\n \t\tlist_for_each_entry(exp_fhandler, \u0026rmi4_data-\u003eexp_fn_ctrl.fn_list, link) {\n-\t\t\tif (exp_fhandler-\u003efunc_init !\u003d func_init)\n+\t\t\tif (exp_fhandler-\u003efn_type !\u003d fn_type ||\n+\t\t\t    exp_fhandler-\u003efunc_init !\u003d func_init)\n \t\t\t\tcontinue;\n \t\t\t/* insert flag needed to run remove function in detection */\n \t\t\t/* work even though function was never properly inserted */\n@@ -6584,19 +6587,6 @@ static int synaptics_rmi4_hw_init(struct synaptics_rmi4_data *rmi4_data)\n \treturn retval;\n }\n \n-static int dummy_init(struct synaptics_rmi4_data *rmi4_data)\n-{\n-\tstruct synaptics_rmi4_data *ptr;\n-\tptr \u003d rmi4_data;\n-\treturn 0;\n-}\n-\n-static void dummy_remove(struct synaptics_rmi4_data *rmi4_data)\n-{\n-\tstruct synaptics_rmi4_data *ptr \u003d rmi4_data;\n-\tptr \u003d rmi4_data;\n-}\n-\n static int dsx_pinctrl_init(struct synaptics_rmi4_data *info)\n {\n \tint retval;\n@@ -6831,7 +6821,7 @@ static int synaptics_rmi4_probe(struct i2c_client *client,\n \t\t\t__func__);\n \tsynaptics_dsx_sensor_state(rmi4_data, STATE_UNKNOWN);\n \tsynaptics_rmi4_new_function(rmi4_data, RMI_DRM_FRAMEWORK, true,\n-\t\t\t\tdummy_init, dummy_remove, NULL, NULL, IC_MODE_ANY);\n+\t\t\t\tNULL, NULL, NULL, NULL, IC_MODE_ANY);\n \treturn 0;\n \n free_and_exit:\n\n\n\ntested this pls",
+      "revId": "89c740c1368c03c15bfb91a7bf566d58d37ca037",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
