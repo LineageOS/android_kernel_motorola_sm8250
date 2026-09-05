@@ -16,6 +16,24 @@
       "message": "@benjamin.lineageos@wiegand.pw any interest in maintaining smith? If so, email devrel(at)lineageos.org.\n\nThanks!",
       "revId": "11ec5c27e3f5dbd9881a36071c0f3e700f8070a5",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cd58dfb5_aa4321d1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 35006
+      },
+      "writtenOn": "2026-09-05T03:58:59Z",
+      "side": 1,
+      "message": "Sure, I need to clean up my device tree a bit first",
+      "parentUuid": "fe2191e2_e5feffce",
+      "revId": "11ec5c27e3f5dbd9881a36071c0f3e700f8070a5",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ],
   "submitRequirementResults": [
