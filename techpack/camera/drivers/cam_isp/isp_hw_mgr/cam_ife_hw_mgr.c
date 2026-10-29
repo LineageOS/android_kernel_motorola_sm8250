@@ -5725,8 +5725,10 @@ static int cam_isp_packet_generic_blob_handler(void *user_data,
 		prepare_hw_data = (struct cam_isp_prepare_hw_update_data  *)
 			prepare->priv;
 
+		memset(&prepare_hw_data->bw_config[bw_config->usage_type],
+			0, sizeof(prepare_hw_data->bw_config[0]));
 		memcpy(&prepare_hw_data->bw_config[bw_config->usage_type],
-			bw_config, sizeof(prepare_hw_data->bw_config[0]));
+			bw_config, bw_config_size);
 		prepare_hw_data->bw_config_version = CAM_ISP_BW_CONFIG_V1;
 		prepare_hw_data->bw_config_valid[bw_config->usage_type] = true;
 		cam_common_mem_free(bw_config);
@@ -5810,9 +5812,6 @@ static int cam_isp_packet_generic_blob_handler(void *user_data,
 		memset(&prepare_hw_data->bw_config_v2[bw_config->usage_type],
 			0, sizeof(
 			prepare_hw_data->bw_config_v2[bw_config->usage_type]));
-		bw_config_size = sizeof(struct cam_isp_bw_config_internal_v2) +
-			((bw_config->num_paths - 1) *
-			sizeof(struct cam_axi_per_path_bw_vote));
 		memcpy(&prepare_hw_data->bw_config_v2[bw_config->usage_type],
 			bw_config, bw_config_size);
 
