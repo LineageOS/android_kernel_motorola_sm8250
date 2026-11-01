@@ -182,7 +182,7 @@
 &lagoon_snd {
 	status = "ok";
 	compatible = "qcom,kona-asoc-snd";
-	qcom,model = "lagoon-awinic-snd-card";
+	qcom,model = "lito-lagoonqrd-snd-card";
 	qcom,wcn-btfm = <1>;
 	qcom,msm-mi2s-master = <1>, <1>, <1>, <1>, <1>, <1>;
 	qcom,ext-disp-audio-rx = <0>;
