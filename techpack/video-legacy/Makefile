@@ -1,0 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0-only
+
+# auto-detect subdirs
+
+obj-y +=msm/
